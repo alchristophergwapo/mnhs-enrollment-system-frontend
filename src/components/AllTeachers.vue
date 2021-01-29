@@ -70,12 +70,7 @@ export default {
       },
     ],
   }),
-  mounted() {
-    this.$axios.get("http://localhost:8000/api/teachers").then(response=>{
-      console.log(response.data.data);
-    })
-
-  }
+  
 };
 </script>
 
