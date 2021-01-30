@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <side-bar></side-bar>
-    <app-bar></app-bar>
+    <app-bar :user_details="user"></app-bar>
     <v-main>
       <div class="main-view">
         <router-view></router-view>
@@ -17,11 +17,15 @@ export default {
     SideBar: () => import("@/layout/SideBar.vue"),
     AppBar: () => import("@/layout/AppBar.vue"),
   },
-  data(){
-      return{
-          drawer: true,
-          menuOpen: false,
-      }
+  data() {
+    return {
+      drawer: true,
+      menuOpen: false,
+      user: {
+        type: "admin",
+        username: "Admin",
+      },
+    };
   },
   computed: {
     mdAndUp() {
@@ -32,8 +36,8 @@ export default {
     },
     breakpoint() {
       return JSON.stringify(this.$vuetify.breakpoint, null, 2);
-    }
-  }
+    },
+  },
 };
 </script>
 

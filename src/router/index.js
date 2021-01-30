@@ -87,6 +87,14 @@ const routes = [
         meta: {
             title: 'Admin Profile Settings'
         },
+    },
+    {
+        path: '/student/dashboard',
+        name: 'StudentDashboard',
+        component: () => import('@/components/studentpage/StudentDashboard.vue'),
+        meta: {
+            title: 'Student Dashboard'
+        },
     }
 ]
 

@@ -38,8 +38,23 @@
                           v-bind="attrs"
                           v-on="on"
                           ><v-icon>mdi-plus</v-icon>Add Section</v-btn
-                        >
-                      </template>
+                        > </template
+                      >
+                      <!-- <input-card
+                        :card_item="item.text"
+                        :card_action="addSection"
+                        :card_fields="[
+                        {
+                          label: 'Section Name',
+                          type: 'text'
+                        },
+                        {
+                          label: 'Capacity',
+                          type: 'number'
+                        }]"
+                        :card_dialog="dialog"
+                        :button_loading="loading"
+                      ></input-card> -->
                       <v-card>
                         <v-card-title>
                           <span class="headline"
@@ -260,7 +275,8 @@
 <script>
 export default {
   components: {
-      BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
+    BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
+    // InputCard: () => import("@/layout/InputCardDialog.vue"),
   },
   data: () => ({
     dialog: false,
