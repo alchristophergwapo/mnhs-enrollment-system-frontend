@@ -1,119 +1,310 @@
+
 <template>
-  <v-app>
-    <div class="enrollment">
-      <v-toolbar dark color="#3bbdda">
-        <v-avatar>
-          <v-img :src="require('../assets/images/logo.jpg')"></v-img>
-        </v-avatar>
-        <v-toolbar-title class="toolbar-title"
-          >Welcome to Mantalongon, Dalaguete NHS</v-toolbar-title
-        >
+  <div>
+    <bread-crumb :item="items" page_name="All Teachers"></bread-crumb>
+    <br>
+    <br>
+    <div>
+      <v-card-title>
         <v-spacer></v-spacer>
-        <v-btn text link to="/sign-in">Login</v-btn>
-      </v-toolbar>
-      <br />
-      <div class="form-container">
-        <v-card
-          color="rgba(255, 255, 255, .9)"
-          class="card mx-auto my-12"
-          width="100%"
-          max-width="800"
-        >
-          <v-card-title
-            ><span style="width: 100%; text-align: center"
-              >Please fill out the information below and SUBMIT.</span
-            ></v-card-title
-          >
-          <v-form v-model="valid">
-            <v-container>
-              <student-info-form></student-info-form>
-              <parent-guardian-info></parent-guardian-info>
-              <balik-or-transfer></balik-or-transfer>
-              <senior-high v-bind:track="tracks" v-bind:strand="strands"></senior-high>
-              <v-btn class="submit">Submit</v-btn>
-            </v-container>
-          </v-form>
-        </v-card>
-      </div>
+        <!-- Adding A Teacher!-->
+        <v-card-title>
+          <v-spacer></v-spacer>
+          <div class="add_btn">
+            <v-dialog v-model="statusdialog" persistent max-width="300px">
+              <template v-slot:activator="{ on,attrs}">
+                <v-btn color="primary" v-bind="attrs" v-on="on" @click="showTeacher">
+                  <v-icon>mdi-plus</v-icon>Add Teacher
+                </v-btn>
+              </template>
+              <v-form>
+                <v-card>
+                  <v-card-title class="headline">
+                    <span>{{status}}</span>
+                  </v-card-title>
+                  <v-card-text>
+                    <v-container>
+                      <v-text-field
+                        @keydown="clearError"
+                        label="Teacher's Fullname"
+                        type="text"
+                        class="form-control"
+                        v-model="Teacher"
+                        name="name"
+                        :class="hasError('name') ? 'is-invalid':''"
+                      ></v-text-field>
+                      <p v-if="hasError('name')" class="invalid-feedback">{{getError('name')}}</p>
+                      <v-text-field
+                        @keydown="clearError"
+                        label="Email"
+                        type="email"
+                        v-model="Email"
+                        name="email"
+                        :class="hasError('email') ? 'is-invalid':''"
+                      ></v-text-field>
+                      <p v-if="hasError('email')" class="invalid-feedback">{{getError('email')}}</p>
+                      <v-text-field
+                        @keydown="clearError"
+                        label="Phone Number"
+                        type="number"
+                        v-model="Contact"
+                        name="phone"
+                        :class="hasError('contact') ? 'is-invalid':''"
+                      ></v-text-field>
+                      <p v-if="hasError('contact')" class="invalid-feedback">{{getError('contact')}}</p>
+                    </v-container>
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="error darken-1" @click="dialogs">Cancel</v-btn>
+                    <v-btn color="blue darken-1" :disabled="hasAnyErors" @click="addTeacher()">Save</v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-form>
+            </v-dialog>
+          </div>
+        </v-card-title>
+        <!-- Adding A Teacher!-->
+      </v-card-title>
+      <v-data-table
+        :headers="headers"
+        :items="teachers"
+        :search="search"
+        :items-per-page="10"
+        class="elevation-1"
+      >
+        <template v-slot:item="row">
+          <tr>
+            <td>{{ row.item.name}}</td>
+            <td>{{ row.item.email}}</td>
+            <td>{{ row.item.phone}}</td>
+            <td>
+              <v-icon  @click="showsTeacherById(row.item.id)">mdi-pencil</v-icon>
+              <v-icon  @click="removeTeacher(row.item.id)">mdi-delete</v-icon>
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
     </div>
-  </v-app>
+  </div>
 </template>
 
 <script>
-import StudentInfoForm from "../components/enrollment/StudentInfoForm.vue";
-import ParentGuardianInfo from "../components/enrollment/ParentGuardianInfo.vue";
-import BalikOrTransfer from "../components/enrollment/BalikOrTransfer.vue";
-import SeniorHigh from "../components/enrollment/SeniorHigh.vue";
-
 export default {
   components: {
-    StudentInfoForm,
-    ParentGuardianInfo,
-    BalikOrTransfer,
-    SeniorHigh,
+    BreadCrumb: () => import("@/layout/BreadCrumb.vue")
   },
+
   data() {
     return {
-      valid: false,
-      tracks: ["Track 1", "Track 2", "Track 3", "Track 4"],
-      strands: ["Strand 1", "Strand 2", "Strand 3", "Strand 4"],
+      HHTP_REQUEST_URL: "http://127.0.0.1:8000/api/",
+      search: "",
+      statusdialog:false,
+      booleanStatus:false,
+      status: null,
+      Id:null,
+      Teacher: null,
+      Email: null,
+      Contact: null,
+
+      items: [
+        {
+          text: "Home",
+          disabled: false,
+          href: "/admin"
+        },
+        {
+          text: "Teachers",
+          disabled: true,
+          href: "admin/all_teachers"
+        }
+      ],
+      headers: [
+        {
+          text: "Name",
+          align: "start",
+          sortable: false,
+          value: "name"
+        },
+        { text: "Email", value: "email" },
+        { text: "Phone Number", value: "phone" },
+        { text: "Action", value: "action" }
+      ],
+
+      teachers: [
+        {
+          id: "0",
+          name: "Aileen Becher",
+          email: "becher@mnhs.edu.ph",
+          phone: "639123456789"
+        }
+      ],
+      errors: {}
     };
   },
-  mounted: () => {
+
+  mounted:function() {
+    this.display();
   },
+
+  methods: {
+    //Methods for displaying all teachers
+    display() {
+      this.$axios
+        .get(`${this.HHTP_REQUEST_URL}allTeacher`)
+        .then(response => {
+          response.data.forEach(element => {
+            this.teachers.push(element);
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+
+    //Methods for Deleting A Teacher In Delete Button
+    async removeTeacher(dataid) {
+      this.$axios
+        .get(`${this.HHTP_REQUEST_URL}delTeacher/` + `${dataid}`)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+
+    //Methods for showing  a teacher by id
+    showsTeacherById(id){
+      this.status = "Update Teacher";
+      this.statusdialog = true;
+      this.booleanStatus = true;
+       this.$axios
+        .get(`${this.HHTP_REQUEST_URL}showByIdTeacher/` + `${id}`)
+        .then(response =>{
+          this.Teacher=response.data.name;
+          this.Email=response.data.email;
+          this.Contact=response.data.contact;
+          this.Id=response.data.id;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+
+    },
+
+    
+    //Methods for showing the  Add Teacher
+    showTeacher() {
+      this.status = "Add Teacher";
+      this.statusdialog = true;
+      this.booleanStatus = false;
+    },
+
+    //Reseting the validation in cancel button
+    async dialogs() {
+      //This is for Add Teacher Reset Validation
+      if (this.booleanStatus == false) {
+        alert("Adding Teacher Functionality:" + this.booleanStatus);
+        this.statusdialog = false;
+        (this.Teacher = null), (this.Email = null), (this.Contact = null);
+        for (let key in this.errors) {
+          this.$delete(this.errors, key);
+        }
+      }
+      //This is for Update Teacher Reset Validation
+      else {
+        alert("Update Teacher Functionality:" + this.booleanStatus);
+        this.statusdialog = false;
+        (this.Teacher = null), (this.Email = null), (this.Contact = null);
+        for (let key in this.errors){
+          this.$delete(this.errors, key);
+        }
+      }
+    },
+
+    //Method for Adding A Teacher in save button
+    async addTeacher(){
+      if (this.booleanStatus == false){
+        alert("Adding A Teacher:" + this.booleanStatus);
+        this.$axios
+          .post(`${this.HHTP_REQUEST_URL}addNewTeacher`,{
+            name: this.Teacher,
+            email: this.Email,
+            contact: this.Contact
+          })
+          .then(response => {
+            console.log(response.data);
+            (this.Teacher = null), (this.Email = null), (this.Contact = null);
+            this.statusdialog = false;
+          })
+          .catch(error => {
+            if (error.response.status == 422) {
+              this.setErrors(error.response.data.errors);
+            } else {
+              alert("something went wrong!");
+            }
+          });
+      } else {
+        alert("Updateteacher:" + this.booleanStatus+this.Id);
+        this.$axios
+          .post(`${this.HHTP_REQUEST_URL}updateTeacher/`+ `${this.Id}`,{
+            name: this.Teacher,
+            email: this.Email,
+            contact: this.Contact
+          })
+          .then(response => {
+            console.log(response.data);
+            (this.Teacher = null), (this.Email = null), (this.Contact = null);
+            this.statusdialog = false;
+          })
+          .catch(error => {
+            if (error.response.status == 422) {
+              this.setErrors(error.response.data.errors);
+            } else {
+              alert("something went wrong!");
+            }
+          });
+      }
+    },
+
+
+   //Methods For All Errors
+  setErrors(error){
+      this.errors = error;
+    },
+
+    hasError(fieldname) {
+      return fieldname in this.errors;
+    },
+
+    clearError(event) {
+      this.$delete(this.errors, event.target.name);
+    },
+
+    getError(fieldName) {
+      return this.errors[fieldName][0];
+    }
+  },
+
+  computed:{
+    hasAnyErors() {
+      return Object.keys(this.errors).length > 0;
+    }
+
+  }
+
 };
 </script>
 
+
 <style>
-.enrollment {
-  /* height: 269vh; */
-  background: linear-gradient(180deg, #48a7ff 0%, #48a7ff 0.01%, #64d8fd 100%);
+.headline {
+  background-color: rgb(57, 151, 206);
 }
 
-.v-messages__message {
+.invalid-feedback {
   color: red;
-}
-
-.form-container {
-  /* position: absolute; */
-  margin-right: 20px;
-  margin-bottom: 20px;
-  /* width: 100%;
-  max-width: 800px; */
-}
-
-@media (max-width: 767.98px) {
-  .form-container {
-    margin-left: 10px;
-    margin-right: 10px;
-  }
-}
-
-.v-card__title {
-  font-family: Manrope;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 18px;
-}
-
-.form-head {
-  width: 100%;
-  padding: 30px;
-  /* margin-bottom: 50px; */
-  text-align: center;
-  font-family: Manrope;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 18px;
-  line-height: 110%;
-  /* or 20px */
-
-  color: #000000;
-  text-transform: uppercase;
-}
-
-.v-btn.submit {
-  width: 200px;
-  background: linear-gradient(180deg, #48a7ff 0%, #48a7ff 0.01%, #64d8fd 100%);
+  margin-top:-9%;
 }
 </style>
