@@ -30,7 +30,7 @@
         </v-list>
       </v-menu>
     </div>
-    <v-btn text link to="/">Logout</v-btn>
+    <v-btn text @click="logout">Logout</v-btn>
   </v-app-bar>
 </template>
 
@@ -43,6 +43,13 @@ export default {
       user: this.user_details
     };
   },
+
+  methods: {
+    logout() {
+      this.$router.push({path: '/'});
+      this.$store.dispatch('logout');
+    }
+  }
 };
 </script>
 
