@@ -49,7 +49,7 @@
                           :rules="[rules.password, rules.min]"
                           :type="show1 ? 'text' : 'password'"
                           name="input-10-1"
-                          hint="At least 8 characters"
+                          :hint="password.length >= 8 ? '' : 'At least 8 characters'"
                           @click:append="show1 = !show1"
                         ></v-text-field>
                       </v-col>
@@ -99,7 +99,7 @@
                           :rules="[adrules.addpwd, adrules.min]"
                           :type="adminshow ? 'text' : 'password'"
                           name="input-10-1"
-                          hint="At least 8 characters"
+                          :hint="adminPass.length >= 8 ? '' : 'At least 8 characters'"
                           @click:append="adminshow = !adminshow"
                         ></v-text-field>
                       </v-col>
@@ -110,7 +110,7 @@
                           block
                           :disabled="!advalid"
                           color="info"
-                          @click="admin"
+                          @click="login"
                         >
                           <h4>Sign In</h4>
                         </v-btn>
@@ -131,6 +131,7 @@
 <script>
 export default {
   data: () => ({
+    BASE_URL: 'http://127.0.0.1:8000/api/',
     dialog: true,
     tab: 0,
 
@@ -181,6 +182,22 @@ export default {
 
     resetValidation() {
       this.$refs.form.resetValidation();
+    },
+
+    login() {
+      let data = {
+        username: this.adminName,
+        password: this.adminPass,
+        user_type: 'admin'
+      };
+      // this.$axios.post(`${this.BASE_URL}login`,data).then(res=>{
+      //   console.log(res);
+      // })
+
+      this.$store.dispatch('login',data).then(()=>{
+        
+      this.$router.push({path: '/admin'})
+      })
     },
   },
 };
