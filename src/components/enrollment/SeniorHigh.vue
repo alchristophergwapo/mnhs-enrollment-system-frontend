@@ -46,7 +46,6 @@ export default {
       strands: this.strand,
     }
   },
-
   mounted(){
   },
   computed: {},
@@ -59,7 +58,6 @@ export default {
   font-size: 16px;
   line-height: 110%;
   /* or 13px */
-
   color: #82869a;
 }
 </style>

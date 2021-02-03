@@ -177,6 +177,7 @@ export default {
 </script>
 
 <style>
+
 .view_dtls_btn {
   font-family: Roboto;
   font-style: normal;
@@ -184,4 +185,5 @@ export default {
 
   color: #48d3ff;
 }
+
 </style>

@@ -127,7 +127,7 @@ export default {
   font-size: 20px;
 }
 
-.btn {
+.btn{
   color: white;
   text-transform: uppercase;
   background-image: linear-gradient(#48a7ff 100%, #48a7ff 100%, #64d8fd 100%);
