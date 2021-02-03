@@ -34,6 +34,9 @@ const routes = [
     {
         path: '/admin',
         component: () => import('@/layout/Index.vue'),
+        meta: {
+            auth: true
+        },
         children: [
             {
                 path: '/',
@@ -87,16 +90,31 @@ const routes = [
         meta: {
             title: 'Admin Profile Settings'
         },
+    },
+    {
+        path: '/student/dashboard',
+        name: 'StudentDashboard',
+        component: () => import('@/components/studentpage/StudentDashboard.vue'),
+        meta: {
+            title: 'Student Dashboard'
+        },
     }
 ]
 
 const router = new VueRouter({
     mode: 'history',
+    base: process.env.BASE_URL,
     routes: routes,
 })
 
 router.beforeEach((to, from, next) => {
     document.title = to.meta.title;
+    const loggedIn = localStorage.getItem('user')
+
+  if (to.matched.some(record => record.meta.auth) && !loggedIn) {
+    next('/sign-in')
+    return
+  }
     next();
 })
 

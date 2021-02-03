@@ -4,7 +4,7 @@
 
     <v-spacer></v-spacer>
 
-    <div class="notif">
+    <div class="notif" v-if="user.type == 'admin' ">
       <v-btn icon link to="/admin/notifications">
         <v-badge
           :content="notifications"
@@ -19,8 +19,8 @@
     <div v-if="$route.name != 'AdminProfile'">
       <v-menu left bottom>
         <template v-slot:activator="{ on, attrs }">
-          <span class="label">Admin</span>
-          <v-icon v-bind="attrs" v-on="on">mdi-chevron-down</v-icon>
+          <span class="label"><span v-if="user.type =='student'">Hello, </span>{{ user.firstname }}</span>
+          <v-icon v-if="user.type == 'admin'" v-bind="attrs" v-on="on">mdi-chevron-down</v-icon>
         </template>
 
         <v-list>
@@ -30,17 +30,26 @@
         </v-list>
       </v-menu>
     </div>
-    <v-btn text link to="/">Logout</v-btn>
+    <v-btn text @click="logout">Logout</v-btn>
   </v-app-bar>
 </template>
 
 <script>
 export default {
+  props: ['user_details'],
   data() {
     return {
       notifications: 1,
+      user: this.user_details
     };
   },
+
+  methods: {
+    logout() {
+      this.$router.push({path: '/'});
+      this.$store.dispatch('logout');
+    }
+  }
 };
 </script>
 
