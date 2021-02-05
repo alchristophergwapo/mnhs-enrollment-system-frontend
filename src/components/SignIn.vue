@@ -1,137 +1,145 @@
 <template>
-  <div id="app">
-    <v-app>
-      <v-container class="signin-container">
-        <v-card class="card1" elevation="5" shaped>
-          <center><img :src="require('../assets/images/enroll.png')" alt="" id="icons" /></center>
-          <h3>MNHS Enrollment System</h3>
-          <br />
-          <v-tabs
-            v-model="tab"
-            show-arrows
-            background-color="light-blue"
-            icons-and-text
-            dark
-            grow
-          >
-            <v-tabs-slider color="grey darken-4"></v-tabs-slider>
-            <v-tab v-for="i in tabs" :key="i.name" padding="20">
-              <br />
-              <v-icon large>{{ i.icon }}</v-icon>
-              <div class="caption py-1">{{ i.name }}</div>
-            </v-tab>
-            <v-tab-item>
-              <v-card>
-                <v-card-text>
-                  <v-form ref="regStudentForm" v-model="valid" lazy-validation>
-                    <v-row>
-                      <v-col cols="12">
-                        <div class="font-weight-bold">
-                          <h4>Learner's Reference No. (LRN)</h4>
-                        </div>
-                        <v-text-field
-                          v-model="lrn"
-                          :rules="[rules.lrn]"
-                          maxlength="20"
-                          required
-                        ></v-text-field>
-                      </v-col>
-                      <v-spacer></v-spacer>
+  <v-app id="sign-in">
+    <v-container class="signin-container">
+      <v-card class="card1" elevation="5" shaped>
+        <center>
+          <img
+            :src="require('../assets/images/enroll.png')"
+            alt=""
+            id="icons"
+          />
+        </center>
+        <h3>MNHS Enrollment System</h3>
+        <br />
+        <v-tabs
+          v-model="tab"
+          show-arrows
+          background-color="light-blue"
+          icons-and-text
+          dark
+          grow
+        >
+          <v-tabs-slider color="grey darken-4"></v-tabs-slider>
+          <v-tab v-for="i in tabs" :key="i.name" padding="20">
+            <br />
+            <v-icon large>{{ i.icon }}</v-icon>
+            <div class="caption py-1">{{ i.name }}</div>
+          </v-tab>
+          <v-tab-item>
+            <v-card>
+              <v-card-text>
+                <v-form ref="regStudentForm" v-model="valid" lazy-validation>
+                  <v-row>
+                    <v-col cols="12">
+                      <div class="font-weight-bold">
+                        <h4>Learner's Reference No. (LRN)</h4>
+                      </div>
+                      <v-text-field
+                        v-model="lrn"
+                        :rules="[rules.lrn]"
+                        maxlength="20"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-spacer></v-spacer>
 
-                      <v-col cols="12">
-                        <div class="font-weight-bold">
-                          <h4>Password</h4>
-                        </div>
-                        <v-text-field
-                          id="pwd"
-                          v-model="password"
-                          :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                          :rules="[rules.password, rules.min]"
-                          :type="show1 ? 'text' : 'password'"
-                          name="input-10-1"
-                          :hint="password.length >= 8 ? '' : 'At least 8 characters'"
-                          @click:append="show1 = !show1"
-                        ></v-text-field>
-                      </v-col>
-                      <v-spacer></v-spacer>
-                      <v-col class="d-flex ml-auto">
-                        <v-btn
-                          x-large
-                          block
-                          :disabled="!valid"
-                          color="info"
-                          @click="student"
-                        >
-                          <h4>Sign In</h4>
-                        </v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-form>
-                </v-card-text>
-              </v-card>
-            </v-tab-item>
-            <v-tab-item>
-              <v-card>
-                <v-card-text>
-                  <v-form ref="regAdminForm" v-model="advalid" lazy-validation>
-                    <v-row>
-                      <v-col cols="12">
-                        <div class="font-weight-bold">
-                          <h4>Username</h4>
-                        </div>
-                        <v-text-field
-                          v-model="adminName"
-                          :rules="[adrules.username]"
-                          maxlength="20"
-                          required
-                        ></v-text-field>
-                      </v-col>
-                      <v-spacer></v-spacer>
+                    <v-col cols="12">
+                      <div class="font-weight-bold">
+                        <h4>Password</h4>
+                      </div>
+                      <v-text-field
+                        id="pwd"
+                        v-model="password"
+                        :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                        :rules="[rules.password, rules.min]"
+                        :type="show1 ? 'text' : 'password'"
+                        name="input-10-1"
+                        :hint="
+                          password.length >= 8 ? '' : 'At least 8 characters'
+                        "
+                        @click:append="show1 = !show1"
+                      ></v-text-field>
+                    </v-col>
+                    <v-spacer></v-spacer>
+                    <v-col class="d-flex ml-auto">
+                      <v-btn
+                        x-large
+                        block
+                        :disabled="!valid"
+                        color="info"
+                        @click="student"
+                      >
+                        <h4>Sign In</h4>
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-form>
+              </v-card-text>
+            </v-card>
+          </v-tab-item>
+          <v-tab-item>
+            <v-card>
+              <v-card-text>
+                <v-form ref="regAdminForm" v-model="advalid" lazy-validation>
+                  <v-row>
+                    <v-col cols="12">
+                      <div class="font-weight-bold">
+                        <h4>Username</h4>
+                      </div>
+                      <v-text-field
+                        v-model="adminName"
+                        :rules="[adrules.username]"
+                        maxlength="20"
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-spacer></v-spacer>
 
-                      <v-col cols="12">
-                        <div class="font-weight-bold">
-                          <h4>Password</h4>
-                        </div>
-                        <v-text-field
-                          id="pwd"
-                          v-model="adminPass"
-                          :append-icon="adminshow ? 'mdi-eye' : 'mdi-eye-off'"
-                          :rules="[adrules.addpwd, adrules.min]"
-                          :type="adminshow ? 'text' : 'password'"
-                          name="input-10-1"
-                          :hint="adminPass.length >= 8 ? '' : 'At least 8 characters'"
-                          @click:append="adminshow = !adminshow"
-                        ></v-text-field>
-                      </v-col>
-                      <v-spacer></v-spacer>
-                      <v-col class="d-flex ml-auto">
-                        <v-btn
-                          x-large
-                          block
-                          :disabled="!advalid"
-                          color="info"
-                          @click="login"
-                        >
-                          <h4>Sign In</h4>
-                        </v-btn>
-                      </v-col>
-                    </v-row>
-                  </v-form>
-                </v-card-text>
-              </v-card>
-            </v-tab-item>
-          </v-tabs>
-        </v-card>
-      </v-container>
-    </v-app>
-  </div>
+                    <v-col cols="12">
+                      <div class="font-weight-bold">
+                        <h4>Password</h4>
+                      </div>
+                      <v-text-field
+                        id="pwd"
+                        v-model="adminPass"
+                        :append-icon="adminshow ? 'mdi-eye' : 'mdi-eye-off'"
+                        :rules="[adrules.addpwd, adrules.min]"
+                        :type="adminshow ? 'text' : 'password'"
+                        name="input-10-1"
+                        :hint="
+                          adminPass.length >= 8 ? '' : 'At least 8 characters'
+                        "
+                        @click:append="adminshow = !adminshow"
+                      ></v-text-field>
+                    </v-col>
+                    <v-spacer></v-spacer>
+                    <v-col class="d-flex ml-auto">
+                      <v-btn
+                        x-large
+                        block
+                        :disabled="!advalid"
+                        color="info"
+                        @click="login"
+                      >
+                        <h4>Sign In</h4>
+                      </v-btn>
+                    </v-col>
+                  </v-row>
+                </v-form>
+              </v-card-text>
+            </v-card>
+          </v-tab-item>
+        </v-tabs>
+      </v-card>
+    </v-container>
+  </v-app>
 </template>
 
 
 <script>
 export default {
   data: () => ({
-    BASE_URL: 'http://127.0.0.1:8000/api/',
+    BASE_URL: "http://127.0.0.1:8000/api/",
     dialog: true,
     tab: 0,
 
@@ -176,7 +184,7 @@ export default {
     admin() {
       if (this.$refs.regAdminForm.validate()) {
         //submit form to server/API here...
-        this.$router.push({path: '/admin'})
+        this.$router.push({ path: "/admin" });
       }
     },
 
@@ -188,16 +196,14 @@ export default {
       let data = {
         username: this.adminName,
         password: this.adminPass,
-        user_type: 'admin'
+        user_type: "admin",
       };
-      // this.$axios.post(`${this.BASE_URL}login`,data).then(res=>{
-      //   console.log(res);
-      // })
-
-      this.$store.dispatch('login',data).then(()=>{
-        
-      this.$router.push({path: '/admin'})
-      })
+      
+      if (this.$refs.regAdminForm.validate()) {
+        this.$store.dispatch("login", data).then(() => {
+          this.$router.push({ path: "/admin" });
+        });
+      }
     },
   },
 };
@@ -243,9 +249,13 @@ h3 {
   height: 120px;
 }
 
-@media (max-width:  767px) {
-    .signin-container {
-        width: 100%;
-    }
+#sign-in {
+  background: #3bbdda;
+}
+
+@media (max-width: 767px) {
+  .signin-container {
+    width: 100%;
+  }
 }
 </style>

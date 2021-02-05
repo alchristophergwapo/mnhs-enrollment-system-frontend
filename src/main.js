@@ -17,7 +17,7 @@ new Vue({
     if (userInfo) {
       const userData = JSON.parse(userInfo)
       this.$store.commit('setUserData',userData)
-      // this.$router.push({path: '/admin'})
+      this.$router.push({path: '/admin'})
       console.log(userInfo);
     }
     this.$axios.interceptors.response.use(
