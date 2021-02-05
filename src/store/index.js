@@ -11,7 +11,7 @@ export default new Vuex.Store({
     state: {
         user: null
     },
-
+    
     mutations: {
         setUserData(state, userData) {
             state.user = userData.user
@@ -26,7 +26,7 @@ export default new Vuex.Store({
         }
     },
 
-    actions: {
+ actions: {
         login({commit}, credentials) {
             return axios.post('login', credentials).then(({data})=>{
                 commit('setUserData',data)

@@ -95,7 +95,7 @@ export default {
     BreadCrumb: () => import("@/layout/BreadCrumb.vue")
   },
 
-  data() {
+  data(){
     return {
       HHTP_REQUEST_URL: "http://127.0.0.1:8000/api/",
       search: "",
@@ -163,7 +163,7 @@ export default {
     },
 
     //Methods for Deleting A Teacher In Delete Button
-    async removeTeacher(dataid) {
+    async removeTeacher(dataid){
       this.$axios
         .get(`${this.HHTP_REQUEST_URL}delTeacher/` + `${dataid}`)
         .then(response => {
@@ -253,7 +253,7 @@ export default {
             email: this.Email,
             contact: this.Contact
           })
-          .then(response => {
+          .then(response =>{
             console.log(response.data);
             (this.Teacher = null), (this.Email = null), (this.Contact = null);
             this.statusdialog = false;

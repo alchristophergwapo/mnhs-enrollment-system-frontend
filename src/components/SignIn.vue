@@ -100,7 +100,7 @@
                           :type="adminshow ? 'text' : 'password'"
                           name="input-10-1"
                           :hint="adminPass.length >= 8 ? '' : 'At least 8 characters'"
-                          @click:append="adminshow = !adminshow"
+                          @click:append="adminshow=!adminshow"
                         ></v-text-field>
                       </v-col>
                       <v-spacer></v-spacer>
@@ -173,12 +173,12 @@ export default {
       }
     },
 
-    admin() {
-      if (this.$refs.regAdminForm.validate()) {
-        //submit form to server/API here...
-        this.$router.push({path: '/admin'})
-      }
-    },
+    // admin() {
+    //   if (this.$refs.regAdminForm.validate()) {
+    //     //submit form to server/API here...
+    //     this.$router.push({path: '/admin'})
+    //   }
+    // },
 
     resetValidation() {
       this.$refs.form.resetValidation();
@@ -188,7 +188,7 @@ export default {
       let data = {
         username: this.adminName,
         password: this.adminPass,
-        user_type: 'admin'
+        user_type:'admin'
       };
       // this.$axios.post(`${this.BASE_URL}login`,data).then(res=>{
       //   console.log(res);
@@ -196,9 +196,10 @@ export default {
 
       this.$store.dispatch('login',data).then(()=>{
         
-      this.$router.push({path: '/admin'})
+         this.$router.push({path: '/admin'})
       })
     },
+    
   },
 };
 </script>

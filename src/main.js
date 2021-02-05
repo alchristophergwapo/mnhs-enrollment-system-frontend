@@ -18,15 +18,14 @@ new Vue({
       const userData = JSON.parse(userInfo)
       this.$store.commit('setUserData',userData)
       // this.$router.push({path: '/admin'})
-      console.log(userInfo);
+       console.log(userInfo);
     }
     this.$axios.interceptors.response.use(
-      response => response,
-      error => {
-        if (error.response.status === 401) {
+      response =>response,
+      error=>{
+        if(error.response.status === 401){
           this.$store.dispatch('logout')
         }
-
         return Promise.reject(error)
       }
     )
