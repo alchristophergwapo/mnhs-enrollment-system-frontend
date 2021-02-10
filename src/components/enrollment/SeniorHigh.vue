@@ -53,6 +53,7 @@ export default {
 </script>
 
 <style>
+
 .checkbox-label {
   font-weight: 700;
   font-size: 16px;
@@ -60,4 +61,5 @@ export default {
   /* or 13px */
   color: #82869a;
 }
+
 </style>

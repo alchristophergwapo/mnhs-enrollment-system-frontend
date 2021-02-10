@@ -47,17 +47,24 @@
                         @keydown="clearError"
                         label="Phone Number"
                         type="number"
+                        min="0"
                         v-model="Contact"
-                        name="phone"
+                        name="contact"
                         :class="hasError('contact') ? 'is-invalid':''"
                       ></v-text-field>
                       <p v-if="hasError('contact')" class="invalid-feedback">{{getError('contact')}}</p>
+                      <v-select v-model="selected_section" :items="sections" label="Assigned Grade Level & Section" required></v-select>
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="error darken-1" @click="dialogs">Cancel</v-btn>
-                    <v-btn color="blue darken-1" :disabled="hasAnyErors" @click="addTeacher()">Save</v-btn>
+                    <v-btn
+                      color="blue darken-1"
+                      :loading="loading"
+                      :disabled="hasAnyErors"
+                      @click="addTeacher()"
+                    >Save</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-form>
@@ -77,10 +84,11 @@
           <tr>
             <td>{{ row.item.name}}</td>
             <td>{{ row.item.email}}</td>
-            <td>{{ row.item.phone}}</td>
+            <td>{{ row.item.contact}}</td>
+              <td>{{ row.item.section_id}}</td>
             <td>
-              <v-icon  @click="showsTeacherById(row.item.id)">mdi-pencil</v-icon>
-              <v-icon  @click="removeTeacher(row.item.id)">mdi-delete</v-icon>
+              <v-icon @click="showsTeacherById(row.item.id)">mdi-pencil</v-icon>
+              <v-icon @click="removeTeacher(row.item.id)">mdi-delete</v-icon>
             </td>
           </tr>
         </template>
@@ -95,18 +103,20 @@ export default {
     BreadCrumb: () => import("@/layout/BreadCrumb.vue")
   },
 
-  data(){
+  data() {
     return {
       HHTP_REQUEST_URL: "http://127.0.0.1:8000/api/",
       search: "",
-      statusdialog:false,
-      booleanStatus:false,
+      loading: false,
+      statusdialog: false,
+      booleanStatus: false,
       status: null,
-      Id:null,
+      Id: null,
       Teacher: null,
       Email: null,
       Contact: null,
-
+      selected_section:null,
+      sections:['Narra','Molave'],
       items: [
         {
           text: "Home",
@@ -127,8 +137,10 @@ export default {
           value: "name"
         },
         { text: "Email", value: "email" },
-        { text: "Phone Number", value: "phone" },
+        { text: "Phone Number", value: "contact" },
+        { text: "AssignedArea", value: "section_id" },
         { text: "Action", value: "action" }
+
       ],
 
       teachers: [
@@ -136,20 +148,20 @@ export default {
           id: "0",
           name: "Aileen Becher",
           email: "becher@mnhs.edu.ph",
-          phone: "639123456789"
+          contact: "639123456789"
         }
       ],
       errors: {}
     };
   },
 
-  mounted:function() {
+  mounted: function() {
     this.display();
   },
 
   methods: {
     //Methods for displaying all teachers
-    display(){
+    display() {
       this.$axios
         .get(`${this.HHTP_REQUEST_URL}allTeacher`)
         .then(response => {
@@ -163,37 +175,49 @@ export default {
     },
 
     //Methods for Deleting A Teacher In Delete Button
-    async removeTeacher(dataid){
+    async removeTeacher(dataid) {
       this.$axios
         .get(`${this.HHTP_REQUEST_URL}delTeacher/` + `${dataid}`)
         .then(response => {
-          console.log(response);
+          if (response.data.message) {
+            this.teachers = [];
+            this.teachers = response.data.arrayTeacher;
+            alert("Successfully Deleted!");
+          } else {
+            alert("Not successfully deleted!");
+          }
         })
         .catch(error => {
-          console.log(error);
+          if (error.response.status == 422) {
+            alert("Invalid data");
+          } else {
+            alert("something Went Wrong!");
+          }
         });
     },
 
     //Methods for showing  a teacher by id
-    showsTeacherById(id){
+    showsTeacherById(id) {
       this.status = "Update Teacher";
       this.statusdialog = true;
       this.booleanStatus = true;
-       this.$axios
+      this.$axios
         .get(`${this.HHTP_REQUEST_URL}showByIdTeacher/` + `${id}`)
-        .then(response =>{
-          this.Teacher=response.data.name;
-          this.Email=response.data.email;
-          this.Contact=response.data.contact;
-          this.Id=response.data.id;
+        .then(response => {
+          this.Teacher = response.data.name;
+          this.Email = response.data.email;
+          this.Contact = response.data.contact;
+          this.Id = response.data.id;
         })
         .catch(error => {
-          console.log(error);
+          if (error.response.status == 422) {
+            alert("Invalid data");
+          } else {
+            alert("something Went Wrong!");
+          }
         });
-
     },
 
-    
     //Methods for showing the  Add Teacher
     showTeacher() {
       this.status = "Add Teacher";
@@ -217,46 +241,71 @@ export default {
         alert("Update Teacher Functionality:" + this.booleanStatus);
         this.statusdialog = false;
         (this.Teacher = null), (this.Email = null), (this.Contact = null);
-        for (let key in this.errors){
+        for (let key in this.errors) {
           this.$delete(this.errors, key);
         }
       }
     },
 
     //Method for Adding A Teacher in save button
-    async addTeacher(){
+    async addTeacher() {
       if (this.booleanStatus == false){
         alert("Adding A Teacher:" + this.booleanStatus);
+        this.loading = true;
+        await new Promise(resolve => setTimeout(resolve, 700));
+        this.loading = false;
         this.$axios
           .post(`${this.HHTP_REQUEST_URL}addNewTeacher`,{
+            name: this.Teacher,
+            email: this.Email,
+            contact: this.Contact,
+            section_id:this.selected_section,
+          })
+          .then(response => {
+            if (response.data.message) {
+              alert("Successfully added!")     
+              this.teachers = [];
+              this.teachers = response.data.arrayTeacher;
+              this.Teacher = null;
+              this.Email = null;
+              this.Contact = null;
+              this.statusdialog = false;
+            }else{
+              alert("Not successfully added!");
+            }
+          })
+          .catch(error => {
+            if (error.response.status == 422) {
+              this.setErrors(error.response.data.errors);
+            }
+            else{
+              alert("something went wrong!");
+            }
+          });
+      } else {
+        //For Updating The  Teachers
+        alert("Updateteacher:" + this.booleanStatus + this.Id);
+        this.loading = true;
+        await new Promise(resolve => setTimeout(resolve, 700));
+        this.loading = false;
+        this.$axios
+          .post(`${this.HHTP_REQUEST_URL}updateTeacher/` + `${this.Id}`, {
             name: this.Teacher,
             email: this.Email,
             contact: this.Contact
           })
           .then(response => {
-            console.log(response.data);
-            (this.Teacher = null), (this.Email = null), (this.Contact = null);
-            this.statusdialog = false;
-          })
-          .catch(error => {
-            if (error.response.status == 422) {
-              this.setErrors(error.response.data.errors);
+            if (response.data.message) {
+              alert("Successfully updated!");
+              this.teachers = [];
+              this.teachers = response.data.arrayTeacher;
+              this.Teacher = null;
+              this.Email = null;
+              this.Contact = null;
+              this.statusdialog = false;
             } else {
-              alert("something went wrong!");
+              alert("Not successfully updated!");
             }
-          });
-      } else {
-        alert("Updateteacher:" + this.booleanStatus+this.Id);
-        this.$axios
-          .post(`${this.HHTP_REQUEST_URL}updateTeacher/`+ `${this.Id}`,{
-            name: this.Teacher,
-            email: this.Email,
-            contact: this.Contact
-          })
-          .then(response =>{
-            console.log(response.data);
-            (this.Teacher = null), (this.Email = null), (this.Contact = null);
-            this.statusdialog = false;
           })
           .catch(error => {
             if (error.response.status == 422) {
@@ -268,9 +317,8 @@ export default {
       }
     },
 
-
-   //Methods For All Errors
-  setErrors(error){
+    //Methods For All Errors
+    setErrors(error) {
       this.errors = error;
     },
 
@@ -287,11 +335,10 @@ export default {
     }
   },
 
-  computed:{
+  computed: {
     hasAnyErors() {
       return Object.keys(this.errors).length > 0;
     }
-
   }
 };
 </script>
@@ -304,6 +351,7 @@ export default {
 
 .invalid-feedback {
   color: red;
-  margin-top:-9%;
+  margin-top: -8%;
+  font-size: 14px;
 }
 </style>

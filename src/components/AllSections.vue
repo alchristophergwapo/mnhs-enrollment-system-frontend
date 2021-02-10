@@ -157,7 +157,7 @@
               color="basil"
               fixed-tabs
             >
-              <v-tab v-for="(item, index) in senior_high" :key="index">
+              <v-tab v-for="(item,index) in senior_high" :key="index">
                 {{ item.text }}
               </v-tab>
             </v-tabs>
@@ -165,7 +165,7 @@
             <v-tabs-items v-model="tab2">
               <v-tab-item v-for="(item, index) in senior_high" :key="index">
                 <v-card-title>
-                  {{ item.text }} Sections
+                  {{item.text}} Sections
                   <v-spacer></v-spacer>
                   <div class="add_btn">
                     <v-dialog v-model="dialog2" persistent max-width="300px">

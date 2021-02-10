@@ -57,7 +57,7 @@
             class="invalid-feedback"
           >{{getError('confirm_password')}}</p>
           <v-btn class="mr-4" color="error" @click="clear">clear</v-btn>
-          <v-btn class="mr-4" color="info" :disabled="hasAnyErors" @click="submit">submit</v-btn>
+          <v-btn class="mr-4" color="info" :loading="loading" :disabled="hasAnyErors" @click="submit">submit</v-btn>
         </v-form>
       </v-container>
     </v-card>
@@ -77,6 +77,7 @@ export default {
       currentPass: null,
       newpassword: null,
       confirmPass: null,
+      loading:false,
       showPass: "",
       showNPass: "",
       showCPass: "",
@@ -98,7 +99,9 @@ export default {
 
   methods: {
     async submit(){
-      // this.$routedgdxr.push({ path: "/admin"});
+      this.loading = true;
+      await new Promise((resolve) => setTimeout(resolve,700));
+      this.loading = false;
       this.$axios
         .post(`${this.HHTP_REQUEST_URL}change`,{
           username: this.username,
@@ -112,6 +115,7 @@ export default {
             this.newpassword = null;
             this.confirmPass = null;
             alert("Successfully changed!")
+            //this.$router.push({path:"/admin"});
           }
           else{
             alert("Your current password is wrong!")
@@ -170,6 +174,7 @@ export default {
 
 .invalid-feedback {
   color: red;
-  margin-top: -2%;
+  margin-top: -4%;
+  font-size:14px;
 }
 </style>
