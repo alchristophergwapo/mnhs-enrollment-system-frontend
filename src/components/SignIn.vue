@@ -198,7 +198,7 @@ export default {
         password: this.adminPass,
         user_type: "admin",
       };
-      
+
       if (this.$refs.regAdminForm.validate()) {
         this.$store.dispatch("login", data).then(() => {
           this.$router.push({ path: "/admin" });
