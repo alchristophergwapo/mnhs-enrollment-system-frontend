@@ -30,8 +30,8 @@
                         type="text"
                         class="form-control"
                         v-model="Teacher"
+                        :error="Target.name"
                         name="name"
-                        :class="hasError('name') ? 'is-invalid':''"
                       ></v-text-field>
                       <p v-if="hasError('name')" class="invalid-feedback">{{getError('name')}}</p>
                       <v-text-field
@@ -40,7 +40,7 @@
                         type="email"
                         v-model="Email"
                         name="email"
-                        :class="hasError('email') ? 'is-invalid':''"
+                        :error=" Target.email"
                       ></v-text-field>
                       <p v-if="hasError('email')" class="invalid-feedback">{{getError('email')}}</p>
                       <v-text-field
@@ -50,10 +50,16 @@
                         min="0"
                         v-model="Contact"
                         name="contact"
-                        :class="hasError('contact') ? 'is-invalid':''"
+                        :error="Target.contact"
                       ></v-text-field>
                       <p v-if="hasError('contact')" class="invalid-feedback">{{getError('contact')}}</p>
-                      <v-select v-model="selected_section" :items="sections" label="Assigned Grade Level & Section" required></v-select>
+                      <v-select
+                        v-model="selected_section"
+                        :items="sections"
+                        type="text"
+                        label="Assigned Section Area"
+                        required
+                      ></v-select>
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
@@ -85,7 +91,7 @@
             <td>{{ row.item.name}}</td>
             <td>{{ row.item.email}}</td>
             <td>{{ row.item.contact}}</td>
-              <td>{{ row.item.section_id}}</td>
+            <td>{{ row.item.section_id}}</td>
             <td>
               <v-icon @click="showsTeacherById(row.item.id)">mdi-pencil</v-icon>
               <v-icon @click="removeTeacher(row.item.id)">mdi-delete</v-icon>
@@ -107,16 +113,18 @@ export default {
     return {
       HHTP_REQUEST_URL: "http://127.0.0.1:8000/api/",
       search: "",
-      loading: false,
+      loading:false,
       statusdialog: false,
-      booleanStatus: false,
+      booleanStatus:false,
       status: null,
       Id: null,
       Teacher: null,
       Email: null,
       Contact: null,
-      selected_section:null,
-      sections:['Narra','Molave'],
+      selected_section: null,
+      sections: [],
+      Target: { name: null, email: null, contact: null },
+
       items: [
         {
           text: "Home",
@@ -138,19 +146,11 @@ export default {
         },
         { text: "Email", value: "email" },
         { text: "Phone Number", value: "contact" },
-        { text: "AssignedArea", value: "section_id" },
+        { text: "Assigned Section", value: "section_id" },
         { text: "Action", value: "action" }
-
       ],
 
-      teachers: [
-        {
-          id: "0",
-          name: "Aileen Becher",
-          email: "becher@mnhs.edu.ph",
-          contact: "639123456789"
-        }
-      ],
+      teachers: [],
       errors: {}
     };
   },
@@ -165,15 +165,24 @@ export default {
       this.$axios
         .get(`${this.HHTP_REQUEST_URL}allTeacher`)
         .then(response => {
-          response.data.forEach(element => {
-            this.teachers.push(element);
-          });
+          this.teachers = response.data;
+          this.Section();
         })
         .catch(error => {
           console.log(error);
         });
     },
-
+    //Methods For Getting All Available Section
+    Section() {
+      this.$axios
+        .get(`${this.HHTP_REQUEST_URL}sections`)
+        .then(response =>{
+          this.sections=response.data;
+        })
+        .catch(error =>{
+          console.log(error);
+        });
+    },
     //Methods for Deleting A Teacher In Delete Button
     async removeTeacher(dataid) {
       this.$axios
@@ -181,7 +190,7 @@ export default {
         .then(response => {
           if (response.data.message) {
             this.teachers = [];
-            this.teachers = response.data.arrayTeacher;
+            this.display();
             alert("Successfully Deleted!");
           } else {
             alert("Not successfully deleted!");
@@ -195,22 +204,32 @@ export default {
           }
         });
     },
-
-    //Methods for showing  a teacher by id
+//Methods for showing  a teacher by id
     showsTeacherById(id) {
       this.status = "Update Teacher";
       this.statusdialog = true;
       this.booleanStatus = true;
       this.$axios
         .get(`${this.HHTP_REQUEST_URL}showByIdTeacher/` + `${id}`)
-        .then(response => {
-          this.Teacher = response.data.name;
-          this.Email = response.data.email;
-          this.Contact = response.data.contact;
-          this.Id = response.data.id;
+        .then(response =>{
+          if (response.data.section_id == null) {
+            this.Teacher=response.data.name;
+            this.Email = response.data.email;
+            this.Contact = response.data.contact;
+            this.Id = response.data.id;
+            this.Section();
+          } else {
+            this.Teacher = response.data.name;
+            this.Email = response.data.email;
+            this.Contact = response.data.contact;
+            this.sections = [];
+            this.sections.push(response.data.section_id);
+            this.selected_section = this.sections[0];
+            this.Id = response.data.id;
+          }
         })
         .catch(error => {
-          if (error.response.status == 422) {
+          if (error.response.status== 422){
             alert("Invalid data");
           } else {
             alert("something Went Wrong!");
@@ -230,26 +249,28 @@ export default {
       //This is for Add Teacher Reset Validation
       if (this.booleanStatus == false) {
         alert("Adding Teacher Functionality:" + this.booleanStatus);
-        this.statusdialog = false;
-        (this.Teacher = null), (this.Email = null), (this.Contact = null);
-        for (let key in this.errors) {
+        (this.Teacher = null),(this.Email = null),(this.Contact = null),(this.selected_section = null);
+        for (let key in this.errors){
           this.$delete(this.errors, key);
+          this.Target[key] = false;
         }
+          this.statusdialog = false;
       }
       //This is for Update Teacher Reset Validation
       else {
         alert("Update Teacher Functionality:" + this.booleanStatus);
-        this.statusdialog = false;
-        (this.Teacher = null), (this.Email = null), (this.Contact = null);
+        (this.Teacher = null),(this.Email = null),(this.Contact = null),(this.selected_section = null);
         for (let key in this.errors) {
           this.$delete(this.errors, key);
+          this.Target[key] = false;
         }
+         this.statusdialog = false;
       }
     },
 
     //Method for Adding A Teacher in save button
-    async addTeacher() {
-      if (this.booleanStatus == false){
+    async addTeacher(){
+      if (this.booleanStatus == false) {
         alert("Adding A Teacher:" + this.booleanStatus);
         this.loading = true;
         await new Promise(resolve => setTimeout(resolve, 700));
@@ -259,26 +280,26 @@ export default {
             name: this.Teacher,
             email: this.Email,
             contact: this.Contact,
-            section_id:this.selected_section,
+            section_id:this.selected_section
           })
           .then(response => {
             if (response.data.message) {
-              alert("Successfully added!")     
+              alert("Successfully added!");
               this.teachers = [];
-              this.teachers = response.data.arrayTeacher;
+              this.display();
               this.Teacher = null;
               this.Email = null;
               this.Contact = null;
+              this.selected_section = null;
               this.statusdialog = false;
-            }else{
+            } else {
               alert("Not successfully added!");
             }
           })
           .catch(error => {
             if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);
-            }
-            else{
+            } else {
               alert("something went wrong!");
             }
           });
@@ -289,19 +310,21 @@ export default {
         await new Promise(resolve => setTimeout(resolve, 700));
         this.loading = false;
         this.$axios
-          .post(`${this.HHTP_REQUEST_URL}updateTeacher/` + `${this.Id}`, {
+          .post(`${this.HHTP_REQUEST_URL}updateTeacher/`+`${this.Id}`, {
             name: this.Teacher,
             email: this.Email,
-            contact: this.Contact
+            contact: this.Contact,
+            section_id:this.selected_section
           })
           .then(response => {
             if (response.data.message) {
               alert("Successfully updated!");
               this.teachers = [];
-              this.teachers = response.data.arrayTeacher;
+              this.display();
               this.Teacher = null;
               this.Email = null;
               this.Contact = null;
+              this.selected_section = null;
               this.statusdialog = false;
             } else {
               alert("Not successfully updated!");
@@ -328,9 +351,15 @@ export default {
 
     clearError(event) {
       this.$delete(this.errors, event.target.name);
+      this.Target[event.target.name] = false;
     },
 
     getError(fieldName) {
+      for (let key in this.Target) {
+        if (key == fieldName) {
+          this.Target[key] = true;
+        }
+      }
       return this.errors[fieldName][0];
     }
   },
@@ -351,7 +380,7 @@ export default {
 
 .invalid-feedback {
   color: red;
-  margin-top: -8%;
+  margin-top: -7%;
   font-size: 14px;
 }
 </style>

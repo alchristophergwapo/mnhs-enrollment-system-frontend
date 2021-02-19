@@ -83,6 +83,18 @@
           <v-list-item-title>All Sections</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+
+       <v-list-item class="nav-link" link to="/admin/reports">
+        <img
+          :src="require('../assets//images/icons/reports.png')"
+          alt="John"
+          class="icon"
+        />
+
+        <v-list-item-content class="nav-def">
+          <v-list-item-title>Reports</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
   </v-navigation-drawer>
 </template>

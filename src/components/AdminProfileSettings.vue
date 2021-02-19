@@ -25,7 +25,7 @@
             label="Current Password"
             @click:append="showPass = !showPass"
             @keydown="clearErrors"
-            :class="hasError('currentpassword') ? 'is-invalid':''"
+            :error="Target.currentpassword"
           ></v-text-field>
           <p
             v-if="hasError('currentpassword')"
@@ -39,7 +39,7 @@
             name="new_password"
             @click:append="showNPass = !showNPass"
             @keydown="clearErrors"
-            :class="hasError('new_password') ? 'is-invalid':''"
+            :error="Target.new_password"
           ></v-text-field>
           <p v-if="hasError('new_password')" class="invalid-feedback">{{getError('new_password')}}</p>
           <v-text-field
@@ -50,14 +50,20 @@
             name="confirm_password"
             @click:append="showCPass = !showCPass"
             @keydown="clearErrors"
-            :class="hasError('confirm_password') ? 'is-invalid':''"
+            :error="Target.confirm_password"
           ></v-text-field>
           <p
             v-if="hasError('confirm_password')"
             class="invalid-feedback"
           >{{getError('confirm_password')}}</p>
           <v-btn class="mr-4" color="error" @click="clear">clear</v-btn>
-          <v-btn class="mr-4" color="info" :loading="loading" :disabled="hasAnyErors" @click="submit">submit</v-btn>
+          <v-btn
+            class="mr-4"
+            color="info"
+            :loading="loading"
+            :disabled="hasAnyErors"
+            @click="submit"
+          >submit</v-btn>
         </v-form>
       </v-container>
     </v-card>
@@ -65,9 +71,8 @@
 </template>
 
 <script>
-
 export default {
-  components:{
+  components: {
     //AppBar:() => import("@/layout/AppBar.vue")
   },
   data() {
@@ -77,10 +82,15 @@ export default {
       currentPass: null,
       newpassword: null,
       confirmPass: null,
-      loading:false,
+      loading: false,
       showPass: "",
       showNPass: "",
       showCPass: "",
+      Target: {
+        currentpassword: null,
+        new_password: null,
+        confirm_password: null
+      },
       errors: {}
     };
   },
@@ -98,41 +108,39 @@ export default {
   },
 
   methods: {
-    async submit(){
+    async submit() {
       this.loading = true;
-      await new Promise((resolve) => setTimeout(resolve,700));
+      await new Promise(resolve => setTimeout(resolve, 700));
       this.loading = false;
       this.$axios
-        .post(`${this.HHTP_REQUEST_URL}change`,{
+        .post(`${this.HHTP_REQUEST_URL}change`, {
           username: this.username,
           currentpassword: this.currentPass,
           new_password: this.newpassword,
-          confirm_password:this.confirmPass
+          confirm_password: this.confirmPass
         })
-        .then(response =>{
-          if(response.data.message){
+        .then(response => {
+          if (response.data.message) {
             this.currentPass = null;
             this.newpassword = null;
             this.confirmPass = null;
-            alert("Successfully changed!")
+            alert("Successfully changed!");
             //this.$router.push({path:"/admin"});
-          }
-          else{
-            alert("Your current password is wrong!")
+          } else {
+            alert("Your current password is wrong!");
           }
         })
         .catch(error => {
-          if (error.response.status==422){
+          if (error.response.status == 422) {
             this.setErrors(error.response.data.errors);
-          }else{
+          } else {
             alert("Something went wrong!");
           }
         });
     },
 
-  
-   //Methods For All Errors
-  setErrors(error){
+    //Methods For All Errors
+    setErrors(error) {
       this.errors = error;
     },
 
@@ -142,18 +150,25 @@ export default {
 
     clearErrors(event) {
       this.$delete(this.errors, event.target.name);
+      this.Target[event.target.name] = false;
     },
 
     getError(fieldName) {
+      for (let key in this.Target) {
+        if (key == fieldName) {
+          this.Target[key]=true;
+        }
+      }
       return this.errors[fieldName][0];
     },
 
-    clear(){
+    clear() {
       this.currentPass = null;
       this.newpassword = null;
       this.confirmPass = null;
       for (let key in this.errors) {
         this.$delete(this.errors, key);
+        this.Target[key] = false;
       }
     }
   },
@@ -175,6 +190,6 @@ export default {
 .invalid-feedback {
   color: red;
   margin-top: -4%;
-  font-size:14px;
+  font-size: 14px;
 }
 </style>

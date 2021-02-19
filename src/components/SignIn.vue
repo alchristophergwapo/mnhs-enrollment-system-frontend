@@ -150,8 +150,8 @@ export default {
     show1: false,
     adminshow: false,
 
-    rules: {
-      lrn: (value) => !!value || "Learner's Reference No. is required!",
+    rules:{
+      lrn:(value) => !!value || "Learner's Reference No. is required!",
       password: (value) => !!value || "Password is required!",
       min: (v) => (v && v.length >= 8) || "Min 8 characters",
     },
@@ -195,7 +195,6 @@ export default {
       // })
 
       this.$store.dispatch('login',data).then(()=>{
-        
          this.$router.push({path: '/admin'})
       })
     },
