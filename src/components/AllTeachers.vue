@@ -30,7 +30,7 @@
                         type="text"
                         class="form-control"
                         v-model="Teacher"
-                        :error="Target.name"
+                        :error="hasError('name')"
                         name="name"
                       ></v-text-field>
                       <p v-if="hasError('name')" class="invalid-feedback">{{getError('name')}}</p>
@@ -38,9 +38,9 @@
                         @keydown="clearError"
                         label="Email"
                         type="email"
+                        :error="hasError('email')"
                         v-model="Email"
                         name="email"
-                        :error=" Target.email"
                       ></v-text-field>
                       <p v-if="hasError('email')" class="invalid-feedback">{{getError('email')}}</p>
                       <v-text-field
@@ -50,7 +50,7 @@
                         min="0"
                         v-model="Contact"
                         name="contact"
-                        :error="Target.contact"
+                        :error="hasError('contact')"
                       ></v-text-field>
                       <p v-if="hasError('contact')" class="invalid-feedback">{{getError('contact')}}</p>
                       <v-select
@@ -58,7 +58,7 @@
                         :items="sections"
                         type="text"
                         label="Assigned Section Area"
-                        required
+                        :disabled="disableSection"
                       ></v-select>
                     </v-container>
                   </v-card-text>
@@ -122,9 +122,9 @@ export default {
       Email: null,
       Contact: null,
       selected_section: null,
+      disableSection:false,
       sections: [],
-      Target: { name: null, email: null, contact: null },
-
+     // Target: { name: null, email: null, contact: null },
       items: [
         {
           text: "Home",
@@ -189,7 +189,7 @@ export default {
         .get(`${this.HHTP_REQUEST_URL}delTeacher/` + `${dataid}`)
         .then(response => {
           if (response.data.message) {
-            this.teachers = [];
+            this.teachers =[];
             this.display();
             alert("Successfully Deleted!");
           } else {
@@ -217,14 +217,16 @@ export default {
             this.Email = response.data.email;
             this.Contact = response.data.contact;
             this.Id = response.data.id;
+            this.disableSection=false;
             this.Section();
           } else {
             this.Teacher = response.data.name;
             this.Email = response.data.email;
             this.Contact = response.data.contact;
-            this.sections = [];
+            this.sections=[];
             this.sections.push(response.data.section_id);
             this.selected_section = this.sections[0];
+            this.disableSection=true;
             this.Id = response.data.id;
           }
         })
@@ -248,21 +250,19 @@ export default {
     async dialogs() {
       //This is for Add Teacher Reset Validation
       if (this.booleanStatus == false) {
-        alert("Adding Teacher Functionality:" + this.booleanStatus);
         (this.Teacher = null),(this.Email = null),(this.Contact = null),(this.selected_section = null);
         for (let key in this.errors){
           this.$delete(this.errors, key);
-          this.Target[key] = false;
+          //this.Target[key]=false;
         }
           this.statusdialog = false;
       }
       //This is for Update Teacher Reset Validation
       else {
-        alert("Update Teacher Functionality:" + this.booleanStatus);
         (this.Teacher = null),(this.Email = null),(this.Contact = null),(this.selected_section = null);
         for (let key in this.errors) {
           this.$delete(this.errors, key);
-          this.Target[key] = false;
+          //this.Target[key] = false;
         }
          this.statusdialog = false;
       }
@@ -271,7 +271,6 @@ export default {
     //Method for Adding A Teacher in save button
     async addTeacher(){
       if (this.booleanStatus == false) {
-        alert("Adding A Teacher:" + this.booleanStatus);
         this.loading = true;
         await new Promise(resolve => setTimeout(resolve, 700));
         this.loading = false;
@@ -285,7 +284,7 @@ export default {
           .then(response => {
             if (response.data.message) {
               alert("Successfully added!");
-              this.teachers = [];
+              this.teachers =[];
               this.display();
               this.Teacher = null;
               this.Email = null;
@@ -305,7 +304,6 @@ export default {
           });
       } else {
         //For Updating The  Teachers
-        alert("Updateteacher:" + this.booleanStatus + this.Id);
         this.loading = true;
         await new Promise(resolve => setTimeout(resolve, 700));
         this.loading = false;
@@ -351,15 +349,15 @@ export default {
 
     clearError(event) {
       this.$delete(this.errors, event.target.name);
-      this.Target[event.target.name] = false;
+     // this.Target[event.target.name] = false;
     },
 
     getError(fieldName) {
-      for (let key in this.Target) {
-        if (key == fieldName) {
-          this.Target[key] = true;
-        }
-      }
+      // for (let key in this.Target) {
+      //   if (key == fieldName) {
+      //     this.Target[key] = true;
+      //   }
+      // }
       return this.errors[fieldName][0];
     }
   },

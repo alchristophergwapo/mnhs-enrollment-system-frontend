@@ -12,13 +12,13 @@ new Vue({
   vuetify,
   router,
   store,
-  created(){
+  created() {
     const userInfo = localStorage.getItem('user')
     if (userInfo) {
       const userData = JSON.parse(userInfo)
-      this.$store.commit('setUserData',userData)
-      // this.$router.push({path: '/admin'})
-       console.log(userInfo);
+      this.$store.commit('setUserData', userData)
+      this.$router.push({ path: '/admin' })
+      //console.log(userInfo);
     }
     this.$axios.interceptors.response.use(
       response =>response,

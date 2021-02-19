@@ -25,7 +25,7 @@
                           v-model="Junior.section"
                           @keydown="clearError"
                           name="name"
-                          :error="Target.name"
+                          :error="hasError('name')"
                         ></v-text-field>
                         <p v-if="hasError('name')" class="invalid-feedback">{{getError('name')}}</p>
                         <v-text-field
@@ -34,7 +34,7 @@
                           name="capacity"
                           @keydown="clearError"
                           v-model="Junior.capacity"
-                          :error="Target.capacity"
+                          :error="hasError('capacity')"
                           min="0"
                         ></v-text-field>
                         <p
@@ -151,7 +151,7 @@
                         v-model="Senior.section"
                         @keydown="clearError"
                         name="name"
-                        :error="Target.name"
+                        :error="hasError('name')"
                       ></v-text-field>
                       <p v-if="hasError('name')" class="invalid-feedback">{{getError('name')}}</p>
                       <v-text-field
@@ -160,7 +160,7 @@
                         name="capacity"
                         @keydown="clearError"
                         v-model="Senior.capacity"
-                        :error="Target.capacity"
+                        :error="hasError('capacity')"
                         min="0"
                       ></v-text-field>
                       <p
@@ -283,7 +283,7 @@ export default {
     tab2: null,
     errors: {},
     //seniorErrors:{},
-    Target: { name: null, capacity: null },
+    //Target: { name: null, capacity: null },
     //TargetSenior:{ name: null, capacity: null },
     juniorSection: {
       name: "Grade 7"
@@ -400,7 +400,7 @@ export default {
       this.Junior.capacity = null;
       for (let key in this.errors) {
         this.$delete(this.errors, key);
-        this.Target[key] = false;
+        //this.Target[key] = false;
       }
       this.juniordialog = false;
     },
@@ -411,7 +411,7 @@ export default {
       this.Senior.capacity = null;
       for (let key in this.errors) {
         this.$delete(this.errors, key);
-        this.Target[key] = false;
+        //this.Target[key] = false;
       }
       this.seniorDialog = false;
     },
@@ -592,15 +592,15 @@ async seniorEdit(id){
 
     clearError(event) {
       this.$delete(this.errors, event.target.name);
-      this.Target[event.target.name] = false;
+     // this.Target[event.target.name] = false;
     },
 
     getError(fieldName){
-      for (let key in this.Target) {
-        if (key == fieldName) {
-          this.Target[key] = true;
-        }
-      }
+      // for (let key in this.Target) {
+      //   if (key == fieldName) {
+      //     this.Target[key] = true;
+      //   }
+      // }
       return this.errors[fieldName][0];
     },
 

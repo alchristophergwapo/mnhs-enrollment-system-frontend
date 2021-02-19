@@ -25,7 +25,7 @@
             label="Current Password"
             @click:append="showPass = !showPass"
             @keydown="clearErrors"
-            :error="Target.currentpassword"
+            :error="hasError('currentpassword')"
           ></v-text-field>
           <p
             v-if="hasError('currentpassword')"
@@ -39,7 +39,7 @@
             name="new_password"
             @click:append="showNPass = !showNPass"
             @keydown="clearErrors"
-            :error="Target.new_password"
+            :error="hasError('new_password')"
           ></v-text-field>
           <p v-if="hasError('new_password')" class="invalid-feedback">{{getError('new_password')}}</p>
           <v-text-field
@@ -50,7 +50,7 @@
             name="confirm_password"
             @click:append="showCPass = !showCPass"
             @keydown="clearErrors"
-            :error="Target.confirm_password"
+            :error="hasError('confirm_password')"
           ></v-text-field>
           <p
             v-if="hasError('confirm_password')"
@@ -86,11 +86,11 @@ export default {
       showPass: "",
       showNPass: "",
       showCPass: "",
-      Target: {
-        currentpassword: null,
-        new_password: null,
-        confirm_password: null
-      },
+      // Target: {
+      //   currentpassword: null,
+      //   new_password: null,
+      //   confirm_password: null
+      // },
       errors: {}
     };
   },
@@ -150,15 +150,15 @@ export default {
 
     clearErrors(event) {
       this.$delete(this.errors, event.target.name);
-      this.Target[event.target.name] = false;
+     // this.Target[event.target.name] = false;
     },
 
     getError(fieldName) {
-      for (let key in this.Target) {
-        if (key == fieldName) {
-          this.Target[key]=true;
-        }
-      }
+      // for (let key in this.Target) {
+      //   if (key == fieldName) {
+      //     this.Target[key]=true;
+      //   }
+      // }
       return this.errors[fieldName][0];
     },
 
@@ -168,7 +168,7 @@ export default {
       this.confirmPass = null;
       for (let key in this.errors) {
         this.$delete(this.errors, key);
-        this.Target[key] = false;
+        //this.Target[key] = false;
       }
     }
   },

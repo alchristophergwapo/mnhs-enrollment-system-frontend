@@ -3,14 +3,11 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-import EnrollmentForm from '../views/EnrollmentForm.vue'
-import Home from '../views/Home.vue'
-
 const routes = [
     {
         path: '/',
         name: 'Home',
-        component: Home,
+        component: () => import('@/components/LandingPage.vue'),
         meta: {
             title: 'MNHS'
         }
@@ -18,7 +15,7 @@ const routes = [
     {
         path: '/enroll',
         name: 'EnrollmentForm',
-        component: EnrollmentForm,
+        component: () => import('@/components/EnrollmentForm.vue'),
         meta: {
             title: 'Enrollment Form'
         }
@@ -103,7 +100,8 @@ const routes = [
         name: 'StudentDashboard',
         component: () => import('@/components/studentpage/StudentDashboard.vue'),
         meta: {
-            title: 'Student Dashboard'
+            title: 'Student Dashboard',
+            auth: true
         },
     }
 ]
