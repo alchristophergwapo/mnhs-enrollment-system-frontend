@@ -13,9 +13,21 @@
         <v-card-title class="justify-center"
           >{{ student.firstname }} {{ student.lastname }}
         </v-card-title>
-        <v-card-text><strong class="student_details">LRN: {{ student.lrn }} </strong></v-card-text>
-        <v-card-text><strong class="student_details">Grade: {{ student.grade_level }} </strong></v-card-text>
-        <v-card-text><strong class="student_details">Section: {{ student.section }} </strong></v-card-text>
+        <v-card-text
+          ><strong class="student_details"
+            >LRN: {{ student.LRN }}
+          </strong></v-card-text
+        >
+        <v-card-text
+          ><strong class="student_details"
+            >Grade: {{ student.grade_level }}
+          </strong></v-card-text
+        >
+        <v-card-text
+          ><strong class="student_details"
+            >Section: {{ student.section }}
+          </strong></v-card-text
+        >
       </v-container>
     </v-card>
   </div>
@@ -34,10 +46,14 @@ export default {
 
 <style>
 .student_details {
-    margin-left: 20px;
+  margin-left: 20px;
 }
 
 .student_profile {
-  background: linear-gradient(180deg, rgba(75, 201, 240, 0.56) -2.54%, rgba(196, 196, 196, 0) 97.46%);
+  background: linear-gradient(
+    180deg,
+    rgba(75, 201, 240, 0.56) -2.54%,
+    rgba(196, 196, 196, 0) 97.46%
+  );
 }
 </style>
