@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <app-bar :user_details="user"></app-bar>
+    <app-bar :user_details="user.firstname"></app-bar>
     <v-container class="stdnt-dash-container">
       <v-card-title class="justify-center header-title">
         Congrats, you are officially enrolled to MNHS!
@@ -27,14 +27,7 @@ export default {
   },
   data() {
     return {
-      user: {
-        type: "student",
-        firstname: "Chilla Jean",
-        lastname: "Cabungcag",
-        lrn: "30300123456",
-        grade_level: 7,
-        section: "Utot-utot",
-      },
+      user: null,
       students: [
         {
           student: "Danica Caballero",
@@ -58,6 +51,16 @@ export default {
         },
       ],
     };
+  },
+
+  methods: {
+    initialize() {
+      this.user = this.$store.getters.userInfo;
+    },
+  },
+
+  created() {
+    this.initialize();
   },
 };
 </script>

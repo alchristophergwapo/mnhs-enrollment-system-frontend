@@ -11,9 +11,11 @@
       </div>
       <div class="col" id="col3">
         <img id="logo2" src="../assets/images/deped-logo.png" />
-        <br>
+        <br />
         <div class="login-btn">
-          <v-btn class="ma-2" outlined color="indigo" link to="/sign-in">login</v-btn>
+          <v-btn class="ma-2" outlined color="indigo" link to="/sign-in"
+            >login</v-btn
+          >
         </div>
       </div>
     </div>
@@ -145,6 +147,17 @@
 export default {
   data() {
     return {};
+  },
+  created() {
+    const userInfo = localStorage.getItem("user");
+    if (userInfo) {
+      const userData = JSON.parse(userInfo);
+      this.$store.commit("setUserData", userData);
+      if (userData.user_type == "admin") {
+        this.$router.push({ path: "/admin" });
+      }
+      console.log(userInfo);
+    }
   },
 };
 </script>

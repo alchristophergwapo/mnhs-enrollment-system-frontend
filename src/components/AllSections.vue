@@ -38,8 +38,8 @@
                           v-bind="attrs"
                           v-on="on"
                           ><v-icon>mdi-plus</v-icon>Add Section</v-btn
-                        > </template
-                      >
+                        >
+                      </template>
                       <!-- <input-card
                         :card_item="item.text"
                         :card_action="addSection"
@@ -335,12 +335,19 @@ export default {
       },
       { text: "Grade 12" },
     ],
+
+    newSection: {
+      name: "",
+      capacity: null,
+      g_level: null,
+    },
   }),
 
   methods: {
     async addSection() {
       this.loading = true;
 
+      console.log(this.tab1);
       await new Promise((resolve) => setTimeout(resolve, 3000));
 
       this.loading = false;
