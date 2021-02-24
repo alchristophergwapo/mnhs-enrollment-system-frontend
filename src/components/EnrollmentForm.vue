@@ -357,26 +357,30 @@
                         id="scrolling-techniques-7"
                         class="overflow-y-auto"
                         ><review-form ref="reviewForm"></review-form>
-                        <v-col cols="12" sm="4" md="4" lg="4">
-                          <v-file-input
-                            v-model="card_image"
-                            label="Card Picture"
-                            :rules="[(value) => !!value || 'Required.']"
-                            accept="image/*"
-                            prepend-icon="mdi-camera"
-                          ></v-file-input>
-                        </v-col>
-                        <v-col cols="12" sm="4" md="4" lg="4">
-                          <v-text-field
-                            type="date"
-                            v-model="enrollmentDate"
-                            :rules="[
-                              (enrollmentDate) =>
-                                !!enrollmentDate || 'Date is required',
-                            ]"
-                            label="Date"
-                          ></v-text-field>
-                        </v-col>
+                        <v-form ref="submitEnrollment" lazy-validation>
+                          <v-container>
+                            <v-row>
+                              <v-col cols="12" sm="6" md="6">
+                                <v-file-input
+                                  v-model="card_image"
+                                  label="Card Picture"
+                                  :rules="[(value) => !!value || 'Required.']"
+                                  accept="image/*"
+                                  prepend-icon="mdi-camera"
+                                ></v-file-input>
+                              </v-col>
+                              <v-col cols="12" sm="6" md="6">
+                                <v-select
+                                  v-model="grade_level"
+                                  :items="grade_levels"
+                                  :rules="[(v) => !!v || 'Required']"
+                                  label="Select Grade Level"
+                                  required
+                                ></v-select>
+                              </v-col>
+                            </v-row>
+                          </v-container>
+                        </v-form>
                       </v-sheet>
                     </v-card>
                   </v-dialog>
@@ -426,6 +430,9 @@ export default {
         },
       ],
 
+      grade_levels: [7, 8, 9, 10, 11, 12],
+
+      grade_level: null,
       card_image: null,
       student: null,
       parentGuardian: null,
@@ -504,6 +511,8 @@ export default {
       } else {
         if (this.validatePGInfo(this.numberOfSteps)) {
           this.dialog = true;
+          this.balikOrTransfer = null;
+          this.seniorHigh = null;
         }
       }
 
@@ -517,61 +526,68 @@ export default {
     },
 
     submitEnrollment() {
-      if (this.enrollmentDate) {
+      if (this.$refs.submitEnrollment.validate()) {
+        let formdata = new FormData();
         let parent = JSON.parse(this.parentGuardian);
-        console.log(parent);
+        // console.log(parent);
         for (const key in parent) {
           if (parent[key]) {
             const element = parent[key];
             this.student[key] = element;
           }
         }
-        this.$axios.post(`addStudent`, this.student).then((response) => {
-          if (response.status == 200) {
-            if (response.data.student_id) {
-              let student_id = response.data.student_id;
-              let formdata = new FormData();
-              formdata.append("student_id", student_id);
-              formdata.append("enrollment_status", "Pending");
-              formdata.append(
-                "card_image",
-                this.card_image,
-                this.card_image.name
-              );
 
-              let settings = {
-                headers: { "content-type": "multipart/form-data" },
-              };
-
-              this.$axios
-                .post("addEnrollment", formdata, settings)
-                .then((response) => {
-                  // if (response.status == 200) {
-                  // }
-                  console.log(response);
-                });
-
-              this.balikOrTransfer["student_id"] = student_id;
-
-              if (this.isTransfereeOrBalikAral == "true") {
-                this.$axios
-                  .post("addTransferee", this.balikOrTransfer)
-                  .then((response) => {
-                    console.log(response);
-                  });
-              }
-
-              this.seniorHigh["student_id"] = student_id;
-              if (this.isSeniorHigh == "true") {
-                this.$axios
-                  .post("addSeniorHigh", this.seniorHigh)
-                  .then((response) => {
-                    console.log(response);
-                  });
-              }
+        if (this.isTransfereeOrBalikAral == "true") {
+          let balikOrTransfer = JSON.parse(this.balikOrTransfer);
+          for (const key in balikOrTransfer) {
+            if (balikOrTransfer[key]) {
+              const element = balikOrTransfer[key];
+              this.student[key] = element;
             }
           }
-        });
+
+          formdata.append("isBalikOrTransfer", true);
+        }
+
+        if (this.isSeniorHigh == "true") {
+          let seniorHigh = JSON.parse(this.seniorHigh);
+          for (const key in seniorHigh) {
+            if (seniorHigh[key]) {
+              const element = seniorHigh[key];
+              this.student[key] = element;
+            }
+          }
+
+          formdata.append("isSeniorHigh", true);
+        }
+
+        for (const key in this.student) {
+          if (this.student[key]) {
+            const element = this.student[key];
+            formdata.append(key, element);
+          }
+        }
+
+        formdata.append("grade_level", this.grade_level);
+        formdata.append("enrollment_status", "Pending");
+        formdata.append(
+          "card_image",
+          this.card_image,
+          Date.now() + "_" + this.card_image.name
+        );
+
+        for (let [key, value] of formdata.entries()) {
+          console.log(key, value);
+        }
+        this.$axios
+          .post(`addStudent`, formdata)
+          .then((response) => {
+            console.log(response);
+            this.$router.push({ path: "/" });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       }
     },
   },

@@ -40,7 +40,7 @@
         </thead>
         <tbody>
           <tr v-for="(item, index) in students" :key="index">
-            <td></td>
+            <td>{{ item.student.grade_level }}</td>
             <td>{{ item.student.firstname }} {{ item.student.lastname }}</td>
             <td>
               <v-dialog transition="dialog-top-transition" max-width="600">
@@ -143,8 +143,47 @@
               </v-dialog>
             </td>
             <td>
-              <v-btn x-small color="success" dark>Approve</v-btn>
-              <v-btn x-small color="error" dark>Decline</v-btn>
+              <v-row align="center" justify="space-around">
+                <v-btn color="primary" @click="dialog = true"> approve </v-btn>
+                <v-row justify="center">
+                  <v-dialog v-model="dialog" max-width="500px">
+                    <v-card>
+                      <v-card-title>
+                        <span class="headline">Select Student Section</span>
+                        <v-spacer></v-spacer>
+                        <v-btn icon @click="dialog = false">
+                          <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                      </v-card-title>
+                      <v-card-text>
+                        <v-select
+                          :items="[
+                            'Section 1',
+                            'Section 2',
+                            'Section 3',
+                            'Section 4',
+                          ]"
+                          v-model="section"
+                          label="Section*"
+                          required
+                        ></v-select>
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          color="blue darken-1"
+                          @click="approveEnrollment(item.id, index)"
+                        >
+                          Done
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+                </v-row>
+                <v-btn color="error" @click="declineEnrollment(item.id, index)">
+                  decline
+                </v-btn>
+              </v-row>
             </td>
           </tr>
         </tbody>
@@ -255,6 +294,9 @@ export default {
     BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
   },
   data: () => ({
+    toggle_exclusive: undefined,
+    dialog: false,
+    section: "",
     search: "",
     items: [
       {
@@ -292,13 +334,28 @@ export default {
   },
 
   methods: {
-    approveEnrollment(id) {
-      this.$axios.post("approveEnrollment/" + id).then((response) => {
-        console.log(response);
-        if (response.status == 200) {
-          window.location.reload(true);
-        }
-      });
+    approveEnrollment(id, index) {
+      this.$axios
+        .post("approveEnrollment/" + id, this.section)
+        .then((response) => {
+          console.log(response);
+          this.students.splice(index, 1);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+
+    declineEnrollment(id, index) {
+      this.$axios
+        .post("declineEnrollment/" + id)
+        .then((response) => {
+          console.log(response);
+          this.students.splice(index, 1);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };
