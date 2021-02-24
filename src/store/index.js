@@ -17,7 +17,7 @@ export default new Vuex.Store({
         seniorHighInfo: null,
 
     },
-
+    
     mutations: {
         setUserData(state, userData) {
             state.user = userData.user

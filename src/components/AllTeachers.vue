@@ -7,7 +7,7 @@
     <div>
       <v-card-title>
         <v-spacer></v-spacer>
-        <!-- Addin A Teacher!-->
+        <!-- Adding A Teacher!-->
         <v-card-title>
           <v-spacer></v-spacer>
           <div class="add_btn">
@@ -26,45 +26,58 @@
                     <v-container>
                       <v-text-field
                         @keydown="clearError"
-                        label="Teacher Name"
+                        label="Teacher's Fullname"
                         type="text"
                         class="form-control"
                         v-model="Teacher"
+                        :error="hasError('name')"
                         name="name"
-                        :class="hasError('name') ? 'is-invalid':''"
                       ></v-text-field>
-                      <div v-if="hasError('name')" class="invalid-feedback">{{getError('name')}}</div>
+                      <p v-if="hasError('name')" class="invalid-feedback">{{getError('name')}}</p>
                       <v-text-field
                         @keydown="clearError"
                         label="Email"
                         type="email"
+                        :error="hasError('email')"
                         v-model="Email"
                         name="email"
-                        :class="hasError('email') ? 'is-invalid':''"
                       ></v-text-field>
-                      <div v-if="hasError('email')" class="invalid-feedback">{{getError('email')}}</div>
+                      <p v-if="hasError('email')" class="invalid-feedback">{{getError('email')}}</p>
                       <v-text-field
                         @keydown="clearError"
                         label="Phone Number"
                         type="number"
+                        min="0"
                         v-model="Contact"
-                        name="phone"
-                        :class="hasError('phone') ? 'is-invalid':''"
+                        name="contact"
+                        :error="hasError('contact')"
                       ></v-text-field>
-                      <div v-if="hasError('phone')" class="invalid-feedback">{{getError('phone')}}</div>
+                      <p v-if="hasError('contact')" class="invalid-feedback">{{getError('contact')}}</p>
+                      <v-select
+                        v-model="selected_section"
+                        :items="sections"
+                        type="text"
+                        label="Assigned Section Area"
+                        :disabled="disableSection"
+                      ></v-select>
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn color="error darken-1" @click="dialogs">Cancel</v-btn>
-                    <v-btn color="blue darken-1" :disabled="hasAnyErors" @click="addTeacher()">Save</v-btn>
+                    <v-btn
+                      color="blue darken-1"
+                      :loading="loading"
+                      :disabled="hasAnyErors"
+                      @click="addTeacher()"
+                    >Save</v-btn>
                   </v-card-actions>
                 </v-card>
               </v-form>
             </v-dialog>
           </div>
         </v-card-title>
-        <!-- Addin A Teacher!-->
+        <!-- Adding A Teacher!-->
       </v-card-title>
       <v-data-table
         :headers="headers"
@@ -77,10 +90,11 @@
           <tr>
             <td>{{ row.item.name}}</td>
             <td>{{ row.item.email}}</td>
-            <td>{{ row.item.phone}}</td>
+            <td>{{ row.item.contact}}</td>
+            <td>{{ row.item.section_id}}</td>
             <td>
-              <v-icon class="btn" @click="showsTeacherById(row.item.id)">mdi-pencil</v-icon>
-              <v-icon class="btn" @click="removeTeacher(row.item.id)">mdi-delete</v-icon>
+              <v-icon @click="showsTeacherById(row.item.id)">mdi-pencil</v-icon>
+              <v-icon @click="removeTeacher(row.item.id)">mdi-delete</v-icon>
             </td>
           </tr>
         </template>
@@ -99,14 +113,18 @@ export default {
     return {
       HHTP_REQUEST_URL: "http://127.0.0.1:8000/api/",
       search: "",
+      loading:false,
       statusdialog: false,
-      booleanStatus: false,
+      booleanStatus:false,
       status: null,
-      Id:null,
+      Id: null,
       Teacher: null,
       Email: null,
       Contact: null,
-
+      selected_section: null,
+      disableSection:false,
+      sections: [],
+     // Target: { name: null, email: null, contact: null },
       items: [
         {
           text: "Home",
@@ -127,18 +145,12 @@ export default {
           value: "name"
         },
         { text: "Email", value: "email" },
-        { text: "Phone Number", value: "phone" },
+        { text: "Phone Number", value: "contact" },
+        { text: "Assigned Section", value: "section_id" },
         { text: "Action", value: "action" }
       ],
 
-      teachers: [
-        {
-          id: "0",
-          name: "Aileen Becher",
-          email: "becher@mnhs.edu.ph",
-          phone: "639123456789"
-        }
-      ],
+      teachers: [],
       errors: {}
     };
   },
@@ -153,47 +165,80 @@ export default {
       this.$axios
         .get(`${this.HHTP_REQUEST_URL}allTeacher`)
         .then(response => {
-          response.data.forEach(element => {
-            this.teachers.push(element);
-          });
+          this.teachers = response.data;
+          this.Section();
         })
         .catch(error => {
           console.log(error);
         });
     },
-
+    //Methods For Getting All Available Section
+    Section() {
+      this.$axios
+        .get(`${this.HHTP_REQUEST_URL}sections`)
+        .then(response =>{
+          this.sections=response.data;
+        })
+        .catch(error =>{
+          console.log(error);
+        });
+    },
     //Methods for Deleting A Teacher In Delete Button
     async removeTeacher(dataid) {
       this.$axios
         .get(`${this.HHTP_REQUEST_URL}delTeacher/` + `${dataid}`)
         .then(response => {
-          console.log(response);
+          if (response.data.message) {
+            this.teachers =[];
+            this.display();
+            alert("Successfully Deleted!");
+          } else {
+            alert("Not successfully deleted!");
+          }
         })
         .catch(error => {
-          console.log(error);
+          if (error.response.status == 422) {
+            alert("Invalid data");
+          } else {
+            alert("something Went Wrong!");
+          }
         });
     },
-
-    //Methods for showing  a teacher by id
-    showsTeacherById(id){
+//Methods for showing  a teacher by id
+    showsTeacherById(id) {
       this.status = "Update Teacher";
       this.statusdialog = true;
       this.booleanStatus = true;
-       this.$axios
+      this.$axios
         .get(`${this.HHTP_REQUEST_URL}showByIdTeacher/` + `${id}`)
         .then(response =>{
-          this.Teacher=response.data.name;
-          this.Email=response.data.email;
-          this.Contact=response.data.phone;
-          this.Id=response.data.id;
+          if (response.data.section_id == null) {
+            this.Teacher=response.data.name;
+            this.Email = response.data.email;
+            this.Contact = response.data.contact;
+            this.Id = response.data.id;
+            this.disableSection=false;
+            this.Section();
+          } else {
+            this.Teacher = response.data.name;
+            this.Email = response.data.email;
+            this.Contact = response.data.contact;
+            this.sections=[];
+            this.sections.push(response.data.section_id);
+            this.selected_section = this.sections[0];
+            this.disableSection=true;
+            this.Id = response.data.id;
+          }
         })
         .catch(error => {
-          console.log(error);
+          if (error.response.status== 422){
+            alert("Invalid data");
+          } else {
+            alert("something Went Wrong!");
+          }
         });
-
     },
 
-    
     //Methods for showing the  Add Teacher
     showTeacher() {
       this.status = "Add Teacher";
@@ -205,38 +250,50 @@ export default {
     async dialogs() {
       //This is for Add Teacher Reset Validation
       if (this.booleanStatus == false) {
-        alert("Adding Teacher Functionality:" + this.booleanStatus);
-        this.statusdialog = false;
-        (this.Teacher = null), (this.Email = null), (this.Contact = null);
-        for (let key in this.errors) {
+        (this.Teacher = null),(this.Email = null),(this.Contact = null),(this.selected_section = null);
+        for (let key in this.errors){
           this.$delete(this.errors, key);
+          //this.Target[key]=false;
         }
+          this.statusdialog = false;
       }
       //This is for Update Teacher Reset Validation
       else {
-        alert("Update Teacher Functionality:" + this.booleanStatus);
-        this.statusdialog = false;
-        (this.Teacher = null), (this.Email = null), (this.Contact = null);
+        (this.Teacher = null),(this.Email = null),(this.Contact = null),(this.selected_section = null);
         for (let key in this.errors) {
           this.$delete(this.errors, key);
+          //this.Target[key] = false;
         }
+         this.statusdialog = false;
       }
     },
 
     //Method for Adding A Teacher in save button
     async addTeacher(){
-      if (this.booleanStatus == false){
-        alert("Adding A Teacher:" + this.booleanStatus);
+      if (this.booleanStatus == false) {
+        this.loading = true;
+        await new Promise(resolve => setTimeout(resolve, 700));
+        this.loading = false;
         this.$axios
           .post(`${this.HHTP_REQUEST_URL}addNewTeacher`,{
             name: this.Teacher,
             email: this.Email,
-            phone: this.Contact
+            contact: this.Contact,
+            section_id:this.selected_section
           })
           .then(response => {
-            console.log(response.data);
-            (this.Teacher = null), (this.Email = null), (this.Contact = null);
-            this.statusdialog = false;
+            if (response.data.message) {
+              alert("Successfully added!");
+              this.teachers =[];
+              this.display();
+              this.Teacher = null;
+              this.Email = null;
+              this.Contact = null;
+              this.selected_section = null;
+              this.statusdialog = false;
+            } else {
+              alert("Not successfully added!");
+            }
           })
           .catch(error => {
             if (error.response.status == 422) {
@@ -246,17 +303,30 @@ export default {
             }
           });
       } else {
-        alert("Updateteacher:" + this.booleanStatus+this.Id);
+        //For Updating The  Teachers
+        this.loading = true;
+        await new Promise(resolve => setTimeout(resolve, 700));
+        this.loading = false;
         this.$axios
-          .post(`${this.HHTP_REQUEST_URL}updateTeacher/`+ `${this.Id}`,{
+          .post(`${this.HHTP_REQUEST_URL}updateTeacher/`+`${this.Id}`, {
             name: this.Teacher,
             email: this.Email,
-            phone: this.Contact
+            contact: this.Contact,
+            section_id:this.selected_section
           })
           .then(response => {
-            console.log(response.data);
-            (this.Teacher = null), (this.Email = null), (this.Contact = null);
-            this.statusdialog = false;
+            if (response.data.message) {
+              alert("Successfully updated!");
+              this.teachers = [];
+              this.display();
+              this.Teacher = null;
+              this.Email = null;
+              this.Contact = null;
+              this.selected_section = null;
+              this.statusdialog = false;
+            } else {
+              alert("Not successfully updated!");
+            }
           })
           .catch(error => {
             if (error.response.status == 422) {
@@ -268,9 +338,8 @@ export default {
       }
     },
 
-
-   //Methods For All Errors
-  setErrors(error){
+    //Methods For All Errors
+    setErrors(error) {
       this.errors = error;
     },
 
@@ -280,9 +349,15 @@ export default {
 
     clearError(event) {
       this.$delete(this.errors, event.target.name);
+     // this.Target[event.target.name] = false;
     },
 
     getError(fieldName) {
+      // for (let key in this.Target) {
+      //   if (key == fieldName) {
+      //     this.Target[key] = true;
+      //   }
+      // }
       return this.errors[fieldName][0];
     }
   },
@@ -303,5 +378,7 @@ export default {
 
 .invalid-feedback {
   color: red;
+  margin-top: -7%;
+  font-size: 14px;
 }
 </style>

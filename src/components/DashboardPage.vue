@@ -72,7 +72,7 @@
 <script>
 export default {
   components:{
-    BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
+    BreadCrumb:() => import("@/layout/BreadCrumb.vue"),
   },
   data: () => ({
     Students: "40",

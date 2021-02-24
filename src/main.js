@@ -21,23 +21,12 @@ new Vue({
     if (userInfo) {
       const userData = JSON.parse(userInfo)
       this.$store.commit('setUserData', userData)
-      console.log(userData);
       if (userData.user.user_type == 'admin') {
         this.$router.push({ path: '/admin' })
       } else {
         this.$router.push({ path: '/student/dashboard' })
       }
     }
-    // this.$axios.interceptors.response.use(
-    //   response => response,
-    //   error => {
-    //     if (error.response.status === 406) {
-    //       this.$store.dispatch('logout')
-    //     }
-
-    //     return Promise.reject(error)
-    //   }
-    // )
   },
   render: h => h(App),
 }).$mount('#app')

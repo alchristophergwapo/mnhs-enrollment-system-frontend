@@ -185,7 +185,6 @@ export default {
     adminPass: "",
     show1: false,
     adminshow: false,
-
     adrules: {
       username: (value) => !!value || "Username is required!",
       addpwd: (value) => !!value || "Password is required!",
@@ -251,6 +250,7 @@ export default {
           });
       }
     },
+    
   },
 };
 </script>

@@ -71,6 +71,13 @@ const routes = [
                 },
             },
             {
+                path: 'reports',
+                component: () => import('@/components/Reports.vue'),
+                meta: {
+                    title: 'Reports'
+                },
+            },
+            {
                 path: 'notifications',
                 component: () => import('@/components/Notification.vue'),
                 meta: {
