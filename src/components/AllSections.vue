@@ -97,7 +97,7 @@
                             {{dta.teacher_id}}
                           </v-card-text>
                           <v-card-text>
-                            <v-icon @click="juniorEdit(dta.id)">mdi-pencil-box</v-icon>
+                            <v-icon color="primary" @click="juniorEdit(dta.id)">mdi-pencil-box</v-icon>
                           </v-card-text>
                             <v-card-text>
                             <v-icon @click="juniorRemove(dta.id)">mdi-delete</v-icon>
@@ -182,6 +182,7 @@
                 </v-card>
               </v-dialog>
             </div>
+
             <!-- ---------------------------------End Of The Dialog Of A Senior High School--------------------------------------------- -->
             <v-tabs v-model="tab2" background-color="#C4C4C4" color="basil" fixed-tabs>
               <v-tab
@@ -224,7 +225,7 @@
                         <v-card-text>
                             <v-icon>mdi-account-box</v-icon>
                             {{i.teacher_id}}
-                          </v-card-text>
+                         </v-card-text>
                            <v-card-text>
                             <v-icon @click="seniorEdit(i.id)">mdi-pencil-box</v-icon>
                           </v-card-text>
@@ -282,9 +283,6 @@ export default {
     tab1: null,
     tab2: null,
     errors: {},
-    //seniorErrors:{},
-    //Target: { name: null, capacity: null },
-    //TargetSenior:{ name: null, capacity: null },
     juniorSection: {
       name: "Grade 7"
     },
@@ -329,7 +327,7 @@ export default {
       .catch(error => {
         console.log(error);
       });
-
+//Function For Getting All Grade 12 Sections
     this.$axios
       .get(
         `${this.HHTP_REQUEST_URL}grade12Section/` +
@@ -400,7 +398,6 @@ export default {
       this.Junior.capacity = null;
       for (let key in this.errors) {
         this.$delete(this.errors, key);
-        //this.Target[key] = false;
       }
       this.juniordialog = false;
     },
@@ -411,7 +408,6 @@ export default {
       this.Senior.capacity = null;
       for (let key in this.errors) {
         this.$delete(this.errors, key);
-        //this.Target[key] = false;
       }
       this.seniorDialog = false;
     },
@@ -529,7 +525,6 @@ async seniorEdit(id){
 //Methods For Adding A Section In Senior High School
     async addSenior(item) {
       if(this.edit==false){
-        alert("adding!")
          this.loading=true;
         await new Promise(resolve => setTimeout(resolve, 3000));
           this.loading = false;
@@ -557,7 +552,6 @@ async seniorEdit(id){
         });
       }
       else{
-        alert("updated")
          this.$axios
         .post(`${this.HHTP_REQUEST_URL}updateSection/`+`${this.Senior.id}`,{
           name: this.Senior.section,
@@ -592,41 +586,11 @@ async seniorEdit(id){
 
     clearError(event) {
       this.$delete(this.errors, event.target.name);
-     // this.Target[event.target.name] = false;
     },
 
     getError(fieldName){
-      // for (let key in this.Target) {
-      //   if (key == fieldName) {
-      //     this.Target[key] = true;
-      //   }
-      // }
       return this.errors[fieldName][0];
     },
-
-
-    //Methods For All Errors in Senior High School
-    // setSeniorErrors(error){
-    //   this.seniorErrors= error;
-    // },
-
-    // hasSeniorError(fieldname) {
-    //   return fieldname in this.seniorErrors;
-    // },
-
-    // clearSeniorError(event) {
-    //   this.$delete(this.seniorErrors, event.target.name);
-    //   this.TargetSenior[event.target.name] = false;
-    // },
-
-    // getSeniorError(fieldName) {
-    //   for (let key in this.TargetSenior) {
-    //     if (key == fieldName) {
-    //       this.TargetSenior[key] = true;
-    //     }
-    //   }
-    //   return this.seniorErrors[fieldName][0];
-    // },
 
     filter(data) {
       console.log(data);
@@ -638,10 +602,6 @@ async seniorEdit(id){
       return Object.keys(this.errors).length > 0;
     },
 
-
-    //  hasSeniorAnyErors() {
-    //     return Object.keys(this.seniorErrors).length > 0;
-    //   }
   }
 };
 </script>
@@ -668,4 +628,20 @@ async seniorEdit(id){
   margin-top: -7%;
   font-size: 14px;
 }
+
+/* .float_left{
+   float: left;;
+   position:relative;
+} */
+
+/* .float_right{
+   float:right;
+   margin-left:-40%;
+} */
+.edit{
+ margin-left:53%;
+}
+/* .margin_left{
+  margin-left:40%;
+} */
 </style>

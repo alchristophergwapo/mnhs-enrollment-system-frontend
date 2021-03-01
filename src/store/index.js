@@ -14,7 +14,7 @@ export default new Vuex.Store({
         parentGuardianInfo: null,
         balikOrTransferInfo: null,
         seniorHighInfo: null,
-
+        jj:"jj"
     },
     
     mutations: {
@@ -42,17 +42,16 @@ export default new Vuex.Store({
             // return axios.post('login', credentials).then(({ data }) => {
             //     commit('setUserData', data)
             // })
-          return axios.post('login', credentials).then(({ data })=>{
+          return axios.post('login',credentials).then(({ data })=>{
                 //alert(data.message)
                  console.log(data.user);
                  commit('setUserData', data)
+                 this.state.jj="villahermosa";
               })
               .catch(error => {
                if (error.response.status == 422) {
                    alert("errors")
                   //this.setErrors(error.response.data.errors);
-                }else {
-                  alert("something went wrong!");
                 }
               });
         },
@@ -61,11 +60,11 @@ export default new Vuex.Store({
             commit('clearUserData')
         },
 
-        reviewEnrollment({ commit }, data) {
-
+        reviewEnrollment({ commit }, data){
             commit('setStudentInfoData', data);
         }
     },
+
 
     getters: {
         isLogged: state => !!state.user,
@@ -80,6 +79,9 @@ export default new Vuex.Store({
         },
         seniorHigh: (state) => {
             return state.seniorHighInfo
-        }
+        },
+        jj: (state) => {
+            return state.jj
+        },
     }
 })

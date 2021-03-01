@@ -58,8 +58,16 @@
                         :items="sections"
                         type="text"
                         label="Assigned Section Area"
+                        clearable
                         :disabled="disableSection"
-                      ></v-select>
+                      >
+                        <template v-slot:selection="{item}">
+                        {{item.name}}
+                        </template>
+                          <template v-slot:item="{item}">
+                        {{item.name}}
+                        </template>
+                      </v-select>
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
@@ -113,18 +121,18 @@ export default {
     return {
       HHTP_REQUEST_URL: "http://127.0.0.1:8000/api/",
       search: "",
-      loading:false,
+      loading: false,
       statusdialog: false,
-      booleanStatus:false,
+      booleanStatus: false,
       status: null,
       Id: null,
       Teacher: null,
       Email: null,
       Contact: null,
-      selected_section: null,
+      selected_section:null,
       disableSection:false,
       sections: [],
-     // Target: { name: null, email: null, contact: null },
+      // Target: { name: null, email: null, contact: null },
       items: [
         {
           text: "Home",
@@ -176,10 +184,10 @@ export default {
     Section() {
       this.$axios
         .get(`${this.HHTP_REQUEST_URL}sections`)
-        .then(response =>{
-          this.sections=response.data;
+        .then(response => {
+         this.sections=response.data;
         })
-        .catch(error =>{
+        .catch(error => {
           console.log(error);
         });
     },
@@ -189,7 +197,7 @@ export default {
         .get(`${this.HHTP_REQUEST_URL}delTeacher/` + `${dataid}`)
         .then(response => {
           if (response.data.message) {
-            this.teachers =[];
+            this.teachers = [];
             this.display();
             alert("Successfully Deleted!");
           } else {
@@ -204,38 +212,34 @@ export default {
           }
         });
     },
-//Methods for showing  a teacher by id
+    //Methods for showing  a teacher by id
     showsTeacherById(id) {
       this.status = "Update Teacher";
       this.statusdialog = true;
       this.booleanStatus = true;
+
       this.$axios
         .get(`${this.HHTP_REQUEST_URL}showByIdTeacher/` + `${id}`)
-        .then(response =>{
-          if (response.data.section_id == null) {
-            this.Teacher=response.data.name;
+        .then(response => {
+          if (response.data.section_id== null) {
+            this.Teacher = response.data.name;
             this.Email = response.data.email;
             this.Contact = response.data.contact;
             this.Id = response.data.id;
-            this.disableSection=false;
             this.Section();
           } else {
             this.Teacher = response.data.name;
             this.Email = response.data.email;
             this.Contact = response.data.contact;
-            this.sections=[];
-            this.sections.push(response.data.section_id);
-            this.selected_section = this.sections[0];
+            this.sections =[];
+            this.sections.push({name:response.data.section_id});
+            this.selected_section=this.sections[0];
             this.disableSection=true;
             this.Id = response.data.id;
           }
         })
         .catch(error => {
-          if (error.response.status== 422){
-            alert("Invalid data");
-          } else {
-            alert("something Went Wrong!");
-          }
+         console.log(error)
         });
     },
 
@@ -244,47 +248,52 @@ export default {
       this.status = "Add Teacher";
       this.statusdialog = true;
       this.booleanStatus = false;
+      this.disableSection=false;
     },
 
-    //Reseting the validation in cancel button
+ //Reseting the validation in cancel button
     async dialogs() {
       //This is for Add Teacher Reset Validation
       if (this.booleanStatus == false) {
-        (this.Teacher = null),(this.Email = null),(this.Contact = null),(this.selected_section = null);
-        for (let key in this.errors){
-          this.$delete(this.errors, key);
-          //this.Target[key]=false;
-        }
-          this.statusdialog = false;
-      }
-      //This is for Update Teacher Reset Validation
-      else {
-        (this.Teacher = null),(this.Email = null),(this.Contact = null),(this.selected_section = null);
+        (this.Teacher = null),
+          (this.Email = null),
+          (this.Contact = null)
         for (let key in this.errors) {
           this.$delete(this.errors, key);
-          //this.Target[key] = false;
         }
-         this.statusdialog = false;
+        this.statusdialog = false;
+      }
+      else {
+        (this.Teacher = null),
+          (this.Email = null),
+          (this.Contact = null)
+        for (let key in this.errors) {
+          this.$delete(this.errors, key);
+        }
+        this.Section();
+        this.selected_section=[];
+        this.disableSection=false;
+        this.statusdialog = false;
       }
     },
 
     //Method for Adding A Teacher in save button
-    async addTeacher(){
+    async addTeacher() {
       if (this.booleanStatus == false) {
         this.loading = true;
         await new Promise(resolve => setTimeout(resolve, 700));
         this.loading = false;
         this.$axios
-          .post(`${this.HHTP_REQUEST_URL}addNewTeacher`,{
+          .post(`${this.HHTP_REQUEST_URL}addNewTeacher`, {
             name: this.Teacher,
             email: this.Email,
             contact: this.Contact,
-            section_id:this.selected_section
+            section_id:this.selected_section.name
           })
           .then(response => {
             if (response.data.message) {
               alert("Successfully added!");
-              this.teachers =[];
+              this.teachers = [];
               this.display();
               this.Teacher = null;
               this.Email = null;
@@ -308,11 +317,11 @@ export default {
         await new Promise(resolve => setTimeout(resolve, 700));
         this.loading = false;
         this.$axios
-          .post(`${this.HHTP_REQUEST_URL}updateTeacher/`+`${this.Id}`, {
+          .post(`${this.HHTP_REQUEST_URL}updateTeacher/` + `${this.Id}`, {
             name: this.Teacher,
             email: this.Email,
             contact: this.Contact,
-            section_id:this.selected_section
+            section_id: this.selected_section.name
           })
           .then(response => {
             if (response.data.message) {
@@ -323,6 +332,7 @@ export default {
               this.Email = null;
               this.Contact = null;
               this.selected_section = null;
+              this.disableSection=false;
               this.statusdialog = false;
             } else {
               alert("Not successfully updated!");
@@ -338,6 +348,7 @@ export default {
       }
     },
 
+
     //Methods For All Errors
     setErrors(error) {
       this.errors = error;
@@ -349,15 +360,9 @@ export default {
 
     clearError(event) {
       this.$delete(this.errors, event.target.name);
-     // this.Target[event.target.name] = false;
     },
 
     getError(fieldName) {
-      // for (let key in this.Target) {
-      //   if (key == fieldName) {
-      //     this.Target[key] = true;
-      //   }
-      // }
       return this.errors[fieldName][0];
     }
   },

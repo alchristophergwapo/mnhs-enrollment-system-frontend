@@ -10,6 +10,8 @@
           menu-props="auto"
           label="Grade Level"
           hide-details
+          v-model="selectedGrade"
+          @change="gradeLevel($event)"
           dense
           outlined
         ></v-select>
@@ -19,6 +21,7 @@
           menu-props="auto"
           label="Section"
           hide-details
+          @change="selectedSection($event)"
           dense
           outlined
         ></v-select>
@@ -49,7 +52,9 @@ export default {
     BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
   },
   data: () => ({
+    HHTP_REQUEST_URL: "http://127.0.0.1:8000/api/",
     search: "",
+    selectedGrade:null,
     items: [
       {
         text: "Home",
@@ -94,16 +99,34 @@ export default {
         address: "Salug",
       },
     ],
-    grade_level: [7, 8, 9, 10, 11, 12],
-    section: [
-      "Section1",
-      "Section2",
-      "Section3",
-      "Section4",
-      "Section5",
-      "Section6",
-    ],
+    grade_level:[7,8,9,10,11,12],
+    section:[],
+
   }),
+
+  mounted:function(){
+
+  },
+
+  methods:{
+    
+//Methods For Getting The Selected GradeLevel
+   gradeLevel(select){
+      this.$axios
+      .get(
+        `${this.HHTP_REQUEST_URL}selectedGradeLevel/`+`${select}`
+      )
+      .then(response => {
+        this.section=response.data;
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    },
+    selectedSection(select){
+       alert(select+"="+this.selectedGrade)
+    }
+  }
 };
 </script>
 

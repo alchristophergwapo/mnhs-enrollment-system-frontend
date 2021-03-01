@@ -200,10 +200,14 @@ export default {
       };
 
       if (this.$refs.regAdminForm.validate()) {
-        this.$store.dispatch("login",data).then((data) => {
-          alert(data.data)
+        this.$store.dispatch("login",data).then(data => {
+          console.log(data)
+          //window.location.reload();
           this.$router.push({ path: "/admin" });
+      
         });
+
+        console.log(this.$store.state.jj)
       }
     },
     
