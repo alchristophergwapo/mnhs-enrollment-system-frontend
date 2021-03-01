@@ -1,7 +1,7 @@
 <template>
   <v-app id="sign-in">
     <v-container class="signin-container">
-      <v-card class="card1" elevation="5" shaped>
+      <v-card class="card1" elevation="5">
         <center>
           <img
             :src="require('../assets/images/enroll.png')"
@@ -11,6 +11,11 @@
         </center>
         <h3>MNHS Enrollment System</h3>
         <br />
+        <alert
+          v-if="response"
+          :alert_message="message"
+          :alert_type="response"
+        ></alert>
         <v-tabs
           v-model="tab"
           show-arrows
@@ -26,7 +31,14 @@
             <div class="caption py-1">{{ i.name }}</div>
           </v-tab>
           <v-tab-item>
-            <v-card>
+            <v-card :loading="loading">
+              <template slot="progress">
+                <v-progress-linear
+                  color="deep-purple"
+                  height="10"
+                  indeterminate
+                ></v-progress-linear>
+              </template>
               <v-card-text>
                 <v-form ref="regStudentForm" v-model="valid" lazy-validation>
                   <v-row>
@@ -36,7 +48,10 @@
                       </div>
                       <v-text-field
                         v-model="lrn"
-                        :rules="[rules.lrn]"
+                        :rules="[
+                          (value) =>
+                            !!value || `Learner's Reference No. is required!`,
+                        ]"
                         maxlength="20"
                         required
                       ></v-text-field>
@@ -51,7 +66,7 @@
                         id="pwd"
                         v-model="password"
                         :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                        :rules="[rules.password, rules.min]"
+                        :rules="[(value) => !!value || 'Password is required!']"
                         :type="show1 ? 'text' : 'password'"
                         name="input-10-1"
                         :hint="
@@ -78,7 +93,15 @@
             </v-card>
           </v-tab-item>
           <v-tab-item>
-            <v-card>
+            <v-card :loading="loading">
+              <template slot="progress">
+                <v-progress-linear
+                  color="deep-purple"
+                  height="10"
+                  indeterminate
+                ></v-progress-linear>
+              </template>
+
               <v-card-text>
                 <v-form ref="regAdminForm" v-model="advalid" lazy-validation>
                   <v-row>
@@ -88,7 +111,7 @@
                       </div>
                       <v-text-field
                         v-model="adminName"
-                        :rules="[adrules.username]"
+                        :rules="[(value) => !!value || 'Username is required!']"
                         maxlength="20"
                         required
                       ></v-text-field>
@@ -103,7 +126,7 @@
                         id="pwd"
                         v-model="adminPass"
                         :append-icon="adminshow ? 'mdi-eye' : 'mdi-eye-off'"
-                        :rules="[adrules.addpwd, adrules.min]"
+                        :rules="[(value) => !!value || 'Password is required!']"
                         :type="adminshow ? 'text' : 'password'"
                         name="input-10-1"
                         :hint="
@@ -117,9 +140,9 @@
                       <v-btn
                         x-large
                         block
-                        :disabled="!advalid"
                         color="info"
-                        @click="login"
+                        :disabled="!advalid"
+                        @click="adminLogin"
                       >
                         <h4>Sign In</h4>
                       </v-btn>
@@ -137,10 +160,15 @@
 
 
 <script>
+import Alert from "../layout/Alert.vue";
 export default {
+  components: {
+    Alert,
+  },
   data: () => ({
-    BASE_URL: "http://127.0.0.1:8000/api/",
-    dialog: true,
+    loading: false,
+    st_sign_in: false,
+    ad_sign_in: false,
     tab: 0,
 
     tabs: [
@@ -157,34 +185,41 @@ export default {
     adminPass: "",
     show1: false,
     adminshow: false,
-
-    rules:{
-      lrn:(value) => !!value || "Learner's Reference No. is required!",
-      password: (value) => !!value || "Password is required!",
-      min: (v) => (v && v.length >= 8) || "Min 8 characters",
-    },
-
     adrules: {
       username: (value) => !!value || "Username is required!",
       addpwd: (value) => !!value || "Password is required!",
-      min: (v) => (v && v.length >= 8) || "Min 8 characters",
     },
+
+    response: null,
+    message: "",
   }),
 
   computed: {},
 
+  watch: {},
+
   methods: {
     student() {
       if (this.$refs.regStudentForm.validate()) {
-        // submit form to server/API here...
-        this.$refs.regStudentForm.reset();
-      }
-    },
+        let data = {
+          username: this.lrn,
+          password: this.password,
+          user_type: "student",
+        };
 
-    admin() {
-      if (this.$refs.regAdminForm.validate()) {
-        //submit form to server/API here...
-        this.$router.push({ path: "/admin" });
+        this.loading = true;
+        this.$store
+          .dispatch("login", data)
+          .then(() => {
+            this.loading = false;
+            this.$router.push({ path: "/student/dashboard" });
+          })
+          .catch(() => {
+            this.response = "error";
+            this.message = "Invalid Credentials!";
+            this.loading = false;
+          });
+        // this.$refs.regStudentForm.reset();
       }
     },
 
@@ -192,22 +227,27 @@ export default {
       this.$refs.form.resetValidation();
     },
 
-    login() {
+    adminLogin() {
       let data = {
         username: this.adminName,
         password: this.adminPass,
         user_type: "admin",
       };
 
-      if (this.$refs.regAdminForm.validate()) {
-        this.$store.dispatch("login",data).then(data => {
-          console.log(data)
-          //window.location.reload();
-          this.$router.push({ path: "/admin" });
-      
-        });
+      this.loading = true;
 
-        console.log(this.$store.state.jj)
+      if (this.$refs.regAdminForm.validate()) {
+        this.$store
+          .dispatch("login", data)
+          .then(() => {
+            this.loading = false;
+            this.$router.push({ path: "/admin" });
+          })
+          .catch(() => {
+            this.response = "error";
+            this.message = "Invalid Credentials!";
+            this.loading = false;
+          });
       }
     },
     

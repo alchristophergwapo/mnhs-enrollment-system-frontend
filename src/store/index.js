@@ -9,17 +9,18 @@ axios.defaults.baseURL = 'http://127.0.0.1:8000/api/'
 
 export default new Vuex.Store({
     state: {
+        studentLogInfo: null,
         user: null,
         studentInfo: null,
         parentGuardianInfo: null,
         balikOrTransferInfo: null,
         seniorHighInfo: null,
-        jj:"jj"
     },
     
     mutations: {
         setUserData(state, userData) {
             state.user = userData.user
+            state.studentLogInfo = userData.userInfo
             localStorage.setItem('user', JSON.stringify(userData))
             axios.defaults.headers.common.Authorization = `Bearer ${userData.token}`
         },
@@ -39,21 +40,10 @@ export default new Vuex.Store({
 
     actions: {
         login({ commit }, credentials) {
-            // return axios.post('login', credentials).then(({ data }) => {
-            //     commit('setUserData', data)
-            // })
-          return axios.post('login',credentials).then(({ data })=>{
-                //alert(data.message)
-                 console.log(data.user);
-                 commit('setUserData', data)
-                 this.state.jj="villahermosa";
-              })
-              .catch(error => {
-               if (error.response.status == 422) {
-                   alert("errors")
-                  //this.setErrors(error.response.data.errors);
-                }
-              });
+            return axios.post('login', credentials).then(({ data }) => {
+
+                commit('setUserData', data)
+            })
         },
 
         logout({ commit }) {
@@ -68,6 +58,9 @@ export default new Vuex.Store({
 
     getters: {
         isLogged: state => !!state.user,
+        userInfo: (state) => {
+            return state.studentLogInfo
+        },
         student: (state) => {
             return state.studentInfo
         },
@@ -79,9 +72,6 @@ export default new Vuex.Store({
         },
         seniorHigh: (state) => {
             return state.seniorHighInfo
-        },
-        jj: (state) => {
-            return state.jj
         },
     }
 })
