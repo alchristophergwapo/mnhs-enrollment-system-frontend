@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar color="#E5E5E5">
+  <v-toolbar color="#E5E5E5" flat>
     <v-toolbar-title>
       <h4>{{ page_name }}</h4>
     </v-toolbar-title>
@@ -11,12 +11,12 @@
 
 <script>
 export default {
-    props: ['item', 'page_name'],
-    data(){
-        return {
-            items: this.item,
-            page: this.page
-        }
-    }
-}
+  props: ["item", "page_name"],
+  data() {
+    return {
+      items: this.item,
+      page: this.page,
+    };
+  },
+};
 </script>

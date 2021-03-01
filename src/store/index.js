@@ -15,9 +15,14 @@ export default new Vuex.Store({
         parentGuardianInfo: null,
         balikOrTransferInfo: null,
         seniorHighInfo: null,
-
+        teachers: null,
+        numberOfTeachers: null,
+        enrolledStudents: null,
+        numberOfEnrolledStudents: null,
+        sections: null,
+        numberOfSections: null,
     },
-    
+
     mutations: {
         setUserData(state, userData) {
             state.user = userData.user
@@ -36,6 +41,30 @@ export default new Vuex.Store({
             state.parentGuardianInfo = data.parentGuardianInfo
             state.balikOrTransferInfo = data.balikOrTransferInfo
             state.seniorHighInfo = data.seniorHighInfo
+        },
+
+        setNumberOfTeachers(state, totalTeachers) {
+            state.numberOfTeachers = totalTeachers
+        },
+
+        setNumberOfEnrolledStudents(state, totalStudents) {
+            state.numberOfEnrolledStudents = totalStudents
+        },
+
+        setNumberOfSections(state, totalSections) {
+            state.numberOfSections = totalSections
+        },
+
+        setTeachers(state, teachers) {
+            state.teachers = teachers
+        },
+
+        setStudents(state, students) {
+            state.enrolledStudents = students
+        },
+        setSections(state, sections) {
+            state.sections = sections
+            state.numberOfSections = sections.length
         }
     },
 
@@ -47,6 +76,32 @@ export default new Vuex.Store({
             })
         },
 
+        allTeacher({ commit }) {
+            return axios
+                .get(`allTeacher`)
+                .then((response) => {
+                    commit('setTeachers', response.data);
+                    commit('setNumberOfTeachers', response.data.length)
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+
+        allStudents({ commit }) {
+            return axios.get("approvedEnrollment").then((response) => {
+                let data = response.data.approvedEnrollment
+                commit('setStudents', data)
+                commit('setNumberOfEnrolledStudents', data.length);
+            });
+        },
+
+        allSections({ commit }) {
+            return axios.get('allSections').then(response => {
+                commit('setSections', response.data.sections)
+            })
+        },
+
         logout({ commit }) {
             commit('clearUserData')
         },
@@ -54,25 +109,32 @@ export default new Vuex.Store({
         reviewEnrollment({ commit }, data) {
 
             commit('setStudentInfoData', data);
-        }
+        },
+
+        setTotalTeachers({ commit }, data) {
+            commit('setNumberOfTeachers', data)
+        },
+
+        setTotalStudents({ commit }, data) {
+            commit('setNumberOfStudents', data)
+        },
+
+        setTotalSections({ commit }, data) {
+            commit('setNumberOfSections', data)
+        },
     },
 
     getters: {
         isLogged: state => !!state.user,
-        userInfo: (state) => {
-            return state.studentLogInfo
-        },
-        student: (state) => {
-            return state.studentInfo
-        },
-        parentGuardian: (state) => {
-            return state.parentGuardianInfo
-        },
-        balikOrTransfer: (state) => {
-            return state.balikOrTransferInfo
-        },
-        seniorHigh: (state) => {
-            return state.seniorHighInfo
-        }
+        userInfo: state => state.studentLogInfo,
+        student: state => state.studentInfo,
+        parentGuardian: state => state.parentGuardianInfo,
+        balikOrTransfer: state => state.balikOrTransferInfo,
+        seniorHigh: state => state.seniorHighInfo,
+        totalTeachers: state => state.numberOfTeachers,
+        allTeacher: state => state.teachers,
+        totalStudents: state => state.numberOfEnrolledStudents,
+        allStudents: state => state.enrolledStudents,
+        totalSections: state => state.numberOfSections,
     }
 })

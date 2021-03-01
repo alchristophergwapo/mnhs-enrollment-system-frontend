@@ -34,7 +34,7 @@
       >
         <template v-slot:item="row">
           <tr>
-            <td>{{ row.item.student }}</td>
+            <td>{{ row.item.firstname }} {{ row.item.lastname }}</td>
             <td>{{ row.item.age }}</td>
             <td>{{ row.item.address }}</td>
           </tr>
@@ -72,28 +72,7 @@ export default {
       { text: "Age", value: "age" },
       { text: "Address", value: "address" },
     ],
-    students: [
-      {
-        student: "Danica Caballero",
-        age: 21,
-        address: "Moalboal",
-      },
-      {
-        student: "Chilla Jean Cabungcag",
-        age: 21,
-        address: "Badian",
-      },
-      {
-        student: "Jericho James Villahermosa",
-        age: 21,
-        address: "Bulac",
-      },
-      {
-        student: "Christopher Alonzo",
-        age: 21,
-        address: "Salug",
-      },
-    ],
+    students: [],
     grade_level: [7, 8, 9, 10, 11, 12],
     section: [
       "Section1",
@@ -104,6 +83,23 @@ export default {
       "Section6",
     ],
   }),
+
+  created() {
+    // this.$axios.get("approvedEnrollment").then((response) => {
+    //   console.log(response);
+    //   let res = response.data.approvedEnrollment;
+    //   for (let index = 0; index < res.length; index++) {
+    //     const element = res[index];
+    //     this.students.push(element.student);
+    //   }
+    // });
+    let students = this.$store.getters.allStudents;
+
+    for (let index = 0; index < students.length; index++) {
+      const element = students[index];
+      this.students.push(element["student"]);
+    }
+  },
 };
 </script>
 
