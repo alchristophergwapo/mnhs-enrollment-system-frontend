@@ -101,8 +101,8 @@
             <td>{{ row.item.contact}}</td>
             <td>{{ row.item.section_id}}</td>
             <td>
-              <v-icon @click="showsTeacherById(row.item.id)">mdi-pencil</v-icon>
-              <v-icon @click="removeTeacher(row.item.id)">mdi-delete</v-icon>
+              <v-icon  color="primary" @click="showsTeacherById(row.item.id)">mdi-pencil</v-icon>
+              <v-icon color="red" @click="removeTeacher(row.item.id)">mdi-delete</v-icon>
             </td>
           </tr>
         </template>
@@ -131,7 +131,7 @@ export default {
       Contact: null,
       selected_section:null,
       disableSection:false,
-      sections: [],
+      sections:[],
       // Target: { name: null, email: null, contact: null },
       items: [
         {
@@ -180,6 +180,7 @@ export default {
           console.log(error);
         });
     },
+
     //Methods For Getting All Available Section
     Section() {
       this.$axios
@@ -205,11 +206,7 @@ export default {
           }
         })
         .catch(error => {
-          if (error.response.status == 422) {
-            alert("Invalid data");
-          } else {
-            alert("something Went Wrong!");
-          }
+          console.log(error)
         });
     },
     //Methods for showing  a teacher by id
@@ -261,6 +258,7 @@ export default {
         for (let key in this.errors) {
           this.$delete(this.errors, key);
         }
+        this.selected_section=[];
         this.statusdialog = false;
       }
       else {
@@ -277,9 +275,10 @@ export default {
       }
     },
 
-    //Method for Adding A Teacher in save button
+ //Method for Adding A Teacher in save button
     async addTeacher() {
       if (this.booleanStatus == false) {
+        console.log(this.selected_section);
         this.loading = true;
         await new Promise(resolve => setTimeout(resolve, 700));
         this.loading = false;
@@ -288,17 +287,17 @@ export default {
             name: this.Teacher,
             email: this.Email,
             contact: this.Contact,
-            section_id:this.selected_section.name
+            section_id:this.selected_section
           })
           .then(response => {
             if (response.data.message) {
               alert("Successfully added!");
-              this.teachers = [];
+              this.teachers =[];
               this.display();
               this.Teacher = null;
               this.Email = null;
               this.Contact = null;
-              this.selected_section = null;
+              this.selected_section=null;
               this.statusdialog = false;
             } else {
               alert("Not successfully added!");
@@ -316,12 +315,13 @@ export default {
         this.loading = true;
         await new Promise(resolve => setTimeout(resolve, 700));
         this.loading = false;
+        console.log(this.selected_section);
         this.$axios
           .post(`${this.HHTP_REQUEST_URL}updateTeacher/` + `${this.Id}`, {
             name: this.Teacher,
             email: this.Email,
             contact: this.Contact,
-            section_id: this.selected_section.name
+            section_id:this.selected_section
           })
           .then(response => {
             if (response.data.message) {
@@ -349,6 +349,7 @@ export default {
     },
 
 
+
     //Methods For All Errors
     setErrors(error) {
       this.errors = error;
@@ -372,6 +373,7 @@ export default {
       return Object.keys(this.errors).length > 0;
     }
   }
+  
 };
 </script>
 

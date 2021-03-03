@@ -14,6 +14,7 @@
         Sort By&nbsp;&nbsp;
         <v-select
           :items="grade_level"
+          @change="filterByGradeLevel($event)"
           menu-props="auto"
           label="Grade Level"
           hide-details
@@ -29,7 +30,7 @@
           hide-details
         ></v-text-field>
       </v-card-title>
-      <v-simple-table :seanch="search">
+      <v-simple-table :search="search">
         <thead>
           <tr>
             <th>Grade Level</th>
@@ -40,7 +41,7 @@
         </thead>
         <tbody>
           <tr v-for="(item, index) in students" :key="index">
-            <td>{{ item.student.grade_level }}</td>
+            <td>{{item.student.grade_level}}</td>
             <td>{{ item.student.firstname }} {{ item.student.lastname }}</td>
             <td>
               <v-dialog transition="dialog-top-transition" max-width="600">
@@ -144,34 +145,40 @@
             </td>
             <td>
               <v-row align="center" justify="space-around">
-                <v-btn color="primary" @click="dialog = true"> approve </v-btn>
+                <v-btn color="primary" @click="openSection(item.student.grade_level)">approve</v-btn>
                 <v-row justify="center">
-                  <v-dialog v-model="dialog" max-width="500px">
+                  <v-dialog  v-model="dialog" max-width="500px">
                     <v-card>
                       <v-card-title>
                         <span class="headline">Select Student Section</span>
                         <v-spacer></v-spacer>
-                        <v-btn icon @click="dialog = false">
+                        <v-btn icon @click="closeSection">
                           <v-icon>mdi-close</v-icon>
                         </v-btn>
                       </v-card-title>
                       <v-card-text>
                         <v-select
-                          :items="[
-                            'Section 1',
-                            'Section 2',
-                            'Section 3',
-                            'Section 4',
-                          ]"
+                         @change="clearError('student_section')"
+                          :items="sections"
                           v-model="section"
-                          label="Section*"
-                          required
-                        ></v-select>
+                          name="student_section"
+                          :error="hasError('student_section')"
+                          label="Section*"             
+                           clearable
+                        ><template v-slot:selection="{item}">
+                        {{item.name}}
+                        </template>
+                          <template v-slot:item="{item}">
+                        {{item.name}}
+                        </template>
+                        </v-select>
+                        <p v-if="hasError('student_section')" class="invalid-feedback">{{getError('student_section')}}</p>
                       </v-card-text>
                       <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn
                           color="blue darken-1"
+                          :disabled="hasAnyErors"
                           @click="approveEnrollment(item.id, index)"
                         >
                           Done
@@ -188,6 +195,7 @@
           </tr>
         </tbody>
       </v-simple-table>
+
       <!-- <v-data-table
         :headers="headers"
         :items="students"
@@ -294,10 +302,13 @@ export default {
     BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
   },
   data: () => ({
+    HHTP_REQUEST_URL: "http://127.0.0.1:8000/api/",
     toggle_exclusive: undefined,
     dialog: false,
-    section: "",
+    section:[],
     search: "",
+    errors:{},
+    sections:[],
     items: [
       {
         text: "Home",
@@ -322,8 +333,8 @@ export default {
       { text: "Details", value: "details" },
       { text: "Action", value: "action" },
     ],
-    students: null,
-    grade_level: [7, 8, 9, 10, 11, 12],
+    students:[],
+    grade_level: [7, 8, 9, 10, 11,12,"All"],
   }),
 
   created() {
@@ -333,19 +344,65 @@ export default {
     });
   },
 
-  methods: {
-    approveEnrollment(id, index) {
-      this.$axios
-        .post("approveEnrollment/" + id, this.section)
+methods: {
+//Methods For Filtering By GradeLevel
+filterByGradeLevel(grade){
+     this.$axios
+        .get("filterByGradeLevel/"+grade)
         .then((response) => {
-          console.log(response);
-          this.students.splice(index, 1);
+          console.log(response.data.pendingEnrollment);
+         this.students = response.data.pendingEnrollment;
         })
-        .catch((error) => {
-          console.log(error);
+        .catch((error)=>{
+           console.log(error)
         });
+},
+//Method For Opening The Section Dialog 
+openSection(data){
+ this.dialog=true;
+   this.$axios
+      .get(
+        `${this.HHTP_REQUEST_URL}selectedGradeForSection/`+
+          `${data}`
+      )
+      .then(response => {
+        console.log(response.data)
+        this.sections=response.data;
+      })
+      .catch(error => {
+        console.log(error);
+      });
+},
+
+//Method For Closing The Section Dialog
+    closeSection(){
+       for (let key in this.errors) {
+          this.$delete(this.errors, key);
+        }
+        this.section=null;
+        this.dialog=false;
     },
 
+//Method For Approving The Student 
+    approveEnrollment(id, index){
+      this.$axios
+        .post("approveEnrollment/" + id, {student_section:this.section})
+        .then((response) => {
+          console.log(response);
+          this.students.splice(index,1);
+          this.section=null;
+        })
+        .catch((error)=>{
+             if (error.response.status == 422) {
+              this.setErrors(error.response.data.errors);
+            } else {
+              alert("something went wrong!");
+            }
+        });
+
+
+    },
+//Method For Declining The Section
     declineEnrollment(id, index) {
       this.$axios
         .post("declineEnrollment/" + id)
@@ -357,7 +414,32 @@ export default {
           console.log(error);
         });
     },
+   
+ //Methods For All Errors
+    setErrors(error) {
+      this.errors = error;
+    },
+
+    hasError(fieldname) {
+      return fieldname in this.errors;
+    },
+
+    clearError(event) {
+      alert(event)
+      this.$delete(this.errors,event);
+    },
+
+    getError(fieldName) {
+      return this.errors[fieldName][0];
+    }
+
   },
+
+ computed: {
+    hasAnyErors() {
+      return Object.keys(this.errors).length > 0;
+    }
+  }
 };
 </script>
 
@@ -367,8 +449,13 @@ export default {
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;
-
   color: #48d3ff;
+}
+
+.invalid-feedback {
+  color: red;
+  margin-top: -3%;
+  font-size: 14px;
 }
 
 </style>
