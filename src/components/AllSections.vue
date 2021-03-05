@@ -7,11 +7,11 @@
       <v-row>
         <v-col cols="12" md="7" lg="8">
           <v-card color="basil">
-            <v-card-title class="text-center justify-center py-6">
-              <h1 class="font-weight-bold display-2 basil--text">
-                Junior High
-              </h1>
-            </v-card-title>
+            <v-card class="table-header" color="orange">
+              <v-card-title class="text-center justify-center">
+                <div class="display-2 font-weight-light">Junior High</div>
+              </v-card-title>
+            </v-card>
             <div>
               <!--------- Dialog For Junior High School Category ----------------------------------------------------- ------------------------------------->
               <div class="add_btn">
@@ -112,15 +112,15 @@
                             {{ dta.teacher_id }}
                           </v-card-text>
                           <v-card-text>
-                            <v-icon @click="juniorEdit(dta.id)"
+                            <v-icon @click="juniorEdit(dta.id)" color="primary"
                               >mdi-pencil-box</v-icon
                             >
                           </v-card-text>
-                          <v-card-text>
+                          <!-- <v-card-text>
                             <v-icon @click="juniorRemove(dta.id)"
                               >mdi-delete</v-icon
                             >
-                          </v-card-text>
+                          </v-card-text> -->
                           <v-card-actions>
                             <v-progress-linear
                               :value="(dta.total_students / dta.capacity) * 100"
@@ -149,14 +149,14 @@
           </v-card>
         </v-col>
         <!-----------------------------------End OF The Modal For All Junior High-------------------------------------------------->
-
+        <br />
         <v-col cols="12" md="5" lg="4">
-          <v-card color="basil">
-            <v-card-title class="text-center justify-center py-6">
-              <h1 class="font-weight-bold display-2 basil--text">
-                Senior High
-              </h1>
-            </v-card-title>
+          <v-card>
+            <v-card class="table-header" color="#4caf50">
+              <v-card-title class="text-center justify-center">
+                <div class="display-2 font-weight-light">Senior High</div>
+              </v-card-title>
+            </v-card>
             <!------------- ----------- ----------Dialog For Senior High School ------------------------------------------------->
             <div class="add_btn">
               <v-dialog v-model="seniorDialog" persistent max-width="300px">
@@ -259,7 +259,7 @@
                           {{ i.teacher_id }}
                         </v-card-text>
                         <v-card-text>
-                          <v-icon @click="seniorEdit(i.id)"
+                          <v-icon @click="seniorEdit(i.id)" color="primary"
                             >mdi-pencil-box</v-icon
                           >
                         </v-card-text>
