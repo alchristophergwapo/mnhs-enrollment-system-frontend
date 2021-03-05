@@ -4,7 +4,7 @@
       <h4>{{ page_name }}</h4>
     </v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-icon>mdi-home</v-icon>
+    <v-icon color="black">mdi-home</v-icon>
     <v-breadcrumbs :items="items"></v-breadcrumbs>
   </v-toolbar>
 </template>

@@ -1,11 +1,18 @@
 import Vue from 'vue'
+
 import App from './App.vue'
+
 import vuetify from './plugins/vuetify'
 import router from './router/index'
-import Axios from 'axios';
 import store from "./store";
-import VueSweetalert2 from 'vue-sweetalert2';
+
+import 'sweetalert2/dist/sweetalert2.min.css';
+import 'chartist/dist/chartist.min.css'
+import './plugins/base'
+
 import VueNativeNotification from 'vue-native-notification'
+import VueSweetalert2 from 'vue-sweetalert2';
+import Axios from 'axios';
 
 Vue.config.productionTip = false
 Vue.prototype.$axios = Axios;
@@ -14,17 +21,18 @@ window.Vue = Vue;
 Vue.use(VueSweetalert2);
 Vue.use(VueNativeNotification, {
   requestOnNotify: true
-})
+});
+Vue.use(require('vue-chartist'))
 
 new Vue({
   vuetify,
   router,
   store,
   created() {
-    // this.initialize();
+    this.initialize();
   },
   mounted: function () {
-    this.initialize();
+    // this.initialize();
   },
   methods: {
     initialize() {
@@ -48,6 +56,10 @@ new Vue({
       })
 
       this.$store.dispatch('allSections')
+
+      this.$store.dispatch('allPendingEnrollments')
+
+      this.$store.dispatch('allDeclinedEnrollments')
     }
   },
   render: h => h(App),

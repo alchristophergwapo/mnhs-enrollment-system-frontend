@@ -11,22 +11,26 @@ export default new Vuex.Store({
     state: {
         studentLogInfo: null,
         user: null,
+        classmates: null,
         studentInfo: null,
         parentGuardianInfo: null,
         balikOrTransferInfo: null,
         seniorHighInfo: null,
-        teachers: null,
-        numberOfTeachers: null,
-        enrolledStudents: null,
-        numberOfEnrolledStudents: null,
-        sections: null,
-        numberOfSections: null,
+        teachers: [],
+        numberOfTeachers: 0,
+        enrolledStudents: [],
+        numberOfEnrolledStudents: 0,
+        sections: [],
+        numberOfSections: 0,
+        pendingEnrollments: [],
+        declinedEnrollments: [],
     },
 
     mutations: {
         setUserData(state, userData) {
             state.user = userData.user
             state.studentLogInfo = userData.userInfo
+            state.classmates = userData.classmates
             localStorage.setItem('user', JSON.stringify(userData))
             axios.defaults.headers.common.Authorization = `Bearer ${userData.token}`
         },
@@ -65,13 +69,20 @@ export default new Vuex.Store({
         setSections(state, sections) {
             state.sections = sections
             state.numberOfSections = sections.length
+        },
+        setPendingEnrollments(state, pendingEnrollments) {
+            state.pendingEnrollments = pendingEnrollments
+        },
+        setDeclinedEnrollments(state, declinedEnrollments) {
+            if (declinedEnrollments) {
+                state.declinedEnrollments = declinedEnrollments
+            }
         }
     },
 
     actions: {
         login({ commit }, credentials) {
             return axios.post('login', credentials).then(({ data }) => {
-
                 commit('setUserData', data)
             })
         },
@@ -89,7 +100,7 @@ export default new Vuex.Store({
         },
 
         allStudents({ commit }) {
-            return axios.get("approvedEnrollment").then((response) => {
+            return axios.get("approvedEnrollments").then((response) => {
                 let data = response.data.approvedEnrollment
                 commit('setStudents', data)
                 commit('setNumberOfEnrolledStudents', data.length);
@@ -99,6 +110,18 @@ export default new Vuex.Store({
         allSections({ commit }) {
             return axios.get('allSections').then(response => {
                 commit('setSections', response.data.sections)
+            })
+        },
+
+        allPendingEnrollments({ commit }) {
+            return axios.get("pendingEnrollments").then((response) => {
+                commit('setPendingEnrollments', response.data.pendingEnrollment)
+            });
+        },
+
+        allDeclinedEnrollments({ commit }) {
+            return axios.get('declinedEnrollments').then(response => {
+                commit('setDeclinedEnrollments', response.data.declinedEnrollments);
             })
         },
 
@@ -127,6 +150,7 @@ export default new Vuex.Store({
     getters: {
         isLogged: state => !!state.user,
         userInfo: state => state.studentLogInfo,
+        classmates: state => state.classmates,
         student: state => state.studentInfo,
         parentGuardian: state => state.parentGuardianInfo,
         balikOrTransfer: state => state.balikOrTransferInfo,
@@ -136,5 +160,8 @@ export default new Vuex.Store({
         totalStudents: state => state.numberOfEnrolledStudents,
         allStudents: state => state.enrolledStudents,
         totalSections: state => state.numberOfSections,
+        allSections: state => state.sections,
+        allPendingEnrollments: state => state.pendingEnrollments,
+        allDeclinedEnrollments: state => state.declinedEnrollments,
     }
 })
