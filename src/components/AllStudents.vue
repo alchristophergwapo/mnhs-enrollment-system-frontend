@@ -37,6 +37,8 @@
       >
         <template v-slot:item="row">
           <tr>
+            <td>{{ row.item.gradelevel}}</td>
+            <td>{{ row.item.section }}</td>
             <td>{{ row.item.student }}</td>
             <td>{{ row.item.age }}</td>
             <td>{{ row.item.address }}</td>
@@ -68,32 +70,37 @@ export default {
       },
     ],
     headers: [
-      {
-        text: "Student Name",
-        align: "start",
-        sortable: false,
-        value: "student",
-      },
+      { text: "GradeLevel", value: "gradelevel" },
+       { text: "Section", value: "section" },
+      {text: "Student Name", align: "start", sortable: false,value: "student",},
       { text: "Age", value: "age" },
       { text: "Address", value: "address" },
     ],
     students: [
       {
+        gradelevel:null,
+        section:null,
         student: "Danica Caballero",
         age: 21,
         address: "Moalboal",
       },
       {
+        gradelevel:null,
+        section:null,
         student: "Chilla Jean Cabungcag",
         age: 21,
         address: "Badian",
       },
       {
+        gradelevel:null,
+        section:null,
         student: "Jericho James Villahermosa",
         age: 21,
         address: "Bulac",
       },
       {
+        gradelevel:null,
+        section:null,
         student: "Christopher Alonzo",
         age: 21,
         address: "Salug",

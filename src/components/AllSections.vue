@@ -343,7 +343,7 @@ export default {
   methods: {
 
     // Select and Getting The Sections For The Selected Grade Level In Junior High School
-    selectedJHS(item) {
+    selectedJHS(item){
       this.juniorSection.name = item;
       this.$axios
         .get(`${this.HHTP_REQUEST_URL}getSection/` + `${item.split(" ")[1]}`)

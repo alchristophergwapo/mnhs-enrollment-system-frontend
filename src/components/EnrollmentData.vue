@@ -13,6 +13,7 @@
       <v-card-title>
         Sort By&nbsp;&nbsp;
         <v-select
+          v-model="gradeLevel"
           :items="grade_level"
           @change="filterByGradeLevel($event)"
           menu-props="auto"
@@ -24,6 +25,7 @@
         <v-spacer></v-spacer>
         <v-text-field
           v-model="search"
+          @keyup="filterByName($event=search)"
           append-icon="mdi-magnify"
           label="Search"
           single-line
@@ -306,6 +308,7 @@ export default {
     toggle_exclusive: undefined,
     dialog: false,
     section:[],
+    gradeLevel:null,
     search: "",
     errors:{},
     sections:[],
@@ -334,29 +337,53 @@ export default {
       { text: "Action", value: "action" },
     ],
     students:[],
+    filterStudents:[],
     grade_level: [7, 8, 9, 10, 11,12,"All"],
   }),
 
   created() {
     this.$axios.get("pendingEnrollment").then((response) => {
-      this.students = response.data.pendingEnrollment;
-      console.log(this.students);
+      console.log(response.data.pendingEnrollment);
+      this.students=response.data.pendingEnrollment;
+      this.filterStudents=response.data.pendingEnrollment;
     });
   },
 
-methods: {
+methods:{
 //Methods For Filtering By GradeLevel
 filterByGradeLevel(grade){
-     this.$axios
-        .get("filterByGradeLevel/"+grade)
-        .then((response) => {
-          console.log(response.data.pendingEnrollment);
-         this.students = response.data.pendingEnrollment;
-        })
-        .catch((error)=>{
-           console.log(error)
-        });
+    if(grade=='All'){
+      this.students=this.filterStudents;
+    }
+    else{
+      this.students=this.filterStudents.filter(function (val){ return val.student.grade_level == grade;})
+    }
 },
+
+//Method For Filtering The Name By A GradeLevel Or All GradeLevel
+filterByName(data){
+    this.students=this.filterStudents.filter(val =>{
+        if(this.gradeLevel==null && data!=null){
+           return val.student.firstname.concat(" ",val.student.lastname," ",val.student.grade_level).toLowerCase().includes(data.toLowerCase())
+        }
+        else if(this.gradeLevel==null && data==null){
+            return val.student.firstname.concat(" ",val.student.lastname," ",val.student.grade_level).toLowerCase().includes(data.toLowerCase())
+        }
+        else if(this.gradeLevel=='All' && data!=null){
+             return val.student.firstname.concat(" ",val.student.lastname," ",val.student.grade_level).toLowerCase().includes(data.toLowerCase())
+        }
+        else if(this.gradeLevel=='All' && data==null){
+             return val.student.firstname.concat(" ",val.student.lastname," ",val.student.grade_level).toLowerCase().includes(data.toLowerCase())
+        }
+        else{
+          if(val.student.grade_level==this.gradeLevel){
+             return val.student.firstname.concat(" ",val.student.lastname," ",val.student.grade_level).toLowerCase().includes(data.toLowerCase())
+          }
+        }
+      })
+      
+},
+
 //Method For Opening The Section Dialog 
 openSection(data){
  this.dialog=true;
@@ -414,10 +441,10 @@ openSection(data){
           console.log(error);
         });
     },
-   
- //Methods For All Errors
+
+//Methods For All Errors
     setErrors(error) {
-      this.errors = error;
+      this.errors=error;
     },
 
     hasError(fieldname) {
@@ -435,11 +462,20 @@ openSection(data){
 
   },
 
+
  computed: {
     hasAnyErors() {
       return Object.keys(this.errors).length > 0;
-    }
+    },
+
+  // filteredList(){
+  //     return this.students.filter(val =>{
+  //       return val.student.firstname.concat(" ",val.student.lastname," ",val.student.grade_level).toLowerCase().includes(this.search.toLowerCase());
+  //     })
+  //  },
+
   }
+
 };
 </script>
 

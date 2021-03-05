@@ -24,7 +24,7 @@
 
     <v-divider></v-divider>
     <v-list>
-      <v-list-item class="nav-link" link to="/admin/">
+      <v-list-item class="nav-link" link to="/admin/" exact>
         <img
           :src="require('../assets//images/icons/dashboard.png')"
           alt="John"

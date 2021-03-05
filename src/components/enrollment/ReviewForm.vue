@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-container class="container">
-      <div class="cover"></div>
+      <div class="cover" v-show="isShowing"></div>
       <v-form v-model="enrollmentValid" ref="enrollment" lazy-validation>
         <v-row>
           <v-col cols="12" md="12">
@@ -13,8 +13,8 @@
             <div class="font-weight-bold">
               <h4>PSA Birth Certificate No.</h4>
             </div>
-            <v-text-field
-              name="PSA"
+            <v-text-field 
+              name="PSA"  
               :value="studentInformation.PSA"
             ></v-text-field>
           </v-col>
@@ -291,8 +291,8 @@
           </v-col>
         </v-row>
       </v-form>
-      
     </v-container>
+    <v-btn color="primary"  @click="show" class="vtn" width="150">{{status}}</v-btn>
   </v-app>
 </template>
 
@@ -300,8 +300,10 @@
 export default {
   data() {
     return {
+      status:'Edit',
       url: "http://127.0.0.1:8000/api/",
-      enrollmentValid: true,
+      isShowing:true,
+      enrollmentValid:true,
       studentInformation: null,
       parentGuardianInfo: null,
       balikAralOrTransfereeInfo: null,
@@ -310,12 +312,22 @@ export default {
   },
 
   methods: {
+    show(){
+      if(this.isShowing==true){
+        this.status="Update";
+        this.isShowing=false;
+      }
+      else{
+        this.status="Edit";
+        this.isShowing=true;
+        console.log(this.studentInformation);
+      }
+    },
+    
     initialize() {
       this.studentInformation = JSON.parse(this.$store.getters.student);
       this.parentGuardianInfo = JSON.parse(this.$store.getters.parentGuardian);
-      this.balikAralOrTransfereeInfo = JSON.parse(
-        this.$store.getters.balikOrTransfer
-      );
+      this.balikAralOrTransfereeInfo = JSON.parse( this.$store.getters.balikOrTransfer );
       this.seniorHighInfo = JSON.parse(this.$store.getters.seniorHigh);
     },
   },
@@ -326,6 +338,9 @@ export default {
 };
 </script>
 <style lang="css" scoped>
+.vtn{
+  margin-left:3%;
+}
   .container{
     position: relative !important;
   }
