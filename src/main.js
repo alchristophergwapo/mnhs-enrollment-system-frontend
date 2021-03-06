@@ -1,31 +1,65 @@
 import Vue from 'vue'
+
 import App from './App.vue'
+
 import vuetify from './plugins/vuetify'
 import router from './router/index'
-import Axios from 'axios';
 import store from "./store";
+
+import 'sweetalert2/dist/sweetalert2.min.css';
+import 'chartist/dist/chartist.min.css'
+import './plugins/base'
+
+import VueNativeNotification from 'vue-native-notification'
 import VueSweetalert2 from 'vue-sweetalert2';
+import Axios from 'axios';
 
 Vue.config.productionTip = false
 Vue.prototype.$axios = Axios;
 
 window.Vue = Vue;
 Vue.use(VueSweetalert2);
+Vue.use(VueNativeNotification, {
+  requestOnNotify: true
+});
+Vue.use(require('vue-chartist'))
 
 new Vue({
   vuetify,
   router,
   store,
   created() {
-    const userInfo = localStorage.getItem('user')
-    if (userInfo) {
-      const userData = JSON.parse(userInfo)
-      this.$store.commit('setUserData', userData)
-      if (userData.user.user_type == 'admin') {
-        this.$router.push({ path: '/admin' })
-      } else {
-        this.$router.push({ path: '/student/dashboard' })
+    this.initialize();
+  },
+  mounted: function () {
+    // this.initialize();
+  },
+  methods: {
+    initialize() {
+      const userInfo = localStorage.getItem('user')
+      if (userInfo) {
+        const userData = JSON.parse(userInfo)
+        this.$store.commit('setUserData', userData)
+        if (userData.user.user_type == 'admin') {
+          this.$router.push({ path: '/admin' })
+        } else {
+          this.$router.push({ path: '/student/dashboard' })
+        }
       }
+
+      this.$store.dispatch('allTeacher').then(() => {
+        this.$store.state.teachersIsLoaded = true
+      })
+
+      this.$store.dispatch('allStudents').then(() => {
+        this.$store.state.studentsIsLoaded = true
+      })
+
+      this.$store.dispatch('allSections')
+
+      this.$store.dispatch('allPendingEnrollments')
+
+      this.$store.dispatch('allDeclinedEnrollments')
     }
   },
   render: h => h(App),

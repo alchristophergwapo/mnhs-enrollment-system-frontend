@@ -7,7 +7,13 @@
     <v-container>
       <v-row>
         <v-col sm="6" md="4">
-          <v-card class="mx-auto" height="100%" color="#26c6da" dark max-width="300">
+          <v-card
+            class="mx-auto"
+            height="100%"
+            color="#26c6da"
+            dark
+            max-width="300"
+          >
             <v-card-text class="headline font-weight-bold">
               <v-avatar class="ma-3" size="125" tile>
                 <img :src="require('../assets/images/student.png')" alt="" />
@@ -26,7 +32,13 @@
         </v-col>
 
         <v-col sm="6" md="4">
-          <v-card class="mx-auto" height="100%" color="#26c6da" dark max-width="300">
+          <v-card
+            class="mx-auto"
+            height="100%"
+            color="#26c6da"
+            dark
+            max-width="300"
+          >
             <v-card-text class="headline font-weight-bold">
               <v-avatar class="ma-3" size="125" tile>
                 <img :src="require('../assets/images/teachers.png')" alt="" />
@@ -45,7 +57,13 @@
         </v-col>
 
         <v-col sm="6" md="4">
-          <v-card class="mx-auto" height="100%" color="#26c6da" dark max-width="300">
+          <v-card
+            class="mx-auto"
+            height="100%"
+            color="#26c6da"
+            dark
+            max-width="300"
+          >
             <v-card-text class="headline font-weight-bold">
               <v-avatar class="ma-3" size="125" tile>
                 <img :src="require('../assets/images/section.png')" alt="" />
@@ -71,13 +89,13 @@
 
 <script>
 export default {
-  components:{
-    BreadCrumb:() => import("@/layout/BreadCrumb.vue"),
+  components: {
+    BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
   },
   data: () => ({
-    Students: "40",
-    Teachers: "15",
-    Sections: "5",
+    Students: "......",
+    Teachers: "......",
+    Sections: "......",
     items: [
       {
         text: "Home",
@@ -91,6 +109,22 @@ export default {
       },
     ],
   }),
+
+  created() {
+    this.initializeData();
+    setTimeout(() => {
+      this.initializeData();
+    }, 3000);
+  },
+  mounted: function () {},
+
+  methods: {
+    initializeData() {
+      this.Teachers = this.$store.getters.totalTeachers;
+      this.Students = this.$store.getters.totalStudents;
+      this.Sections = this.$store.getters.totalSections;
+    },
+  },
 };
 </script>
 

@@ -6,11 +6,14 @@
         Congrats, you are officially enrolled to MNHS!
       </v-card-title>
       <v-row>
-        <v-col md="4" lg="4">
+        <v-col sm="4" md="4" lg="4">
           <student-detail :student_details="user"></student-detail>
         </v-col>
-        <v-col md="8" lg="8" class="class_details">
-          <student-class-details :classmates="students"></student-class-details>
+        <v-col sm="8" md="8" lg="8" class="class_details">
+          <student-class-details
+            :section_name="user.section.adviser.name"
+            :classmates="students"
+          ></student-class-details>
         </v-col>
       </v-row>
     </v-container>
@@ -27,35 +30,23 @@ export default {
   },
   data() {
     return {
-      user: null,
-      students: [
-        {
-          student: "Danica Caballero",
-          age: 21,
-          address: "Moalboal",
-        },
-        {
-          student: "Chilla Jean Cabungcag",
-          age: 21,
-          address: "Badian",
-        },
-        {
-          student: "Jericho James Villahermosa",
-          age: 21,
-          address: "Bulac",
-        },
-        {
-          student: "Christopher Alonzo",
-          age: 21,
-          address: "Salug",
-        },
-      ],
+      user: [],
+      students: [],
     };
   },
 
   methods: {
     initialize() {
       this.user = this.$store.getters.userInfo;
+      console.log(this.user);
+      let classmates = this.$store.getters.classmates;
+      for (const key in classmates) {
+        if (classmates.hasOwnProperty.call(classmates, key)) {
+          const element = classmates[key];
+          this.students.push(element["student"]);
+          // console.log(element);
+        }
+      }
     },
   },
 

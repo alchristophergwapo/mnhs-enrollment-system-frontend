@@ -2,54 +2,76 @@
   <div>
     <bread-crumb :item="items" page_name="Reports"></bread-crumb>
     <br /><br />
-    <div>
-      <v-card-title>
-        Sort By: &nbsp;&nbsp;
-         <v-select
-          :items="school_year"
-          menu-props="auto"
-          label="School Year"
-          hide-details
-          dense
-          outlined
-        ></v-select>
-         &nbsp;&nbsp;
-        <v-select
-          :items="grade_level"
-          menu-props="auto"
-          label="Grade Level"
-          hide-details
-          dense
-          outlined
-        ></v-select>
-        <v-spacer></v-spacer>
-       
-      </v-card-title>
-      <v-data-table
-        :headers="headers"
-        :items="students"
-        :search="search"
-        :items-per-page="10"
-        class="elevation-1"
-      >
-        <template v-slot:item="row">
-          <tr>
-            <td>{{ row.item.student }}</td>
-            <td>{{ row.item.age }}</td>
-            <td>{{ row.item.address }}</td>
-          </tr>
-        </template>
-      </v-data-table>
-    </div>
+    <v-container id="dashboard" tag="section">
+      <v-row>
+        <chart
+          :data="enrollmentChart.data"
+          :options="enrollmentChart.options"
+          :responsive-options="enrollmentChart.responsiveOptions"
+          color="#E91E63"
+          hover-reveal
+          type="Bar"
+        >
+          <h4 class="card-title font-weight-light mt-2 ml-2">
+            Enrolled Students
+          </h4>
+
+          <p class="d-inline-flex font-weight-light ml-2 mt-1">
+            Last Campaign Performance
+          </p>
+        </chart>
+        <v-col cols="12" sm="6" lg="3">
+          <status-cards
+            color="info"
+            icon_background_color="#00cae3"
+            icon="mdi-account-multiple-check"
+            title="Enrolled Students"
+            :value="totalEnrolled"
+          />
+        </v-col>
+        <v-col cols="12" sm="6" lg="3">
+          <status-cards
+            color="info"
+            icon_background_color="#4caf50"
+            icon="mdi-account-alert"
+            title="Pending Enrollments"
+            :value="totalPending"
+          />
+        </v-col>
+        <v-col cols="12" sm="6" lg="3">
+          <status-cards
+            color="info"
+            icon_background_color="red"
+            icon="mdi-account-multiple-minus"
+            title="Declined Enrollments"
+            :value="totalDeclined"
+          />
+        </v-col>
+        <v-col cols="12" sm="6" lg="3">
+          <status-cards
+            color="info"
+            icon_background_color="orange"
+            icon="mdi-account-multiple"
+            title="Teachers"
+            :value="totalTeachers"
+          />
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 <script>
 export default {
   components: {
     BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
+    Chart: () => import("@/layout/Chart.vue"),
+    StatusCards: () => import("@/layout/StatusCards.vue"),
   },
   data: () => ({
-    search: "",
+    totalEnrolled: 0,
+    totalPending: 0,
+    totalDeclined: 0,
+    totalTeachers: 0,
     items: [
       {
         text: "Home",
@@ -62,62 +84,68 @@ export default {
         href: "admin/students",
       },
     ],
-    headers: [
-      {
-        text: "Student Name",
-        align: "start",
-        sortable: false,
-        value: "student",
+    enrollmentChart: {
+      data: {
+        labels: [],
+        series: [[]],
       },
-      { text: "Age", value: "age" },
-      { text: "Address", value: "address" },
-    ],
-    students: [
-      {
-        student: "Danica Caballero",
-        age: 21,
-        address: "Moalboal",
+      options: {
+        axisX: {
+          showGrid: false,
+        },
+        low: 0,
+        high: 1000,
+        chartPadding: {
+          top: 0,
+          right: 5,
+          bottom: 0,
+          left: 0,
+        },
       },
-      {
-        student: "Chilla Jean Cabungcag",
-        age: 21,
-        address: "Badian",
-      },
-      {
-        student: "Jericho James Villahermosa",
-        age: 21,
-        address: "Bulac",
-      },
-      {
-        student: "Christopher Alonzo",
-        age: 21,
-        address: "Salug",
-      },
-    ],
-    grade_level: [7, 8, 9, 10, 11, 12],
-    school_year: [
-      "2020-2021",
-      "2021-2022",
-      "2022-2023",
-      "2023-2024",
-      "2024-2025",
-      "2025-2026",
-    ],
+      responsiveOptions: [
+        [
+          "screen and (max-width: 640px)",
+          {
+            seriesBarDistance: 5,
+            axisX: {
+              labelInterpolationFnc: function (value) {
+                return value[0];
+              },
+            },
+          },
+        ],
+      ],
+    },
   }),
+  created() {
+    let enrollments = this.$store.getters.allStudents;
+    this.totalEnrolled = enrollments.length;
+    this.totalPending = this.$store.getters.allPendingEnrollments.length;
+    this.totalDeclined = this.$store.getters.allDeclinedEnrollments.length;
+    this.totalTeachers = this.$store.getters.totalTeachers;
+    for (const index in enrollments) {
+      if (enrollments.hasOwnProperty.call(enrollments, index)) {
+        const element = enrollments[index];
+        const school_year = element["start_school_year"];
+
+        let exist = this.enrollmentChart.data.labels.some((item) => {
+          return item === school_year;
+        });
+        if (!exist) {
+          this.enrollmentChart.data.labels.push(school_year);
+          let index = this.enrollmentChart.data.labels.indexOf(school_year);
+          this.enrollmentChart.data.series[0][index] = 1;
+        } else {
+          let index = this.enrollmentChart.data.labels.indexOf(school_year);
+          this.enrollmentChart.data.series[0][index] += 1;
+        }
+      }
+    }
+    console.log(this.enrollmentChart.data.labels);
+    console.log(this.enrollmentChart.data.series);
+  },
 };
 </script>
 
 <style>
-.gl_filter {
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 25px;
-  /* or 179% */
-
-  text-align: center;
-
-  color: #646468;
-}
 </style>

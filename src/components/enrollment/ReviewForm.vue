@@ -301,7 +301,6 @@ export default {
   data() {
     return {
       status:'Edit',
-      url: "http://127.0.0.1:8000/api/",
       isShowing:true,
       enrollmentValid:true,
       studentInformation: null,

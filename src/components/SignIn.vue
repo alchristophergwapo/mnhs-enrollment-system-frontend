@@ -211,12 +211,14 @@ export default {
         this.$store
           .dispatch("login", data)
           .then(() => {
+            // console.log(response);
             this.loading = false;
             this.$router.push({ path: "/student/dashboard" });
           })
-          .catch(() => {
+          .catch((error) => {
+            console.log(error.response);
             this.response = "error";
-            this.message = "Invalid Credentials!";
+            this.message = error.response.data.error;
             this.loading = false;
           });
         // this.$refs.regStudentForm.reset();
@@ -250,7 +252,6 @@ export default {
           });
       }
     },
-    
   },
 };
 </script>

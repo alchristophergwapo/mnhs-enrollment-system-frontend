@@ -9,7 +9,7 @@
         hide-details
       ></v-text-field>
       <v-spacer></v-spacer>
-      <span>Adviser: Aileen Becher</span>
+      <span>Adviser: {{ section }}</span>
     </v-card-title>
     <v-data-table
       :headers="headers"
@@ -20,7 +20,7 @@
     >
       <template v-slot:item="row">
         <tr>
-          <td>{{ row.item.student }}</td>
+          <td>{{ row.item.firstname }} {{ row.item.lastname }}</td>
           <td>{{ row.item.age }}</td>
           <td>{{ row.item.address }}</td>
         </tr>
@@ -31,7 +31,7 @@
 
 <script>
 export default {
-  props: ["classmates"],
+  props: ["classmates", "section_name"],
   data() {
     return {
       search: "",
@@ -46,6 +46,7 @@ export default {
         { text: "Address", value: "address" },
       ],
       students: this.classmates,
+      section: this.section_name,
     };
   },
 };

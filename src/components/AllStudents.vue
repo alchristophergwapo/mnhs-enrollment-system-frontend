@@ -3,6 +3,16 @@
     <bread-crumb :item="items" page_name="All Students"></bread-crumb>
     <br /><br />
     <div>
+      <v-card outlined>
+        <v-card class="table-header" color="#00cae3">
+          <v-card-title class="text-center justify-center">
+            <div class="display-2 font-weight-light">Students Data</div>
+          </v-card-title>
+
+          <div class="subtitle-1 font-weight-light text-center justify-center">
+            All students as of year {{ year }}
+          </div>
+        </v-card>
       <v-card-title>
         Sort By&nbsp;&nbsp;
         <v-select
@@ -28,23 +38,22 @@
         <v-spacer></v-spacer>
         <span>Adviser: Aileen Becher</span>
       </v-card-title>
-      <v-data-table
-        :headers="headers"
-        :items="students"
-        :search="search"
-        :items-per-page="10"
-        class="elevation-1"
-      >
-        <template v-slot:item="row">
-          <tr>
-            <td>{{ row.item.gradelevel}}</td>
-            <td>{{ row.item.section }}</td>
-            <td>{{ row.item.student }}</td>
-            <td>{{ row.item.age }}</td>
-            <td>{{ row.item.address }}</td>
-          </tr>
-        </template>
-      </v-data-table>
+        <v-data-table
+          :headers="headers"
+          :items="students"
+          :search="search"
+          :items-per-page="10"
+          class="elevation-1"
+        >
+          <template v-slot:item="row">
+            <tr>
+              <td>{{ row.item.firstname }} {{ row.item.lastname }}</td>
+              <td>{{ row.item.age }}</td>
+              <td>{{ row.item.address }}</td>
+            </tr>
+          </template>
+        </v-data-table>
+      </v-card>
     </div>
   </div>
 </template>
@@ -54,7 +63,7 @@ export default {
     BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
   },
   data: () => ({
-    HHTP_REQUEST_URL: "http://127.0.0.1:8000/api/",
+    year: new Date().getFullYear(),
     search: "",
     selectedGrade:null,
     items: [
@@ -76,64 +85,34 @@ export default {
       { text: "Age", value: "age" },
       { text: "Address", value: "address" },
     ],
-    students: [
-      {
-        gradelevel:null,
-        section:null,
-        student: "Danica Caballero",
-        age: 21,
-        address: "Moalboal",
-      },
-      {
-        gradelevel:null,
-        section:null,
-        student: "Chilla Jean Cabungcag",
-        age: 21,
-        address: "Badian",
-      },
-      {
-        gradelevel:null,
-        section:null,
-        student: "Jericho James Villahermosa",
-        age: 21,
-        address: "Bulac",
-      },
-      {
-        gradelevel:null,
-        section:null,
-        student: "Christopher Alonzo",
-        age: 21,
-        address: "Salug",
-      },
+    students: [],
+    grade_level: [7, 8, 9, 10, 11, 12],
+    section: [
+      "Section1",
+      "Section2",
+      "Section3",
+      "Section4",
+      "Section5",
+      "Section6",
     ],
-    grade_level:[7,8,9,10,11,12],
-    section:[],
-
   }),
 
-  mounted:function(){
+  created() {
+    // this.$axios.get("approvedEnrollment").then((response) => {
+    //   console.log(response);
+    //   let res = response.data.approvedEnrollment;
+    //   for (let index = 0; index < res.length; index++) {
+    //     const element = res[index];
+    //     this.students.push(element.student);
+    //   }
+    // });
+    let students = this.$store.getters.allStudents;
 
-  },
-
-  methods:{
-    
-//Methods For Getting The Selected GradeLevel
-   gradeLevel(select){
-      this.$axios
-      .get(
-        `${this.HHTP_REQUEST_URL}selectedGradeLevel/`+`${select}`
-      )
-      .then(response => {
-        this.section=response.data;
-      })
-      .catch(error => {
-        console.log(error);
-      });
-    },
-    selectedSection(select){
-       alert(select+"="+this.selectedGrade)
+    for (let index = 0; index < students.length; index++) {
+      const element = students[index];
+      this.students.push(element["student"]);
     }
-  }
+  },
 };
 </script>
 
