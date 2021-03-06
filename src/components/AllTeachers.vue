@@ -5,132 +5,139 @@
     <br />
     <br />
     <div>
-      <v-card outlined>
-        <v-card class="table-header" color="orange">
-          <v-card-title class="text-center justify-center">
-            <div class="display-2 font-weight-light">All Teachers</div>
-          </v-card-title>
+      <v-container>
+        <v-card outlined>
+          <v-card class="table-header" color="orange">
+            <v-card-title class="text-center justify-center">
+              <div class="display-2 font-weight-light">All Teachers</div>
+            </v-card-title>
 
-          <div class="subtitle-1 font-weight-light text-center justify-center">
-            All teachers as of year {{ year }}
-          </div>
-        </v-card>
-        <v-card-title>
-          <v-spacer></v-spacer>
-          <!-- Adding A Teacher!-->
+            <div
+              class="subtitle-1 font-weight-light text-center justify-center"
+            >
+              All teachers as of year {{ year }}
+            </div>
+          </v-card>
           <v-card-title>
             <v-spacer></v-spacer>
-            <div class="add_btn">
-              <v-dialog v-model="statusdialog" persistent max-width="300px">
-                <template v-slot:activator="{ on, attrs }">
-                  <v-btn
-                    color="primary"
-                    v-bind="attrs"
-                    v-on="on"
-                    @click="showTeacher"
-                  >
-                    <v-icon>mdi-plus</v-icon>Add Teacher
-                  </v-btn>
-                </template>
-                <v-form>
-                  <v-card>
-                    <v-card-title class="headline">
-                      <span>{{ status }}</span>
-                    </v-card-title>
-                    <v-card-text>
-                      <v-container>
-                        <v-text-field
-                          @keydown="clearError"
-                          label="Teacher's Fullname"
-                          type="text"
-                          class="form-control"
-                          v-model="Teacher"
-                          :error="hasError('name')"
-                          name="name"
-                        ></v-text-field>
-                        <p v-if="hasError('name')" class="invalid-feedback">
-                          {{ getError("name") }}
-                        </p>
-                        <v-text-field
-                          @keydown="clearError"
-                          label="Email"
-                          type="email"
-                          :error="hasError('email')"
-                          v-model="Email"
-                          name="email"
-                        ></v-text-field>
-                        <p v-if="hasError('email')" class="invalid-feedback">
-                          {{ getError("email") }}
-                        </p>
-                        <v-text-field
-                          @keydown="clearError"
-                          label="Phone Number"
-                          type="number"
-                          min="0"
-                          v-model="Contact"
-                          name="contact"
-                          :error="hasError('contact')"
-                        ></v-text-field>
-                        <p v-if="hasError('contact')" class="invalid-feedback">
-                          {{ getError("contact") }}
-                        </p>
-                        <v-select
-                          v-model="selected_section"
-                          :items="sections"
-                          type="text"
-                          label="Assigned Section Area"
-                          :disabled="disableSection"
-                        ></v-select>
-                      </v-container>
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn color="error darken-1" @click="dialogs"
-                        >Cancel</v-btn
-                      >
-                      <v-btn
-                        color="blue darken-1"
-                        :loading="loading"
-                        :disabled="hasAnyErors"
-                        @click="addTeacher()"
-                        >Save</v-btn
-                      >
-                    </v-card-actions>
-                  </v-card>
-                </v-form>
-              </v-dialog>
-            </div>
+            <!-- Adding A Teacher!-->
+            <v-card-title>
+              <v-spacer></v-spacer>
+              <div class="add_btn">
+                <v-dialog v-model="statusdialog" persistent max-width="300px">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      color="primary"
+                      v-bind="attrs"
+                      v-on="on"
+                      @click="showTeacher"
+                    >
+                      <v-icon>mdi-plus</v-icon>Add Teacher
+                    </v-btn>
+                  </template>
+                  <v-form>
+                    <v-card>
+                      <v-card-title class="headline">
+                        <span>{{ status }}</span>
+                      </v-card-title>
+                      <v-card-text>
+                        <v-container>
+                          <v-text-field
+                            @keydown="clearError"
+                            label="Teacher's Fullname"
+                            type="text"
+                            class="form-control"
+                            v-model="Teacher"
+                            :error="hasError('name')"
+                            name="name"
+                          ></v-text-field>
+                          <p v-if="hasError('name')" class="invalid-feedback">
+                            {{ getError("name") }}
+                          </p>
+                          <v-text-field
+                            @keydown="clearError"
+                            label="Email"
+                            type="email"
+                            :error="hasError('email')"
+                            v-model="Email"
+                            name="email"
+                          ></v-text-field>
+                          <p v-if="hasError('email')" class="invalid-feedback">
+                            {{ getError("email") }}
+                          </p>
+                          <v-text-field
+                            @keydown="clearError"
+                            label="Phone Number"
+                            type="number"
+                            min="0"
+                            v-model="Contact"
+                            name="contact"
+                            :error="hasError('contact')"
+                          ></v-text-field>
+                          <p
+                            v-if="hasError('contact')"
+                            class="invalid-feedback"
+                          >
+                            {{ getError("contact") }}
+                          </p>
+                          <v-select
+                            v-model="selected_section"
+                            :items="sections"
+                            type="text"
+                            label="Assigned Section Area"
+                            :disabled="disableSection"
+                          ></v-select>
+                        </v-container>
+                      </v-card-text>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="error darken-1" @click="dialogs"
+                          >Cancel</v-btn
+                        >
+                        <v-btn
+                          color="blue darken-1"
+                          :loading="loading"
+                          :disabled="hasAnyErors"
+                          @click="addTeacher()"
+                          >Save</v-btn
+                        >
+                      </v-card-actions>
+                    </v-card>
+                  </v-form>
+                </v-dialog>
+              </div>
+            </v-card-title>
+            <!-- Adding A Teacher!-->
           </v-card-title>
-          <!-- Adding A Teacher!-->
-        </v-card-title>
-        <v-data-table
-          :headers="headers"
-          :items="teachers"
-          :search="search"
-          :items-per-page="10"
-          class="elevation-1"
-        >
-          <template v-slot:item="row">
-            <tr>
-              <td>{{ row.item.name }}</td>
-              <td>{{ row.item.email }}</td>
-              <td>{{ row.item.contact }}</td>
-              <td>{{ row.item.section_id }}</td>
-              <td>
-                <!-- <v-icon @click="showsTeacherById(row.item)" color="primary"
+          <v-data-table
+            :headers="headers"
+            :items="teachers"
+            :search="search"
+            :items-per-page="10"
+            class="elevation-1"
+          >
+            <template v-slot:item="row">
+              <tr>
+                <td>{{ row.item.name }}</td>
+                <td>{{ row.item.email }}</td>
+                <td>{{ row.item.contact }}</td>
+                <td>{{ row.item.section_id }}</td>
+                <td>
+                  <!-- <v-icon @click="showsTeacherById(row.item)" color="primary"
                 >mdi-pencil</v-icon
               > -->
-                <v-icon @click="editTeacher(row.item)" color="primary"
-                  >mdi-pencil</v-icon
-                >
-                <v-icon @click="removeTeacher(row.item.id)" color="error"
-                  >mdi-delete</v-icon
-                >
-              </td>
-            </tr>
-          </template>
-        </v-data-table>
-      </v-card>
+                  <v-icon @click="editTeacher(row.item)" color="primary"
+                    >mdi-pencil</v-icon
+                  >
+                  <v-icon @click="removeTeacher(row.item.id)" color="error"
+                    >mdi-delete</v-icon
+                  >
+                </td>
+              </tr>
+            </template>
+          </v-data-table>
+        </v-card>
+      </v-container>
     </div>
   </div>
 </template>

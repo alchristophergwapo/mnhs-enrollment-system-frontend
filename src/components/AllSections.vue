@@ -6,7 +6,7 @@
     <div>
       <v-row>
         <v-col cols="12" md="7" lg="8">
-          <v-card color="basil">
+          <v-card outlined>
             <v-card class="table-header" color="orange">
               <v-card-title class="text-center justify-center">
                 <div class="display-2 font-weight-light">Junior High</div>
@@ -151,7 +151,7 @@
         <!-----------------------------------End OF The Modal For All Junior High-------------------------------------------------->
         <br />
         <v-col cols="12" md="5" lg="4">
-          <v-card>
+          <v-card outlined>
             <v-card class="table-header" color="#4caf50">
               <v-card-title class="text-center justify-center">
                 <div class="display-2 font-weight-light">Senior High</div>
