@@ -40,6 +40,7 @@
             <td>{{ row.item.gradelevel}}</td>
             <td>{{ row.item.section }}</td>
             <td>{{ row.item.student }}</td>
+            <td>{{ row.item.firstname }} {{ row.item.lastname }}</td>
             <td>{{ row.item.age }}</td>
             <td>{{ row.item.address }}</td>
           </tr>
@@ -76,64 +77,34 @@ export default {
       { text: "Age", value: "age" },
       { text: "Address", value: "address" },
     ],
-    students: [
-      {
-        gradelevel:null,
-        section:null,
-        student: "Danica Caballero",
-        age: 21,
-        address: "Moalboal",
-      },
-      {
-        gradelevel:null,
-        section:null,
-        student: "Chilla Jean Cabungcag",
-        age: 21,
-        address: "Badian",
-      },
-      {
-        gradelevel:null,
-        section:null,
-        student: "Jericho James Villahermosa",
-        age: 21,
-        address: "Bulac",
-      },
-      {
-        gradelevel:null,
-        section:null,
-        student: "Christopher Alonzo",
-        age: 21,
-        address: "Salug",
-      },
+    students: [],
+    grade_level: [7, 8, 9, 10, 11, 12],
+    section: [
+      "Section1",
+      "Section2",
+      "Section3",
+      "Section4",
+      "Section5",
+      "Section6",
     ],
-    grade_level:[7,8,9,10,11,12],
-    section:[],
-
   }),
 
-  mounted:function(){
+  created() {
+    // this.$axios.get("approvedEnrollment").then((response) => {
+    //   console.log(response);
+    //   let res = response.data.approvedEnrollment;
+    //   for (let index = 0; index < res.length; index++) {
+    //     const element = res[index];
+    //     this.students.push(element.student);
+    //   }
+    // });
+    let students = this.$store.getters.allStudents;
 
-  },
-
-  methods:{
-    
-//Methods For Getting The Selected GradeLevel
-   gradeLevel(select){
-      this.$axios
-      .get(
-        `${this.HHTP_REQUEST_URL}selectedGradeLevel/`+`${select}`
-      )
-      .then(response => {
-        this.section=response.data;
-      })
-      .catch(error => {
-        console.log(error);
-      });
-    },
-    selectedSection(select){
-       alert(select+"="+this.selectedGrade)
+    for (let index = 0; index < students.length; index++) {
+      const element = students[index];
+      this.students.push(element["student"]);
     }
-  }
+  },
 };
 </script>
 

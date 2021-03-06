@@ -10,9 +10,12 @@
   "dependencies": {
     "@mdi/font": "^5.9.55",
     "axios": "^0.21.1",
+    "chartist": "^0.11.4",
     "core-js": "^3.6.5",
     "es6-promise": "^4.2.8",
     "vue": "^2.6.11",
+    "vue-chartist": "^2.3.1",
+    "vue-native-notification": "^1.1.1",
     "vue-router": "^3.5.1",
     "vue-sweetalert2": "^4.2.0",
     "vuetify": "^2.4.3",

@@ -2,8 +2,8 @@
 <template>
   <div>
     <bread-crumb :item="items" page_name="All Teachers"></bread-crumb>
-    <br>
-    <br>
+    <br />
+    <br />
     <div>
       <v-card-title>
         <v-spacer></v-spacer>
@@ -12,15 +12,20 @@
           <v-spacer></v-spacer>
           <div class="add_btn">
             <v-dialog v-model="statusdialog" persistent max-width="300px">
-              <template v-slot:activator="{ on,attrs}">
-                <v-btn color="primary" v-bind="attrs" v-on="on" @click="showTeacher">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  color="primary"
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="showTeacher"
+                >
                   <v-icon>mdi-plus</v-icon>Add Teacher
                 </v-btn>
               </template>
               <v-form>
                 <v-card>
                   <v-card-title class="headline">
-                    <span>{{status}}</span>
+                    <span>{{ status }}</span>
                   </v-card-title>
                   <v-card-text>
                     <v-container>
@@ -33,7 +38,9 @@
                         :error="hasError('name')"
                         name="name"
                       ></v-text-field>
-                      <p v-if="hasError('name')" class="invalid-feedback">{{getError('name')}}</p>
+                      <p v-if="hasError('name')" class="invalid-feedback">
+                        {{ getError("name") }}
+                      </p>
                       <v-text-field
                         @keydown="clearError"
                         label="Email"
@@ -42,7 +49,9 @@
                         v-model="Email"
                         name="email"
                       ></v-text-field>
-                      <p v-if="hasError('email')" class="invalid-feedback">{{getError('email')}}</p>
+                      <p v-if="hasError('email')" class="invalid-feedback">
+                        {{ getError("email") }}
+                      </p>
                       <v-text-field
                         @keydown="clearError"
                         label="Phone Number"
@@ -52,13 +61,14 @@
                         name="contact"
                         :error="hasError('contact')"
                       ></v-text-field>
-                      <p v-if="hasError('contact')" class="invalid-feedback">{{getError('contact')}}</p>
+                      <p v-if="hasError('contact')" class="invalid-feedback">
+                        {{ getError("contact") }}
+                      </p>
                       <v-select
                         v-model="selected_section"
                         :items="sections"
                         type="text"
                         label="Assigned Section Area"
-                        clearable
                         :disabled="disableSection"
                       >
                         <template v-slot:selection="{item}">
@@ -72,13 +82,16 @@
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="error darken-1" @click="dialogs">Cancel</v-btn>
+                    <v-btn color="error darken-1" @click="dialogs"
+                      >Cancel</v-btn
+                    >
                     <v-btn
                       color="blue darken-1"
                       :loading="loading"
                       :disabled="hasAnyErors"
                       @click="addTeacher()"
-                    >Save</v-btn>
+                      >Save</v-btn
+                    >
                   </v-card-actions>
                 </v-card>
               </v-form>
@@ -96,10 +109,10 @@
       >
         <template v-slot:item="row">
           <tr>
-            <td>{{ row.item.name}}</td>
-            <td>{{ row.item.email}}</td>
-            <td>{{ row.item.contact}}</td>
-            <td>{{ row.item.section_id}}</td>
+            <td>{{ row.item.name }}</td>
+            <td>{{ row.item.email }}</td>
+            <td>{{ row.item.contact }}</td>
+            <td>{{ row.item.section_id }}</td>
             <td>
               <v-icon  color="primary" @click="showsTeacherById(row.item.id)">mdi-pencil</v-icon>
               <v-icon color="red" @click="removeTeacher(row.item.id)">mdi-delete</v-icon>
@@ -114,7 +127,7 @@
 <script>
 export default {
   components: {
-    BreadCrumb: () => import("@/layout/BreadCrumb.vue")
+    BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
   },
 
   data() {
@@ -137,34 +150,39 @@ export default {
         {
           text: "Home",
           disabled: false,
-          href: "/admin"
+          href: "/admin",
         },
         {
           text: "Teachers",
           disabled: true,
-          href: "admin/all_teachers"
-        }
+          href: "admin/all_teachers",
+        },
       ],
       headers: [
         {
           text: "Name",
           align: "start",
           sortable: false,
-          value: "name"
+          value: "name",
         },
         { text: "Email", value: "email" },
         { text: "Phone Number", value: "contact" },
         { text: "Assigned Section", value: "section_id" },
-        { text: "Action", value: "action" }
+        { text: "Action", value: "action" },
       ],
 
       teachers: [],
-      errors: {}
+      errors: {},
     };
   },
 
-  mounted: function() {
-    this.display();
+  created() {
+    this.teachers = this.$store.getters.allTeacher;
+   console.log(this.teachers)
+  },
+
+  mounted: function () {
+    //this.display();
   },
 
   methods: {
@@ -195,8 +213,8 @@ export default {
     //Methods for Deleting A Teacher In Delete Button
     async removeTeacher(dataid) {
       this.$axios
-        .get(`${this.HHTP_REQUEST_URL}delTeacher/` + `${dataid}`)
-        .then(response => {
+        .get(`delTeacher/` + `${dataid}`)
+        .then((response) => {
           if (response.data.message) {
             this.teachers = [];
             this.display();
@@ -280,19 +298,19 @@ export default {
       if (this.booleanStatus == false) {
         console.log(this.selected_section);
         this.loading = true;
-        await new Promise(resolve => setTimeout(resolve, 700));
+        await new Promise((resolve) => setTimeout(resolve, 700));
         this.loading = false;
         this.$axios
           .post(`${this.HHTP_REQUEST_URL}addNewTeacher`, {
             name: this.Teacher,
             email: this.Email,
             contact: this.Contact,
-            section_id:this.selected_section
+            section_id: this.selected_section,
           })
-          .then(response => {
+          .then((response) => {
             if (response.data.message) {
               alert("Successfully added!");
-              this.teachers =[];
+              this.teachers = [];
               this.display();
               this.Teacher = null;
               this.Email = null;
@@ -303,7 +321,7 @@ export default {
               alert("Not successfully added!");
             }
           })
-          .catch(error => {
+          .catch((error) => {
             if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);
             } else {
@@ -313,7 +331,7 @@ export default {
       } else {
         //For Updating The  Teachers
         this.loading = true;
-        await new Promise(resolve => setTimeout(resolve, 700));
+        await new Promise((resolve) => setTimeout(resolve, 700));
         this.loading = false;
         console.log(this.selected_section);
         this.$axios
@@ -321,9 +339,9 @@ export default {
             name: this.Teacher,
             email: this.Email,
             contact: this.Contact,
-            section_id:this.selected_section
+            section_id: this.selected_section,
           })
-          .then(response => {
+          .then((response) => {
             if (response.data.message) {
               alert("Successfully updated!");
               this.teachers = [];
@@ -338,7 +356,7 @@ export default {
               alert("Not successfully updated!");
             }
           })
-          .catch(error => {
+          .catch((error) => {
             if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);
             } else {
@@ -365,7 +383,7 @@ export default {
 
     getError(fieldName) {
       return this.errors[fieldName][0];
-    }
+    },
   },
 
   computed: {

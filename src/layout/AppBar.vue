@@ -4,7 +4,7 @@
 
     <v-spacer></v-spacer>
 
-    <div class="notif" v-if="user.type == 'admin' ">
+    <div class="notif" v-if="user.type == 'admin'">
       <v-btn icon link to="/admin/notifications">
         <v-badge
           :content="notifications"
@@ -17,10 +17,16 @@
       </v-btn>
     </div>
     <div v-if="$route.name != 'AdminProfile'">
+      <span>{{ user.username }}</span>
       <v-menu left bottom>
         <template v-slot:activator="{ on, attrs }">
-          <span class="label"><span v-if="user.type =='student'">Hello, </span>{{ user.firstname }}</span>
-          <v-icon v-if="user.type == 'admin'" v-bind="attrs" v-on="on">mdi-chevron-down</v-icon>
+          <span class="label"
+            ><span v-if="user.type == 'student'">Hello, </span
+            >{{ user.firstname }}</span
+          >
+          <v-icon v-if="user.type == 'admin'" v-bind="attrs" v-on="on"
+            >mdi-chevron-down</v-icon
+          >
         </template>
 
         <v-list>
@@ -36,20 +42,20 @@
 
 <script>
 export default {
-  props: ['user_details'],
+  props: ["user_details"],
   data() {
     return {
-      notifications:4,
-      user:this.user_details
+      notifications: 1,
+      user: this.user_details,
     };
   },
 
   methods:{
     logout() {
-      this.$router.push({path: '/'});
-      this.$store.dispatch('logout');
-    }
-  }
+      this.$router.push({ path: "/" });
+      this.$store.dispatch("logout");
+    },
+  },
 };
 </script>
 
