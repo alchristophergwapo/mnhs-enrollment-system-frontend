@@ -579,15 +579,22 @@ export default {
         for (let [key, value] of formdata.entries()) {
           console.log(key, value);
         }
-        this.$axios
-          .post(`addStudent`, formdata)
-          .then((response) => {
-            console.log(response);
-            this.$router.push({ path: "/" });
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        // this.$axios
+        //   .post(`addStudent`, formdata)
+        //   .then((response) => {
+        //     console.log(response);
+        //     this.$router.push({ path: "/" });
+        //   })
+        //   .catch((error) => {
+        //     console.log(error);
+        //   });
+        this.$notification.show(
+          "Hello World",
+          {
+            body: "This is an example",
+          },
+          {}
+        );
       }
     },
   },

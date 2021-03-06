@@ -11,17 +11,26 @@ export default new Vuex.Store({
     state: {
         studentLogInfo: null,
         user: null,
+        classmates: null,
         studentInfo: null,
         parentGuardianInfo: null,
         balikOrTransferInfo: null,
         seniorHighInfo: null,
-
+        teachers: [],
+        numberOfTeachers: 0,
+        enrolledStudents: [],
+        numberOfEnrolledStudents: 0,
+        sections: [],
+        numberOfSections: 0,
+        pendingEnrollments: [],
+        declinedEnrollments: [],
     },
-    
+
     mutations: {
         setUserData(state, userData) {
             state.user = userData.user
             state.studentLogInfo = userData.userInfo
+            state.classmates = userData.classmates
             localStorage.setItem('user', JSON.stringify(userData))
             axios.defaults.headers.common.Authorization = `Bearer ${userData.token}`
         },
@@ -36,14 +45,83 @@ export default new Vuex.Store({
             state.parentGuardianInfo = data.parentGuardianInfo
             state.balikOrTransferInfo = data.balikOrTransferInfo
             state.seniorHighInfo = data.seniorHighInfo
+        },
+
+        setNumberOfTeachers(state, totalTeachers) {
+            state.numberOfTeachers = totalTeachers
+        },
+
+        setNumberOfEnrolledStudents(state, totalStudents) {
+            state.numberOfEnrolledStudents = totalStudents
+        },
+
+        setNumberOfSections(state, totalSections) {
+            state.numberOfSections = totalSections
+        },
+
+        setTeachers(state, teachers) {
+            state.teachers = teachers
+        },
+
+        setStudents(state, students) {
+            state.enrolledStudents = students
+        },
+        setSections(state, sections) {
+            state.sections = sections
+            state.numberOfSections = sections.length
+        },
+        setPendingEnrollments(state, pendingEnrollments) {
+            state.pendingEnrollments = pendingEnrollments
+        },
+        setDeclinedEnrollments(state, declinedEnrollments) {
+            if (declinedEnrollments) {
+                state.declinedEnrollments = declinedEnrollments
+            }
         }
     },
 
     actions: {
         login({ commit }, credentials) {
             return axios.post('login', credentials).then(({ data }) => {
-
                 commit('setUserData', data)
+            })
+        },
+
+        allTeacher({ commit }) {
+            return axios
+                .get(`allTeacher`)
+                .then((response) => {
+                    commit('setTeachers', response.data);
+                    commit('setNumberOfTeachers', response.data.length)
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+
+        allStudents({ commit }) {
+            return axios.get("approvedEnrollments").then((response) => {
+                let data = response.data.approvedEnrollment
+                commit('setStudents', data)
+                commit('setNumberOfEnrolledStudents', data.length);
+            });
+        },
+
+        allSections({ commit }) {
+            return axios.get('allSections').then(response => {
+                commit('setSections', response.data.sections)
+            })
+        },
+
+        allPendingEnrollments({ commit }) {
+            return axios.get("pendingEnrollments").then((response) => {
+                commit('setPendingEnrollments', response.data.pendingEnrollment)
+            });
+        },
+
+        allDeclinedEnrollments({ commit }) {
+            return axios.get('declinedEnrollments').then(response => {
+                commit('setDeclinedEnrollments', response.data.declinedEnrollments);
             })
         },
 
@@ -54,25 +132,36 @@ export default new Vuex.Store({
         reviewEnrollment({ commit }, data) {
 
             commit('setStudentInfoData', data);
-        }
+        },
+
+        setTotalTeachers({ commit }, data) {
+            commit('setNumberOfTeachers', data)
+        },
+
+        setTotalStudents({ commit }, data) {
+            commit('setNumberOfStudents', data)
+        },
+
+        setTotalSections({ commit }, data) {
+            commit('setNumberOfSections', data)
+        },
     },
 
     getters: {
         isLogged: state => !!state.user,
-        userInfo: (state) => {
-            return state.studentLogInfo
-        },
-        student: (state) => {
-            return state.studentInfo
-        },
-        parentGuardian: (state) => {
-            return state.parentGuardianInfo
-        },
-        balikOrTransfer: (state) => {
-            return state.balikOrTransferInfo
-        },
-        seniorHigh: (state) => {
-            return state.seniorHighInfo
-        }
+        userInfo: state => state.studentLogInfo,
+        classmates: state => state.classmates,
+        student: state => state.studentInfo,
+        parentGuardian: state => state.parentGuardianInfo,
+        balikOrTransfer: state => state.balikOrTransferInfo,
+        seniorHigh: state => state.seniorHighInfo,
+        totalTeachers: state => state.numberOfTeachers,
+        allTeacher: state => state.teachers,
+        totalStudents: state => state.numberOfEnrolledStudents,
+        allStudents: state => state.enrolledStudents,
+        totalSections: state => state.numberOfSections,
+        allSections: state => state.sections,
+        allPendingEnrollments: state => state.pendingEnrollments,
+        allDeclinedEnrollments: state => state.declinedEnrollments,
     }
 })

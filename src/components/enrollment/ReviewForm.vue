@@ -324,7 +324,6 @@
 export default {
   data() {
     return {
-      url: "http://127.0.0.1:8000/api/",
       enrollmentValid: true,
       studentInformation: null,
       parentGuardianInfo: null,
