@@ -129,8 +129,7 @@ export default new Vuex.Store({
             commit('clearUserData')
         },
 
-        reviewEnrollment({ commit }, data) {
-
+        reviewEnrollment({ commit }, data){
             commit('setStudentInfoData', data);
         },
 

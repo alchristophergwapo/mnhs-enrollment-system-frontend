@@ -289,9 +289,10 @@ export default {
       this.status = "Add Teacher";
       this.statusdialog = true;
       this.booleanStatus = false;
+      this.disableSection=false;
     },
 
-    //Reseting the validation in cancel button
+ //Reseting the validation in cancel button
     async dialogs() {
       //This is for Add Teacher Reset Validation
       if (this.booleanStatus == false) {
@@ -301,11 +302,9 @@ export default {
           (this.selected_section = null);
         for (let key in this.errors) {
           this.$delete(this.errors, key);
-          //this.Target[key]=false;
         }
         this.statusdialog = false;
       }
-      //This is for Update Teacher Reset Validation
       else {
         (this.Teacher = null),
           (this.Email = null),
@@ -313,7 +312,6 @@ export default {
           (this.selected_section = null);
         for (let key in this.errors) {
           this.$delete(this.errors, key);
-          //this.Target[key] = false;
         }
         this.statusdialog = false;
       }
@@ -322,6 +320,7 @@ export default {
     //Method for Adding A Teacher in save button
     async addTeacher() {
       if (this.booleanStatus == false) {
+        console.log(this.selected_section);
         this.loading = true;
         await new Promise((resolve) => setTimeout(resolve, 700));
         this.loading = false;
@@ -340,7 +339,7 @@ export default {
               this.Teacher = null;
               this.Email = null;
               this.Contact = null;
-              this.selected_section = null;
+              this.selected_section=null;
               this.statusdialog = false;
             } else {
               alert("Not successfully added!");
@@ -358,6 +357,7 @@ export default {
         this.loading = true;
         await new Promise((resolve) => setTimeout(resolve, 700));
         this.loading = false;
+        console.log(this.selected_section);
         this.$axios
           .post(`updateTeacher/` + `${this.Id}`, {
             name: this.Teacher,
@@ -378,6 +378,7 @@ export default {
               this.Email = null;
               this.Contact = null;
               this.selected_section = null;
+              this.disableSection=false;
               this.statusdialog = false;
             } else {
               alert("Not successfully updated!");
@@ -394,6 +395,8 @@ export default {
       }
     },
 
+
+
     //Methods For All Errors
     setErrors(error) {
       this.errors = error;
@@ -409,11 +412,6 @@ export default {
     },
 
     getError(fieldName) {
-      // for (let key in this.Target) {
-      //   if (key == fieldName) {
-      //     this.Target[key] = true;
-      //   }
-      // }
       return this.errors[fieldName][0];
     },
   },

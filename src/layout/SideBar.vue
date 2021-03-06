@@ -22,7 +22,7 @@
 
     <v-divider></v-divider>
     <v-list>
-      <v-list-item class="nav-link" link to="/admin/">
+      <v-list-item class="nav-link" link to="/admin/" exact>
         <v-icon>mdi-view-dashboard</v-icon>
 
         <v-list-item-content class="nav-def">

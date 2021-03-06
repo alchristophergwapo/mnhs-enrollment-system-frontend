@@ -209,6 +209,7 @@
                 </v-card>
               </v-dialog>
             </div>
+
             <!-- ---------------------------------End Of The Dialog Of A Senior High School--------------------------------------------- -->
             <v-tabs
               v-model="tab2"
@@ -316,9 +317,6 @@ export default {
     tab1: null,
     tab2: null,
     errors: {},
-    //seniorErrors:{},
-    //Target: { name: null, capacity: null },
-    //TargetSenior:{ name: null, capacity: null },
     juniorSection: {
       name: "Grade 7",
     },
@@ -363,7 +361,7 @@ export default {
       .catch((error) => {
         console.log(error);
       });
-
+//Function For Getting All Grade 12 Sections
     this.$axios
       .get(
         `${this.HHTP_REQUEST_URL}grade12Section/` +
@@ -378,7 +376,7 @@ export default {
   },
   methods: {
     // Select and Getting The Sections For The Selected Grade Level In Junior High School
-    selectedJHS(item) {
+    selectedJHS(item){
       this.juniorSection.name = item;
       this.$axios
         .get(`${this.HHTP_REQUEST_URL}getSection/` + `${item.split(" ")[1]}`)
@@ -433,7 +431,6 @@ export default {
       this.Junior.capacity = null;
       for (let key in this.errors) {
         this.$delete(this.errors, key);
-        //this.Target[key] = false;
       }
       this.juniordialog = false;
     },
@@ -444,7 +441,6 @@ export default {
       this.Senior.capacity = null;
       for (let key in this.errors) {
         this.$delete(this.errors, key);
-        //this.Target[key] = false;
       }
       this.seniorDialog = false;
     },
@@ -641,6 +637,7 @@ export default {
 
     clearError(event) {
       this.$delete(this.errors, event.target.name);
+
       // this.Target[event.target.name] = false;
     },
 
@@ -685,11 +682,7 @@ export default {
     hasAnyErors() {
       return Object.keys(this.errors).length > 0;
     },
-
-    //  hasSeniorAnyErors() {
-    //     return Object.keys(this.seniorErrors).length > 0;
-    //   }
-  },
+  }
 };
 </script>
 
@@ -715,4 +708,20 @@ export default {
   margin-top: -7%;
   font-size: 14px;
 }
+
+/* .float_left{
+   float: left;;
+   position:relative;
+} */
+
+/* .float_right{
+   float:right;
+   margin-left:-40%;
+} */
+.edit{
+ margin-left:53%;
+}
+/* .margin_left{
+  margin-left:40%;
+} */
 </style>

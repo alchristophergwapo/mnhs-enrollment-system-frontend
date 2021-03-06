@@ -13,28 +13,31 @@
             All students as of year {{ year }}
           </div>
         </v-card>
-        <v-card-title>
-          Sort By&nbsp;&nbsp;
-          <v-select
-            :items="grade_level"
-            menu-props="auto"
-            label="Grade Level"
-            hide-details
-            dense
-            outlined
-          ></v-select>
-          &nbsp;&nbsp;
-          <v-select
-            :items="section"
-            menu-props="auto"
-            label="Section"
-            hide-details
-            dense
-            outlined
-          ></v-select>
-          <v-spacer></v-spacer>
-          <span>Adviser: Aileen Becher</span>
-        </v-card-title>
+      <v-card-title>
+        Sort By&nbsp;&nbsp;
+        <v-select
+          :items="grade_level"
+          menu-props="auto"
+          label="Grade Level"
+          hide-details
+          v-model="selectedGrade"
+          @change="gradeLevel($event)"
+          dense
+          outlined
+        ></v-select>
+        &nbsp;&nbsp;
+        <v-select
+          :items="section"
+          menu-props="auto"
+          label="Section"
+          hide-details
+          @change="selectedSection($event)"
+          dense
+          outlined
+        ></v-select>
+        <v-spacer></v-spacer>
+        <span>Adviser: Aileen Becher</span>
+      </v-card-title>
         <v-data-table
           :headers="headers"
           :items="students"
@@ -62,6 +65,7 @@ export default {
   data: () => ({
     year: new Date().getFullYear(),
     search: "",
+    selectedGrade:null,
     items: [
       {
         text: "Home",
@@ -75,12 +79,9 @@ export default {
       },
     ],
     headers: [
-      {
-        text: "Student Name",
-        align: "start",
-        sortable: false,
-        value: "student",
-      },
+      { text: "GradeLevel", value: "gradelevel" },
+       { text: "Section", value: "section" },
+      {text: "Student Name", align: "start", sortable: false,value: "student",},
       { text: "Age", value: "age" },
       { text: "Address", value: "address" },
     ],

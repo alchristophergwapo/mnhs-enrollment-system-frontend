@@ -45,12 +45,12 @@ export default {
   props: ["user_details"],
   data() {
     return {
-      notifications: 1,
-      user: this.user_details,
+      notifications:4,
+      user:this.user_details
     };
   },
 
-  methods: {
+  methods:{
     logout() {
       this.$router.push({ path: "/" });
       this.$store.dispatch("logout");
