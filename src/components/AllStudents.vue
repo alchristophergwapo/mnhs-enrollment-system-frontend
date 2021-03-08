@@ -23,6 +23,8 @@
               menu-props="auto"
               label="Grade Level"
               hide-details
+              v-model="selectedGrade"
+              @change="gradeLevel($event)"
               dense
               outlined
             ></v-select>
@@ -32,6 +34,7 @@
               menu-props="auto"
               label="Section"
               hide-details
+              @change="selectedSection($event)"
               dense
               outlined
             ></v-select>
@@ -47,6 +50,8 @@
           >
             <template v-slot:item="row">
               <tr>
+                <td>{{ row.item.grade_level }}</td>
+                <td>{{ row.item.section }}</td>
                 <td>{{ row.item.firstname }} {{ row.item.lastname }}</td>
                 <td>{{ row.item.age }}</td>
                 <td>{{ row.item.address }}</td>
@@ -66,6 +71,7 @@ export default {
   data: () => ({
     year: new Date().getFullYear(),
     search: "",
+    selectedGrade: null,
     items: [
       {
         text: "Home",
@@ -79,6 +85,8 @@ export default {
       },
     ],
     headers: [
+      { text: "GradeLevel", value: "gradelevel" },
+      { text: "Section", value: "section" },
       {
         text: "Student Name",
         align: "start",
@@ -113,7 +121,9 @@ export default {
 
     for (let index = 0; index < students.length; index++) {
       const element = students[index];
+      element["student"]["student_section"] = element["student_section"];
       this.students.push(element["student"]);
+      // console.log(element);
     }
   },
 };

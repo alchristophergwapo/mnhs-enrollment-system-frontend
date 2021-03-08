@@ -8,7 +8,7 @@
         :ratio="ratio"
         :responsive-options="responsiveOptions"
         :type="type"
-        style="max-height: 200px"
+        style="max-height: 270px"
       />
     </template>
 
@@ -60,7 +60,7 @@ export default {
 .v-card--material-chart {
   border-radius: 4px;
   width: 100%;
-  height: 280px;
+  height: 340px;
   padding: 0 15px 0 15px;
   display: block;
   max-width: 100%;
@@ -82,6 +82,10 @@ export default {
   border-radius: 4px;
   position: inherit;
   top: -20px;
+}
+
+.ct-square > svg {
+  padding: 0 15px 0 15px;
 }
 
 .ct-labels span {

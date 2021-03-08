@@ -22,8 +22,8 @@
 
     <v-divider></v-divider>
     <v-list>
-      <v-list-item class="nav-link" link to="/admin/">
-        <v-icon>mdi-view-dashboard</v-icon>
+      <v-list-item class="nav-link" link to="/admin/" exact>
+        <v-icon color="black">mdi-view-dashboard</v-icon>
 
         <v-list-item-content class="nav-def">
           <v-list-item-title>Dashboard</v-list-item-title>
@@ -59,14 +59,6 @@
 
         <v-list-item-content class="nav-def">
           <v-list-item-title>All Sections</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-
-      <v-list-item class="nav-link" link to="/admin/reports">
-        <v-icon color="black">mdi-chart-bar</v-icon>
-
-        <v-list-item-content class="nav-def">
-          <v-list-item-title>Reports</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>

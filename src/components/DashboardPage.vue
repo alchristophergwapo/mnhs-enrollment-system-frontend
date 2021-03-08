@@ -1,101 +1,84 @@
 <template>
-  <div id="app" app>
+  <div>
     <bread-crumb :item="items" page_name="Dashboard"></bread-crumb>
-    <br />
-    <br />
-    <br />
-    <v-container>
+    <br /><br />
+    <v-container id="dashboard" tag="section">
       <v-row>
-        <v-col sm="6" md="4">
-          <v-card
-            class="mx-auto"
-            height="100%"
-            color="#26c6da"
-            dark
-            max-width="300"
-          >
-            <v-card-text class="headline font-weight-bold">
-              <v-avatar class="ma-3" size="125" tile>
-                <img :src="require('../assets/images/student.png')" alt="" />
-              </v-avatar>
-              <div id="text">
-                <span class="title font-weight-bold">{{ Students }}</span>
-                <br />
-                <span class="title font-weight-light">Students</span>
-              </div>
-            </v-card-text>
-            <v-btn id="btn" block link to="/admin/all_students">
-              All Students
-              <v-icon dark right>mdi-arrow-right</v-icon>
-            </v-btn>
-          </v-card>
-        </v-col>
+        <chart
+          :data="enrollmentChart.data"
+          :options="enrollmentChart.options"
+          :responsive-options="enrollmentChart.responsiveOptions"
+          color="#E91E63"
+          hover-reveal
+          type="Bar"
+          v-if="initialized"
+        >
+          <h4 class="card-title font-weight-light mt-2 ml-2">
+            Enrolled Students
+          </h4>
 
-        <v-col sm="6" md="4">
-          <v-card
-            class="mx-auto"
-            height="100%"
-            color="#26c6da"
-            dark
-            max-width="300"
-          >
-            <v-card-text class="headline font-weight-bold">
-              <v-avatar class="ma-3" size="125" tile>
-                <img :src="require('../assets/images/teachers.png')" alt="" />
-              </v-avatar>
-              <div id="text">
-                <span class="title font-weight-bold">{{ Teachers }}</span>
-                <br />
-                <span class="title font-weight-light">Teachers</span>
-              </div>
-            </v-card-text>
-            <v-btn id="btn" block link to="/admin/all_teachers">
-              All Teachers
-              <v-icon dark right>mdi-arrow-right</v-icon>
-            </v-btn>
-          </v-card>
+          <p class="d-inline-flex font-weight-light ml-2 mt-1">
+            Last Campaign Performance
+          </p>
+        </chart>
+        <v-col cols="12" sm="6" lg="3">
+          <status-cards
+            color="info"
+            icon_background_color="#00cae3"
+            icon="mdi-account-multiple-check"
+            title="Enrolled Students"
+            :value="totalEnrolled"
+          />
         </v-col>
-
-        <v-col sm="6" md="4">
-          <v-card
-            class="mx-auto"
-            height="100%"
-            color="#26c6da"
-            dark
-            max-width="300"
+        <v-col cols="12" sm="6" lg="3">
+          <status-cards
+            color="info"
+            icon_background_color="#4caf50"
+            icon="mdi-account-alert"
+            title="Pending Enrollments"
+            :value="totalPending"
+          />
+        </v-col>
+        <v-col cols="12" sm="6" lg="3">
+          <status-cards
+            color="info"
+            icon_background_color="red"
+            icon="mdi-account-multiple-minus"
+            title="Declined Enrollments"
+            :value="totalDeclined"
+          />
+        </v-col>
+        <v-col cols="12" sm="6" lg="3">
+          <status-cards
+            color="info"
+            icon_background_color="orange"
+            icon="mdi-account-multiple"
+            title="Teachers"
+            :value="totalTeachers"
           >
-            <v-card-text class="headline font-weight-bold">
-              <v-avatar class="ma-3" size="125" tile>
-                <img :src="require('../assets/images/section.png')" alt="" />
-              </v-avatar>
-              <div id="text">
-                <span class="title font-weight-bold">{{ Sections }}</span>
-                <br />
-                <span class="title font-weight-light">Sections</span>
-              </div>
-            </v-card-text>
             <v-btn id="btn" block link to="/admin/all_sections">
               All Sections
               <v-icon dark right>mdi-arrow-right</v-icon>
             </v-btn>
-          </v-card>
+          </status-cards>
         </v-col>
       </v-row>
     </v-container>
   </div>
 </template>
-
-
-
 <script>
 export default {
   components: {
     BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
+    Chart: () => import("@/layout/Chart.vue"),
+    StatusCards: () => import("@/layout/StatusCards.vue"),
   },
   data: () => ({
-    Students: "......",
-    Teachers: "......",
-    Sections: "......",
+    totalEnrolled: 0,
+    totalPending: 0,
+    totalDeclined: 0,
+    totalTeachers: 0,
+    initialized: false,
     items: [
       {
         text: "Home",
@@ -105,45 +88,101 @@ export default {
       {
         text: "Dashboard",
         disabled: true,
-        href: "breadcrumbs_link_2",
       },
     ],
+    enrollmentChart: {
+      data: {
+        labels: [],
+        series: [[0], [0]],
+      },
+      options: {
+        seriesBarDistance: 10,
+        axisX: {
+          showGrid: false,
+        },
+        low: 0,
+        high: 1000,
+        chartPadding: {
+          top: 0,
+          right: 5,
+          bottom: 0,
+          left: 0,
+        },
+      },
+      responsiveOptions: [
+        [
+          "screen and (max-width: 640px)",
+          {
+            seriesBarDistance: 5,
+            axisX: {
+              labelInterpolationFnc: function (value) {
+                return value[0];
+              },
+            },
+          },
+        ],
+      ],
+    },
   }),
-
   created() {
-    this.initializeData();
     setTimeout(() => {
       this.initializeData();
+      this.initialized = true;
     }, 3000);
+    this.initializeData();
   },
-  mounted: function () {},
-
+  mounted: () => {},
   methods: {
     initializeData() {
-      this.Teachers = this.$store.getters.totalTeachers;
-      this.Students = this.$store.getters.totalStudents;
-      this.Sections = this.$store.getters.totalSections;
+      this.enrollmentChart.data.series = [[0], [0]];
+      let enrollments = this.$store.getters.allStudents;
+      this.totalEnrolled = enrollments.length;
+      this.totalPending = this.$store.getters.allPendingEnrollments.length;
+      this.totalDeclined = this.$store.getters.allDeclinedEnrollments.length;
+      this.totalTeachers = this.$store.getters.totalTeachers;
+      for (const index in enrollments) {
+        if (enrollments.hasOwnProperty.call(enrollments, index)) {
+          const element = enrollments[index];
+          const school_year = element["start_school_year"];
+          let gender = element["student"]["gender"];
+
+          let exist = this.enrollmentChart.data.labels.some((item) => {
+            return item === school_year;
+          });
+          if (!exist) {
+            this.enrollmentChart.data.labels.push(school_year);
+            let index = this.enrollmentChart.data.labels.indexOf(school_year);
+            if (gender == "Male") {
+              this.enrollmentChart.data.series[0][index] = 1;
+            }
+            if (gender == "Female") {
+              this.enrollmentChart.data.series[1][index] = 1;
+            }
+          } else {
+            let index = this.enrollmentChart.data.labels.indexOf(school_year);
+            if (gender == "Male") {
+              if (this.enrollmentChart.data.series[0][index] != null) {
+                this.enrollmentChart.data.series[0][index] += 1;
+              } else {
+                this.enrollmentChart.data.series[0][index] = 1;
+              }
+            }
+            if (gender == "Female") {
+              if (this.enrollmentChart.data.series[1][index] != null) {
+                this.enrollmentChart.data.series[1][index] += 1;
+              } else {
+                this.enrollmentChart.data.series[1][index] = 1;
+              }
+            }
+          }
+        }
+      }
+      // console.log(this.enrollmentChart.data.labels);
+      // console.log(this.enrollmentChart.data.series);
     },
   },
 };
 </script>
 
-
-
 <style>
-#btn:hover,
-#btn:focus {
-  text-decoration: none;
-}
-
-#students {
-  width: 30%;
-}
-
-#text {
-  float: right;
-  margin-right: 35px;
-  margin-top: 40px;
-  text-align-last: right;
-}
 </style>

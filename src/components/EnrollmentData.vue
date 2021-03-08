@@ -24,16 +24,25 @@
             </div>
           </v-card>
           <v-card-title>
-            <!-- Sort By&nbsp;&nbsp; -->
-            <v-icon color="black">mdi-account-filter</v-icon>
-            <v-select :items="grade_level" v-model="search" label="Grade Level">
-            </v-select>
+            Sort By&nbsp;&nbsp;
+            <v-select
+              v-model="gradeLevel"
+              :items="grade_level"
+              @change="filterByGradeLevel($event)"
+              menu-props="auto"
+              label="Grade Level"
+              hide-details
+              dense
+              outlined
+            ></v-select>
             <v-spacer></v-spacer>
             <v-text-field
               v-model="search"
+              @keyup="filterByName(($event = search))"
               append-icon="mdi-magnify"
-              color="black"
               label="Search"
+              single-line
+              hide-details
             ></v-text-field>
           </v-card-title>
           <v-data-table
@@ -224,11 +233,13 @@ export default {
     BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
   },
   data: () => ({
+    gradeLevel: null,
     year: new Date().getFullYear(),
     toggle_exclusive: undefined,
     dialog: false,
     section: null,
     search: "",
+    errors: {},
     items: [
       {
         text: "Home",
@@ -352,6 +363,7 @@ export default {
       }
     },
 
+    //Method For Declining The Section
     declineEnrollment(id, index) {
       this.$axios
         .post("declineEnrollment/" + id)
@@ -363,6 +375,36 @@ export default {
           console.log(error);
         });
     },
+
+    //Methods For All Errors
+    setErrors(error) {
+      this.errors = error;
+    },
+
+    hasError(fieldname) {
+      return fieldname in this.errors;
+    },
+
+    clearError(event) {
+      alert(event);
+      this.$delete(this.errors, event);
+    },
+
+    getError(fieldName) {
+      return this.errors[fieldName][0];
+    },
+  },
+
+  computed: {
+    hasAnyErors() {
+      return Object.keys(this.errors).length > 0;
+    },
+
+    // filteredList(){
+    //     return this.students.filter(val =>{
+    //       return val.student.firstname.concat(" ",val.student.lastname," ",val.student.grade_level).toLowerCase().includes(this.search.toLowerCase());
+    //     })
+    //  },
   },
 };
 </script>
@@ -381,7 +423,12 @@ export default {
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;
-
   color: #48d3ff;
+}
+
+.invalid-feedback {
+  color: red;
+  margin-top: -3%;
+  font-size: 14px;
 }
 </style>

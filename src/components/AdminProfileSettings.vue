@@ -86,11 +86,6 @@ export default {
       showPass: "",
       showNPass: "",
       showCPass: "",
-      // Target: {
-      //   currentpassword: null,
-      //   new_password: null,
-      //   confirm_password: null
-      // },
       errors: {}
     };
   },
@@ -150,15 +145,10 @@ export default {
 
     clearErrors(event) {
       this.$delete(this.errors, event.target.name);
-     // this.Target[event.target.name] = false;
     },
 
     getError(fieldName) {
-      // for (let key in this.Target) {
-      //   if (key == fieldName) {
-      //     this.Target[key]=true;
-      //   }
-      // }
+
       return this.errors[fieldName][0];
     },
 
@@ -167,8 +157,7 @@ export default {
       this.newpassword = null;
       this.confirmPass = null;
       for (let key in this.errors) {
-        this.$delete(this.errors, key);
-        //this.Target[key] = false;
+        this.$delete(this.errors, key)
       }
     }
   },

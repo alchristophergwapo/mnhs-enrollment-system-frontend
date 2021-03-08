@@ -6,11 +6,27 @@
     <div>
       <v-row>
         <v-col cols="12" md="7" lg="8">
-          <v-card outlined>
-            <v-card class="table-header" color="orange">
+          <v-card outlined class="base-card">
+            <v-card class="table-header" color="#00cae3">
               <v-card-title class="text-center justify-center">
                 <div class="display-2 font-weight-light">Junior High</div>
               </v-card-title>
+              <v-container>
+                <v-tabs
+                  v-model="tab1"
+                  fixed-tabs
+                  background-color="#00cae3"
+                  color="white"
+                  show-arrows
+                >
+                  <v-tab
+                    v-for="item in junior_high"
+                    :key="item.text"
+                    @click="selectedJHS(item.text)"
+                    >{{ item.text }}</v-tab
+                  >
+                </v-tabs>
+              </v-container>
             </v-card>
             <div>
               <!--------- Dialog For Junior High School Category ----------------------------------------------------- ------------------------------------->
@@ -66,19 +82,7 @@
                 </v-dialog>
               </div>
               <!----------------------------------------------Modal For Junior High Dialog--------------------------------------------------->
-              <v-tabs
-                v-model="tab1"
-                background-color="#C4C4C4"
-                color="basil"
-                fixed-tabs
-              >
-                <v-tab
-                  v-for="item in junior_high"
-                  :key="item.text"
-                  @click="selectedJHS(item.text)"
-                  >{{ item.text }}</v-tab
-                >
-              </v-tabs>
+
               <v-tabs-items v-model="tab1">
                 <v-tab-item v-for="(item, index) in junior_high" :key="index">
                   <v-card-title>
@@ -98,40 +102,24 @@
                         md="6"
                         sm="6"
                       >
-                        <v-card>
-                          <v-card-title>
-                            <v-icon>mdi-home-group</v-icon>
-                            {{ dta.name }}
-                          </v-card-title>
-                          <v-card-text>
-                            <v-icon>mdi-home-account</v-icon>
-                            {{ dta.capacity }}
-                          </v-card-text>
-                          <v-card-text>
-                            <v-icon>mdi-account-box</v-icon>
-                            {{ dta.teacher_id }}
-                          </v-card-text>
-                          <v-card-text>
-                            <v-icon @click="juniorEdit(dta.id)" color="primary"
-                              >mdi-pencil-box</v-icon
+                        <sections-card
+                          :section="dta.name"
+                          :capacity="dta.capacity"
+                          :total_students="dta.total_students"
+                          :teacher="dta.teacher_id"
+                          icon_background_color="#00cae3"
+                        >
+                          <template v-slot:edit>
+                            <v-btn
+                              @click="seniorEdit(dta.id)"
+                              outlined
+                              color="primary"
                             >
-                          </v-card-text>
-                          <!-- <v-card-text>
-                            <v-icon @click="juniorRemove(dta.id)"
-                              >mdi-delete</v-icon
-                            >
-                          </v-card-text> -->
-                          <v-card-actions>
-                            <v-progress-linear
-                              :value="(dta.total_students / dta.capacity) * 100"
-                              height="25"
-                            >
-                              <strong>
-                                {{ dta.total_students }} Students Enrolled
-                              </strong>
-                            </v-progress-linear>
-                          </v-card-actions>
-                        </v-card>
+                              edit section
+                              <v-icon>mdi-pencil</v-icon>
+                            </v-btn>
+                          </template>
+                        </sections-card>
                       </v-col>
                       <v-card-title class="text-center justify-center py-6">
                         <h1
@@ -151,11 +139,27 @@
         <!-----------------------------------End OF The Modal For All Junior High-------------------------------------------------->
         <br />
         <v-col cols="12" md="5" lg="4">
-          <v-card outlined>
+          <v-card outlined class="base-card">
             <v-card class="table-header" color="#4caf50">
               <v-card-title class="text-center justify-center">
                 <div class="display-2 font-weight-light">Senior High</div>
               </v-card-title>
+              <v-container>
+                <v-tabs
+                  v-model="tab2"
+                  fixed-tabs
+                  background-color="#4caf50"
+                  color="white"
+                  show-arrows
+                >
+                  <v-tab
+                    v-for="(item, index) in senior_high"
+                    :key="index"
+                    @click="selectedSHS(item.text)"
+                    >{{ item.text }}</v-tab
+                  >
+                </v-tabs>
+              </v-container>
             </v-card>
             <!------------- ----------- ----------Dialog For Senior High School ------------------------------------------------->
             <div class="add_btn">
@@ -209,20 +213,8 @@
                 </v-card>
               </v-dialog>
             </div>
+
             <!-- ---------------------------------End Of The Dialog Of A Senior High School--------------------------------------------- -->
-            <v-tabs
-              v-model="tab2"
-              background-color="#C4C4C4"
-              color="basil"
-              fixed-tabs
-            >
-              <v-tab
-                v-for="(item, index) in senior_high"
-                :key="index"
-                @click="selectedSHS(item.text)"
-                >{{ item.text }}</v-tab
-              >
-            </v-tabs>
 
             <v-tabs-items v-model="tab2">
               <v-tab-item v-for="(item, index) in senior_high" :key="index">
@@ -243,37 +235,24 @@
                       md="12"
                       sm="6"
                     >
-                      <v-card>
-                        <v-card-title>
-                          <v-icon>mdi-home-group</v-icon>
-                          {{ i.name }}
-                        </v-card-title>
-                        <v-card-text>
-                          <div>
-                            <v-icon>mdi-home-account</v-icon>
-                            {{ i.capacity }}
-                          </div>
-                        </v-card-text>
-                        <v-card-text>
-                          <v-icon>mdi-account-box</v-icon>
-                          {{ i.teacher_id }}
-                        </v-card-text>
-                        <v-card-text>
-                          <v-icon @click="seniorEdit(i.id)" color="primary"
-                            >mdi-pencil-box</v-icon
+                      <sections-card
+                        :section="i.name"
+                        :capacity="i.capacity"
+                        :total_students="i.total_students"
+                        :teacher="i.teacher_id"
+                        icon_background_color="#4caf50"
+                      >
+                        <template v-slot:edit>
+                          <v-btn
+                            @click="seniorEdit(i.id)"
+                            outlined
+                            color="primary"
                           >
-                        </v-card-text>
-                        <v-card-actions>
-                          <v-progress-linear
-                            :value="(i.total_students / i.capacity) * 100"
-                            height="25"
-                          >
-                            <strong>
-                              {{ i.total_students }} Students Enrolled
-                            </strong>
-                          </v-progress-linear>
-                        </v-card-actions>
-                      </v-card>
+                            edit section
+                            <v-icon>mdi-pencil</v-icon>
+                          </v-btn>
+                        </template>
+                      </sections-card>
                     </v-col>
                     <v-col>
                       <v-card-title
@@ -300,10 +279,9 @@
 export default {
   components: {
     BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
-    // InputCard: () => import("@/layout/InputCardDialog.vue"),
+    SectionsCard: () => import("@/layout/SectionsCard.vue"),
   },
   data: () => ({
-    HHTP_REQUEST_URL: "http://127.0.0.1:8000/api/",
     juniordialog: false,
     seniorDialog: false,
     edit: null,
@@ -316,9 +294,6 @@ export default {
     tab1: null,
     tab2: null,
     errors: {},
-    //seniorErrors:{},
-    //Target: { name: null, capacity: null },
-    //TargetSenior:{ name: null, capacity: null },
     juniorSection: {
       name: "Grade 7",
     },
@@ -353,35 +328,31 @@ export default {
   mounted: function () {
     //Function For Getting All Grade 7 Sections
     this.$axios
-      .get(
-        `${this.HHTP_REQUEST_URL}grade7Section/` +
-          `${this.junior_high[0].text.split(" ")[1]}`
-      )
+      .get(`grade7Section/` + `${this.junior_high[0].text.split(" ")[1]}`)
       .then((response) => {
         this.junior_high[0].content = response.data.sections;
       })
       .catch((error) => {
         console.log(error);
       });
-
+    //Function For Getting All Grade 12 Sections
     this.$axios
-      .get(
-        `${this.HHTP_REQUEST_URL}grade12Section/` +
-          `${this.senior_high[0].text.split(" ")[1]}`
-      )
+      .get(`grade12Section/` + `${this.senior_high[0].text.split(" ")[1]}`)
       .then((response) => {
         this.senior_high[0].content = response.data.sections;
       })
       .catch((error) => {
         console.log(error);
       });
+    console.log(this.senior_high);
+    console.log(this.junior_high);
   },
   methods: {
     // Select and Getting The Sections For The Selected Grade Level In Junior High School
     selectedJHS(item) {
       this.juniorSection.name = item;
       this.$axios
-        .get(`${this.HHTP_REQUEST_URL}getSection/` + `${item.split(" ")[1]}`)
+        .get(`getSection/` + `${item.split(" ")[1]}`)
         .then((response) => {
           if (response.data.grade < 11) {
             this.junior_high.forEach((junior) => {
@@ -400,7 +371,7 @@ export default {
     selectedSHS(value) {
       this.sectionSenior.name = value;
       this.$axios
-        .get(`${this.HHTP_REQUEST_URL}getSection/` + `${value.split(" ")[1]}`)
+        .get(`getSection/` + `${value.split(" ")[1]}`)
         .then((response) => {
           if (response.data.grade > 10) {
             this.senior_high.forEach((senior) => {
@@ -433,7 +404,6 @@ export default {
       this.Junior.capacity = null;
       for (let key in this.errors) {
         this.$delete(this.errors, key);
-        //this.Target[key] = false;
       }
       this.juniordialog = false;
     },
@@ -444,7 +414,6 @@ export default {
       this.Senior.capacity = null;
       for (let key in this.errors) {
         this.$delete(this.errors, key);
-        //this.Target[key] = false;
       }
       this.seniorDialog = false;
     },
@@ -456,7 +425,7 @@ export default {
         await new Promise((resolve) => setTimeout(resolve, 3000));
         this.loading = false;
         this.$axios
-          .post(`${this.HHTP_REQUEST_URL}addSection`, {
+          .post(`addSection`, {
             grade: grades.split(" ")[1],
             name: this.Junior.section,
             capacity: this.Junior.capacity,
@@ -485,14 +454,12 @@ export default {
           });
       } else {
         this.$axios
-          .post(
-            `${this.HHTP_REQUEST_URL}updateSection/` + `${this.Junior.id}`,
-            {
-              name: this.Junior.section,
-              capacity: this.Junior.capacity,
-            }
-          )
+          .post(`updateSection/` + `${this.Junior.id}`, {
+            name: this.Junior.section,
+            capacity: this.Junior.capacity,
+          })
           .then((response) => {
+            console.log(response);
             if (response.data.message) {
               // alert("successfully update!");
               this.$swal.fire({
@@ -521,7 +488,7 @@ export default {
       this.edit = true;
       this.juniordialog = true;
       this.$axios
-        .get(`${this.HHTP_REQUEST_URL}editSection/` + `${id}`)
+        .get(`editSection/` + `${id}`)
         .then((response) => {
           if (response.data) {
             this.Junior.id = response.data.section.id;
@@ -539,7 +506,7 @@ export default {
       this.edit = true;
       this.seniorDialog = true;
       this.$axios
-        .get(`${this.HHTP_REQUEST_URL}editSection/` + `${id}`)
+        .get(`editSection/` + `${id}`)
         .then((response) => {
           if (response.data) {
             this.Senior.id = response.data.section.id;
@@ -555,7 +522,7 @@ export default {
     //Method For Removing The Section In Junior High Category
     juniorRemove(sec) {
       this.$axios
-        .get(`${this.HHTP_REQUEST_URL}delAnySection/` + `${sec}`)
+        .get(`delAnySection/` + `${sec}`)
         .then((response) => {
           if (response.data.message) {
             this.selectedJHS(response.data.section);
@@ -577,7 +544,7 @@ export default {
         await new Promise((resolve) => setTimeout(resolve, 3000));
         this.loading = false;
         this.$axios
-          .post(`${this.HHTP_REQUEST_URL}addSection`, {
+          .post(`addSection`, {
             grade: item.split(" ")[1],
             name: this.Senior.section,
             capacity: this.Senior.capacity,
@@ -599,15 +566,12 @@ export default {
             }
           });
       } else {
-        alert("updated");
+        // alert("updated");
         this.$axios
-          .post(
-            `${this.HHTP_REQUEST_URL}updateSection/` + `${this.Senior.id}`,
-            {
-              name: this.Senior.section,
-              capacity: this.Senior.capacity,
-            }
-          )
+          .post(`updateSection/` + `${this.Senior.id}`, {
+            name: this.Senior.section,
+            capacity: this.Senior.capacity,
+          })
           .then((response) => {
             if (response.data.message) {
               // alert("successfully update!");
@@ -641,6 +605,7 @@ export default {
 
     clearError(event) {
       this.$delete(this.errors, event.target.name);
+
       // this.Target[event.target.name] = false;
     },
 
@@ -653,29 +618,6 @@ export default {
       return this.errors[fieldName][0];
     },
 
-    //Methods For All Errors in Senior High School
-    // setSeniorErrors(error){
-    //   this.seniorErrors= error;
-    // },
-
-    // hasSeniorError(fieldname) {
-    //   return fieldname in this.seniorErrors;
-    // },
-
-    // clearSeniorError(event) {
-    //   this.$delete(this.seniorErrors, event.target.name);
-    //   this.TargetSenior[event.target.name] = false;
-    // },
-
-    // getSeniorError(fieldName) {
-    //   for (let key in this.TargetSenior) {
-    //     if (key == fieldName) {
-    //       this.TargetSenior[key] = true;
-    //     }
-    //   }
-    //   return this.seniorErrors[fieldName][0];
-    // },
-
     filter(data) {
       console.log(data);
     },
@@ -685,22 +627,17 @@ export default {
     hasAnyErors() {
       return Object.keys(this.errors).length > 0;
     },
-
-    //  hasSeniorAnyErors() {
-    //     return Object.keys(this.seniorErrors).length > 0;
-    //   }
   },
 };
 </script>
 
-
-
-
-
-
-
-
 <style>
+.theme--light.v-tabs > .v-tabs-bar .v-tab:not(.v-tab--active),
+.theme--light.v-tabs > .v-tabs-bar .v-tab:not(.v-tab--active) > .v-icon,
+.theme--light.v-tabs > .v-tabs-bar .v-tab:not(.v-tab--active) > .v-btn,
+.theme--light.v-tabs > .v-tabs-bar .v-tab--disabled {
+  color: hsla(0, 0%, 100%, 0.6);
+}
 .mx-auto {
   width: 250px;
   height: 100px;
@@ -714,5 +651,35 @@ export default {
   color: red;
   margin-top: -7%;
   font-size: 14px;
+}
+
+.table-header {
+  position: inherit;
+  top: -20px;
+  margin: 0 20px 0 20px;
+}
+
+.table-header .v-card__title,
+.table-header .subtitle-1 {
+  color: white;
+}
+
+.base-card {
+  margin-top: 50px;
+}
+
+.section-name {
+  position: inherit;
+  top: -20px;
+  margin-left: 10px;
+  width: 200px;
+}
+
+.section-name .v-card__title {
+  color: white;
+}
+
+.edit {
+  margin-left: 53%;
 }
 </style>
