@@ -776,7 +776,6 @@ export default {
               console.log(error);
             }
           });
-
       }
     },
 
@@ -808,7 +807,6 @@ export default {
     hasAnyErors() {
       return Object.keys(this.errors).length > 0;
     },
-
   }
 };
 </script>

@@ -15,7 +15,11 @@
     <v-divider></v-divider>
     <v-list>
       <v-list-item class="nav-link" link to="/admin/" exact>
+<<<<<<< HEAD
         <v-icon color="black">mdi-view-dashboard</v-icon>
+=======
+        <v-icon>mdi-view-dashboard</v-icon>
+>>>>>>> b1efe6795340c75ae80d6d053dfe3d548e02f358
 
         <v-list-item-content class="nav-def">
           <v-list-item-title>Dashboard</v-list-item-title>

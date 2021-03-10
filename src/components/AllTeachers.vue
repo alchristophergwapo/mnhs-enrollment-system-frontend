@@ -200,7 +200,7 @@ export default {
     //Methods for displaying all teachers
     display(){
       this.$axios
-        .get(`${this.HHTP_REQUEST_URL}allTeacher`)
+        .get(`allTeacher`)
         .then(response => {
           this.teachers = response.data;
         })
