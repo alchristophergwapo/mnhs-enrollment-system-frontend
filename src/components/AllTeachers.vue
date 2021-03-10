@@ -68,6 +68,8 @@
                         >{{ getError("contact") }}</p>
                         <v-select
                           v-model="selected_section"
+                          item-text="name"
+                          item-value="id"
                           :items="sections"
                           label="Assigned Section Area"
                         ></v-select>
@@ -92,6 +94,8 @@
         </v-card-title>
         <v-data-table
           :headers="headers"
+          item-text="name"
+          item-value="id"
           :items="teachers"
           :search="search"
           :items-per-page="10"
@@ -160,7 +164,7 @@ export default {
         { text: "Assigned Section", value: "section_id" },
         { text: "Action", value: "action" }
       ],
-      teachers: [],
+      teachers:[],
       errors: {},
     
     };
@@ -168,13 +172,24 @@ export default {
 
   created() {
     //this.teachers =this.$store.getters.allTeacher;
-    let sections =this.$store.getters.allSections;
-    for (const key in sections) {
-      if (sections.hasOwnProperty.call(sections, key)) {
-        const element = sections[key];
-        this.sections.push(element["name"]);
-      }
-    }
+    // let sections =this.$store.getters.allSections;
+    // for (const key in sections) {
+    //   if (sections.hasOwnProperty.call(sections, key)) {
+    //     const element = sections[key];
+    //     this.sections.push({id:element["id"],name:element["name"]});
+    //   }
+    // }
+     this.$axios
+        .get(`${this.HHTP_REQUEST_URL}allSections`)
+        .then(response => {
+          response.data.sections.forEach(element => {
+            this.sections.push({id:element.id,name:element.name})
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+   console.log(this.sections);
   },
 
   mounted() {
@@ -221,22 +236,15 @@ export default {
     },
 
     editTeacher(teacher) {
+      console.log(teacher);
       this.status = "Update Teacher";
       this.statusdialog = true;
       this.booleanStatus = true;
-      if(teacher.section_id==null || teacher.section_id==" "){
       this.Teacher = teacher.name;
       this.Email = teacher.email;
       this.Contact = teacher.contact;
       this.Id = teacher.id;
-      }
-   else{
-      this.Teacher = teacher.name;
-      this.Email = teacher.email;
-      this.Contact = teacher.contact;
-      this.Id = teacher.id;
-      this.selected_section=teacher.section_id.split(" ")[3];
-      }
+      this.selected_section=teacher.student_id;
     },
 
     //Methods for showing the  Add Teacher
@@ -267,6 +275,7 @@ export default {
 
     //Method for Adding A Teacher in save button
     async addTeacher() {
+      console.log("section:"+this.selected_section);
       if (this.booleanStatus == false) {
         this.loading = true;
         await new Promise(resolve => setTimeout(resolve, 700));
@@ -292,7 +301,7 @@ export default {
                this.$swal.fire({
                 icon: "error",
                 title: "Error",
-                text:"Section "+this.selected_section+" was already assigned by "+response.data.teacher+".",
+                text:"Section "+response.data.section+" was already assigned to "+response.data.teacher+".",
               });
             }
           })
@@ -329,7 +338,7 @@ export default {
             } else {
               this.$swal
                 .fire({ 
-                  title:this.selected_section+" section was assigned by "+response.data.teacher+".",
+                  title:response.data.section+" section was assigned to "+response.data.teacher+".",
                   text: "Are you sure to update this!",
                   icon: "warning",
                   showCancelButton: true,

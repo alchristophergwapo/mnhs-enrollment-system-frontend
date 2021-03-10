@@ -6,19 +6,12 @@
     expand-on-hover
     app
   >
-   <v-list color="#3BBDDA">
-      <div class="head" >
-          <img :src="require('../assets/images/mnhs-logo.png')"  width="150" height="150"/>
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title class="title">
-                ADMINISTRATOR
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-      </div>
-    </v-list>
-
+   <v-list-item class="px-2"  >
+        <v-list-item-avatar size="50">
+          <v-img src="../assets/images/mnhs-logo.png"></v-img>
+        </v-list-item-avatar>
+        <v-list-item-title style="font-weight:bold; font-size:20px;">ADMINISTRATOR</v-list-item-title>
+  </v-list-item>
     <v-divider></v-divider>
     <v-list>
       <v-list-item class="nav-link" link to="/admin/" exact>
@@ -83,7 +76,8 @@ export default {
 </script>
 
 <style lang="css" scoped>
-  .head{
-    text-align: center !important;
+  .px-2{
+    padding-top: 30px !important;
+    padding-bottom: 30px !important;
   }
 </style>

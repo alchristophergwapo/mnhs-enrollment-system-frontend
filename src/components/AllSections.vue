@@ -47,7 +47,7 @@
                         <div>
                        <v-select
                            item-text="teacher"
-                           item-value="teacher"
+                           item-value="id"
                            v-model="Junior.teacher"
                           :items="teachers"
                           label="Assigned Teacher"
@@ -110,7 +110,7 @@
                         <v-card>
                           <v-card-title>
                             <v-icon  color="black">mdi-home-group</v-icon>
-                            {{ dta.name }}
+                            {{ dta.name}}
                           </v-card-title>
                           <v-card-text>
                             <v-icon  color="black">mdi-home-account</v-icon>
@@ -199,7 +199,7 @@
                       </p>
                       <v-select
                            item-text="teacher"
-                           item-value="teacher"
+                           item-value="id"
                            v-model="Senior.teacher"
                           :items="teachers"
                           label="Assigned Teacher"
@@ -276,8 +276,8 @@
                         </v-card-text>
                         <v-card-text>
                           <v-icon @click="seniorEdit(i)" color="primary"
-                            >mdi-pencil-box</v-icon
-                          >
+                            >mdi-pencil-box</v-icon>
+                            
                         </v-card-text>
                            <v-card-text>
                             <v-icon @click="juniorRemove(i.id)"
@@ -379,7 +379,7 @@ export default {
         .get(`${this.HHTP_REQUEST_URL}allTeachersForSection`)
         .then(response => {
           response.data.forEach(element => {
-             this.teachers.push({teacher:element.name});
+             this.teachers.push({id:element.id,teacher:element.name});
           })
         })
         .catch(error => {
@@ -519,7 +519,7 @@ export default {
                 this.$swal.fire({
                 icon: "error",
                 title: "Error",
-                text:this.Junior.teacher+" was already assigned by section "+response.data.failed+".",
+                text:response.data.teacher+" was already assigned to section "+response.data.failed+".",
               });
             }
           })
@@ -532,6 +532,7 @@ export default {
           });
       } else {
         //update
+        console.log("updateteacher:"+this.Junior.teacher);
         this.$axios
           .post(
             `${this.HHTP_REQUEST_URL}updateSection/` + `${this.Junior.id}`,
@@ -553,7 +554,7 @@ export default {
             } else {
                this.$swal
                 .fire({ 
-                  title:this.Junior.teacher+" was assigned to "+response.data.failed+".",
+                  title:response.data.teacher+" was assigned to "+response.data.failed+".",
                   text: "Are you sure to update this!",
                   icon: "warning",
                   showCancelButton: true,
@@ -613,7 +614,8 @@ export default {
 
     //Method For Editing The Section In Junior High
     async juniorEdit(item) {
-       this.Junior.teacher=item.teacher_id;
+       console.log(item);
+       this.Junior.teacher=item.gradelevel_id;
        this.edit = true
        this.juniordialog = true;
        this.Junior.section =item.name;
@@ -623,7 +625,7 @@ export default {
 
     //Method For Editing The Section In Senior High School
     async seniorEdit(data) {
-      this.Senior.teacher=data.teacher_id;
+      this.Senior.teacher=data.gradelevel_id;
       this.edit=true;
       this.seniordialog=true;
       this.Senior.section=data.name;

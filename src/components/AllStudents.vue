@@ -10,7 +10,7 @@
           </v-card-title>
 
           <div class="subtitle-1 font-weight-light text-center justify-center">
-            All students as of year {{ year }}
+            All students enrolled as of year {{ year }}
           </div>
         </v-card>
         <v-card-title>
