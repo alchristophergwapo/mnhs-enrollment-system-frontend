@@ -1,11 +1,13 @@
 <template>
-  <v-card outlined class="sections-base-card">
-    <div class="icon-container" :style="'background:' + icon_background_color">
-      <v-icon large>mdi-home-group</v-icon>
-      <h3 class="display-1 font-weight-light text--primary">
+  <v-card outlined class="sections-base-card" elevation="8">
+    <!-- <v-card class="icon-container" outlined elevation="4"> -->
+    <div class="text-center justify-center" style="width: 100%">
+      <v-icon large color="black">mdi-home-group</v-icon>
+      <h3 class="display-1 font-weight-light">
         {{ section }}
       </h3>
     </div>
+    <!-- </v-card> -->
     <template> </template>
     <v-card-text>
       <div>
@@ -22,7 +24,11 @@
         <slot name="edit"></slot>
       </div>
     </v-card-text>
-    <v-progress-linear :value="(total_students / capacity) * 100" height="25">
+    <v-progress-linear
+      :value="(total_students / capacity) * 100"
+      height="25"
+      :color="progress_color"
+    >
       <strong>
         {{ total_students }} Student(s) Enrolled
       </strong> </v-progress-linear
@@ -34,10 +40,6 @@
 export default {
   name: "SectionsCard",
   props: {
-    icon_background_color: {
-      type: String,
-      default: undefined,
-    },
     section: {
       type: String,
       default: undefined,
@@ -52,6 +54,9 @@ export default {
     teacher: {
       type: String,
     },
+    progress_color: {
+      type: String,
+    },
   },
 };
 </script>
@@ -62,7 +67,7 @@ export default {
   flex-wrap: wrap;
   position: relative;
   padding: 10px;
-  margin: 20px;
+  margin: 10px;
 }
 
 .icon-container {

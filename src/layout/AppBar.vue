@@ -1,6 +1,8 @@
 <template>
-  <v-app-bar app color="#3BBDDA">
-    <v-toolbar-title>Welcome to Mantalongon, Dalaguete NHS</v-toolbar-title>
+  <v-app-bar app color="primary">
+    <v-toolbar-title class="header"
+      >Welcome to Mantalongon, Dalaguete NHS</v-toolbar-title
+    >
 
     <v-spacer></v-spacer>
 
@@ -9,15 +11,15 @@
         <v-badge
           :content="notifications"
           :value="notifications"
-          color="green"
+          color="red"
           overlap
         >
-          <v-icon large>mdi-bell</v-icon>
+          <v-icon medium color="white">mdi-bell</v-icon>
         </v-badge>
       </v-btn>
     </div>
     <div v-if="$route.name != 'AdminProfile'">
-      <span>{{ user.username }}</span>
+      <span style="color: white">{{ user.username }}</span>
       <v-menu left bottom>
         <template v-slot:activator="{ on, attrs }">
           <span class="label"
@@ -36,7 +38,7 @@
         </v-list>
       </v-menu>
     </div>
-    <v-btn text @click="logout">Logout</v-btn>
+    <v-btn text @click="logout" color="white">Logout</v-btn>
   </v-app-bar>
 </template>
 
@@ -45,12 +47,12 @@ export default {
   props: ["user_details"],
   data() {
     return {
-      notifications:4,
-      user:this.user_details
+      notifications: 4,
+      user: this.user_details,
     };
   },
 
-  methods:{
+  methods: {
     logout() {
       this.$router.push({ path: "/" });
       this.$store.dispatch("logout");
@@ -62,5 +64,9 @@ export default {
 <style>
 .notif {
   margin-right: 20px;
+}
+
+.v-toolbar__title.header {
+  color: white;
 }
 </style>

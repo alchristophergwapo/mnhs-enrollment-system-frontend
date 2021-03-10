@@ -1,36 +1,49 @@
 <template>
-  <v-app>
+  <v-app style="background-color: #eee">
     <!-- <app-bar></app-bar> -->
-    <br>
-    <br>
-    <br>
-    <v-card class="mx-auto my-12" width="100%" max-width="500px">
-      <template slot="progress">
-        <v-progress-linear color="deep-purple" height="10" indeterminate></v-progress-linear>
-      </template>
-      <div class="update-heading">
-        <v-card-title class="text-center justify-center py-5">
-          <h1 class="display-1 basil--text">Update Account Information</h1>
+    <!-- <br />
+    <br />
+    <br /> -->
+    <v-card
+      class="mx-auto my-12"
+      width="100%"
+      max-width="500px"
+      outlined
+      elevation="24"
+    >
+      <v-card class="table-header" color="#2e856e">
+        <v-card-title class="text-center justify-center">
+          <h4 style="color: white">Update Account Information</h4>
         </v-card-title>
-      </div>
-      <br>
+      </v-card>
       <v-container>
+        <template slot="progress">
+          <v-progress-linear
+            color="primary"
+            height="10"
+            indeterminate
+          ></v-progress-linear>
+        </template>
         <v-form>
-          <v-text-field v-model="username" name="username" label="Username" :disabled="true"></v-text-field>
+          <v-text-field
+            v-model="username"
+            name="username"
+            label="Username"
+            :disabled="true"
+          ></v-text-field>
           <v-text-field
             v-model="currentPass"
             :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
-            :type="showPass? 'text' : 'password'"
+            :type="showPass ? 'text' : 'password'"
             name="currentpassword"
             label="Current Password"
             @click:append="showPass = !showPass"
             @keydown="clearErrors"
             :error="hasError('currentpassword')"
           ></v-text-field>
-          <p
-            v-if="hasError('currentpassword')"
-            class="invalid-feedback"
-          >{{getError('currentpassword')}}</p>
+          <p v-if="hasError('currentpassword')" class="invalid-feedback">
+            {{ getError("currentpassword") }}
+          </p>
           <v-text-field
             v-model="newpassword"
             :append-icon="showNPass ? 'mdi-eye' : 'mdi-eye-off'"
@@ -41,7 +54,9 @@
             @keydown="clearErrors"
             :error="hasError('new_password')"
           ></v-text-field>
-          <p v-if="hasError('new_password')" class="invalid-feedback">{{getError('new_password')}}</p>
+          <p v-if="hasError('new_password')" class="invalid-feedback">
+            {{ getError("new_password") }}
+          </p>
           <v-text-field
             v-model="confirmPass"
             :append-icon="showCPass ? 'mdi-eye' : 'mdi-eye-off'"
@@ -52,18 +67,21 @@
             @keydown="clearErrors"
             :error="hasError('confirm_password')"
           ></v-text-field>
-          <p
-            v-if="hasError('confirm_password')"
-            class="invalid-feedback"
-          >{{getError('confirm_password')}}</p>
-          <v-btn class="mr-4" color="error" @click="clear">clear</v-btn>
-          <v-btn
-            class="mr-4"
-            color="info"
-            :loading="loading"
-            :disabled="hasAnyErors"
-            @click="submit"
-          >submit</v-btn>
+          <p v-if="hasError('confirm_password')" class="invalid-feedback">
+            {{ getError("confirm_password") }}
+          </p>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn class="mr-4" color="error" @click="clear">clear</v-btn>
+            <v-btn
+              class="mr-4"
+              color="primary"
+              :loading="loading"
+              :disabled="hasAnyErors"
+              @click="submit"
+              >submit</v-btn
+            >
+          </v-card-actions>
         </v-form>
       </v-container>
     </v-card>
@@ -77,7 +95,6 @@ export default {
   },
   data() {
     return {
-      HHTP_REQUEST_URL: "http://127.0.0.1:8000/api/",
       username: "admin",
       currentPass: null,
       newpassword: null,
@@ -86,50 +103,58 @@ export default {
       showPass: "",
       showNPass: "",
       showCPass: "",
-      errors: {}
+      errors: {},
     };
   },
 
-  mounted: function() {
+  mounted: function () {
     //Get Admin Profile
-    this.$axios
-      .get(`${this.HHTP_REQUEST_URL}getAdminProfile`)
-      .then(response => {
-        this.username = response.data[0].username;
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    const userInfo = localStorage.getItem("user");
+    const userData = JSON.parse(userInfo);
+    if (userData.user.user_type == "admin") {
+      this.username = userData.user.username;
+    }
   },
 
   methods: {
     async submit() {
       this.loading = true;
-      await new Promise(resolve => setTimeout(resolve, 700));
+      await new Promise((resolve) => setTimeout(resolve, 700));
       this.loading = false;
       this.$axios
-        .post(`${this.HHTP_REQUEST_URL}change`, {
+        .post(`change`, {
           username: this.username,
           currentpassword: this.currentPass,
           new_password: this.newpassword,
-          confirm_password: this.confirmPass
+          confirm_password: this.confirmPass,
         })
-        .then(response => {
+        .then((response) => {
           if (response.data.message) {
             this.currentPass = null;
             this.newpassword = null;
             this.confirmPass = null;
-            alert("Successfully changed!");
+            // alert("Successfully changed!");
             //this.$router.push({path:"/admin"});
+            this.$swal.fire({
+              icon: "success",
+              title: "Success",
+              text: "Password is successfully changed.",
+            });
+            this.$store.dispatch("logout");
           } else {
             alert("Your current password is wrong!");
           }
         })
-        .catch(error => {
+        .catch((error) => {
           if (error.response.status == 422) {
             this.setErrors(error.response.data.errors);
           } else {
-            alert("Something went wrong!");
+            // alert("Something went wrong!");
+            this.$swal.fire({
+              icon: "error",
+              title: "Oooops....",
+              text: "Something went wrong",
+            });
           }
         });
     },
@@ -148,7 +173,6 @@ export default {
     },
 
     getError(fieldName) {
-
       return this.errors[fieldName][0];
     },
 
@@ -157,28 +181,19 @@ export default {
       this.newpassword = null;
       this.confirmPass = null;
       for (let key in this.errors) {
-        this.$delete(this.errors, key)
+        this.$delete(this.errors, key);
       }
-    }
+    },
   },
 
   computed: {
     hasAnyErors() {
       return Object.keys(this.errors).length > 0;
-    }
-  }
+    },
+  },
 };
 </script>
 
 
 <style>
-.update-heading {
-  background: rgba(196, 196, 196, 0.5);
-}
-
-.invalid-feedback {
-  color: red;
-  margin-top: -4%;
-  font-size: 14px;
-}
 </style>

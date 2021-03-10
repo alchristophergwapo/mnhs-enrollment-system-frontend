@@ -10,6 +10,8 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 import 'chartist/dist/chartist.min.css'
 import './plugins/base'
 
+import "./assets/stylesheet/style.css";
+
 import VueNativeNotification from 'vue-native-notification'
 import VueSweetalert2 from 'vue-sweetalert2';
 import Axios from 'axios';

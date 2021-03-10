@@ -5,271 +5,360 @@
     <br />
     <div>
       <v-row>
-        <v-col cols="12" md="7" lg="8">
-          <v-card outlined class="base-card">
-            <v-card class="table-header" color="#00cae3">
-              <v-card-title class="text-center justify-center">
-                <div class="display-2 font-weight-light">Junior High</div>
-              </v-card-title>
-              <v-container>
-                <v-tabs
-                  v-model="tab1"
-                  fixed-tabs
-                  background-color="#00cae3"
-                  color="white"
-                  show-arrows
-                >
-                  <v-tab
-                    v-for="item in junior_high"
-                    :key="item.text"
-                    @click="selectedJHS(item.text)"
-                    >{{ item.text }}</v-tab
-                  >
-                </v-tabs>
-              </v-container>
-            </v-card>
-            <div>
-              <!--------- Dialog For Junior High School Category ----------------------------------------------------- ------------------------------------->
-              <div class="add_btn">
-                <v-dialog v-model="juniordialog" persistent max-width="300px">
-                  <v-card>
-                    <v-card-title class="headlineSection">
-                      <span>Add {{ juniorSection.name }} Sections</span>
-                    </v-card-title>
-                    <v-card-text>
-                      <v-container>
-                        <v-text-field
-                          label="Section name"
-                          v-model="Junior.section"
-                          @keydown="clearError"
-                          name="name"
-                          :error="hasError('name')"
-                        ></v-text-field>
-                        <p v-if="hasError('name')" class="invalid-feedback">
-                          {{ getError("name") }}
-                        </p>
-                        <v-text-field
-                          label="Capacity"
-                          type="number"
-                          name="capacity"
-                          @keydown="clearError"
-                          v-model="Junior.capacity"
-                          :error="hasError('capacity')"
-                          min="0"
-                        ></v-text-field>
-                        <p v-if="hasError('capacity')" class="invalid-feedback">
-                          {{ getError("capacity") }}
-                        </p>
-                      </v-container>
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        :disabled="loading"
-                        color="error darken-1"
-                        @click="closeJunior"
-                        >Cancel</v-btn
-                      >
-                      <v-btn
-                        :loading="loading"
-                        color="blue darken-1"
-                        :disabled="hasAnyErors"
-                        @click="addJunior(juniorSection.name)"
-                        >Save</v-btn
-                      >
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-              </div>
-              <!----------------------------------------------Modal For Junior High Dialog--------------------------------------------------->
-
-              <v-tabs-items v-model="tab1">
-                <v-tab-item v-for="(item, index) in junior_high" :key="index">
-                  <v-card-title>
-                    {{ item.text }} Sections
-                    <v-spacer></v-spacer>
-                    <v-btn color="primary" small dark @click="openJunior">
-                      <v-icon>mdi-plus</v-icon>Add Section
-                    </v-btn>
-                  </v-card-title>
+        <v-container>
+          <!--------- Dialog For Junior High School Category ----------------------------------------------------- ------------------------------------->
+          <div class="add_btn">
+            <v-dialog v-model="juniordialog" persistent max-width="350px">
+              <v-card>
+                <v-card-title class="headlineSection">
+                  <span>Add {{ juniorSection.name }} Sections</span>
+                </v-card-title>
+                <v-card-text>
                   <v-container>
-                    <v-row dense>
-                      <v-col
-                        v-for="(dta, index) in item.content"
-                        :key="index"
-                        cols="12"
-                        lg="4"
-                        md="6"
-                        sm="6"
-                      >
-                        <sections-card
-                          :section="dta.name"
-                          :capacity="dta.capacity"
-                          :total_students="dta.total_students"
-                          :teacher="dta.teacher_id"
-                          icon_background_color="#00cae3"
-                        >
-                          <template v-slot:edit>
-                            <v-btn
-                              @click="seniorEdit(dta.id)"
-                              outlined
-                              color="primary"
-                            >
-                              edit section
-                              <v-icon>mdi-pencil</v-icon>
-                            </v-btn>
-                          </template>
-                        </sections-card>
-                      </v-col>
-                      <v-card-title class="text-center justify-center py-6">
-                        <h1
-                          class="font-weight-bold display-1 basil--text"
-                          v-if="item.content.length == 0"
-                        >
-                          No {{ item.text }} Sections created yet.
-                        </h1>
-                      </v-card-title>
-                    </v-row>
+                    <v-text-field
+                      label="Section name"
+                      v-model="Junior.section"
+                      @keydown="clearError"
+                      name="name"
+                      :error="hasError('name')"
+                    ></v-text-field>
+                    <p v-if="hasError('name')" class="invalid-feedback">
+                      {{ getError("name") }}
+                    </p>
+                    <v-text-field
+                      label="Capacity"
+                      type="number"
+                      name="capacity"
+                      @keydown="clearError"
+                      v-model="Junior.capacity"
+                      :error="hasError('capacity')"
+                      min="0"
+                    ></v-text-field>
+                    <p v-if="hasError('capacity')" class="invalid-feedback">
+                      {{ getError("capacity") }}
+                    </p>
                   </v-container>
-                </v-tab-item>
-              </v-tabs-items>
-            </div>
-          </v-card>
-        </v-col>
-        <!-----------------------------------End OF The Modal For All Junior High-------------------------------------------------->
-        <br />
-        <v-col cols="12" md="5" lg="4">
-          <v-card outlined class="base-card">
-            <v-card class="table-header" color="#4caf50">
-              <v-card-title class="text-center justify-center">
-                <div class="display-2 font-weight-light">Senior High</div>
-              </v-card-title>
-              <v-container>
-                <v-tabs
-                  v-model="tab2"
-                  fixed-tabs
-                  background-color="#4caf50"
-                  color="white"
-                  show-arrows
-                >
-                  <v-tab
-                    v-for="(item, index) in senior_high"
-                    :key="index"
-                    @click="selectedSHS(item.text)"
-                    >{{ item.text }}</v-tab
-                  >
-                </v-tabs>
-              </v-container>
-            </v-card>
-            <!------------- ----------- ----------Dialog For Senior High School ------------------------------------------------->
-            <div class="add_btn">
-              <v-dialog v-model="seniorDialog" persistent max-width="300px">
-                <v-card>
-                  <v-card-title class="headlineSection">
-                    <span>Add {{ sectionSenior.name }} Sections</span>
-                  </v-card-title>
-                  <v-card-text>
-                    <v-container>
-                      <v-text-field
-                        label="Section name"
-                        v-model="Senior.section"
-                        @keydown="clearError"
-                        name="name"
-                        :error="hasError('name')"
-                      ></v-text-field>
-                      <p v-if="hasError('name')" class="invalid-feedback">
-                        {{ getError("name") }}
-                      </p>
-                      <v-text-field
-                        label="Capacity"
-                        type="number"
-                        name="capacity"
-                        @keydown="clearError"
-                        v-model="Senior.capacity"
-                        :error="hasError('capacity')"
-                        min="0"
-                      ></v-text-field>
-                      <p v-if="hasError('capacity')" class="invalid-feedback">
-                        {{ getError("capacity") }}
-                      </p>
-                    </v-container>
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      :disabled="loading"
-                      color="error darken-1"
-                      @click="closeSenior"
-                      >Cancel</v-btn
-                    >
-                    <v-btn
-                      :loading="loading"
-                      :disabled="hasAnyErors"
-                      color="blue darken-1"
-                      @click="addSenior(sectionSenior.name)"
-                      >Save</v-btn
-                    >
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-            </div>
-
-            <!-- ---------------------------------End Of The Dialog Of A Senior High School--------------------------------------------- -->
-
-            <v-tabs-items v-model="tab2">
-              <v-tab-item v-for="(item, index) in senior_high" :key="index">
-                <v-card-title>
-                  {{ item.text }} Sections
+                </v-card-text>
+                <v-card-actions>
                   <v-spacer></v-spacer>
-                  <v-btn color="primary" small dark @click="openSenior">
-                    <v-icon>mdi-plus</v-icon>Add Section
-                  </v-btn>
+                  <v-btn
+                    :disabled="loading"
+                    color="error darken-1"
+                    @click="closeJunior"
+                    >Cancel</v-btn
+                  >
+                  <v-btn
+                    :loading="loading"
+                    color="primary darken-1"
+                    :disabled="hasAnyErors"
+                    @click="addJunior(juniorSection.name)"
+                    >Save</v-btn
+                  >
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </div>
+          <!----------------------------------------------Modal For Junior High Dialog--------------------------------------------------->
+          <!--------- Dialog For Junior High School Category ----------------------------------------------------- ------------------------------------->
+          <div class="add_btn">
+            <v-dialog v-model="juniordialog" persistent max-width="350px">
+              <v-card>
+                <v-card-title class="headlineSection">
+                  <span>Add {{ juniorSection.name }} Sections</span>
+                </v-card-title>
+                <v-card-text>
+                  <v-container>
+                    <v-text-field
+                      label="Section name"
+                      v-model="Junior.section"
+                      @keydown="clearError"
+                      name="name"
+                      :error="hasError('name')"
+                    ></v-text-field>
+                    <p v-if="hasError('name')" class="invalid-feedback">
+                      {{ getError("name") }}
+                    </p>
+                    <v-text-field
+                      label="Capacity"
+                      type="number"
+                      name="capacity"
+                      @keydown="clearError"
+                      v-model="Junior.capacity"
+                      :error="hasError('capacity')"
+                      min="0"
+                    ></v-text-field>
+                    <p v-if="hasError('capacity')" class="invalid-feedback">
+                      {{ getError("capacity") }}
+                    </p>
+                  </v-container>
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    :disabled="loading"
+                    color="error darken-1"
+                    @click="closeJunior"
+                    >Cancel</v-btn
+                  >
+                  <v-btn
+                    :loading="loading"
+                    color="blue darken-1"
+                    :disabled="hasAnyErors"
+                    @click="addJunior(juniorSection.name)"
+                    >Save</v-btn
+                  >
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+          </div>
+          <div>
+            <v-card>
+              <v-card class="table-header" color="#2e856e">
+                <v-card-title class="text-center justify-center">
+                  <div class="display-2 font-weight-light"></div>
                 </v-card-title>
                 <v-container>
-                  <v-row dense>
-                    <v-col
-                      v-for="(i, index) in item.content"
+                  <v-tabs
+                    v-model="levelTab"
+                    fixed-tabs
+                    background-color="#2e856e"
+                    color="white"
+                    show-arrows
+                  >
+                    <v-tab
+                      v-for="(item, index) in ['Junior High', 'Senior High']"
                       :key="index"
-                      cols="12"
-                      lg="6"
-                      md="12"
-                      sm="6"
+                      >{{ item }}</v-tab
                     >
-                      <sections-card
-                        :section="i.name"
-                        :capacity="i.capacity"
-                        :total_students="i.total_students"
-                        :teacher="i.teacher_id"
-                        icon_background_color="#4caf50"
-                      >
-                        <template v-slot:edit>
-                          <v-btn
-                            @click="seniorEdit(i.id)"
-                            outlined
-                            color="primary"
-                          >
-                            edit section
-                            <v-icon>mdi-pencil</v-icon>
-                          </v-btn>
-                        </template>
-                      </sections-card>
-                    </v-col>
-                    <v-col>
-                      <v-card-title
-                        class="text-center justify-center py-6"
-                        v-if="item.content.length == 0"
-                      >
-                        <h1 class="font-weight-bold display-1 basil--text">
-                          No {{ item.text }} Sections created yet.
-                        </h1>
-                      </v-card-title>
-                    </v-col>
-                  </v-row>
+                  </v-tabs>
                 </v-container>
-              </v-tab-item>
-            </v-tabs-items>
-          </v-card>
-        </v-col>
+                <v-container v-if="levelTab == 0">
+                  <v-tabs
+                    v-model="tab1"
+                    fixed-tabs
+                    background-color="#2e856e"
+                    color="primary darken-2"
+                    show-arrows
+                  >
+                    <v-tab
+                      v-for="item in junior_high"
+                      :key="item.text"
+                      @click="selectedJHS(item.text)"
+                      >{{ item.text }}</v-tab
+                    >
+                  </v-tabs>
+                </v-container>
+                <v-container v-else>
+                  <v-tabs
+                    v-model="tab2"
+                    fixed-tabs
+                    background-color="#2e856e"
+                    color="black"
+                    show-arrows
+                  >
+                    <v-tab
+                      v-for="(item, index) in senior_high"
+                      :key="index"
+                      @click="selectedSHS(item.text)"
+                      >{{ item.text }}</v-tab
+                    >
+                  </v-tabs>
+                </v-container>
+              </v-card>
+              <v-tabs-items v-model="levelTab">
+                <v-tab-item
+                  v-for="(item, index) in ['Junior High', 'Senior High']"
+                  :key="index"
+                >
+                  <div v-if="levelTab == 0">
+                    <div>
+                      <v-tabs-items v-model="tab1">
+                        <v-tab-item
+                          v-for="(item, index) in junior_high"
+                          :key="index"
+                        >
+                          <v-card-title>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                              color="primary"
+                              small
+                              dark
+                              @click="openJunior"
+                            >
+                              <v-icon>mdi-plus</v-icon>Add Section
+                            </v-btn>
+                          </v-card-title>
+                          <!-- <v-container> -->
+                          <v-row dense>
+                            <v-col
+                              v-for="(dta, index) in item.content"
+                              :key="index"
+                              cols="12"
+                              md="6"
+                              lg="4"
+                            >
+                              <sections-card
+                                :section="dta.name"
+                                :capacity="dta.capacity"
+                                :total_students="dta.total_students"
+                                :teacher="dta.teacher_id"
+                                :progress_color="'#006a4e'"
+                              >
+                                <template v-slot:edit>
+                                  <v-btn
+                                    @click="juniorEdit(dta.id)"
+                                    outlined
+                                    color="#006a4e"
+                                  >
+                                    edit section
+                                    <v-icon>mdi-pencil</v-icon>
+                                  </v-btn>
+                                </template>
+                              </sections-card>
+                            </v-col>
+                            <v-card-title
+                              class="text-center justify-center py-6"
+                            >
+                              <h1
+                                class="font-weight-bold display-1 basil--text"
+                                v-if="item.content.length == 0"
+                              >
+                                No {{ item.text }} Sections created yet.
+                              </h1>
+                            </v-card-title>
+                          </v-row>
+                          <!-- </v-container> -->
+                        </v-tab-item>
+                      </v-tabs-items>
+                    </div>
+                  </div>
+
+                  <!-- Else -->
+                  <div v-else>
+                    <div class="add_btn">
+                      <v-dialog
+                        v-model="seniorDialog"
+                        persistent
+                        max-width="300px"
+                      >
+                        <v-card>
+                          <v-card-title class="headlineSection">
+                            <span>Add {{ sectionSenior.name }} Sections</span>
+                          </v-card-title>
+                          <v-card-text>
+                            <v-container>
+                              <v-text-field
+                                label="Section name"
+                                v-model="Senior.section"
+                                @keydown="clearError"
+                                name="name"
+                                :error="hasError('name')"
+                              ></v-text-field>
+                              <p
+                                v-if="hasError('name')"
+                                class="invalid-feedback"
+                              >
+                                {{ getError("name") }}
+                              </p>
+                              <v-text-field
+                                label="Capacity"
+                                type="number"
+                                name="capacity"
+                                @keydown="clearError"
+                                v-model="Senior.capacity"
+                                :error="hasError('capacity')"
+                                min="0"
+                              ></v-text-field>
+                              <p
+                                v-if="hasError('capacity')"
+                                class="invalid-feedback"
+                              >
+                                {{ getError("capacity") }}
+                              </p>
+                            </v-container>
+                          </v-card-text>
+                          <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn
+                              :disabled="loading"
+                              color="error darken-1"
+                              @click="closeSenior"
+                              >Cancel</v-btn
+                            >
+                            <v-btn
+                              :loading="loading"
+                              :disabled="hasAnyErors"
+                              color="blue darken-1"
+                              @click="addSenior(sectionSenior.name)"
+                              >Save</v-btn
+                            >
+                          </v-card-actions>
+                        </v-card>
+                      </v-dialog>
+                    </div>
+
+                    <!-- ---------------------------------End Of The Dialog Of A Senior High School--------------------------------------------- -->
+
+                    <v-tabs-items v-model="tab2">
+                      <v-tab-item
+                        v-for="(item, index) in senior_high"
+                        :key="index"
+                      >
+                        <v-card-title>
+                          <v-spacer></v-spacer>
+                          <v-btn color="primary" small dark @click="openSenior">
+                            <v-icon>mdi-plus</v-icon>Add Section
+                          </v-btn>
+                        </v-card-title>
+                        <v-container>
+                          <v-row dense>
+                            <v-col
+                              v-for="(i, index) in item.content"
+                              :key="index"
+                              cols="12"
+                              md="6"
+                              lg="4"
+                            >
+                              <sections-card
+                                :section="i.name"
+                                :capacity="i.capacity"
+                                :total_students="i.total_students"
+                                :teacher="i.teacher_id"
+                              >
+                                <template v-slot:edit>
+                                  <v-btn
+                                    @click="seniorEdit(i.id)"
+                                    outlined
+                                    color="primary"
+                                  >
+                                    edit section
+                                    <v-icon>mdi-pencil</v-icon>
+                                  </v-btn>
+                                </template>
+                              </sections-card>
+                            </v-col>
+                            <v-col>
+                              <v-card-title
+                                class="text-center justify-center py-6"
+                                v-if="item.content.length == 0"
+                              >
+                                <h1
+                                  class="font-weight-bold display-1 basil--text"
+                                >
+                                  No {{ item.text }} Sections created yet.
+                                </h1>
+                              </v-card-title>
+                            </v-col>
+                          </v-row>
+                        </v-container>
+                      </v-tab-item>
+                    </v-tabs-items>
+                  </div>
+                </v-tab-item>
+              </v-tabs-items>
+            </v-card>
+          </div>
+        </v-container>
       </v-row>
     </div>
   </div>
@@ -293,6 +382,7 @@ export default {
     ],
     tab1: null,
     tab2: null,
+    levelTab: null,
     errors: {},
     juniorSection: {
       name: "Grade 7",
@@ -630,56 +720,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.theme--light.v-tabs > .v-tabs-bar .v-tab:not(.v-tab--active),
-.theme--light.v-tabs > .v-tabs-bar .v-tab:not(.v-tab--active) > .v-icon,
-.theme--light.v-tabs > .v-tabs-bar .v-tab:not(.v-tab--active) > .v-btn,
-.theme--light.v-tabs > .v-tabs-bar .v-tab--disabled {
-  color: hsla(0, 0%, 100%, 0.6);
-}
-.mx-auto {
-  width: 250px;
-  height: 100px;
-  border-radius: 5px;
-}
-.headlineSection {
-  background-color: rgb(57, 151, 206);
-}
-
-.invalid-feedback {
-  color: red;
-  margin-top: -7%;
-  font-size: 14px;
-}
-
-.table-header {
-  position: inherit;
-  top: -20px;
-  margin: 0 20px 0 20px;
-}
-
-.table-header .v-card__title,
-.table-header .subtitle-1 {
-  color: white;
-}
-
-.base-card {
-  margin-top: 50px;
-}
-
-.section-name {
-  position: inherit;
-  top: -20px;
-  margin-left: 10px;
-  width: 200px;
-}
-
-.section-name .v-card__title {
-  color: white;
-}
-
-.edit {
-  margin-left: 53%;
-}
-</style>

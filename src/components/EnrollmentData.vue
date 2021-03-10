@@ -12,7 +12,7 @@
     <div class="table">
       <v-container>
         <v-card outlined>
-          <v-card class="table-header" color="#4caf50">
+          <v-card class="table-header" color="#2e856e">
             <v-card-title class="text-center justify-center">
               <div class="display-2 font-weight-light">Pending Enrollments</div>
             </v-card-title>
@@ -410,25 +410,4 @@ export default {
 </script>
 
 <style>
-.table {
-  margin-top: 50px;
-}
-.table-header {
-  margin: 0 50px 0 50px;
-  position: inherit;
-  top: -20px;
-}
-
-.view_dtls_btn {
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: normal;
-  color: #48d3ff;
-}
-
-.invalid-feedback {
-  color: red;
-  margin-top: -3%;
-  font-size: 14px;
-}
 </style>

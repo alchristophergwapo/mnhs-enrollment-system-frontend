@@ -74,3 +74,14 @@ export default {
   },
 };
 </script>
+
+<style>
+.v-list .v-list-item--active {
+  color: white;
+  background-color: #006a4e;
+}
+
+.v-list .v-list-item:hover {
+  background-color: #5ca08e;
+}
+</style>

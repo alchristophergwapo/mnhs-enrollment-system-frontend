@@ -4,63 +4,109 @@
     <br /><br />
     <v-container id="dashboard" tag="section">
       <v-row>
-        <chart
-          :data="enrollmentChart.data"
-          :options="enrollmentChart.options"
-          :responsive-options="enrollmentChart.responsiveOptions"
-          color="#E91E63"
-          hover-reveal
-          type="Bar"
-          v-if="initialized"
-        >
-          <h4 class="card-title font-weight-light mt-2 ml-2">
-            Enrolled Students
-          </h4>
-
-          <p class="d-inline-flex font-weight-light ml-2 mt-1">
-            Last Campaign Performance
-          </p>
-        </chart>
-        <v-col cols="12" sm="6" lg="3">
-          <status-cards
-            color="info"
-            icon_background_color="#00cae3"
-            icon="mdi-account-multiple-check"
-            title="Enrolled Students"
-            :value="totalEnrolled"
-          />
-        </v-col>
-        <v-col cols="12" sm="6" lg="3">
-          <status-cards
-            color="info"
-            icon_background_color="#4caf50"
-            icon="mdi-account-alert"
-            title="Pending Enrollments"
-            :value="totalPending"
-          />
-        </v-col>
-        <v-col cols="12" sm="6" lg="3">
-          <status-cards
-            color="info"
-            icon_background_color="red"
-            icon="mdi-account-multiple-minus"
-            title="Declined Enrollments"
-            :value="totalDeclined"
-          />
-        </v-col>
-        <v-col cols="12" sm="6" lg="3">
-          <status-cards
-            color="info"
-            icon_background_color="orange"
-            icon="mdi-account-multiple"
-            title="Teachers"
-            :value="totalTeachers"
+        <v-col cols="12" lg="6" class="enrollment-chart">
+          <chart
+            :data="enrollmentChart.data"
+            :options="enrollmentChart.options"
+            :responsive-options="enrollmentChart.responsiveOptions"
+            color="#E91E63"
+            hover-reveal
+            type="Bar"
+            v-if="initialized"
           >
-            <v-btn id="btn" block link to="/admin/all_sections">
-              All Sections
-              <v-icon dark right>mdi-arrow-right</v-icon>
-            </v-btn>
-          </status-cards>
+            <h4 class="card-title font-weight-light mt-2 ml-2">
+              Enrolled Students
+            </h4>
+
+            <p class="d-inline-flex font-weight-light ml-2 mt-1">
+              This is a sub description.
+            </p>
+          </chart>
+        </v-col>
+        <v-col cols="12" lg="6">
+          <v-row>
+            <v-col cols="12" sm="6" lg="6">
+              <status-cards
+                color="info"
+                icon_background_color="#00b4cc"
+                icon="mdi-account-multiple-check"
+                title="Enrolled Students"
+                :value="totalEnrolled"
+              >
+                <template v-slot:actions>
+                  <v-btn
+                    id="btn"
+                    block
+                    link
+                    to="/admin/all_students"
+                    elevation="24"
+                  >
+                    see all
+                    <v-icon dark right>mdi-arrow-right</v-icon>
+                  </v-btn>
+                </template>
+              </status-cards>
+            </v-col>
+            <v-col cols="12" sm="6" lg="6">
+              <status-cards
+                color="info"
+                icon_background_color="#2e856e"
+                icon="mdi-account-alert"
+                title="Pending Enrollments"
+                :value="totalPending"
+              >
+                <template v-slot:actions>
+                  <v-btn
+                    id="btn"
+                    block
+                    link
+                    to="/admin/enrollment"
+                    elevation="24"
+                  >
+                    see all
+                    <v-icon dark right>mdi-arrow-right</v-icon>
+                  </v-btn>
+                </template>
+              </status-cards>
+            </v-col>
+            <v-col cols="12" sm="6" lg="6">
+              <status-cards
+                icon_background_color="#ff4d4d"
+                icon="mdi-account-multiple-minus"
+                title="Declined Enrollments"
+                :value="totalDeclined"
+              >
+                <template v-slot:actions>
+                  <v-btn id="btn" block link elevation="24">
+                    see all
+                    <v-icon dark right>mdi-arrow-right</v-icon>
+                  </v-btn>
+                </template>
+              </status-cards>
+            </v-col>
+            <v-col cols="12" sm="6" lg="6">
+              <status-cards
+                color="info"
+                icon_background_color="orange"
+                icon="mdi-account-multiple"
+                title="Teachers"
+                :value="totalTeachers"
+              >
+                <template v-slot:actions>
+                  <v-btn
+                    id="btn"
+                    block
+                    link
+                    to="/admin/all_teachers"
+                    elevation="24"
+                  >
+                    see all
+                    <v-icon dark right>mdi-arrow-right</v-icon>
+                  </v-btn>
+                </template>
+              </status-cards>
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
     </v-container>
@@ -96,7 +142,7 @@ export default {
         series: [[0], [0]],
       },
       options: {
-        seriesBarDistance: 10,
+        // seriesBarDistance: 10,
         axisX: {
           showGrid: false,
         },
@@ -185,4 +231,7 @@ export default {
 </script>
 
 <style>
+.enrollment-chart {
+  max-height: 400px;
+}
 </style>
