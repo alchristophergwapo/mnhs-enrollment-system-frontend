@@ -45,13 +45,8 @@ export default {
   props: ["user_details"],
   data() {
     return {
-<<<<<<< HEAD
       notifications: 1,
       user: this.user_details,
-=======
-      notifications:4,
-      user:this.user_details
->>>>>>> b1efe6795340c75ae80d6d053dfe3d548e02f358
     };
   },
 

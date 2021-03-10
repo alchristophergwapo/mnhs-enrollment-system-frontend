@@ -127,7 +127,6 @@ export default {
 
   data() {
     return {
-      HHTP_REQUEST_URL: "http://127.0.0.1:8000/api/",
       search: "",
       year: new Date().getFullYear(),
       loading: false,
@@ -180,7 +179,7 @@ export default {
     //   }
     // }
      this.$axios
-        .get(`${this.HHTP_REQUEST_URL}allSections`)
+        .get("allSections")
         .then(response => {
           response.data.sections.forEach(element => {
             this.sections.push({id:element.id,name:element.name})
@@ -200,7 +199,7 @@ export default {
     //Methods for displaying all teachers
     display(){
       this.$axios
-        .get(`allTeacher`)
+        .get("allTeacher")
         .then(response => {
           this.teachers = response.data;
         })
@@ -213,7 +212,7 @@ export default {
     //Methods for Deleting A Teacher In Delete Button
     async removeTeacher(dataid) {
       this.$axios
-        .get(`delTeacher/` + `${dataid}`)
+        .get("delTeacher/"+dataid)
         .then(response => {
           if (response.data.message) {
              this.$swal.fire({
@@ -281,7 +280,7 @@ export default {
         await new Promise(resolve => setTimeout(resolve, 700));
         this.loading = false;
         this.$axios
-          .post(`${this.HHTP_REQUEST_URL}addNewTeacher`, {
+          .post("addNewTeacher", {
             name: this.Teacher,
             email: this.Email,
             contact: this.Contact,
@@ -318,7 +317,7 @@ export default {
         await new Promise(resolve => setTimeout(resolve, 700));
         this.loading = false;
         this.$axios
-          .post(`${this.HHTP_REQUEST_URL}updateTeacher/` + `${this.Id}`, {
+          .post("updateTeacher/"+this.Id, {
             name: this.Teacher,
             email: this.Email,
             contact: this.Contact,
@@ -350,7 +349,7 @@ export default {
                   if (result.isConfirmed) {
                     this.$axios
                       .post(
-                        `${this.HHTP_REQUEST_URL}updateTeacher/`+"update",
+                        "updateTeacher/"+"update",
                         {
                           updateId:this.Id,
                           name:this.Teacher,

@@ -20,11 +20,7 @@
             All pending enrollments as of year {{ year }}
           </div>
         </v-card>
-<<<<<<< HEAD
       <v-card-title>
-=======
-        <v-card-title>
->>>>>>> b1efe6795340c75ae80d6d053dfe3d548e02f358
         Sort By&nbsp;&nbsp;
         <v-select
           :items="grade_level"
@@ -66,11 +62,7 @@
                     <v-card>
                       <v-card-title>
                         <v-spacer></v-spacer>
-<<<<<<< HEAD
                         <v-btn icon @click="dialog.value = false">
-=======
-                        <v-btn icon @click="closeSection">
->>>>>>> b1efe6795340c75ae80d6d053dfe3d548e02f358
                           <v-icon>mdi-close</v-icon>
                         </v-btn>
                       </v-card-title>
@@ -237,14 +229,8 @@ export default {
     toggle_exclusive: undefined,
     dialog: false,
     section: null,
-<<<<<<< HEAD
     search:null,
     gradelevel:null,
-=======
-    search: "",
-    errors:{},
-    sections:[],
->>>>>>> b1efe6795340c75ae80d6d053dfe3d548e02f358
     items: [
       {
         text: "Home",
@@ -435,11 +421,6 @@ approveEnrollment(id, index) {
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;
-<<<<<<< HEAD
-=======
-  color: #48d3ff;
-}
->>>>>>> b1efe6795340c75ae80d6d053dfe3d548e02f358
 
   color: #48d3ff;
 }

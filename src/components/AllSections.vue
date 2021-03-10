@@ -324,7 +324,6 @@ export default {
     // InputCard: () => import("@/layout/InputCardDialog.vue"),
   },
   data: () => ({
-    HHTP_REQUEST_URL: "http://127.0.0.1:8000/api/",
     juniordialog: false,
     seniordialog: false,
     edit: null,
@@ -376,7 +375,7 @@ export default {
   created(){
     //Getting all teachers
     this.$axios
-        .get(`${this.HHTP_REQUEST_URL}allTeachersForSection`)
+        .get("allTeachersForSection")
         .then(response => {
           response.data.forEach(element => {
              this.teachers.push({id:element.id,teacher:element.name});
@@ -394,7 +393,7 @@ export default {
     displayAllsection(juniors,seniors){
       this.$axios
       .get(
-        `${this.HHTP_REQUEST_URL}allGradeLevelSections`
+        "allGradeLevelSections"
       )
       .then((response) =>{
         console.log(response.data.sections);
@@ -498,7 +497,7 @@ export default {
         await new Promise((resolve) => setTimeout(resolve, 3000));
         this.loading = false;
         this.$axios
-          .post(`${this.HHTP_REQUEST_URL}addSection`,{
+          .post("addSection",{
             grade: grades.split(" ")[1],
             name: this.Junior.section,
             capacity: this.Junior.capacity,
@@ -535,7 +534,7 @@ export default {
         console.log("updateteacher:"+this.Junior.teacher);
         this.$axios
           .post(
-            `${this.HHTP_REQUEST_URL}updateSection/` + `${this.Junior.id}`,
+            "updateSection/"+this.Junior.id,
             {
               name: this.Junior.section,
               capacity: this.Junior.capacity,
@@ -566,7 +565,7 @@ export default {
                   if (result.isConfirmed) {
                     this.$axios
                       .post(
-                        `${this.HHTP_REQUEST_URL}updateSection/`+"update",
+                        "updateSection/"+"update",
                         {
                           updateId:this.Junior.id,
                           name: this.Junior.section,
@@ -637,7 +636,7 @@ export default {
     //Method For Removing The Section In Junior High Category
     juniorRemove(sec) {
       this.$axios
-        .get(`${this.HHTP_REQUEST_URL}delAnySection/` + `${sec}`)
+        .get("delAnySection/"+sec)
         .then((response) => {
           if (response.data.message){
             if(response.data.section.split(" ")[1]<11){
@@ -667,7 +666,7 @@ export default {
         await new Promise((resolve) => setTimeout(resolve, 3000));
         this.loading = false;
         this.$axios
-          .post(`${this.HHTP_REQUEST_URL}addSection`,{
+          .post("addSection",{
             grade:item.split(" ")[1],
             name: this.Senior.section,
             capacity: this.Senior.capacity,
@@ -703,7 +702,7 @@ export default {
         //update
         this.$axios
           .post(
-            `${this.HHTP_REQUEST_URL}updateSection/` + `${this.Senior.id}`,
+            "updateSection/"+this.Senior.id,
             {
               name: this.Senior.section,
               capacity: this.Senior.capacity,
@@ -734,7 +733,7 @@ export default {
                   if (result.isConfirmed) {
                     this.$axios
                       .post(
-                        `${this.HHTP_REQUEST_URL}updateSection/`+"update",
+                        "updateSection/"+"update",
                         {
                           updateId:this.Senior.id,
                           name: this.Senior.section,
