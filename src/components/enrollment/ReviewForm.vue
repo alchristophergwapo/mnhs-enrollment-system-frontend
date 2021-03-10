@@ -14,7 +14,7 @@
               <h4>PSA Birth Certificate No.</h4>
             </div>
             <v-text-field 
-              name="PSA"  
+              name="PSA" 
               :value="studentInformation.PSA"
             ></v-text-field>
           </v-col>
@@ -126,6 +126,7 @@
             </div>
             <v-text-field
               name="address"
+              v-model="studentInformation.address"
               :value="studentInformation.address"
             ></v-text-field>
           </v-col>
@@ -300,8 +301,8 @@
 export default {
   data() {
     return {
-      status:'Edit',
-      isShowing:true,
+      isShowing:false,
+      status:"Edit",
       enrollmentValid:true,
       studentInformation: null,
       parentGuardianInfo: null,
@@ -319,7 +320,6 @@ export default {
       else{
         this.status="Edit";
         this.isShowing=true;
-        console.log(this.studentInformation);
       }
     },
     
@@ -334,6 +334,7 @@ export default {
   created() {
     this.initialize();
   },
+
 };
 </script>
 <style lang="css" scoped>

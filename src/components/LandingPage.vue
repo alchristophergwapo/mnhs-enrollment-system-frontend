@@ -62,7 +62,7 @@
       </v-carousel-item>
     </v-carousel>
 
-    <v-container>
+    <!-- <v-container>
       <v-row>
         <v-col md="4">
           <v-card
@@ -130,7 +130,7 @@
           </v-card>
         </v-col>
       </v-row>
-    </v-container>
+    </v-container> -->
     <v-footer padless>
       <v-card flat tile width="100%">
         <v-divider></v-divider>

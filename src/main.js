@@ -18,11 +18,12 @@ Vue.config.productionTip = false
 Vue.prototype.$axios = Axios;
 
 window.Vue = Vue;
+Vue.use(require('vue-chartist'));
 Vue.use(VueSweetalert2);
 Vue.use(VueNativeNotification, {
   requestOnNotify: true
 });
-Vue.use(require('vue-chartist'))
+
 
 new Vue({
   vuetify,

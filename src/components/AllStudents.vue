@@ -10,6 +10,33 @@
           </v-card-title>
 
           <div class="subtitle-1 font-weight-light text-center justify-center">
+<<<<<<< HEAD
+            All students enrolled as of year {{ year }}
+          </div>
+        </v-card>
+        <v-card-title>
+          Sort By&nbsp;&nbsp;
+          <v-select
+            :items="grade_level"
+            menu-props="auto"
+            label="Grade Level"
+            hide-details
+            dense
+            outlined
+          ></v-select>
+          &nbsp;&nbsp;
+          <v-select
+            :items="section"
+            menu-props="auto"
+            label="Section"
+            hide-details
+            dense
+            outlined
+          ></v-select>
+          <v-spacer></v-spacer>
+          <span>Adviser: Aileen Becher</span>
+        </v-card-title>
+=======
             All students as of year {{ year }}
           </div>
         </v-card>
@@ -38,6 +65,7 @@
         <v-spacer></v-spacer>
         <span>Adviser: Aileen Becher</span>
       </v-card-title>
+>>>>>>> b1efe6795340c75ae80d6d053dfe3d548e02f358
         <v-data-table
           :headers="headers"
           :items="students"

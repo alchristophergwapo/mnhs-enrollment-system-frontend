@@ -20,11 +20,15 @@
             All pending enrollments as of year {{ year }}
           </div>
         </v-card>
+<<<<<<< HEAD
+      <v-card-title>
+=======
         <v-card-title>
+>>>>>>> b1efe6795340c75ae80d6d053dfe3d548e02f358
         Sort By&nbsp;&nbsp;
         <v-select
-          v-model="gradeLevel"
           :items="grade_level"
+          v-model="gradelevel"
           @change="filterByGradeLevel($event)"
           menu-props="auto"
           label="Grade Level"
@@ -52,7 +56,7 @@
           <template v-slot:item="row">
             <tr>
               <td>{{ row.item.grade_level }}</td>
-              <td>{{ row.item.firstname }} {{ row.item.lastname }}</td>
+              <td>{{row.item.fullname}}</td>
               <td>
                 <v-dialog transition="dialog-top-transition" max-width="600">
                   <template v-slot:activator="{ on, attrs }">
@@ -62,7 +66,11 @@
                     <v-card>
                       <v-card-title>
                         <v-spacer></v-spacer>
+<<<<<<< HEAD
+                        <v-btn icon @click="dialog.value = false">
+=======
                         <v-btn icon @click="closeSection">
+>>>>>>> b1efe6795340c75ae80d6d053dfe3d548e02f358
                           <v-icon>mdi-close</v-icon>
                         </v-btn>
                       </v-card-title>
@@ -190,7 +198,7 @@
         <v-dialog v-model="dialog" max-width="500px">
           <v-card>
             <v-card-title>
-              <span class="headline">Select Student Section</span>
+              <span class="headline">Select Student Sections</span>
               <v-spacer></v-spacer>
               <v-btn icon @click="dialog = false">
                 <v-icon>mdi-close</v-icon>
@@ -208,7 +216,7 @@
               <v-spacer></v-spacer>
               <v-btn
                 color="blue darken-1"
-                @click="approveEnrollment(id, index)"
+                @click="approveEnrollment(id,index)"
               >
                 Done
               </v-btn>
@@ -229,9 +237,14 @@ export default {
     toggle_exclusive: undefined,
     dialog: false,
     section: null,
+<<<<<<< HEAD
+    search:null,
+    gradelevel:null,
+=======
     search: "",
     errors:{},
     sections:[],
+>>>>>>> b1efe6795340c75ae80d6d053dfe3d548e02f358
     items: [
       {
         text: "Home",
@@ -246,20 +259,17 @@ export default {
     ],
 
     headers: [
-      {
-        text: "Grade Level",
-        align: "start",
-        sortable: false,
-        value: "grade_level",
+      { text: "Grade Level", align: "start",sortable: false, value: "grade_level",
       },
-      { text: "Student Name", value: "student" },
+      { text: "Student Name", value:"fullname"},
       { text: "Details", value: "details" },
       { text: "Action", value: "action" },
     ],
     id: null,
     index: null,
     students: [],
-    grade_level: ["7", "8", "9", "10", "11", "12"],
+    filterStudents:[],
+    grade_level: ["7", "8", "9", "10", "11", "12","All"],
     sections: [],
   }),
 
@@ -275,23 +285,25 @@ export default {
   methods: {
     initializeData() {
       let pendingEnrollment = this.$store.getters.allPendingEnrollments;
-      // console.log(pendingEnrollment);
       for (var index in pendingEnrollment) {
         let element = pendingEnrollment[index];
         let studentData = element["student"];
-        let enrollmentData = [];
+        let enrollmentData=[];
         enrollmentData["enrollment_id"] = element["id"];
         enrollmentData["card_image"] = element["card_image"];
+        enrollmentData["fullname"]=studentData["firstname"].concat(" ",studentData["lastname"]);
         for (const data in studentData) {
           const element1 = studentData[data];
           enrollmentData[data] = element1;
         }
         this.students.push(enrollmentData);
+        this.filterStudents.push(enrollmentData);
       }
+      console.log(this.students);
     },
 
-    filterSections(gradelevel, id, index) {
-      this.id = id;
+    filterSections(gradelevel,id,index){
+      this.id=id;
       this.index = index;
       // console.log(index);
       this.dialog = true;
@@ -320,11 +332,48 @@ export default {
       // console.log(this.sections);
     },
 
-    approveEnrollment(id, index) {
-      // console.log(index);
+//Methods For Filtering 
+filterByGradeLevel(grade){
+   if(grade=='All'){
+     this.students=this.filterStudents;
+   }
+   else{
+     this.students=this.filterStudents.filter(function (val){ return val.grade_level == grade;})
+   }
+},
+ 
+//Method For Filtering The Name By A GradeLevel Or All GradeLevel
+filterByName(data){
+   this.students=this.filterStudents.filter(val =>{
+       if(this.gradelevel==null && data!=null){
+          return val.fullname.concat(" ",val.grade_level).toLowerCase().includes(data.toLowerCase())
+       }
+       else if(this.gradelevel=='All' && data!=null){
+             return val.fullname.concat(" ",val.grade_level).toLowerCase().includes(data.toLowerCase())
+       }
+       else{
+         if(val.grade_level==this.gradelevel){
+           if(data!=null){
+               return val.fullname.concat(" ",val.grade_level).toLowerCase().includes(data.toLowerCase())
+           }
+            else{
+            return val.fullname.concat(" ",val.grade_level).toLowerCase().includes(val.grade_level.toLowerCase())
+        }
+      }
+
+       }
+   })
+    
+},
+
+
+//Method For Approving the enrollment
+approveEnrollment(id, index) {
+      alert("approve:"+id)
+      console.log(this.section);
       if (this.section) {
         this.$axios
-          .post("approveEnrollment/" + id, { section: this.section })
+          .post("approveEnrollment/" + id,{student_section:this.section })
           .then((response) => {
             console.log(response);
             this.students.splice(index, 1);
@@ -355,9 +404,8 @@ export default {
       }
     },
 
-    },
-//Method For Declining The Section
-    declineEnrollment(id, index) {
+    declineEnrollment(id,index){
+      alert("decline:"+id)
       this.$axios
         .post("declineEnrollment/" + id)
         .then((response) => {
@@ -368,43 +416,10 @@ export default {
           console.log(error);
         });
     },
-
-//Methods For All Errors
-    setErrors(error) {
-      this.errors=error;
-    },
-
-    hasError(fieldname) {
-      return fieldname in this.errors;
-    },
-
-    clearError(event) {
-      alert(event)
-      this.$delete(this.errors,event);
-    },
-
-    getError(fieldName) {
-      return this.errors[fieldName][0];
-    }
-
   },
-
-
- computed: {
-    hasAnyErors() {
-      return Object.keys(this.errors).length > 0;
-    },
-
-  // filteredList(){
-  //     return this.students.filter(val =>{
-  //       return val.student.firstname.concat(" ",val.student.lastname," ",val.student.grade_level).toLowerCase().includes(this.search.toLowerCase());
-  //     })
-  //  },
-
-  }
-
 };
 </script>
+
 
 <style>
 .table {
@@ -420,12 +435,12 @@ export default {
   font-family: Roboto;
   font-style: normal;
   font-weight: normal;
+<<<<<<< HEAD
+=======
   color: #48d3ff;
 }
+>>>>>>> b1efe6795340c75ae80d6d053dfe3d548e02f358
 
-.invalid-feedback {
-  color: red;
-  margin-top: -3%;
-  font-size: 14px;
+  color: #48d3ff;
 }
 </style>
