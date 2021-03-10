@@ -108,7 +108,7 @@ export default new Vuex.Store({
         },
 
         allSections({ commit }) {
-            return axios.get('allSections').then(response => {
+            return axios.get('allSections').then(response =>{
                 commit('setSections', response.data.sections)
             })
         },

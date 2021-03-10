@@ -7,11 +7,11 @@
       <v-row>
         <v-col cols="12" md="7" lg="8">
           <v-card color="basil">
-            <v-card-title class="text-center justify-center py-6">
-              <h1 class="font-weight-bold display-2 basil--text">
-                Junior High
-              </h1>
-            </v-card-title>
+            <v-card class="table-header" color="orange">
+              <v-card-title class="text-center justify-center">
+                <div class="display-2 font-weight-light">Junior High</div>
+              </v-card-title>
+            </v-card>
             <div>
               <!--------- Dialog For Junior High School Category ----------------------------------------------------- ------------------------------------->
               <div class="add_btn">
@@ -21,7 +21,7 @@
                       <span>Add {{ juniorSection.name }} Sections</span>
                     </v-card-title>
                     <v-card-text>
-                      <v-container>
+                      <v-container fluid>
                         <v-text-field
                           label="Section name"
                           v-model="Junior.section"
@@ -44,6 +44,15 @@
                         <p v-if="hasError('capacity')" class="invalid-feedback">
                           {{ getError("capacity") }}
                         </p>
+                        <div>
+                       <v-select
+                           item-text="teacher"
+                           item-value="teacher"
+                           v-model="Junior.teacher"
+                          :items="teachers"
+                          label="Assigned Teacher"
+                        ></v-select>
+                        </div>
                       </v-container>
                     </v-card-text>
                     <v-card-actions>
@@ -109,10 +118,12 @@
                           </v-card-text>
                           <v-card-text>
                             <v-icon  color="black">mdi-account-box</v-icon>
-                            {{ dta.teacher_id }}
+                            {{ dta.teacher_id}}
                           </v-card-text>
                           <v-card-text>
-                            <v-icon color="primary" @click="juniorEdit(dta.id)">mdi-pencil-box</v-icon>
+                            <v-icon @click="juniorEdit(dta)" color="primary"
+                              >mdi-pencil-box</v-icon
+                            >
                           </v-card-text>
                           <v-card-text>
                             <v-icon @click="juniorRemove(dta.id)"
@@ -147,17 +158,17 @@
           </v-card>
         </v-col>
         <!-----------------------------------End OF The Modal For All Junior High-------------------------------------------------->
-
+        <br />
         <v-col cols="12" md="5" lg="4">
-          <v-card color="basil">
-            <v-card-title class="text-center justify-center py-6">
-              <h1 class="font-weight-bold display-2 basil--text">
-                Senior High
-              </h1>
-            </v-card-title>
+          <v-card>
+            <v-card class="table-header" color="#4caf50">
+              <v-card-title class="text-center justify-center">
+                <div class="display-2 font-weight-light">Senior High</div>
+              </v-card-title>
+            </v-card>
             <!------------- ----------- ----------Dialog For Senior High School ------------------------------------------------->
             <div class="add_btn">
-              <v-dialog v-model="seniorDialog" persistent max-width="300px">
+              <v-dialog v-model="seniordialog" persistent max-width="300px">
                 <v-card>
                   <v-card-title class="headlineSection">
                     <span>Add {{ sectionSenior.name }} Sections</span>
@@ -186,6 +197,13 @@
                       <p v-if="hasError('capacity')" class="invalid-feedback">
                         {{ getError("capacity") }}
                       </p>
+                      <v-select
+                           item-text="teacher"
+                           item-value="teacher"
+                           v-model="Senior.teacher"
+                          :items="teachers"
+                          label="Assigned Teacher"
+                        ></v-select>
                     </v-container>
                   </v-card-text>
                   <v-card-actions>
@@ -207,7 +225,6 @@
                 </v-card>
               </v-dialog>
             </div>
-
             <!-- ---------------------------------End Of The Dialog Of A Senior High School--------------------------------------------- -->
             <v-tabs
               v-model="tab2"
@@ -244,21 +261,28 @@
                     >
                       <v-card>
                         <v-card-title>
-                          <v-icon>mdi-home-group</v-icon>
+                          <v-icon color="black">mdi-home-group</v-icon>
                           {{ i.name }}
                         </v-card-title>
                         <v-card-text>
                           <div>
-                            <v-icon>mdi-home-account</v-icon>
+                            <v-icon color="black">mdi-home-account</v-icon>
                             {{ i.capacity }}
                           </div>
                         </v-card-text>
                         <v-card-text>
-                            <v-icon>mdi-account-box</v-icon>
-                            {{i.teacher_id}}
-                         </v-card-text>
+                          <v-icon  color="black">mdi-account-box</v-icon>
+                          {{ i.teacher_id }}
+                        </v-card-text>
+                        <v-card-text>
+                          <v-icon @click="seniorEdit(i)" color="primary"
+                            >mdi-pencil-box</v-icon
+                          >
+                        </v-card-text>
                            <v-card-text>
-                            <v-icon @click="seniorEdit(i.id)">mdi-pencil-box</v-icon>
+                            <v-icon @click="juniorRemove(i.id)"
+                              color="red">mdi-delete</v-icon
+                            >
                           </v-card-text>
                         <v-card-actions>
                           <v-progress-linear
@@ -302,7 +326,7 @@ export default {
   data: () => ({
     HHTP_REQUEST_URL: "http://127.0.0.1:8000/api/",
     juniordialog: false,
-    seniorDialog: false,
+    seniordialog: false,
     edit: null,
     loading: false,
     state: null,
@@ -319,16 +343,18 @@ export default {
     sectionSenior: {
       name: "Grade 11",
     },
-
+  
     Junior: {
       id: null,
       section: null,
       capacity: null,
+      teacher:null
     },
     Senior: {
       id: null,
       section: null,
       capacity: null,
+      teacher:null
     },
     junior_high: [
       {
@@ -343,71 +369,91 @@ export default {
       { text: "Grade 11", content: [] },
       { text: "Grade 12", content: [] },
     ],
+    allsections:[],
+    teachers:[]
   }),
-  mounted: function () {
-    //Function For Getting All Grade 7 Sections
+
+  created(){
+    //Getting all teachers
     this.$axios
-      .get(
-        `${this.HHTP_REQUEST_URL}grade7Section/` +
-          `${this.junior_high[0].text.split(" ")[1]}`
-      )
-      .then((response) => {
-        this.junior_high[0].content = response.data.sections;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-//Function For Getting All Grade 12 Sections
-    this.$axios
-      .get(
-        `${this.HHTP_REQUEST_URL}grade12Section/` +
-          `${this.senior_high[0].text.split(" ")[1]}`
-      )
-      .then((response) => {
-        this.senior_high[0].content = response.data.sections;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+        .get(`${this.HHTP_REQUEST_URL}allTeachersForSection`)
+        .then(response => {
+          response.data.forEach(element => {
+             this.teachers.push({teacher:element.name});
+          })
+        })
+        .catch(error => {
+          console.log(error);
+        });
+
+  this.displayAllsection(this.juniorSection.name,this.sectionSenior.name);
+
   },
-  methods: {
-    // Select and Getting The Sections For The Selected Grade Level In Junior High School
-    selectedJHS(item){
-      this.juniorSection.name = item;
+
+  methods:{
+    displayAllsection(juniors,seniors){
       this.$axios
-        .get(`${this.HHTP_REQUEST_URL}getSection/` + `${item.split(" ")[1]}`)
-        .then((response) => {
-          if (response.data.grade < 11) {
-            this.junior_high.forEach((junior) => {
-              if (junior.text.split(" ")[1] == item.split(" ")[1]) {
-                junior.content = response.data.sections;
+      .get(
+        `${this.HHTP_REQUEST_URL}allGradeLevelSections`
+      )
+      .then((response) =>{
+        console.log(response.data.sections);
+        this.allsections=response.data.sections;
+        if(juniors!=null && seniors!=null){
+               this.junior_high.forEach((junior) => {
+               if (junior.text.split(" ")[1]==juniors.split(" ")[1]) {
+                   junior.content =this.allsections.filter(function (val){ return val.gradelevel.grade_level == juniors.split(" ")[1];});
+                  }
+               });
+        this.senior_high.forEach((senior) =>{
+             if (senior.text.split(" ")[1] == seniors.split(" ")[1]){
+                senior.content =this.allsections.filter(function (val){ return val.gradelevel.grade_level == seniors.split(" ")[1];});
               }
             });
           }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+       else if(juniors!=null && seniors==null){
+             this.junior_high.forEach((junior) => {
+              if (junior.text.split(" ")[1]==juniors.split(" ")[1]) {
+                   junior.content =this.allsections.filter(function (val){ return val.gradelevel.grade_level == juniors.split(" ")[1];});
+                  }
+              });
+       }
+     else{
+          this.senior_high.forEach((senior) =>{
+             if (senior.text.split(" ")[1] == seniors.split(" ")[1]){
+                senior.content =this.allsections.filter(function (val){ return val.gradelevel.grade_level == seniors.split(" ")[1];});
+              }
+            });
+       }
+     
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     },
 
-    //Selected Senior High School Section In V-For
-    selectedSHS(value) {
-      this.sectionSenior.name = value;
-      this.$axios
-        .get(`${this.HHTP_REQUEST_URL}getSection/` + `${value.split(" ")[1]}`)
-        .then((response) => {
-          if (response.data.grade > 10) {
-            this.senior_high.forEach((senior) => {
-              if (senior.text.split(" ")[1] == value.split(" ")[1]) {
-                senior.content = response.data.sections;
-              }
-            });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+
+    // Select and Getting The Sections For The Selected Grade Level In Junior High School
+    selectedJHS(item){
+      this.juniorSection.name=item;
+      this.junior_high.forEach((junior) => {
+          if (junior.text.split(" ")[1] == item.split(" ")[1]) {
+              junior.content =this.allsections.filter(function (val){ return val.gradelevel.grade_level == item.split(" ")[1];});
+           }
+       });
     },
+   
+    //Selected Senior High School Section In V-For
+    selectedSHS(value){
+        this.sectionSenior.name = value;
+        this.senior_high.forEach((senior) =>{
+          if (senior.text.split(" ")[1] == value.split(" ")[1]){
+              senior.content =this.allsections.filter(function (val){ return val.gradelevel.grade_level == value.split(" ")[1];});
+           }
+       });
+
+    },
+
 
     //Method For Opening The Junior High School Dialog
     openJunior() {
@@ -417,7 +463,7 @@ export default {
 
     //Method For Opening The Dialog Of Senior High School
     openSenior() {
-      this.seniorDialog = true;
+      this.seniordialog = true;
       this.edit = false;
     },
 
@@ -425,123 +471,165 @@ export default {
     closeJunior() {
       this.Junior.section = null;
       this.Junior.capacity = null;
+      this.Junior.teacher=null;
       for (let key in this.errors) {
         this.$delete(this.errors, key);
       }
       this.juniordialog = false;
     },
-
+    
     //Close The Modal IN Senior High School When Cancel is click
     closeSenior() {
       this.Senior.section = null;
       this.Senior.capacity = null;
+      this.Senior.teacher=null;
       for (let key in this.errors) {
         this.$delete(this.errors, key);
       }
-      this.seniorDialog = false;
+      this.seniordialog = false;
     },
+
 
     //Method For Adding A Section In Junior High School Category
     async addJunior(grades) {
       if (this.edit == false) {
+        console.log("Teacher:"+this.Junior.teacher)
         this.loading = true;
         await new Promise((resolve) => setTimeout(resolve, 3000));
         this.loading = false;
         this.$axios
-          .post(`${this.HHTP_REQUEST_URL}addSection`, {
+          .post(`${this.HHTP_REQUEST_URL}addSection`,{
             grade: grades.split(" ")[1],
             name: this.Junior.section,
             capacity: this.Junior.capacity,
             total_students: 0,
+            teacher:this.Junior.teacher
           })
           .then((response) => {
             if (response.data.message) {
-              this.selectedJHS(grades);
-              this.juniordialog = false;
-              // alert("Successfully Save");
-              this.$swal.fire({
+             (this.Junior.id = null), (this.Junior.section= null), (this.Junior.capacity= null), (this.Junior.teacher=null);
+             this.juniordialog = false;
+             this.displayAllsection(grades,null);
+             this.$swal.fire({
                 icon: "success",
                 title: "Success",
                 text: "Sections successfully added.",
               });
-            } else {
-              alert("Not Successfully Save");
+            } else{
+                this.$swal.fire({
+                icon: "error",
+                title: "Error",
+                text:this.Junior.teacher+" was already assigned by section "+response.data.failed+".",
+              });
             }
           })
           .catch((error) => {
             if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);
             } else {
-              alert("something went wrong!");
+               console.log(error);
             }
           });
       } else {
+        //update
         this.$axios
           .post(
             `${this.HHTP_REQUEST_URL}updateSection/` + `${this.Junior.id}`,
             {
               name: this.Junior.section,
               capacity: this.Junior.capacity,
+              teacher:this.Junior.teacher
             }
           )
           .then((response) => {
             if (response.data.message) {
-              // alert("successfully update!");
               this.$swal.fire({
                 icon: "success",
                 title: "Success",
                 text: "Sections successfully updated.",
               });
-              this.selectedJHS(grades);
               this.juniordialog = false;
+              this.displayAllsection(grades,null);
             } else {
-              alert("NoTE SUCCESSFUL!");
+               this.$swal
+                .fire({ 
+                  title:this.Junior.teacher+" was assigned to "+response.data.failed+".",
+                  text: "Are you sure to update this!",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Update"
+                })
+                .then(result => {
+                  if (result.isConfirmed) {
+                    this.$axios
+                      .post(
+                        `${this.HHTP_REQUEST_URL}updateSection/`+"update",
+                        {
+                          updateId:this.Junior.id,
+                          name: this.Junior.section,
+                          capacity:this.Junior.capacity,
+                          teacher:this.Junior.teacher
+                        }
+                      )
+                      .then(response => {
+                        if (response.data.newTeacher) {
+                          this.$swal.fire({
+                            title: "Updated!",
+                            text: response.data.newTeacher,
+                            icon: "success"
+                          });
+                            (this.Junior.id = null), (this.Junior.section= null), (this.Junior.capacity= null), (this.Junior.teacher=null);
+                            this.juniordialog = false;
+                             this.displayAllsection(grades,null);
+                        } else {
+                          this.$swal.fire({
+                            title: "NotUpdated!",
+                            text:"Not successfully updated!",
+                            icon: "error"
+                          });
+                          this.juniordialog = false;
+                          this.displayAllsection(grades,null);
+                        }
+                      })
+                      .catch(error =>{
+                         console.log(error);
+                      });
+                  }
+                });
             }
           })
           .catch((error) => {
             if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);
             } else {
-              alert("something went wrong!");
+              console.log(error);
             }
           });
+
       }
     },
 
     //Method For Editing The Section In Junior High
-    async juniorEdit(id) {
-      this.edit = true;
-      this.juniordialog = true;
-      this.$axios
-        .get(`${this.HHTP_REQUEST_URL}editSection/` + `${id}`)
-        .then((response) => {
-          if (response.data) {
-            this.Junior.id = response.data.section.id;
-            this.Junior.section = response.data.section.name;
-            this.Junior.capacity = response.data.section.capacity;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    async juniorEdit(item) {
+       this.Junior.teacher=item.teacher_id;
+       this.edit = true
+       this.juniordialog = true;
+       this.Junior.section =item.name;
+       this.Junior.capacity =item.capacity;
+       this.Junior.id=item.id;
     },
 
     //Method For Editing The Section In Senior High School
-    async seniorEdit(id) {
-      this.edit = true;
-      this.seniorDialog = true;
-      this.$axios
-        .get(`${this.HHTP_REQUEST_URL}editSection/` + `${id}`)
-        .then((response) => {
-          if (response.data) {
-            this.Senior.id = response.data.section.id;
-            this.Senior.section = response.data.section.name;
-            this.Senior.capacity = response.data.section.capacity;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    async seniorEdit(data) {
+      this.Senior.teacher=data.teacher_id;
+      this.edit=true;
+      this.seniordialog=true;
+      this.Senior.section=data.name;
+      this.Senior.capacity=data.capacity;
+      this.Senior.id=data.id;
+      this.Senior.teacher=data.teacher_id;
     },
 
     //Method For Removing The Section In Junior High Category
@@ -549,9 +637,15 @@ export default {
       this.$axios
         .get(`${this.HHTP_REQUEST_URL}delAnySection/` + `${sec}`)
         .then((response) => {
-          if (response.data.message) {
-            this.selectedJHS(response.data.section);
-            alert("Successfully Deleted!");
+          if (response.data.message){
+            if(response.data.section.split(" ")[1]<11){
+              this.displayAllsection(response.data.section,null);
+               alert("Successfully Deleted!");
+            }
+            else{
+              this.displayAllsection(null,response.data.section);
+               alert("Successfully Deleted!");
+            }
           } else {
             alert("Not successfully deleted!");
           }
@@ -561,59 +655,132 @@ export default {
         });
     },
 
-    //Methods For Adding A Section In Senior High School
+
+
+//Methods For Adding A Section In Senior High School
     async addSenior(item) {
-      if(this.edit==false){
-         this.loading=true;
-        await new Promise(resolve => setTimeout(resolve, 3000));
-          this.loading = false;
+     if (this.edit == false) {
+        console.log("Teacher:"+this.Senior.teacher)
+        this.loading = true;
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        this.loading = false;
         this.$axios
-        .post(`${this.HHTP_REQUEST_URL}addSection`, {
-          grade: item.split(" ")[1],
-          name: this.Senior.section,
-          capacity: this.Senior.capacity
-        })
-        .then(response => {
-          if (response.data.message) {
-            this.selectedSHS(item);
-            this.seniorDialog = false;
-            alert("Successfully Save");
-          } else {
-            alert("Not Successfully Save");
-          }
-        })
-        .catch(error => {
-          if (error.response.status == 422) {
-            this.setErrors(error.response.data.errors);
-          } else {
-            alert("something went wrong!");
-          }
-        });
-      }
-      else{
-         this.$axios
-        .post(`${this.HHTP_REQUEST_URL}updateSection/`+`${this.Senior.id}`,{
-          name: this.Senior.section,
-          capacity: this.Senior.capacity
-        })
-        .then(response =>{
-          if (response.data.message){
-             alert("successfully update!")
-             this.selectedSHS(item);
-             this.seniorDialog=false;
-          } 
-        })
-        .catch(error => {
-         if (error.response.status == 422) {
-            this.setErrors(error.response.data.errors);
-          }else {
-            alert("something went wrong!");
-          }
-        });
+          .post(`${this.HHTP_REQUEST_URL}addSection`,{
+            grade:item.split(" ")[1],
+            name: this.Senior.section,
+            capacity: this.Senior.capacity,
+            total_students: 0,
+            teacher:this.Senior.teacher
+          })
+          .then((response) => {
+            if (response.data.message) {
+            (this.Senior.id = null), (this.Senior.section= null), (this.Senior.capacity= null), (this.Senior.teacher=null);
+             this.seniordialog = false;
+             this.displayAllsection(null,item);
+             this.$swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Sections successfully added.",
+              });
+            } else{
+                this.$swal.fire({
+                icon: "error",
+                title: "Error",
+                text:this.Senior.teacher+" was already assigned by section "+response.data.failed+"."
+              });
+            }
+          })
+          .catch((error) => {
+            if (error.response.status == 422) {
+              this.setErrors(error.response.data.errors);
+            } else {
+               console.log(error);
+            }
+          });
+      } else {
+        //update
+        this.$axios
+          .post(
+            `${this.HHTP_REQUEST_URL}updateSection/` + `${this.Senior.id}`,
+            {
+              name: this.Senior.section,
+              capacity: this.Senior.capacity,
+              teacher:this.Senior.teacher
+            }
+          )
+          .then((response) => {
+            if (response.data.message) {
+              this.$swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Sections successfully updated.",
+              });
+              this.seniordialog = false;
+              this.displayAllsection(null,item);
+            } else {
+               this.$swal
+                .fire({ 
+                  title:this.Senior.teacher+" was assigned to "+response.data.failed+".",
+                  text: "Are you sure to update this!",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Update"
+                })
+                .then(result => {
+                  if (result.isConfirmed) {
+                    this.$axios
+                      .post(
+                        `${this.HHTP_REQUEST_URL}updateSection/`+"update",
+                        {
+                          updateId:this.Senior.id,
+                          name: this.Senior.section,
+                          capacity:this.Senior.capacity,
+                          teacher:this.Senior.teacher
+                        }
+                      )
+                      .then(response => {
+                        if (response.data.newTeacher) {
+                          this.$swal.fire({
+                            title: "Updated!",
+                            text: response.data.newTeacher,
+                            icon: "success"
+                          });
+                            (this.Senior.id = null), (this.Senior.section= null), (this.Senior.capacity= null), (this.Senior.teacher=null);
+                            this.seniordialog = false;
+                             this.displayAllsection(null,item);
+                        } else {
+                          this.$swal.fire({
+                            title: "NotUpdated!",
+                            text:"Not successfully updated!",
+                            icon: "error"
+                          });
+                          this.seniordialog = false;
+                          this.displayAllsection(null,item);
+                        }
+                      })
+                      .catch(error =>{
+                         console.log(error);
+                      });
+                  }
+                });
+            }
+          })
+          .catch((error) => {
+            if (error.response.status == 422) {
+              this.setErrors(error.response.data.errors);
+            } else {
+              console.log(error);
+            }
+          });
+
       }
     },
 
-    //Methods For All Errors In Junior High School
+
+
+  //Methods For All Errors In Junior High School
     setErrors(error) {
       this.errors = error;
     },

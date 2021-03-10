@@ -6,24 +6,23 @@
     expand-on-hover
     app
   >
-    <v-list>
-      <v-list-item class="px-2">
-        <v-list-item-avatar>
-          <v-img :src="require('../assets/images/logo.jpg')"></v-img>
-        </v-list-item-avatar>
-      </v-list-item>
-
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title class="title"> Administrator </v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
+   <v-list color="#3BBDDA">
+      <div class="head" >
+          <img :src="require('../assets/images/mnhs-logo.png')"  width="150" height="150"/>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title class="title">
+                ADMINISTRATOR
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+      </div>
     </v-list>
 
     <v-divider></v-divider>
     <v-list>
-      <v-list-item class="nav-link" link to="/admin/">
-        <v-icon>mdi-view-dashboard</v-icon>
+      <v-list-item class="nav-link" link to="/admin/" exact>
+        <v-icon color="black">mdi-view-dashboard</v-icon>
 
         <v-list-item-content class="nav-def">
           <v-list-item-title>Dashboard</v-list-item-title>
@@ -54,7 +53,7 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-list-item class="nav-link" link to="/admin/all_sections">
+      <v-list-item class="nav-link" link to="/admin/all_sections" exact>
         <v-icon color="black">mdi-google-classroom</v-icon>
 
         <v-list-item-content class="nav-def">
@@ -62,7 +61,7 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-list-item class="nav-link" link to="/admin/reports">
+      <v-list-item class="nav-link" link to="/admin/reports" exact>
         <v-icon color="black">mdi-chart-bar</v-icon>
 
         <v-list-item-content class="nav-def">
@@ -82,3 +81,9 @@ export default {
   },
 };
 </script>
+
+<style lang="css" scoped>
+  .head{
+    text-align: center !important;
+  }
+</style>

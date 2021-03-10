@@ -2,124 +2,115 @@
 <template>
   <div>
     <bread-crumb :item="items" page_name="All Teachers"></bread-crumb>
-    <br />
-    <br />
+    <br>
+    <br>
     <div>
-      <v-card-title>
-        <v-spacer></v-spacer>
-        <!-- Adding A Teacher!-->
+      <v-card outlined>
+        <v-card class="table-header" color="orange">
+          <v-card-title class="text-center justify-center">
+            <div class="display-2 font-weight-light">All Teachers</div>
+          </v-card-title>
+
+          <div
+            class="subtitle-1 font-weight-light text-center justify-center"
+          >All teachers as of year {{ year }}</div>
+        </v-card>
         <v-card-title>
           <v-spacer></v-spacer>
-          <div class="add_btn">
-            <v-dialog v-model="statusdialog" persistent max-width="300px">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  color="primary"
-                  v-bind="attrs"
-                  v-on="on"
-                  @click="showTeacher"
-                >
-                  <v-icon>mdi-plus</v-icon>Add Teacher
-                </v-btn>
-              </template>
-              <v-form>
-                <v-card>
-                  <v-card-title class="headline">
-                    <span>{{ status }}</span>
-                  </v-card-title>
-                  <v-card-text>
-                    <v-container>
-                      <v-text-field
-                        @keydown="clearError"
-                        label="Teacher's Fullname"
-                        type="text"
-                        class="form-control"
-                        v-model="Teacher"
-                        :error="hasError('name')"
-                        name="name"
-                      ></v-text-field>
-                      <p v-if="hasError('name')" class="invalid-feedback">
-                        {{ getError("name") }}
-                      </p>
-                      <v-text-field
-                        @keydown="clearError"
-                        label="Email"
-                        type="email"
-                        :error="hasError('email')"
-                        v-model="Email"
-                        name="email"
-                      ></v-text-field>
-                      <p v-if="hasError('email')" class="invalid-feedback">
-                        {{ getError("email") }}
-                      </p>
-                      <v-text-field
-                        @keydown="clearError"
-                        label="Phone Number"
-                        type="number"
-                        min="0"
-                        v-model="Contact"
-                        name="contact"
-                        :error="hasError('contact')"
-                      ></v-text-field>
-                      <p v-if="hasError('contact')" class="invalid-feedback">
-                        {{ getError("contact") }}
-                      </p>
-                      <v-select
-                        v-model="selected_section"
-                        :items="sections"
-                        type="text"
-                        label="Assigned Section Area"
-                        :disabled="disableSection"
-                      >
-                        <template v-slot:selection="{item}">
-                        {{item.name}}
-                        </template>
-                          <template v-slot:item="{item}">
-                        {{item.name}}
-                        </template>
-                      </v-select>
-                    </v-container>
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="error darken-1" @click="dialogs"
-                      >Cancel</v-btn
-                    >
-                    <v-btn
-                      color="blue darken-1"
-                      :loading="loading"
-                      :disabled="hasAnyErors"
-                      @click="addTeacher()"
-                      >Save</v-btn
-                    >
-                  </v-card-actions>
-                </v-card>
-              </v-form>
-            </v-dialog>
-          </div>
+          <!-- Adding A Teacher!-->
+          <v-card-title>
+            <v-spacer></v-spacer>
+            <div class="add_btn">
+              <v-dialog v-model="statusdialog" persistent max-width="300px">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn color="primary" v-bind="attrs" v-on="on" @click="showTeacher">
+                    <v-icon>mdi-plus</v-icon>Add Teacher
+                  </v-btn>
+                </template>
+                <v-form>
+                  <v-card>
+                    <v-card-title class="headline">
+                      <span>{{ status }}</span>
+                    </v-card-title>
+                    <v-card-text>
+                      <v-container>
+                        <v-text-field
+                          @keydown="clearError"
+                          label="Teacher's Fullname"
+                          type="text"
+                          class="form-control"
+                          v-model="Teacher"
+                          :error="hasError('name')"
+                          name="name"
+                        ></v-text-field>
+                        <p v-if="hasError('name')" class="invalid-feedback">{{ getError("name") }}</p>
+                        <v-text-field
+                          @keydown="clearError"
+                          label="Email"
+                          type="email"
+                          :error="hasError('email')"
+                          v-model="Email"
+                          name="email"
+                        ></v-text-field>
+                        <p v-if="hasError('email')" class="invalid-feedback">{{ getError("email") }}</p>
+                        <v-text-field
+                          @keydown="clearError"
+                          label="Phone Number"
+                          type="number"
+                          min="0"
+                          v-model="Contact"
+                          name="contact"
+                          :error="hasError('contact')"
+                        ></v-text-field>
+                        <p
+                          v-if="hasError('contact')"
+                          class="invalid-feedback"
+                        >{{ getError("contact") }}</p>
+                        <v-select
+                          v-model="selected_section"
+                          :items="sections"
+                          label="Assigned Section Area"
+                        ></v-select>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="error darken-1" @click="dialogs">Cancel</v-btn>
+                      <v-btn
+                        color="blue darken-1"
+                        :loading="loading"
+                        :disabled="hasAnyErors"
+                        @click="addTeacher()"
+                      >Save</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-form>
+              </v-dialog>
+            </div>
+          </v-card-title>
+          <!-- Adding A Teacher!-->
         </v-card-title>
-        <!-- Adding A Teacher!-->
-      </v-card-title>
-      <v-data-table
-        :headers="headers"
-        :items="teachers"
-        :search="search"
-        :items-per-page="10"
-        class="elevation-1"
-      >
-        <template v-slot:item="row">
-          <tr>
-            <td>{{ row.item.name }}</td>
-            <td>{{ row.item.email }}</td>
-            <td>{{ row.item.contact }}</td>
-            <td>{{ row.item.section_id }}</td>
-            <td>
-              <v-icon  color="primary" @click="showsTeacherById(row.item.id)">mdi-pencil</v-icon>
-              <v-icon color="red" @click="removeTeacher(row.item.id)">mdi-delete</v-icon>
-            </td>
-          </tr>
-        </template>
-      </v-data-table>
+        <v-data-table
+          :headers="headers"
+          :items="teachers"
+          :search="search"
+          :items-per-page="10"
+          class="elevation-1"
+        >
+          <template v-slot:item="row">
+            <tr>
+              <td>{{ row.item.name }}</td>
+              <td>{{ row.item.email }}</td>
+              <td>{{ row.item.contact }}</td>
+              <td>{{ row.item.section_id }}</td>
+              <td>
+                <v-icon @click="editTeacher(row.item)" color="primary">mdi-pencil</v-icon>
+                <v-icon @click="removeTeacher(row.item.id)" color="error">mdi-delete</v-icon>
+              </td>
+            </tr>
+          </template>
+        </v-data-table>
+      </v-card>
     </div>
   </div>
 </template>
@@ -127,13 +118,14 @@
 <script>
 export default {
   components: {
-    BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
+    BreadCrumb: () => import("@/layout/BreadCrumb.vue")
   },
 
   data() {
     return {
       HHTP_REQUEST_URL: "http://127.0.0.1:8000/api/",
       search: "",
+      year: new Date().getFullYear(),
       loading: false,
       statusdialog: false,
       booleanStatus: false,
@@ -142,120 +134,109 @@ export default {
       Teacher: null,
       Email: null,
       Contact: null,
-      selected_section:null,
-      disableSection:false,
-      sections:[],
-      // Target: { name: null, email: null, contact: null },
+      selected_section: null,
+      sections: [],
       items: [
         {
           text: "Home",
           disabled: false,
-          href: "/admin",
+          href: "/admin"
         },
         {
           text: "Teachers",
           disabled: true,
-          href: "admin/all_teachers",
-        },
+          href: "admin/all_teachers"
+        }
       ],
       headers: [
         {
           text: "Name",
           align: "start",
           sortable: false,
-          value: "name",
+          value: "name"
         },
         { text: "Email", value: "email" },
         { text: "Phone Number", value: "contact" },
         { text: "Assigned Section", value: "section_id" },
-        { text: "Action", value: "action" },
+        { text: "Action", value: "action" }
       ],
-
       teachers: [],
       errors: {},
+    
     };
   },
 
   created() {
-    this.teachers = this.$store.getters.allTeacher;
-   console.log(this.teachers)
+    //this.teachers =this.$store.getters.allTeacher;
+    let sections =this.$store.getters.allSections;
+    for (const key in sections) {
+      if (sections.hasOwnProperty.call(sections, key)) {
+        const element = sections[key];
+        this.sections.push(element["name"]);
+      }
+    }
   },
 
-  mounted: function () {
-    //this.display();
+  mounted() {
+    this.display();
   },
 
   methods: {
     //Methods for displaying all teachers
-    display() {
+    display(){
       this.$axios
         .get(`${this.HHTP_REQUEST_URL}allTeacher`)
         .then(response => {
           this.teachers = response.data;
-          this.Section();
         })
         .catch(error => {
           console.log(error);
         });
     },
 
-    //Methods For Getting All Available Section
-    Section() {
-      this.$axios
-        .get(`${this.HHTP_REQUEST_URL}sections`)
-        .then(response => {
-         this.sections=response.data;
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
+
     //Methods for Deleting A Teacher In Delete Button
     async removeTeacher(dataid) {
       this.$axios
         .get(`delTeacher/` + `${dataid}`)
-        .then((response) => {
+        .then(response => {
           if (response.data.message) {
-            this.teachers = [];
+             this.$swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Successfully deleted.",
+              });
             this.display();
-            alert("Successfully Deleted!");
           } else {
-            alert("Not successfully deleted!");
+             this.$swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Not Successfully deleted.",
+              });
           }
         })
         .catch(error => {
-          console.log(error)
+          console.log(error);
         });
     },
-    //Methods for showing  a teacher by id
-    showsTeacherById(id) {
+
+    editTeacher(teacher) {
       this.status = "Update Teacher";
       this.statusdialog = true;
       this.booleanStatus = true;
-
-      this.$axios
-        .get(`${this.HHTP_REQUEST_URL}showByIdTeacher/` + `${id}`)
-        .then(response => {
-          if (response.data.section_id== null) {
-            this.Teacher = response.data.name;
-            this.Email = response.data.email;
-            this.Contact = response.data.contact;
-            this.Id = response.data.id;
-            this.Section();
-          } else {
-            this.Teacher = response.data.name;
-            this.Email = response.data.email;
-            this.Contact = response.data.contact;
-            this.sections =[];
-            this.sections.push({name:response.data.section_id});
-            this.selected_section=this.sections[0];
-            this.disableSection=true;
-            this.Id = response.data.id;
-          }
-        })
-        .catch(error => {
-         console.log(error)
-        });
+      if(teacher.section_id==null || teacher.section_id==" "){
+      this.Teacher = teacher.name;
+      this.Email = teacher.email;
+      this.Contact = teacher.contact;
+      this.Id = teacher.id;
+      }
+   else{
+      this.Teacher = teacher.name;
+      this.Email = teacher.email;
+      this.Contact = teacher.contact;
+      this.Id = teacher.id;
+      this.selected_section=teacher.section_id.split(" ")[3];
+      }
     },
 
     //Methods for showing the  Add Teacher
@@ -263,104 +244,145 @@ export default {
       this.status = "Add Teacher";
       this.statusdialog = true;
       this.booleanStatus = false;
-      this.disableSection=false;
+      this.disableSection = false;
     },
 
- //Reseting the validation in cancel button
+    //Resetting the validation in cancel button
     async dialogs() {
       //This is for Add Teacher Reset Validation
       if (this.booleanStatus == false) {
-        (this.Teacher = null),
-          (this.Email = null),
-          (this.Contact = null)
         for (let key in this.errors) {
           this.$delete(this.errors, key);
         }
-        this.selected_section=[];
+        (this.Teacher = null), (this.Email = null), (this.Contact = null), (this.selected_section = null),(this.Id=null);
         this.statusdialog = false;
-      }
-      else {
-        (this.Teacher = null),
-          (this.Email = null),
-          (this.Contact = null)
+      } else {
         for (let key in this.errors) {
           this.$delete(this.errors, key);
         }
-        this.Section();
-        this.selected_section=[];
-        this.disableSection=false;
+         (this.Teacher = null), (this.Email = null), (this.Contact = null), (this.selected_section = null),(this.Id=null);
         this.statusdialog = false;
       }
     },
 
- //Method for Adding A Teacher in save button
+    //Method for Adding A Teacher in save button
     async addTeacher() {
       if (this.booleanStatus == false) {
-        console.log(this.selected_section);
         this.loading = true;
-        await new Promise((resolve) => setTimeout(resolve, 700));
+        await new Promise(resolve => setTimeout(resolve, 700));
         this.loading = false;
         this.$axios
           .post(`${this.HHTP_REQUEST_URL}addNewTeacher`, {
             name: this.Teacher,
             email: this.Email,
             contact: this.Contact,
-            section_id: this.selected_section,
+            section_id: this.selected_section
           })
-          .then((response) => {
+          .then(response => {
             if (response.data.message) {
-              alert("Successfully added!");
-              this.teachers = [];
-              this.display();
-              this.Teacher = null;
-              this.Email = null;
-              this.Contact = null;
-              this.selected_section=null;
+              this.$swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Successfully saved.",
+              });
               this.statusdialog = false;
+             (this.Teacher = null), (this.Email = null), (this.Contact = null), (this.selected_section = null),( this.Id=null);
+               this.display();
             } else {
-              alert("Not successfully added!");
+               this.$swal.fire({
+                icon: "error",
+                title: "Error",
+                text:"Section "+this.selected_section+" was already assigned by "+response.data.teacher+".",
+              });
             }
           })
-          .catch((error) => {
+          .catch(error => {
             if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);
             } else {
-              alert("something went wrong!");
+              console.log(error);
             }
           });
       } else {
         //For Updating The  Teachers
         this.loading = true;
-        await new Promise((resolve) => setTimeout(resolve, 700));
+        await new Promise(resolve => setTimeout(resolve, 700));
         this.loading = false;
-        console.log(this.selected_section);
         this.$axios
           .post(`${this.HHTP_REQUEST_URL}updateTeacher/` + `${this.Id}`, {
             name: this.Teacher,
             email: this.Email,
             contact: this.Contact,
-            section_id: this.selected_section,
+            section_id: this.selected_section
           })
-          .then((response) => {
+          .then(response => {
             if (response.data.message) {
-              alert("Successfully updated!");
-              this.teachers = [];
+              this.$swal.fire({
+                icon: "success",
+                title: "Success",
+                text: response.data.message
+              });
               this.display();
-              this.Teacher = null;
-              this.Email = null;
-              this.Contact = null;
-              this.selected_section = null;
-              this.disableSection=false;
+               (this.Teacher = null), (this.Email = null), (this.Contact = null), (this.selected_section = null),( this.Id=null);
               this.statusdialog = false;
+               this.display();
             } else {
-              alert("Not successfully updated!");
+              this.$swal
+                .fire({ 
+                  title:this.selected_section+" section was assigned by "+response.data.teacher+".",
+                  text: "Are you sure to update this!",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Update"
+                })
+                .then(result => {
+                  if (result.isConfirmed) {
+                    this.$axios
+                      .post(
+                        `${this.HHTP_REQUEST_URL}updateTeacher/`+"update",
+                        {
+                          updateId:this.Id,
+                          name:this.Teacher,
+                          email:this.Email,
+                          contact:this.Contact,
+                          section_id:this.selected_section
+                        }
+                      )
+                      .then(response => {
+                        if (response.data.newSection) {
+                          this.$swal.fire({
+                            title: "Updated!",
+                            text: response.data.newSection,
+                            icon: "success"
+                          });
+                            this.statusdialog = false;
+                            (this.Teacher = null), (this.Email = null), (this.Contact = null), (this.selected_section = null),( this.Id=null);
+                             this.display();
+                        } else {
+                          this.$swal.fire({
+                            title: "NotUpdated!",
+                            text:"Not successfully updated!",
+                            icon: "error"
+                          });
+                          this.statusdialog = false;
+                          this.display();
+                        }
+                      })
+                      .catch(error =>{
+                         console.log(error);
+                      });
+                  }
+                });
             }
           })
-          .catch((error) => {
+          .catch(error => {
+            console.log(error);
             if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);
             } else {
-              alert("something went wrong!");
+              console.log(error);
             }
           });
       }
@@ -368,7 +390,7 @@ export default {
 
 
 
-    //Methods For All Errors
+//Methods For All Errors
     setErrors(error) {
       this.errors = error;
     },
@@ -383,7 +405,7 @@ export default {
 
     getError(fieldName) {
       return this.errors[fieldName][0];
-    },
+    }
   },
 
   computed: {
@@ -391,7 +413,6 @@ export default {
       return Object.keys(this.errors).length > 0;
     }
   }
-  
 };
 </script>
 
