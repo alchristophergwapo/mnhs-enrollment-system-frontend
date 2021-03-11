@@ -168,48 +168,53 @@ export default {
     
     };
   },
-
-  created() {
+  created(){
     //this.teachers =this.$store.getters.allTeacher;
-    // let sections =this.$store.getters.allSections;
+   // let sections =this.$store.getters.allSections;
     // for (const key in sections) {
     //   if (sections.hasOwnProperty.call(sections, key)) {
     //     const element = sections[key];
     //     this.sections.push({id:element["id"],name:element["name"]});
     //   }
     // }
-     this.$axios
-        .get("allSections")
-        .then(response => {
-          response.data.sections.forEach(element => {
-            this.sections.push({id:element.id,name:element.name})
-          });
-        })
-        .catch(error => {
-          console.log(error);
-        });
-   console.log(this.sections);
+    this.allSections();
   },
-
-  mounted() {
+  mounted(){
     this.display();
   },
 
   methods: {
-    //Methods for displaying all teachers
+//Methods for displaying All Sections
+    allSections(){
+      this.$store
+          .dispatch("allSections")
+          .then(() => {
+            let sections =this.$store.getters.allSections;
+            for(const key in sections) {
+              if (sections.hasOwnProperty.call(sections, key)) {
+                const element = sections[key];
+                this.sections.push({id:element["id"],name:element["name"]});
+            }
+           //console.log(this.sections);
+         }
+          })
+          .catch((error) => {
+            console.log(error);        
+          });
+    },
+//Methods for displaying all teachers
     display(){
-      this.$axios
-        .get("allTeacher")
-        .then(response => {
-          this.teachers = response.data;
-        })
-        .catch(error => {
-          console.log(error);
-        });
+        this.$store
+          .dispatch("allTeacher")
+          .then(() => {
+            this.teachers=this.$store.getters.allTeacher;
+          })
+          .catch((error) => {
+            console.log(error);        
+          });
     },
 
-
-    //Methods for Deleting A Teacher In Delete Button
+//Methods for Deleting A Teacher In Delete Button
     async removeTeacher(dataid) {
       this.$axios
         .get("delTeacher/"+dataid)
@@ -246,7 +251,7 @@ export default {
       this.selected_section=teacher.student_id;
     },
 
-    //Methods for showing the  Add Teacher
+//Methods for showing the  Add Teacher
     showTeacher() {
       this.status = "Add Teacher";
       this.statusdialog = true;
@@ -254,7 +259,7 @@ export default {
       this.disableSection = false;
     },
 
-    //Resetting the validation in cancel button
+//Resetting the validation in cancel button
     async dialogs() {
       //This is for Add Teacher Reset Validation
       if (this.booleanStatus == false) {
@@ -272,7 +277,7 @@ export default {
       }
     },
 
-    //Method for Adding A Teacher in save button
+//Method for Adding A Teacher in save button
     async addTeacher() {
       console.log("section:"+this.selected_section);
       if (this.booleanStatus == false) {

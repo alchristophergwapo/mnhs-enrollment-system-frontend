@@ -374,16 +374,15 @@ export default {
 
   created(){
     //Getting all teachers
-    this.$axios
-        .get("allTeachersForSection")
-        .then(response => {
-          response.data.forEach(element => {
-             this.teachers.push({id:element.id,teacher:element.name});
-          })
-        })
-        .catch(error => {
-          console.log(error);
-        });
+     this.$store.dispatch("allTeacher").then(() => {
+           this.$store.getters.allTeacher.forEach(element =>{
+                  this.teachers.push({id:element.id,teacher:element.name});
+             })
+            // console.log(this.teachers);
+         })
+          .catch((error) => {
+            console.log(error);        
+          });
 
   this.displayAllsection(this.juniorSection.name,this.sectionSenior.name);
 
@@ -391,12 +390,11 @@ export default {
 
   methods:{
     displayAllsection(juniors,seniors){
-      this.$axios
-      .get(
+      this.$axios.get(
         "allGradeLevelSections"
       )
       .then((response) =>{
-        console.log(response.data.sections);
+       //console.log(response.data.sections);
         this.allsections=response.data.sections;
         if(juniors!=null && seniors!=null){
                this.junior_high.forEach((junior) => {
@@ -420,7 +418,7 @@ export default {
      else{
           this.senior_high.forEach((senior) =>{
              if (senior.text.split(" ")[1] == seniors.split(" ")[1]){
-                senior.content =this.allsections.filter(function (val){ return val.gradelevel.grade_level == seniors.split(" ")[1];});
+                senior.content=this.allsections.filter(function (val){ return val.gradelevel.grade_level == seniors.split(" ")[1];});
               }
             });
        }

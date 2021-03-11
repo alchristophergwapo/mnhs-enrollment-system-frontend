@@ -16,7 +16,9 @@
         <v-card-title>
           Sort By&nbsp;&nbsp;
           <v-select
+            v-model="gradelevel"
             :items="grade_level"
+            @change="filterByGradeLevel($event=gradelevel)"
             menu-props="auto"
             label="Grade Level"
             hide-details
@@ -25,6 +27,8 @@
           ></v-select>
           &nbsp;&nbsp;
           <v-select
+            v-model="selectedSection"
+            @change="filterBySection($event=selectedSection)"
             :items="section"
             menu-props="auto"
             label="Section"
@@ -33,7 +37,7 @@
             outlined
           ></v-select>
           <v-spacer></v-spacer>
-          <span>Adviser: Aileen Becher</span>
+          <span v-if="adviser!=null">Adviser:{{adviser}}</span>
         </v-card-title>
         <v-data-table
           :headers="headers"
@@ -44,9 +48,11 @@
         >
           <template v-slot:item="row">
             <tr>
-              <td>{{ row.item.firstname }} {{ row.item.lastname }}</td>
-              <td>{{ row.item.age }}</td>
-              <td>{{ row.item.address }}</td>
+              <td>{{row.item.student.grade_level}}</td>
+               <td>{{ row.item.student_section }}</td>
+              <td>{{ row.item.student.firstname }} {{ row.item.student.lastname }}</td>
+              <td>{{ row.item.student.age }}</td>
+              <td>{{ row.item.student.address }}</td>
             </tr>
           </template>
         </v-data-table>
@@ -62,7 +68,9 @@ export default {
   data: () => ({
     year: new Date().getFullYear(),
     search: "",
-    selectedGrade:null,
+    gradelevel:null,
+    selectedSection:null,
+    adviser:null,
     items: [
       {
         text: "Home",
@@ -76,40 +84,89 @@ export default {
       },
     ],
     headers: [
-      { text: "GradeLevel", value: "gradelevel" },
-       { text: "Section", value: "section" },
-      {text: "Student Name", align: "start", sortable: false,value: "student",},
-      { text: "Age", value: "age" },
-      { text: "Address", value: "address" },
+      { text: "GradeLevel", value: "student.grade_level" },
+      { text: "Section", value: "student_section" },
+      {text: "Student Name", align: "start", sortable: false,value: "student.firstname"},
+      { text: "Age", value: "student.age" },
+      { text: "Address", value: "student.address" },
     ],
-    students: [],
-    grade_level: [7, 8, 9, 10, 11, 12],
-    section: [
-      "Section1",
-      "Section2",
-      "Section3",
-      "Section4",
-      "Section5",
-      "Section6",
-    ],
+    students:[],
+    filteredStudents:[],
+    grade_level: [7, 8, 9, 10, 11, 12,"All"],
+    section:[],
+    filteredSections:[]
   }),
-
   created() {
-    // this.$axios.get("approvedEnrollment").then((response) => {
-    //   console.log(response);
-    //   let res = response.data.approvedEnrollment;
-    //   for (let index = 0; index < res.length; index++) {
-    //     const element = res[index];
-    //     this.students.push(element.student);
-    //   }
-    // });
-    let students = this.$store.getters.allStudents;
-
-    for (let index = 0; index < students.length; index++) {
-      const element = students[index];
-      this.students.push(element["student"]);
-    }
+    this.$axios.get("approvedEnrollment").then((response)=>{
+      this.students=response.data.approvedEnrollment;
+      this.filteredStudents=response.data.approvedEnrollment;
+    })
+    .catch((error) => {
+        console.log(error);        
+     });
   },
+  mounted(){
+  this.$axios.get("allGradeLevelSections").then((response)=>{
+      this.filteredSections=response.data.sections;
+    })
+    .catch((error) => {
+        console.log(error);        
+     });
+  },
+  methods:{
+   //Method For Filtering By Grade Level
+filterByGradeLevel(grade){
+   if(grade=='All'){
+     this.students=this.filteredStudents;
+     let arraySection=[];
+     this.filteredSections.filter(val=>{arraySection.push(val.name);});
+     this.section=arraySection;
+     this.selectedSection=null;
+     this.adviser=null
+   }
+   else{
+    let arraySection=[];
+    this.students=this.filteredStudents.filter(val=>{return val.student.grade_level == grade;});
+    this.filteredSections.filter(val=>{
+         if(val.gradelevel!=null){
+            if(val.gradelevel.grade_level==grade){
+                 arraySection.push(val.name);
+            }
+         }
+    });
+    this.section=arraySection;
+    this.selectedSection=null;
+    this.adviser=null
+   }
+ },
+
+//Method For Filtering By Section In Every Grade Level
+filterBySection(section){
+  if(this.gradelevel=='All'){
+     this.students=this.filteredStudents.filter(val=>{
+       return val.student_section==section;
+    });
+   this.filteredSections.filter(val=>{
+    if(val.name==section){
+         this.adviser=val.teacher_id+",GradeLevel:"+val.gradelevel.grade_level;
+     }
+  });
+  }
+  else{
+  this.students=this.filteredStudents.filter(val=>{
+      return val.student_section==section;
+  });
+  this.filteredSections.filter(val=>{
+    if(val.name==section){
+       this.adviser=val.teacher_id;
+     }
+  });
+  }
+
+}
+
+  }
+
 };
 </script>
 

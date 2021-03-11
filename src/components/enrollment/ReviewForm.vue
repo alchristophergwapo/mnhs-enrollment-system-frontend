@@ -1,7 +1,8 @@
 <template>
   <v-app>
     <v-container class="container">
-      <div class="cover" v-show="isShowing"></div>
+       <div class="cover"></div>
+      <!-- <div class="cover" v-show="isShowing"></div> -->
       <v-form v-model="enrollmentValid" ref="enrollment" lazy-validation>
         <v-row>
           <v-col cols="12" md="12">
@@ -293,7 +294,7 @@
         </v-row>
       </v-form>
     </v-container>
-    <v-btn color="primary"  @click="show" class="vtn" width="150">{{status}}</v-btn>
+    <!-- <v-btn color="primary"  @click="show" class="vtn" width="150">{{status}}</v-btn> -->
   </v-app>
 </template>
 
@@ -301,8 +302,8 @@
 export default {
   data() {
     return {
-      isShowing:false,
-      status:"Edit",
+      // isShowing:false,
+      // status:"Edit",
       enrollmentValid:true,
       studentInformation: null,
       parentGuardianInfo: null,
@@ -312,16 +313,16 @@ export default {
   },
 
   methods: {
-    show(){
-      if(this.isShowing==true){
-        this.status="Update";
-        this.isShowing=false;
-      }
-      else{
-        this.status="Edit";
-        this.isShowing=true;
-      }
-    },
+    // show(){
+    //   if(this.isShowing==true){
+    //     this.status="Update";
+    //     this.isShowing=false;
+    //   }
+    //   else{
+    //     this.status="Edit";
+    //     this.isShowing=true;
+    //   }
+    // },
     
     initialize() {
       this.studentInformation = JSON.parse(this.$store.getters.student);

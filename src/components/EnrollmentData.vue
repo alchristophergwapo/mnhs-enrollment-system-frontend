@@ -318,7 +318,7 @@ export default {
       // console.log(this.sections);
     },
 
-//Methods For Filtering 
+//Methods For Filtering By Grade Level
 filterByGradeLevel(grade){
    if(grade=='All'){
      this.students=this.filterStudents;
@@ -335,7 +335,7 @@ filterByName(data){
           return val.fullname.concat(" ",val.grade_level).toLowerCase().includes(data.toLowerCase())
        }
        else if(this.gradelevel=='All' && data!=null){
-             return val.fullname.concat(" ",val.grade_level).toLowerCase().includes(data.toLowerCase())
+            return val.fullname.concat(" ",val.grade_level).toLowerCase().includes(data.toLowerCase())
        }
        else{
          if(val.grade_level==this.gradelevel){
@@ -343,8 +343,8 @@ filterByName(data){
                return val.fullname.concat(" ",val.grade_level).toLowerCase().includes(data.toLowerCase())
            }
             else{
-            return val.fullname.concat(" ",val.grade_level).toLowerCase().includes(val.grade_level.toLowerCase())
-        }
+               return val.fullname.concat(" ",val.grade_level).toLowerCase().includes(val.grade_level.toLowerCase())
+           }
       }
 
        }
