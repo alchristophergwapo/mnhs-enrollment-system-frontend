@@ -104,15 +104,16 @@ export default {
       showNPass: "",
       showCPass: "",
       errors: {},
+      userData: null,
     };
   },
 
   mounted: function () {
     //Get Admin Profile
     const userInfo = localStorage.getItem("user");
-    const userData = JSON.parse(userInfo);
-    if (userData.user.user_type == "admin") {
-      this.username = userData.user.username;
+    this.userData = JSON.parse(userInfo);
+    if (this.userData.user.user_type == "admin") {
+      this.username = this.userData.user.username;
     }
   },
 
@@ -140,7 +141,10 @@ export default {
               title: "Success",
               text: "Password is successfully changed.",
             });
-            this.$store.dispatch("logout");
+
+            this.userData.user.updated = 1;
+            this.$store.commit("setUserData", this.userData);
+            this.$store.dispatch("/admin");
           } else {
             alert("Your current password is wrong!");
           }

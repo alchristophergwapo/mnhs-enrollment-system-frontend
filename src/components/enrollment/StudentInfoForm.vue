@@ -191,7 +191,7 @@
 export default {
   data: () => ({
     studentInfo: {
-      PSA: "",
+      PSA:"",
       LRN: 303000123456,
       average: 80,
       firstname: "Christopher",

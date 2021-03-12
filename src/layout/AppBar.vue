@@ -1,6 +1,6 @@
 <template>
   <v-app-bar app color="primary">
-    <v-toolbar-title class="header"
+    <v-toolbar-title class="header-title"
       >Welcome to Mantalongon, Dalaguete NHS</v-toolbar-title
     >
 
@@ -60,13 +60,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.notif {
-  margin-right: 20px;
-}
-
-.v-toolbar__title.header {
-  color: white;
-}
-</style>

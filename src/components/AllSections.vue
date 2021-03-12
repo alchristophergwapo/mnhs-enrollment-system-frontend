@@ -6,15 +6,15 @@
     <div>
       <v-row>
         <v-container>
-          <!--------- Dialog For Junior High School Category ----------------------------------------------------- ------------------------------------->
+          <!-- ------- Dialog For Junior High School Category ----------------------------------------------------- -->
           <div class="add_btn">
-            <v-dialog v-model="juniordialog" persistent max-width="350px">
+            <v-dialog v-model="juniordialog" persistent max-width="300px">
               <v-card>
                 <v-card-title class="headlineSection">
                   <span>Add {{ juniorSection.name }} Sections</span>
                 </v-card-title>
                 <v-card-text>
-                  <v-container>
+                  <v-container fluid>
                     <v-text-field
                       label="Section name"
                       v-model="Junior.section"
@@ -37,59 +37,15 @@
                     <p v-if="hasError('capacity')" class="invalid-feedback">
                       {{ getError("capacity") }}
                     </p>
-                  </v-container>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    :disabled="loading"
-                    color="error darken-1"
-                    @click="closeJunior"
-                    >Cancel</v-btn
-                  >
-                  <v-btn
-                    :loading="loading"
-                    color="primary darken-1"
-                    :disabled="hasAnyErors"
-                    @click="addJunior(juniorSection.name)"
-                    >Save</v-btn
-                  >
-                </v-card-actions>
-              </v-card>
-            </v-dialog>
-          </div>
-          <!----------------------------------------------Modal For Junior High Dialog--------------------------------------------------->
-          <!--------- Dialog For Junior High School Category ----------------------------------------------------- ------------------------------------->
-          <div class="add_btn">
-            <v-dialog v-model="juniordialog" persistent max-width="350px">
-              <v-card>
-                <v-card-title class="headlineSection">
-                  <span>Add {{ juniorSection.name }} Sections</span>
-                </v-card-title>
-                <v-card-text>
-                  <v-container>
-                    <v-text-field
-                      label="Section name"
-                      v-model="Junior.section"
-                      @keydown="clearError"
-                      name="name"
-                      :error="hasError('name')"
-                    ></v-text-field>
-                    <p v-if="hasError('name')" class="invalid-feedback">
-                      {{ getError("name") }}
-                    </p>
-                    <v-text-field
-                      label="Capacity"
-                      type="number"
-                      name="capacity"
-                      @keydown="clearError"
-                      v-model="Junior.capacity"
-                      :error="hasError('capacity')"
-                      min="0"
-                    ></v-text-field>
-                    <p v-if="hasError('capacity')" class="invalid-feedback">
-                      {{ getError("capacity") }}
-                    </p>
+                    <div>
+                      <v-select
+                        item-text="teacher"
+                        item-value="id"
+                        v-model="Junior.teacher"
+                        :items="teachers"
+                        label="Assigned Teacher"
+                      ></v-select>
+                    </div>
                   </v-container>
                 </v-card-text>
                 <v-card-actions>
@@ -188,12 +144,12 @@
                               <v-icon>mdi-plus</v-icon>Add Section
                             </v-btn>
                           </v-card-title>
-                          <!-- <v-container> -->
                           <v-row dense>
                             <v-col
                               v-for="(dta, index) in item.content"
                               :key="index"
                               cols="12"
+                              sm="6"
                               md="6"
                               lg="4"
                             >
@@ -206,7 +162,7 @@
                               >
                                 <template v-slot:edit>
                                   <v-btn
-                                    @click="juniorEdit(dta.id)"
+                                    @click="juniorEdit(dta)"
                                     outlined
                                     color="#006a4e"
                                   >
@@ -227,7 +183,6 @@
                               </h1>
                             </v-card-title>
                           </v-row>
-                          <!-- </v-container> -->
                         </v-tab-item>
                       </v-tabs-items>
                     </div>
@@ -237,7 +192,7 @@
                   <div v-else>
                     <div class="add_btn">
                       <v-dialog
-                        v-model="seniorDialog"
+                        v-model="seniordialog"
                         persistent
                         max-width="300px"
                       >
@@ -275,6 +230,13 @@
                               >
                                 {{ getError("capacity") }}
                               </p>
+                              <v-select
+                                item-text="teacher"
+                                item-value="id"
+                                v-model="Senior.teacher"
+                                :items="teachers"
+                                label="Assigned Teacher"
+                              ></v-select>
                             </v-container>
                           </v-card-text>
                           <v-card-actions>
@@ -297,7 +259,7 @@
                       </v-dialog>
                     </div>
 
-                    <!-- ---------------------------------End Of The Dialog Of A Senior High School--------------------------------------------- -->
+                    <!-- ---------------------------------End Of The Dialog fro Senior High School--------------------------------------------- -->
 
                     <v-tabs-items v-model="tab2">
                       <v-tab-item
@@ -316,6 +278,7 @@
                               v-for="(i, index) in item.content"
                               :key="index"
                               cols="12"
+                              sm="6"
                               md="6"
                               lg="4"
                             >
@@ -327,7 +290,7 @@
                               >
                                 <template v-slot:edit>
                                   <v-btn
-                                    @click="seniorEdit(i.id)"
+                                    @click="seniorEdit(i)"
                                     outlined
                                     color="primary"
                                   >
@@ -372,7 +335,7 @@ export default {
   },
   data: () => ({
     juniordialog: false,
-    seniorDialog: false,
+    seniordialog: false,
     edit: null,
     loading: false,
     state: null,
@@ -395,11 +358,13 @@ export default {
       id: null,
       section: null,
       capacity: null,
+      teacher: null,
     },
     Senior: {
       id: null,
       section: null,
       capacity: null,
+      teacher: null,
     },
     junior_high: [
       {
@@ -414,40 +379,59 @@ export default {
       { text: "Grade 11", content: [] },
       { text: "Grade 12", content: [] },
     ],
+    allsections: [],
+    teachers: [],
   }),
-  mounted: function () {
-    //Function For Getting All Grade 7 Sections
+  created() {
+    //Getting all teachers
     this.$axios
-      .get(`grade7Section/` + `${this.junior_high[0].text.split(" ")[1]}`)
+      .get("allTeachersForSection")
       .then((response) => {
-        this.junior_high[0].content = response.data.sections;
+        response.data.forEach((element) => {
+          this.teachers.push({ id: element.id, teacher: element.name });
+        });
       })
       .catch((error) => {
         console.log(error);
       });
-    //Function For Getting All Grade 12 Sections
-    this.$axios
-      .get(`grade12Section/` + `${this.senior_high[0].text.split(" ")[1]}`)
-      .then((response) => {
-        this.senior_high[0].content = response.data.sections;
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    console.log(this.senior_high);
-    console.log(this.junior_high);
+    this.displayAllsection(this.juniorSection.name, this.sectionSenior.name);
   },
   methods: {
-    // Select and Getting The Sections For The Selected Grade Level In Junior High School
-    selectedJHS(item) {
-      this.juniorSection.name = item;
+    displayAllsection(juniors, seniors) {
       this.$axios
-        .get(`getSection/` + `${item.split(" ")[1]}`)
+        .get("allGradeLevelSections")
         .then((response) => {
-          if (response.data.grade < 11) {
+          console.log(response.data.sections);
+          this.allsections = response.data.sections;
+          if (juniors != null && seniors != null) {
             this.junior_high.forEach((junior) => {
-              if (junior.text.split(" ")[1] == item.split(" ")[1]) {
-                junior.content = response.data.sections;
+              if (junior.text.split(" ")[1] == juniors.split(" ")[1]) {
+                junior.content = this.allsections.filter(function (val) {
+                  return val.gradelevel.grade_level == juniors.split(" ")[1];
+                });
+              }
+            });
+            this.senior_high.forEach((senior) => {
+              if (senior.text.split(" ")[1] == seniors.split(" ")[1]) {
+                senior.content = this.allsections.filter(function (val) {
+                  return val.gradelevel.grade_level == seniors.split(" ")[1];
+                });
+              }
+            });
+          } else if (juniors != null && seniors == null) {
+            this.junior_high.forEach((junior) => {
+              if (junior.text.split(" ")[1] == juniors.split(" ")[1]) {
+                junior.content = this.allsections.filter(function (val) {
+                  return val.gradelevel.grade_level == juniors.split(" ")[1];
+                });
+              }
+            });
+          } else {
+            this.senior_high.forEach((senior) => {
+              if (senior.text.split(" ")[1] == seniors.split(" ")[1]) {
+                senior.content = this.allsections.filter(function (val) {
+                  return val.gradelevel.grade_level == seniors.split(" ")[1];
+                });
               }
             });
           }
@@ -455,43 +439,45 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+    },
+    // Select and Getting The Sections For The Selected Grade Level In Junior High School
+    selectedJHS(item) {
+      this.juniorSection.name = item;
+      this.junior_high.forEach((junior) => {
+        if (junior.text.split(" ")[1] == item.split(" ")[1]) {
+          junior.content = this.allsections.filter(function (val) {
+            return val.gradelevel.grade_level == item.split(" ")[1];
+          });
+        }
+      });
     },
 
     //Selected Senior High School Section In V-For
     selectedSHS(value) {
       this.sectionSenior.name = value;
-      this.$axios
-        .get(`getSection/` + `${value.split(" ")[1]}`)
-        .then((response) => {
-          if (response.data.grade > 10) {
-            this.senior_high.forEach((senior) => {
-              if (senior.text.split(" ")[1] == value.split(" ")[1]) {
-                senior.content = response.data.sections;
-              }
-            });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      this.senior_high.forEach((senior) => {
+        if (senior.text.split(" ")[1] == value.split(" ")[1]) {
+          senior.content = this.allsections.filter(function (val) {
+            return val.gradelevel.grade_level == value.split(" ")[1];
+          });
+        }
+      });
     },
-
     //Method For Opening The Junior High School Dialog
     openJunior() {
       this.juniordialog = true;
       this.edit = false;
     },
-
     //Method For Opening The Dialog Of Senior High School
     openSenior() {
-      this.seniorDialog = true;
+      this.seniordialog = true;
       this.edit = false;
     },
-
     //Close The Modal IN Junior High School When Cancel is click
     closeJunior() {
       this.Junior.section = null;
       this.Junior.capacity = null;
+      this.Junior.teacher = null;
       for (let key in this.errors) {
         this.$delete(this.errors, key);
       }
@@ -502,121 +488,173 @@ export default {
     closeSenior() {
       this.Senior.section = null;
       this.Senior.capacity = null;
+      this.Senior.teacher = null;
       for (let key in this.errors) {
         this.$delete(this.errors, key);
       }
-      this.seniorDialog = false;
+      this.seniordialog = false;
     },
-
     //Method For Adding A Section In Junior High School Category
     async addJunior(grades) {
       if (this.edit == false) {
+        console.log("Teacher:" + this.Junior.teacher);
         this.loading = true;
         await new Promise((resolve) => setTimeout(resolve, 3000));
         this.loading = false;
         this.$axios
-          .post(`addSection`, {
+          .post("addSection", {
             grade: grades.split(" ")[1],
             name: this.Junior.section,
             capacity: this.Junior.capacity,
             total_students: 0,
+            teacher: this.Junior.teacher,
           })
           .then((response) => {
             if (response.data.message) {
-              this.selectedJHS(grades);
+              (this.Junior.id = null),
+                (this.Junior.section = null),
+                (this.Junior.capacity = null),
+                (this.Junior.teacher = null);
               this.juniordialog = false;
-              // alert("Successfully Save");
+              this.displayAllsection(grades, null);
               this.$swal.fire({
                 icon: "success",
                 title: "Success",
                 text: "Sections successfully added.",
               });
             } else {
-              alert("Not Successfully Save");
+              this.$swal.fire({
+                icon: "error",
+                title: "Error",
+                text:
+                  response.data.teacher +
+                  " was already assigned to section " +
+                  response.data.failed +
+                  ".",
+              });
             }
           })
           .catch((error) => {
             if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);
             } else {
-              alert("something went wrong!");
+              console.log(error);
             }
           });
       } else {
+        //update
+        console.log("updateteacher:" + this.Junior.teacher);
         this.$axios
-          .post(`updateSection/` + `${this.Junior.id}`, {
+          .post("updateSection/" + this.Junior.id, {
             name: this.Junior.section,
             capacity: this.Junior.capacity,
+            teacher: this.Junior.teacher,
           })
           .then((response) => {
-            console.log(response);
             if (response.data.message) {
-              // alert("successfully update!");
               this.$swal.fire({
                 icon: "success",
                 title: "Success",
                 text: "Sections successfully updated.",
               });
-              this.selectedJHS(grades);
               this.juniordialog = false;
+              this.displayAllsection(grades, null);
             } else {
-              alert("NoTE SUCCESSFUL!");
+              this.$swal
+                .fire({
+                  title:
+                    response.data.teacher +
+                    " was assigned to " +
+                    response.data.failed +
+                    ".",
+                  text: "Are you sure to update this!",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Update",
+                })
+                .then((result) => {
+                  if (result.isConfirmed) {
+                    this.$axios
+                      .post("updateSection/" + "update", {
+                        updateId: this.Junior.id,
+                        name: this.Junior.section,
+                        capacity: this.Junior.capacity,
+                        teacher: this.Junior.teacher,
+                      })
+                      .then((response) => {
+                        if (response.data.newTeacher) {
+                          this.$swal.fire({
+                            title: "Updated!",
+                            text: response.data.newTeacher,
+                            icon: "success",
+                          });
+                          (this.Junior.id = null),
+                            (this.Junior.section = null),
+                            (this.Junior.capacity = null),
+                            (this.Junior.teacher = null);
+                          this.juniordialog = false;
+                          this.displayAllsection(grades, null);
+                        } else {
+                          this.$swal.fire({
+                            title: "NotUpdated!",
+                            text: "Not successfully updated!",
+                            icon: "error",
+                          });
+                          this.juniordialog = false;
+                          this.displayAllsection(grades, null);
+                        }
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                      });
+                  }
+                });
             }
           })
           .catch((error) => {
             if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);
             } else {
-              alert("something went wrong!");
+              console.log(error);
             }
           });
       }
     },
-
     //Method For Editing The Section In Junior High
-    async juniorEdit(id) {
+    async juniorEdit(item) {
+      console.log(item);
+      this.Junior.teacher = item.gradelevel_id;
       this.edit = true;
       this.juniordialog = true;
-      this.$axios
-        .get(`editSection/` + `${id}`)
-        .then((response) => {
-          if (response.data) {
-            this.Junior.id = response.data.section.id;
-            this.Junior.section = response.data.section.name;
-            this.Junior.capacity = response.data.section.capacity;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      this.Junior.section = item.name;
+      this.Junior.capacity = item.capacity;
+      this.Junior.id = item.id;
     },
-
     //Method For Editing The Section In Senior High School
-    async seniorEdit(id) {
+    async seniorEdit(data) {
+      this.Senior.teacher = data.gradelevel_id;
       this.edit = true;
-      this.seniorDialog = true;
-      this.$axios
-        .get(`editSection/` + `${id}`)
-        .then((response) => {
-          if (response.data) {
-            this.Senior.id = response.data.section.id;
-            this.Senior.section = response.data.section.name;
-            this.Senior.capacity = response.data.section.capacity;
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      this.seniordialog = true;
+      this.Senior.section = data.name;
+      this.Senior.capacity = data.capacity;
+      this.Senior.id = data.id;
+      this.Senior.teacher = data.teacher_id;
     },
-
     //Method For Removing The Section In Junior High Category
     juniorRemove(sec) {
       this.$axios
-        .get(`delAnySection/` + `${sec}`)
+        .get("delAnySection/" + sec)
         .then((response) => {
           if (response.data.message) {
-            this.selectedJHS(response.data.section);
-            alert("Successfully Deleted!");
+            if (response.data.section.split(" ")[1] < 11) {
+              this.displayAllsection(response.data.section, null);
+              alert("Successfully Deleted!");
+            } else {
+              this.displayAllsection(null, response.data.section);
+              alert("Successfully Deleted!");
+            }
           } else {
             alert("Not successfully deleted!");
           }
@@ -625,94 +663,150 @@ export default {
           console.log(error);
         });
     },
-
     //Methods For Adding A Section In Senior High School
     async addSenior(item) {
       if (this.edit == false) {
-        alert("adding!");
+        console.log("Teacher:" + this.Senior.teacher);
         this.loading = true;
         await new Promise((resolve) => setTimeout(resolve, 3000));
         this.loading = false;
         this.$axios
-          .post(`addSection`, {
+          .post("addSection", {
             grade: item.split(" ")[1],
             name: this.Senior.section,
             capacity: this.Senior.capacity,
+            total_students: 0,
+            teacher: this.Senior.teacher,
           })
           .then((response) => {
             if (response.data.message) {
-              this.selectedSHS(item);
-              this.seniorDialog = false;
-              alert("Successfully Save");
+              (this.Senior.id = null),
+                (this.Senior.section = null),
+                (this.Senior.capacity = null),
+                (this.Senior.teacher = null);
+              this.seniordialog = false;
+              this.displayAllsection(null, item);
+              this.$swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Sections successfully added.",
+              });
             } else {
-              alert("Not Successfully Save");
+              this.$swal.fire({
+                icon: "error",
+                title: "Error",
+                text:
+                  this.Senior.teacher +
+                  " was already assigned by section " +
+                  response.data.failed +
+                  ".",
+              });
             }
           })
           .catch((error) => {
             if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);
             } else {
-              alert("something went wrong!");
+              console.log(error);
             }
           });
       } else {
-        // alert("updated");
+        //update
         this.$axios
-          .post(`updateSection/` + `${this.Senior.id}`, {
+          .post("updateSection/" + this.Senior.id, {
             name: this.Senior.section,
             capacity: this.Senior.capacity,
+            teacher: this.Senior.teacher,
           })
           .then((response) => {
             if (response.data.message) {
-              // alert("successfully update!");
               this.$swal.fire({
                 icon: "success",
                 title: "Success",
                 text: "Sections successfully updated.",
               });
-              this.selectedSHS(item);
-              this.seniorDialog = false;
+              this.seniordialog = false;
+              this.displayAllsection(null, item);
+            } else {
+              this.$swal
+                .fire({
+                  title:
+                    this.Senior.teacher +
+                    " was assigned to " +
+                    response.data.failed +
+                    ".",
+                  text: "Are you sure to update this!",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Update",
+                })
+                .then((result) => {
+                  if (result.isConfirmed) {
+                    this.$axios
+                      .post("updateSection/" + "update", {
+                        updateId: this.Senior.id,
+                        name: this.Senior.section,
+                        capacity: this.Senior.capacity,
+                        teacher: this.Senior.teacher,
+                      })
+                      .then((response) => {
+                        if (response.data.newTeacher) {
+                          this.$swal.fire({
+                            title: "Updated!",
+                            text: response.data.newTeacher,
+                            icon: "success",
+                          });
+                          (this.Senior.id = null),
+                            (this.Senior.section = null),
+                            (this.Senior.capacity = null),
+                            (this.Senior.teacher = null);
+                          this.seniordialog = false;
+                          this.displayAllsection(null, item);
+                        } else {
+                          this.$swal.fire({
+                            title: "NotUpdated!",
+                            text: "Not successfully updated!",
+                            icon: "error",
+                          });
+                          this.seniordialog = false;
+                          this.displayAllsection(null, item);
+                        }
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                      });
+                  }
+                });
             }
           })
           .catch((error) => {
             if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);
             } else {
-              alert("something went wrong!");
+              console.log(error);
             }
           });
       }
     },
-
     //Methods For All Errors In Junior High School
     setErrors(error) {
       this.errors = error;
     },
-
     hasError(fieldname) {
       return fieldname in this.errors;
     },
-
     clearError(event) {
       this.$delete(this.errors, event.target.name);
-
-      // this.Target[event.target.name] = false;
     },
-
     getError(fieldName) {
-      // for (let key in this.Target) {
-      //   if (key == fieldName) {
-      //     this.Target[key] = true;
-      //   }
-      // }
       return this.errors[fieldName][0];
     },
-
     filter(data) {
       console.log(data);
     },
   },
-
   computed: {
     hasAnyErors() {
       return Object.keys(this.errors).length > 0;
@@ -720,3 +814,4 @@ export default {
   },
 };
 </script>
+

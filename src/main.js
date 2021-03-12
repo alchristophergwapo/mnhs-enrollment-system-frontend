@@ -20,11 +20,12 @@ Vue.config.productionTip = false
 Vue.prototype.$axios = Axios;
 
 window.Vue = Vue;
+Vue.use(require('vue-chartist'));
 Vue.use(VueSweetalert2);
 Vue.use(VueNativeNotification, {
   requestOnNotify: true
 });
-Vue.use(require('vue-chartist'))
+
 
 new Vue({
   vuetify,
@@ -43,9 +44,17 @@ new Vue({
         const userData = JSON.parse(userInfo)
         this.$store.commit('setUserData', userData)
         if (userData.user.user_type == 'admin') {
-          this.$router.push({ path: '/admin' })
-        } else {
-          this.$router.push({ path: '/student/dashboard' })
+          if (userData.user.updated == 1) {
+            this.$router.push({ path: '/admin' })
+          } else {
+            this.$router.push({ path: '/admin/profile' })
+          }
+        } if ((userData.user.user_type == 'student')) {
+          if (userData.user.updated == 1) {
+            this.$router.push({ path: '/student/dashboard' })
+          } else {
+            this.$router.push({ path: '/student/update-password' })
+          }
         }
       }
 

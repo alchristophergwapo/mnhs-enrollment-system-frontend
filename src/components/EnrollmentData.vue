@@ -193,37 +193,37 @@
             </template>
           </v-data-table>
         </v-card>
+        <v-row justify="center">
+          <v-dialog v-model="dialog" max-width="500px">
+            <v-card>
+              <v-card-title>
+                <span class="headline">Select Student Sections</span>
+                <v-spacer></v-spacer>
+                <v-btn icon @click="dialog = false">
+                  <v-icon>mdi-close</v-icon>
+                </v-btn>
+              </v-card-title>
+              <v-card-text>
+                <v-select
+                  :items="sections"
+                  v-model="section"
+                  label="Section*"
+                  required
+                ></v-select>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="blue darken-1"
+                  @click="approveEnrollment(id, index)"
+                >
+                  Done
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-row>
       </v-container>
-      <v-row justify="center">
-        <v-dialog v-model="dialog" max-width="500px">
-          <v-card>
-            <v-card-title>
-              <span class="headline">Select Student Section</span>
-              <v-spacer></v-spacer>
-              <v-btn icon @click="dialog = false">
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-            </v-card-title>
-            <v-card-text>
-              <v-select
-                :items="sections"
-                v-model="section"
-                label="Section*"
-                required
-              ></v-select>
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="blue darken-1"
-                @click="approveEnrollment(id, index)"
-              >
-                Done
-              </v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-row>
     </div>
   </div>
 </template>
@@ -260,14 +260,15 @@ export default {
         sortable: false,
         value: "grade_level",
       },
-      { text: "Student Name", value: "student" },
+      { text: "Student Name", value: "fullname" },
       { text: "Details", value: "details" },
       { text: "Action", value: "action" },
     ],
     id: null,
     index: null,
     students: [],
-    grade_level: ["7", "8", "9", "10", "11", "12"],
+    filterStudents: [],
+    grade_level: ["7", "8", "9", "10", "11", "12", "All"],
     sections: [],
   }),
 
@@ -283,19 +284,24 @@ export default {
   methods: {
     initializeData() {
       let pendingEnrollment = this.$store.getters.allPendingEnrollments;
-      // console.log(pendingEnrollment);
       for (var index in pendingEnrollment) {
         let element = pendingEnrollment[index];
         let studentData = element["student"];
         let enrollmentData = [];
         enrollmentData["enrollment_id"] = element["id"];
         enrollmentData["card_image"] = element["card_image"];
+        enrollmentData["fullname"] = studentData["firstname"].concat(
+          " ",
+          studentData["lastname"]
+        );
         for (const data in studentData) {
           const element1 = studentData[data];
           enrollmentData[data] = element1;
         }
         this.students.push(enrollmentData);
+        this.filterStudents.push(enrollmentData);
       }
+      console.log(this.students);
     },
 
     filterSections(gradelevel, id, index) {
@@ -328,11 +334,55 @@ export default {
       // console.log(this.sections);
     },
 
+    //Methods For Filtering
+    filterByGradeLevel(grade) {
+      if (grade == "All") {
+        this.students = this.filterStudents;
+      } else {
+        this.students = this.filterStudents.filter(function (val) {
+          return val.grade_level == grade;
+        });
+      }
+    },
+
+    //Method For Filtering The Name By A GradeLevel Or All GradeLevel
+    filterByName(data) {
+      this.students = this.filterStudents.filter((val) => {
+        if (this.gradelevel == null && data != null) {
+          return val.fullname
+            .concat(" ", val.grade_level)
+            .toLowerCase()
+            .includes(data.toLowerCase());
+        } else if (this.gradelevel == "All" && data != null) {
+          return val.fullname
+            .concat(" ", val.grade_level)
+            .toLowerCase()
+            .includes(data.toLowerCase());
+        } else {
+          if (val.grade_level == this.gradelevel) {
+            if (data != null) {
+              return val.fullname
+                .concat(" ", val.grade_level)
+                .toLowerCase()
+                .includes(data.toLowerCase());
+            } else {
+              return val.fullname
+                .concat(" ", val.grade_level)
+                .toLowerCase()
+                .includes(val.grade_level.toLowerCase());
+            }
+          }
+        }
+      });
+    },
+
+    //Method For Approving the enrollment
     approveEnrollment(id, index) {
-      // console.log(index);
+      alert("approve:" + id);
+      console.log(this.section);
       if (this.section) {
         this.$axios
-          .post("approveEnrollment/" + id, { section: this.section })
+          .post("approveEnrollment/" + id, { student_section: this.section })
           .then((response) => {
             console.log(response);
             this.students.splice(index, 1);
@@ -369,45 +419,36 @@ export default {
         .post("declineEnrollment/" + id)
         .then((response) => {
           console.log(response);
+          this.$swal.fire({
+            icon: "info",
+            title: "Success",
+            text: "Enrollment declined.",
+          });
           this.students.splice(index, 1);
         })
         .catch((error) => {
           console.log(error);
         });
     },
-
-    //Methods For All Errors
-    setErrors(error) {
-      this.errors = error;
-    },
-
-    hasError(fieldname) {
-      return fieldname in this.errors;
-    },
-
-    clearError(event) {
-      alert(event);
-      this.$delete(this.errors, event);
-    },
-
-    getError(fieldName) {
-      return this.errors[fieldName][0];
-    },
-  },
-
-  computed: {
-    hasAnyErors() {
-      return Object.keys(this.errors).length > 0;
-    },
-
-    // filteredList(){
-    //     return this.students.filter(val =>{
-    //       return val.student.firstname.concat(" ",val.student.lastname," ",val.student.grade_level).toLowerCase().includes(this.search.toLowerCase());
-    //     })
-    //  },
   },
 };
 </script>
 
+
 <style>
+.table {
+  margin-top: 50px;
+}
+.table-header {
+  margin: 0 40px 0 40px;
+  position: inherit;
+  top: -20px;
+}
+
+.view_dtls_btn {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  color: #48d3ff;
+}
 </style>

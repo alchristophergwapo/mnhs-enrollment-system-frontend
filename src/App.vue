@@ -49,7 +49,7 @@ export default {
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: rgb(59, 189, 218);
+  background: #006a4e;
   border-radius: 10px;
 }
 

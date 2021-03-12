@@ -6,20 +6,14 @@
     expand-on-hover
     app
   >
-    <v-list>
-      <v-list-item class="px-2">
-        <v-list-item-avatar>
-          <v-img :src="require('../assets/images/logo.jpg')"></v-img>
-        </v-list-item-avatar>
-      </v-list-item>
-
-      <v-list-item>
-        <v-list-item-content>
-          <v-list-item-title class="title"> Administrator </v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-    </v-list>
-
+    <v-list-item class="px-2">
+      <v-list-item-avatar size="50">
+        <v-img src="../assets/images/mnhs-logo.png"></v-img>
+      </v-list-item-avatar>
+      <v-list-item-title style="font-weight: bold; font-size: 20px"
+        >ADMINISTRATOR</v-list-item-title
+      >
+    </v-list-item>
     <v-divider></v-divider>
     <v-list>
       <v-list-item class="nav-link" link to="/admin/" exact>
@@ -54,7 +48,7 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-list-item class="nav-link" link to="/admin/all_sections">
+      <v-list-item class="nav-link" link to="/admin/all_sections" exact>
         <v-icon color="black">mdi-google-classroom</v-icon>
 
         <v-list-item-content class="nav-def">
@@ -83,5 +77,10 @@ export default {
 
 .v-list .v-list-item:hover {
   background-color: #5ca08e;
+}
+
+.px-2 {
+  padding-top: 30px !important;
+  padding-bottom: 30px !important;
 }
 </style>

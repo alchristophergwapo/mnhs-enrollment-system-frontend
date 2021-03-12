@@ -150,6 +150,7 @@ export default {
 
   data() {
     return {
+      HHTP_REQUEST_URL: "http://127.0.0.1:8000/api/",
       search: "",
       year: new Date().getFullYear(),
       loading: false,
@@ -161,9 +162,7 @@ export default {
       Email: null,
       Contact: null,
       selected_section: null,
-      disableSection: false,
       sections: [],
-      // Target: { name: null, email: null, contact: null },
       items: [
         {
           text: "Home",
@@ -188,151 +187,130 @@ export default {
         { text: "Assigned Section", value: "section_id" },
         { text: "Action", value: "action" },
       ],
-
       teachers: [],
       errors: {},
     };
   },
 
   created() {
-    this.teachers = this.$store.getters.allTeacher;
-    let sections = this.$store.getters.allSections;
-    // console.log(sections);
-
-    for (const key in sections) {
-      if (sections.hasOwnProperty.call(sections, key)) {
-        const element = sections[key];
-        this.sections.push(element["name"]);
-      }
-    }
+    //this.teachers =this.$store.getters.allTeacher;
+    // let sections =this.$store.getters.allSections;
+    // for (const key in sections) {
+    //   if (sections.hasOwnProperty.call(sections, key)) {
+    //     const element = sections[key];
+    //     this.sections.push({id:element["id"],name:element["name"]});
+    //   }
+    // }
+    this.$axios
+      .get(`${this.HHTP_REQUEST_URL}allSections`)
+      .then((response) => {
+        response.data.sections.forEach((element) => {
+          this.sections.push({ id: element.id, name: element.name });
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    console.log(this.sections);
   },
 
-  mounted: function () {
-    // this.display();
+  mounted() {
+    this.display();
   },
 
   methods: {
-    //Methods For Getting All Available Section
-    // Section() {
-    //   this.$axios
-    //     .get(`sections`)
-    //     .then((response) => {
-    //       this.sections = response.data;
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // },
+    //Methods for displaying all teachers
+    display() {
+      this.$axios
+        .get(`allTeacher`)
+        .then((response) => {
+          this.teachers = response.data;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+
     //Methods for Deleting A Teacher In Delete Button
     async removeTeacher(dataid) {
       this.$axios
         .get(`delTeacher/` + `${dataid}`)
         .then((response) => {
           if (response.data.message) {
-            this.teachers = [];
+            this.$swal.fire({
+              icon: "success",
+              title: "Success",
+              text: "Successfully deleted.",
+            });
             this.display();
-            alert("Successfully Deleted!");
           } else {
-            alert("Not successfully deleted!");
+            this.$swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Not Successfully deleted.",
+            });
           }
         })
         .catch((error) => {
-          if (error.response.status == 422) {
-            alert("Invalid data");
-          } else {
-            alert("something Went Wrong!");
-          }
+          console.log(error);
         });
     },
 
     editTeacher(teacher) {
+      console.log(teacher);
       this.status = "Update Teacher";
       this.statusdialog = true;
       this.booleanStatus = true;
-      console.log(teacher);
       this.Teacher = teacher.name;
       this.Email = teacher.email;
       this.Contact = teacher.contact;
       this.Id = teacher.id;
-      this.disableSection = false;
+      this.selected_section = teacher.student_id;
     },
-    //Methods for showing  a teacher by id
-    // showsTeacherById(id) {
-    //   this.status = "Update Teacher";
-    //   this.statusdialog = true;
-    //   this.booleanStatus = true;
-    //   this.$axios
-    //     .get(`showByIdTeacher/` + `${id}`)
-    //     .then((response) => {
-    //       if (response.data.section_id == null) {
-    //         this.Teacher = response.data.name;
-    //         this.Email = response.data.email;
-    //         this.Contact = response.data.contact;
-    //         this.Id = response.data.id;
-    //         this.disableSection = false;
-    //         this.Section();
-    //       } else {
-    //         this.Teacher = response.data.name;
-    //         this.Email = response.data.email;
-    //         this.Contact = response.data.contact;
-    //         this.sections = [];
-    //         this.sections.push(response.data.section_id);
-    //         this.selected_section = this.sections[0];
-    //         this.disableSection = true;
-    //         this.Id = response.data.id;
-    //       }
-    //     })
-    //     .catch((error) => {
-    //       if (error.response.status == 422) {
-    //         alert("Invalid data");
-    //       } else {
-    //         alert("something Went Wrong!");
-    //       }
-    //     });
-    // },
 
     //Methods for showing the  Add Teacher
     showTeacher() {
       this.status = "Add Teacher";
       this.statusdialog = true;
       this.booleanStatus = false;
-      this.disableSection=false;
+      this.disableSection = false;
     },
 
- //Reseting the validation in cancel button
+    //Resetting the validation in cancel button
     async dialogs() {
       //This is for Add Teacher Reset Validation
       if (this.booleanStatus == false) {
-        (this.Teacher = null),
-          (this.Email = null),
-          (this.Contact = null),
-          (this.selected_section = null);
         for (let key in this.errors) {
           this.$delete(this.errors, key);
         }
+        (this.Teacher = null),
+          (this.Email = null),
+          (this.Contact = null),
+          (this.selected_section = null),
+          (this.Id = null);
         this.statusdialog = false;
-      }
-      else {
-        (this.Teacher = null),
-          (this.Email = null),
-          (this.Contact = null),
-          (this.selected_section = null);
+      } else {
         for (let key in this.errors) {
           this.$delete(this.errors, key);
         }
+        (this.Teacher = null),
+          (this.Email = null),
+          (this.Contact = null),
+          (this.selected_section = null),
+          (this.Id = null);
         this.statusdialog = false;
       }
     },
 
     //Method for Adding A Teacher in save button
     async addTeacher() {
+      console.log("section:" + this.selected_section);
       if (this.booleanStatus == false) {
-        console.log(this.selected_section);
         this.loading = true;
         await new Promise((resolve) => setTimeout(resolve, 700));
         this.loading = false;
         this.$axios
-          .post(`addNewTeacher`, {
+          .post(`${this.HHTP_REQUEST_URL}addNewTeacher`, {
             name: this.Teacher,
             email: this.Email,
             contact: this.Contact,
@@ -340,23 +318,36 @@ export default {
           })
           .then((response) => {
             if (response.data.message) {
-              alert("Successfully added!");
-              this.teachers = [];
-              this.display();
-              this.Teacher = null;
-              this.Email = null;
-              this.Contact = null;
-              this.selected_section=null;
+              this.$swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Successfully saved.",
+              });
               this.statusdialog = false;
+              (this.Teacher = null),
+                (this.Email = null),
+                (this.Contact = null),
+                (this.selected_section = null),
+                (this.Id = null);
+              this.display();
             } else {
-              alert("Not successfully added!");
+              this.$swal.fire({
+                icon: "error",
+                title: "Error",
+                text:
+                  "Section " +
+                  response.data.section +
+                  " was already assigned to " +
+                  response.data.teacher +
+                  ".",
+              });
             }
           })
           .catch((error) => {
             if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);
             } else {
-              alert("something went wrong!");
+              console.log(error);
             }
           });
       } else {
@@ -364,9 +355,8 @@ export default {
         this.loading = true;
         await new Promise((resolve) => setTimeout(resolve, 700));
         this.loading = false;
-        console.log(this.selected_section);
         this.$axios
-          .post(`updateTeacher/` + `${this.Id}`, {
+          .post(`${this.HHTP_REQUEST_URL}updateTeacher/` + `${this.Id}`, {
             name: this.Teacher,
             email: this.Email,
             contact: this.Contact,
@@ -379,16 +369,71 @@ export default {
                 title: "Success",
                 text: response.data.message,
               });
-              this.teachers = [];
-              // this.display();
-              this.Teacher = null;
-              this.Email = null;
-              this.Contact = null;
-              this.selected_section = null;
-              this.disableSection=false;
+              this.display();
+              (this.Teacher = null),
+                (this.Email = null),
+                (this.Contact = null),
+                (this.selected_section = null),
+                (this.Id = null);
               this.statusdialog = false;
+              this.display();
             } else {
-              alert("Not successfully updated!");
+              this.$swal
+                .fire({
+                  title:
+                    response.data.section +
+                    " section was assigned to " +
+                    response.data.teacher +
+                    ".",
+                  text: "Are you sure to update this!",
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#3085d6",
+                  cancelButtonColor: "#d33",
+                  confirmButtonText: "Update",
+                })
+                .then((result) => {
+                  if (result.isConfirmed) {
+                    this.$axios
+                      .post(
+                        `${this.HHTP_REQUEST_URL}updateTeacher/` + "update",
+                        {
+                          updateId: this.Id,
+                          name: this.Teacher,
+                          email: this.Email,
+                          contact: this.Contact,
+                          section_id: this.selected_section,
+                        }
+                      )
+                      .then((response) => {
+                        if (response.data.newSection) {
+                          this.$swal.fire({
+                            title: "Updated!",
+                            text: response.data.newSection,
+                            icon: "success",
+                          });
+                          this.statusdialog = false;
+                          (this.Teacher = null),
+                            (this.Email = null),
+                            (this.Contact = null),
+                            (this.selected_section = null),
+                            (this.Id = null);
+                          this.display();
+                        } else {
+                          this.$swal.fire({
+                            title: "NotUpdated!",
+                            text: "Not successfully updated!",
+                            icon: "error",
+                          });
+                          this.statusdialog = false;
+                          this.display();
+                        }
+                      })
+                      .catch((error) => {
+                        console.log(error);
+                      });
+                  }
+                });
             }
           })
           .catch((error) => {
@@ -396,13 +441,11 @@ export default {
             if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);
             } else {
-              alert("something went wrong!");
+              console.log(error);
             }
           });
       }
     },
-
-
 
     //Methods For All Errors
     setErrors(error) {
@@ -415,7 +458,6 @@ export default {
 
     clearError(event) {
       this.$delete(this.errors, event.target.name);
-      // this.Target[event.target.name] = false;
     },
 
     getError(fieldName) {

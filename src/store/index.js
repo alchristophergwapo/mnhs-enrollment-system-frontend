@@ -82,8 +82,14 @@ export default new Vuex.Store({
 
     actions: {
         login({ commit }, credentials) {
-            return axios.post('login', credentials).then(({ data }) => {
-                commit('setUserData', data)
+            return axios.post('login', credentials).then((response) => {
+                if (response.data.user.updated == 0) {
+                    commit('setUserData', response.data)
+                    return false;
+                } else {
+                    commit('setUserData', response.data)
+                    return true
+                }
             })
         },
 
@@ -121,7 +127,7 @@ export default new Vuex.Store({
 
         allDeclinedEnrollments({ commit }) {
             return axios.get('declinedEnrollments').then(response => {
-                commit('setDeclinedEnrollments', response.data.declinedEnrollments);
+                commit('setDeclinedEnrollments', response.data.declinedEnrollment);
             })
         },
 
@@ -129,7 +135,7 @@ export default new Vuex.Store({
             commit('clearUserData')
         },
 
-        reviewEnrollment({ commit }, data){
+        reviewEnrollment({ commit }, data) {
             commit('setStudentInfoData', data);
         },
 
