@@ -66,6 +66,61 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
+
+            <!-- Dialog for senior high -->
+            <v-dialog v-model="seniordialog" persistent max-width="300px">
+              <section-dialog>
+                <template v-slot:input-field>
+                  <v-text-field
+                    label="Section name"
+                    v-model="Senior.section"
+                    @keydown="clearError"
+                    name="name"
+                    :error="hasError('name')"
+                  ></v-text-field>
+                  <p v-if="hasError('name')" class="invalid-feedback">
+                    {{ getError("name") }}
+                  </p>
+                  <v-text-field
+                    label="Capacity"
+                    type="number"
+                    name="capacity"
+                    @keydown="clearError"
+                    v-model="Senior.capacity"
+                    :error="hasError('capacity')"
+                    min="0"
+                  ></v-text-field>
+                  <p v-if="hasError('capacity')" class="invalid-feedback">
+                    {{ getError("capacity") }}
+                  </p>
+                  <div>
+                    <v-select
+                      item-text="teacher"
+                      item-value="id"
+                      v-model="Junior.teacher"
+                      :items="teachers"
+                      label="Assigned Teacher"
+                    ></v-select>
+                  </div>
+                </template>
+                <template v-slot:actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    :disabled="loading"
+                    color="error darken-1"
+                    @click="closeSenior"
+                    >Cancel</v-btn
+                  >
+                  <v-btn
+                    :loading="loading"
+                    :disabled="hasAnyErors"
+                    color="blue darken-1"
+                    @click="addSenior(sectionSenior.name)"
+                    >Save</v-btn
+                  >
+                </template>
+              </section-dialog>
+            </v-dialog>
           </div>
           <div>
             <v-card>
@@ -190,77 +245,6 @@
 
                   <!-- Else -->
                   <div v-else>
-                    <div class="add_btn">
-                      <v-dialog
-                        v-model="seniordialog"
-                        persistent
-                        max-width="300px"
-                      >
-                        <v-card>
-                          <v-card-title class="headlineSection">
-                            <span>Add {{ sectionSenior.name }} Sections</span>
-                          </v-card-title>
-                          <v-card-text>
-                            <v-container>
-                              <v-text-field
-                                label="Section name"
-                                v-model="Senior.section"
-                                @keydown="clearError"
-                                name="name"
-                                :error="hasError('name')"
-                              ></v-text-field>
-                              <p
-                                v-if="hasError('name')"
-                                class="invalid-feedback"
-                              >
-                                {{ getError("name") }}
-                              </p>
-                              <v-text-field
-                                label="Capacity"
-                                type="number"
-                                name="capacity"
-                                @keydown="clearError"
-                                v-model="Senior.capacity"
-                                :error="hasError('capacity')"
-                                min="0"
-                              ></v-text-field>
-                              <p
-                                v-if="hasError('capacity')"
-                                class="invalid-feedback"
-                              >
-                                {{ getError("capacity") }}
-                              </p>
-                              <v-select
-                                item-text="teacher"
-                                item-value="id"
-                                v-model="Senior.teacher"
-                                :items="teachers"
-                                label="Assigned Teacher"
-                              ></v-select>
-                            </v-container>
-                          </v-card-text>
-                          <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn
-                              :disabled="loading"
-                              color="error darken-1"
-                              @click="closeSenior"
-                              >Cancel</v-btn
-                            >
-                            <v-btn
-                              :loading="loading"
-                              :disabled="hasAnyErors"
-                              color="blue darken-1"
-                              @click="addSenior(sectionSenior.name)"
-                              >Save</v-btn
-                            >
-                          </v-card-actions>
-                        </v-card>
-                      </v-dialog>
-                    </div>
-
-                    <!-- ---------------------------------End Of The Dialog fro Senior High School--------------------------------------------- -->
-
                     <v-tabs-items v-model="tab2">
                       <v-tab-item
                         v-for="(item, index) in senior_high"
@@ -317,6 +301,7 @@
                       </v-tab-item>
                     </v-tabs-items>
                   </div>
+                  <!-- End of else -->
                 </v-tab-item>
               </v-tabs-items>
             </v-card>
@@ -332,6 +317,7 @@ export default {
   components: {
     BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
     SectionsCard: () => import("@/layout/SectionsCard.vue"),
+    SectionDialog: () => import("@/layout/SectionDialog.vue"),
   },
   data: () => ({
     juniordialog: false,
@@ -624,7 +610,7 @@ export default {
     },
     //Method For Editing The Section In Junior High
     async juniorEdit(item) {
-      console.log(item);
+      // console.log(item);
       this.Junior.teacher = item.gradelevel_id;
       this.edit = true;
       this.juniordialog = true;
@@ -634,13 +620,18 @@ export default {
     },
     //Method For Editing The Section In Senior High School
     async seniorEdit(data) {
-      this.Senior.teacher = data.gradelevel_id;
+      this.Senior = data;
       this.edit = true;
       this.seniordialog = true;
-      this.Senior.section = data.name;
-      this.Senior.capacity = data.capacity;
-      this.Senior.id = data.id;
-      this.Senior.teacher = data.teacher_id;
+      console.log(this.Senior);
+      // console.log(data);
+      // this.Senior.teacher = data.gradelevel_id;
+      // this.edit = true;
+      // this.seniordialog = true;
+      // this.Senior.section = data.name;
+      // this.Senior.capacity = data.capacity;
+      // this.Senior.id = data.id;
+      // this.Senior.teacher = data.teacher_id;
     },
     //Method For Removing The Section In Junior High Category
     juniorRemove(sec) {
@@ -790,6 +781,7 @@ export default {
           });
       }
     },
+
     //Methods For All Errors In Junior High School
     setErrors(error) {
       this.errors = error;

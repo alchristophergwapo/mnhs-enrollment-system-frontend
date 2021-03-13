@@ -5,7 +5,7 @@
     <br />
     <br /> -->
     <v-card
-      class="mx-auto my-12"
+      class="my-12"
       width="100%"
       max-width="500px"
       outlined
@@ -17,13 +17,6 @@
         </v-card-title>
       </v-card>
       <v-container>
-        <template slot="progress">
-          <v-progress-linear
-            color="primary"
-            height="10"
-            indeterminate
-          ></v-progress-linear>
-        </template>
         <v-form>
           <v-text-field
             v-model="username"
@@ -41,9 +34,11 @@
             @keydown="clearErrors"
             :error="hasError('currentpassword')"
           ></v-text-field>
-          <p v-if="hasError('currentpassword')" class="invalid-feedback">
-            {{ getError("currentpassword") }}
-          </p>
+          <div>
+            <p v-if="hasError('currentpassword')" class="invalid-feedback">
+              {{ getError("currentpassword") }}
+            </p>
+          </div>
           <v-text-field
             v-model="newpassword"
             :append-icon="showNPass ? 'mdi-eye' : 'mdi-eye-off'"
@@ -54,9 +49,11 @@
             @keydown="clearErrors"
             :error="hasError('new_password')"
           ></v-text-field>
-          <p v-if="hasError('new_password')" class="invalid-feedback">
-            {{ getError("new_password") }}
-          </p>
+          <div>
+            <p v-if="hasError('new_password')" class="invalid-feedback">
+              {{ getError("new_password") }}
+            </p>
+          </div>
           <v-text-field
             v-model="confirmPass"
             :append-icon="showCPass ? 'mdi-eye' : 'mdi-eye-off'"
@@ -67,9 +64,11 @@
             @keydown="clearErrors"
             :error="hasError('confirm_password')"
           ></v-text-field>
-          <p v-if="hasError('confirm_password')" class="invalid-feedback">
-            {{ getError("confirm_password") }}
-          </p>
+          <div>
+            <p v-if="hasError('confirm_password')" class="invalid-feedback">
+              {{ getError("confirm_password") }}
+            </p>
+          </div>
           <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn class="mr-4" color="error" @click="clear">clear</v-btn>
@@ -120,8 +119,6 @@ export default {
   methods: {
     async submit() {
       this.loading = true;
-      await new Promise((resolve) => setTimeout(resolve, 700));
-      this.loading = false;
       this.$axios
         .post(`change`, {
           username: this.username,
@@ -131,6 +128,7 @@ export default {
         })
         .then((response) => {
           if (response.data.message) {
+            this.loading = false;
             this.currentPass = null;
             this.newpassword = null;
             this.confirmPass = null;
@@ -144,12 +142,13 @@ export default {
 
             this.userData.user.updated = 1;
             this.$store.commit("setUserData", this.userData);
-            this.$store.dispatch("/admin");
+            this.$router.push({ path: "/admin" });
           } else {
             alert("Your current password is wrong!");
           }
         })
         .catch((error) => {
+          this.loading = false;
           if (error.response.status == 422) {
             this.setErrors(error.response.data.errors);
           } else {
@@ -157,7 +156,7 @@ export default {
             this.$swal.fire({
               icon: "error",
               title: "Oooops....",
-              text: "Something went wrong",
+              text: error.response.data.message,
             });
           }
         });
