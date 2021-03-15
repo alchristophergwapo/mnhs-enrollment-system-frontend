@@ -1,15 +1,12 @@
 <template>
   <v-app style="background-color: #eee">
-    <!-- <app-bar></app-bar> -->
-    <!-- <br />
-    <br />
-    <br /> -->
     <v-card
-      class="my-12"
       width="100%"
       max-width="500px"
+      max-height="100%"
       outlined
       elevation="24"
+      class="my-12"
     >
       <v-card class="table-header" color="#2e856e">
         <v-card-title class="text-center justify-center">
@@ -17,7 +14,7 @@
         </v-card-title>
       </v-card>
       <v-container>
-        <v-form>
+        <v-form ref="update" v-model="valid" lazy-validation>
           <v-text-field
             v-model="username"
             name="username"
@@ -75,9 +72,9 @@
             <v-btn
               class="mr-4"
               color="primary"
-              :loading="loading"
-              :disabled="hasAnyErors"
               @click="submit"
+              :loading="loading"
+              :disabled="loading || !valid"
               >submit</v-btn
             >
           </v-card-actions>
@@ -86,80 +83,82 @@
     </v-card>
   </v-app>
 </template>
-
 <script>
 export default {
-  components: {
-    //AppBar:() => import("@/layout/AppBar.vue")
-  },
+  //   props: {
+  //     username: {
+  //       type: String,
+  //       required: true,
+  //     },
+  //   },
   data() {
     return {
-      username: "admin",
-      currentPass: null,
-      newpassword: null,
-      confirmPass: null,
+      valid: false,
+      username: null,
+      currentPass: "",
+      newpassword: "",
+      confirmPass: "",
       loading: false,
       showPass: "",
       showNPass: "",
       showCPass: "",
       errors: {},
-      userData: null,
+      userDetails: null,
     };
   },
-
-  mounted: function () {
-    //Get Admin Profile
-    const userInfo = localStorage.getItem("user");
-    this.userData = JSON.parse(userInfo);
-    if (this.userData.user.user_type == "admin") {
-      this.username = this.userData.user.username;
+  created() {
+    const user = localStorage.getItem("user");
+    this.userDetails = JSON.parse(user);
+    if (this.userDetails.user.user_type == "student") {
+      this.username = this.userDetails.user.username;
     }
   },
-
   methods: {
-    async submit() {
-      this.loading = true;
-      this.$axios
-        .post(`change`, {
-          username: this.username,
-          currentpassword: this.currentPass,
-          new_password: this.newpassword,
-          confirm_password: this.confirmPass,
-        })
-        .then((response) => {
-          if (response.data.message) {
+    submit() {
+      if (this.$refs.update.validate()) {
+        this.loading = true;
+        this.$axios
+          .post(`change`, {
+            username: this.username,
+            currentpassword: this.currentPass,
+            new_password: this.newpassword,
+            confirm_password: this.confirmPass,
+          })
+          .then((response) => {
+            if (response.data.message) {
+              this.currentPass = null;
+              this.newpassword = null;
+              this.confirmPass = null;
+              // alert("Successfully changed!");
+              //this.$router.push({path:"/admin"});
+              this.$swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Password is successfully changed.",
+              });
+              this.userDetails.user.updated = 1;
+              this.$store.commit("setUserData", this.userDetails);
+              this.$router.push({ path: "/student/dashboard" });
+            } else {
+              alert("Your current password is wrong!");
+            }
+          })
+          .catch((error) => {
+            console.log(error.response);
             this.loading = false;
-            this.currentPass = null;
-            this.newpassword = null;
-            this.confirmPass = null;
-            // alert("Successfully changed!");
-            //this.$router.push({path:"/admin"});
-            this.$swal.fire({
-              icon: "success",
-              title: "Success",
-              text: "Password is successfully changed.",
-            });
-
-            this.userData.user.updated = 1;
-            this.$store.commit("setUserData", this.userData);
-            this.$router.push({ path: "/admin" });
-          } else {
-            alert("Your current password is wrong!");
-          }
-        })
-        .catch((error) => {
-          this.loading = false;
-          if (error.response.status == 422) {
-            this.setErrors(error.response.data.errors);
-          } else {
-            // alert("Something went wrong!");
-            this.$swal.fire({
-              icon: "error",
-              title: "Oooops....",
-              text: error.response.data.message,
-            });
-          }
-        });
+            if (error.response.status == 422) {
+              this.setErrors(error.response.data.errors);
+            } else {
+              this.$swal.fire({
+                icon: "error",
+                title: "Oooops....",
+                html: "<b>" + error.response.data.message + "</b>",
+                focusConfirm: false,
+                confirmButtonText: "OK",
+              });
+            }
+          });
+      }
     },
 
     //Methods For All Errors
@@ -188,15 +187,5 @@ export default {
       }
     },
   },
-
-  computed: {
-    hasAnyErors() {
-      return Object.keys(this.errors).length > 0;
-    },
-  },
 };
 </script>
-
-
-<style>
-</style>

@@ -10,6 +10,8 @@ import 'sweetalert2/dist/sweetalert2.min.css';
 import 'chartist/dist/chartist.min.css'
 import './plugins/base'
 
+import "./assets/stylesheet/style.css";
+
 import VueNativeNotification from 'vue-native-notification'
 import VueSweetalert2 from 'vue-sweetalert2';
 import Axios from 'axios';
@@ -42,9 +44,17 @@ new Vue({
         const userData = JSON.parse(userInfo)
         this.$store.commit('setUserData', userData)
         if (userData.user.user_type == 'admin') {
-          this.$router.push({ path: '/admin' })
-        } else {
-          this.$router.push({ path: '/student/dashboard' })
+          if (userData.user.updated == 1) {
+            this.$router.push({ path: '/admin' })
+          } else {
+            this.$router.push({ path: '/admin/profile' })
+          }
+        } if ((userData.user.user_type == 'student')) {
+          if (userData.user.updated == 1) {
+            this.$router.push({ path: '/student/dashboard' })
+          } else {
+            this.$router.push({ path: '/student/update-password' })
+          }
         }
       }
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="body">
+  <div class="body" app>
     <div class="header">
       <div class="col" id="col1">
         <img id="logo" src="../assets/images/mnhs-logo.png" />
@@ -12,11 +12,13 @@
       <div class="col" id="col3">
         <img id="logo2" src="../assets/images/deped-logo.png" />
         <br />
-        <div class="login-btn">
-          <v-btn class="ma-2" outlined color="indigo" link to="/sign-in"
-            >login</v-btn
-          >
-        </div>
+        <!-- <div class="login-btn">
+          
+        </div> -->
+        <v-card-actions class="login-btn">
+          <v-spacer></v-spacer>
+          <v-btn outlined color="white" link to="/sign-in">login</v-btn>
+        </v-card-actions>
       </div>
     </div>
 
@@ -48,7 +50,7 @@
         transition="fade-transition"
       >
         <v-btn
-          color="success"
+          color="primary"
           class="btn"
           link
           to="/enroll"
@@ -62,18 +64,22 @@
       </v-carousel-item>
     </v-carousel>
 
-    <!-- <v-container>
+    <v-container class="l-container">
       <v-row>
-        <v-col md="4">
+        <v-col cols="12" sm="6" md="4" class="l-col">
           <v-card
-            class="mx-auto"
+            elevation="10"
             height="100%"
-            color="#8bd3f0"
+            max-width="500px"
             light
-            max-width="1000"
+            class="l-card"
           >
+            <v-card class="table-header" color="#006a4e">
+              <v-card-title class="text-center justify-center">
+                <div class="display-2 font-weight-light">MISSION</div>
+              </v-card-title>
+            </v-card>
             <v-card-text>
-              <h3>MISSION</h3>
               <p>
                 To protect and promote the right of every Filipino to quality,
                 equitable, culture-based, and complete basic education where:
@@ -89,16 +95,20 @@
           </v-card>
         </v-col>
 
-        <v-col md="4">
+        <v-col cols="12" sm="6" md="4" class="l-col">
           <v-card
-            class="mx-auto"
+            elevation="10"
             height="100%"
-            color="#8bd3f0"
             light
-            max-width="1000"
+            max-width="100%"
+            class="l-card"
           >
+            <v-card class="table-header" color="#006a4e">
+              <v-card-title class="text-center justify-center">
+                <div class="display-2 font-weight-light">VISION</div>
+              </v-card-title>
+            </v-card>
             <v-card-text>
-              <h3>VISION</h3>
               <p>
                 We dream of Filipinos who passionately love their country and
                 whose competencies and values enable them to realize their full
@@ -110,27 +120,27 @@
           </v-card>
         </v-col>
 
-        <v-col md="4">
-          <v-card
-            class="mx-auto"
-            height="100%"
-            color="#8bd3f0"
-            light
-            max-width="1000"
-          >
+        <v-col cols="12" sm="6" md="4" class="l-col">
+          <v-card height="100%" light max-width="1000" class="l-card">
+            <v-card class="table-header" color="#006a4e">
+              <v-card-title class="text-center justify-center">
+                <div class="display-2 font-weight-light">CORE VALUES</div>
+              </v-card-title>
+            </v-card>
             <v-card-text>
-              <h3>CORE VALUES</h3>
-              <ul>
-                <li>Maka-Diyos</li>
-                <li>Makatao</li>
-                <li>Makakalikasan</li>
-                <li>Makabansa</li>
-              </ul>
+              <v-container>
+                <ul>
+                  <li>Maka-Diyos</li>
+                  <li>Makatao</li>
+                  <li>Makakalikasan</li>
+                  <li>Makabansa</li>
+                </ul>
+              </v-container>
             </v-card-text>
           </v-card>
         </v-col>
       </v-row>
-    </v-container> -->
+    </v-container>
     <v-footer padless>
       <v-card flat tile width="100%">
         <v-divider></v-divider>
@@ -161,108 +171,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.body {
-  padding-left: 3%;
-  padding-right: 3%;
-}
-
-.mx-auto {
-  padding: 10px;
-  text-align: justify;
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
-}
-
-.footer-copyright {
-  text-align: center;
-  font-size: 20px;
-}
-
-.btn{
-  color: white;
-  text-transform: uppercase;
-  background-image: linear-gradient(#48a7ff 100%, #48a7ff 100%, #64d8fd 100%);
-  filter: drop-shadow(0px 10px 20px rgba(0, 0, 0, 0.15));
-  font-size: 30px;
-  position: relative;
-  top: 75%;
-  right: 80%;
-}
-
-.header {
-  margin-bottom: 0.2%;
-  display: table;
-  width: 100%;
-  table-layout: fixed;
-  border-spacing: 10px;
-  background-color: #3bbdda;
-}
-.col {
-  display: table-cell;
-}
-#col1 {
-  width: 20%;
-  text-align: center;
-}
-#col2 {
-  text-align: center;
-  width: 60%;
-  font-size: 30px;
-  margin-top: -5%;
-  color: rgb(220, 240, 247);
-  position: relative;
-  top: -50px;
-}
-#col3 {
-  width: 20%;
-}
-
-#logo {
-  width: 120px;
-  height: 120px;
-}
-#logo2 {
-  width: 120px;
-  height: 120px;
-}
-
-.login-btn {
-  position: absolute;
-  right: 60px;
-}
-
-/* On screens that are 600px wide or less, the background color is olive */
-@media screen and (max-width: 600px) {
-  #logo {
-    margin-left: 20%;
-    width: 60px;
-    height: 60px;
-  }
-  #logo2 {
-    position: relative;
-    right: 60%;
-    width: 60px;
-    height: 60px;
-  }
-
-  #col2 {
-    text-align: center;
-    width: 60%;
-    font-size: 15px;
-    color: rgb(220, 240, 247);
-    position: relative;
-    top: -18px;
-  }
-  .btn {
-    color: white;
-    text-transform: uppercase;
-    background-image: linear-gradient(#48a7ff 100%, #48a7ff 100%, #64d8fd 100%);
-    filter: drop-shadow(0px 10px 20px rgba(0, 0, 0, 0.15));
-    font-size: 30px;
-    margin-top: 0%;
-    align-content: center;
-  }
-}
-</style>

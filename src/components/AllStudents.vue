@@ -3,11 +3,12 @@
     <bread-crumb :item="items" page_name="All Students"></bread-crumb>
     <br /><br />
     <div>
-      <v-card outlined>
-        <v-card class="table-header" color="#00cae3">
-          <v-card-title class="text-center justify-center">
-            <div class="display-2 font-weight-light">Students Data</div>
-          </v-card-title>
+      <v-container>
+        <v-card outlined>
+          <v-card class="table-header" color="#00b4cc">
+            <v-card-title class="text-center justify-center">
+              <div class="display-2 font-weight-light">Students Data</div>
+            </v-card-title>
 
           <div class="subtitle-1 font-weight-light text-center justify-center">
             All students enrolled as of year {{ year }}
@@ -57,7 +58,8 @@
           </template>
         </v-data-table>
       </v-card>
-    </div>
+      </v-container>
+          </div>
   </div>
 </template>
 <script>
@@ -169,18 +171,3 @@ filterBySection(section){
 
 };
 </script>
-
-<style>
-.gl_filter {
-  font-family: Roboto;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 14px;
-  line-height: 25px;
-  /* or 179% */
-
-  text-align: center;
-
-  color: #646468;
-}
-</style>

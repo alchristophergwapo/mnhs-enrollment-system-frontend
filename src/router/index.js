@@ -37,7 +37,7 @@ const routes = [
         children: [
             {
                 path: '/',
-                component: () => import('@/components/DashboardPage.vue'), 
+                component: () => import('@/components/DashboardPage.vue'),
                 meta: {
                     title: 'Admin Dashboard'
                 },
@@ -77,7 +77,7 @@ const routes = [
                     title: 'Notifications'
                 },
             },
-            
+
         ]
     },
     {
@@ -96,6 +96,15 @@ const routes = [
             title: 'Student Dashboard',
             auth: true
         },
+
+    },
+    {
+        path: "/student/update-password",
+        name: 'Student Update Account',
+        component: () => import('@/components/studentpage/UpdateAccount.vue'),
+        meta: {
+            title: "Student Update Password"
+        }
     }
 ]
 
@@ -109,10 +118,10 @@ router.beforeEach((to, from, next) => {
     document.title = to.meta.title;
     const loggedIn = localStorage.getItem('user')
 
-  if (to.matched.some(record => record.meta.auth) && !loggedIn) {
-    next('/sign-in')
-    return
-  }
+    if (to.matched.some(record => record.meta.auth) && !loggedIn) {
+        next('/sign-in')
+        return
+    }
     next();
 })
 

@@ -11,7 +11,7 @@
         </v-col>
         <v-col sm="8" md="8" lg="8" class="class_details">
           <student-class-details
-            :section_name="user.section.adviser.name"
+            :section_name="user.section.adviser ? user.section.adviser.name : 'No Adviser'"
             :classmates="students"
           ></student-class-details>
         </v-col>
