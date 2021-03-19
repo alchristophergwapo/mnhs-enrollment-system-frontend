@@ -256,48 +256,48 @@
                             <v-icon>mdi-plus</v-icon>Add Section
                           </v-btn>
                         </v-card-title>
-                        <v-container>
-                          <v-row dense>
-                            <v-col
-                              v-for="(i, index) in item.content"
-                              :key="index"
-                              cols="12"
-                              sm="6"
-                              md="6"
-                              lg="4"
+                        <!-- <v-container> -->
+                        <v-row dense>
+                          <v-col
+                            v-for="(i, index) in item.content"
+                            :key="index"
+                            cols="12"
+                            sm="6"
+                            md="6"
+                            lg="4"
+                          >
+                            <sections-card
+                              :section="i.name"
+                              :capacity="i.capacity"
+                              :total_students="i.total_students"
+                              :teacher="i.teacher_id"
                             >
-                              <sections-card
-                                :section="i.name"
-                                :capacity="i.capacity"
-                                :total_students="i.total_students"
-                                :teacher="i.teacher_id"
-                              >
-                                <template v-slot:edit>
-                                  <v-btn
-                                    @click="seniorEdit(i)"
-                                    outlined
-                                    color="primary"
-                                  >
-                                    edit section
-                                    <v-icon>mdi-pencil</v-icon>
-                                  </v-btn>
-                                </template>
-                              </sections-card>
-                            </v-col>
-                            <v-col>
-                              <v-card-title
-                                class="text-center justify-center py-6"
-                                v-if="item.content.length == 0"
-                              >
-                                <h1
-                                  class="font-weight-bold display-1 basil--text"
+                              <template v-slot:edit>
+                                <v-btn
+                                  @click="seniorEdit(i)"
+                                  outlined
+                                  color="primary"
                                 >
-                                  No {{ item.text }} Sections created yet.
-                                </h1>
-                              </v-card-title>
-                            </v-col>
-                          </v-row>
-                        </v-container>
+                                  edit section
+                                  <v-icon>mdi-pencil</v-icon>
+                                </v-btn>
+                              </template>
+                            </sections-card>
+                          </v-col>
+                          <v-col>
+                            <v-card-title
+                              class="text-center justify-center py-6"
+                              v-if="item.content.length == 0"
+                            >
+                              <h1
+                                class="font-weight-bold display-1 basil--text"
+                              >
+                                No {{ item.text }} Sections created yet.
+                              </h1>
+                            </v-card-title>
+                          </v-col>
+                        </v-row>
+                        <!-- </v-container> -->
                       </v-tab-item>
                     </v-tabs-items>
                   </div>
@@ -620,18 +620,18 @@ export default {
     },
     //Method For Editing The Section In Senior High School
     async seniorEdit(data) {
-      this.Senior = data;
-      this.edit = true;
-      this.seniordialog = true;
-      console.log(this.Senior);
-      // console.log(data);
-      // this.Senior.teacher = data.gradelevel_id;
+      // this.Senior = data;
       // this.edit = true;
       // this.seniordialog = true;
-      // this.Senior.section = data.name;
-      // this.Senior.capacity = data.capacity;
-      // this.Senior.id = data.id;
-      // this.Senior.teacher = data.teacher_id;
+      // console.log(this.Senior);
+      // // console.log(data);
+      this.Senior.teacher = data.gradelevel_id;
+      this.edit = true;
+      this.seniordialog = true;
+      this.Senior.section = data.name;
+      this.Senior.capacity = data.capacity;
+      this.Senior.id = data.id;
+      this.Senior.teacher = data.teacher_id;
     },
     //Method For Removing The Section In Junior High Category
     juniorRemove(sec) {

@@ -4,86 +4,88 @@
     <!-- <br />
     <br />
     <br /> -->
-    <v-card
-      class="my-12"
-      width="100%"
-      max-width="500px"
-      outlined
-      elevation="24"
-    >
-      <v-card class="table-header" color="#2e856e">
-        <v-card-title class="text-center justify-center">
-          <h4 style="color: white">Update Account Information</h4>
-        </v-card-title>
+    <v-container>
+      <v-card
+        class="my-12 update-card"
+        width="100%"
+        max-width="450px"
+        outlined
+        elevation="24"
+      >
+        <v-card class="table-header" color="#2e856e">
+          <v-card-title class="text-center justify-center">
+            <h4 style="color: white">Update Account Information</h4>
+          </v-card-title>
+        </v-card>
+        <v-container>
+          <v-form>
+            <v-text-field
+              v-model="username"
+              name="username"
+              label="Username"
+              :disabled="true"
+            ></v-text-field>
+            <v-text-field
+              v-model="currentPass"
+              :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showPass ? 'text' : 'password'"
+              name="currentpassword"
+              label="Current Password"
+              @click:append="showPass = !showPass"
+              @keydown="clearErrors"
+              :error="hasError('currentpassword')"
+            ></v-text-field>
+            <div>
+              <p v-if="hasError('currentpassword')" class="invalid-feedback">
+                {{ getError("currentpassword") }}
+              </p>
+            </div>
+            <v-text-field
+              v-model="newpassword"
+              :append-icon="showNPass ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showNPass ? 'text' : 'password'"
+              label="New Password"
+              name="new_password"
+              @click:append="showNPass = !showNPass"
+              @keydown="clearErrors"
+              :error="hasError('new_password')"
+            ></v-text-field>
+            <div>
+              <p v-if="hasError('new_password')" class="invalid-feedback">
+                {{ getError("new_password") }}
+              </p>
+            </div>
+            <v-text-field
+              v-model="confirmPass"
+              :append-icon="showCPass ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showCPass ? 'text' : 'password'"
+              label="Confirm Password"
+              name="confirm_password"
+              @click:append="showCPass = !showCPass"
+              @keydown="clearErrors"
+              :error="hasError('confirm_password')"
+            ></v-text-field>
+            <div>
+              <p v-if="hasError('confirm_password')" class="invalid-feedback">
+                {{ getError("confirm_password") }}
+              </p>
+            </div>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn class="mr-4" color="error" @click="clear">clear</v-btn>
+              <v-btn
+                class="mr-4"
+                color="primary"
+                :loading="loading"
+                :disabled="hasAnyErors"
+                @click="submit"
+                >submit</v-btn
+              >
+            </v-card-actions>
+          </v-form>
+        </v-container>
       </v-card>
-      <v-container>
-        <v-form>
-          <v-text-field
-            v-model="username"
-            name="username"
-            label="Username"
-            :disabled="true"
-          ></v-text-field>
-          <v-text-field
-            v-model="currentPass"
-            :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
-            :type="showPass ? 'text' : 'password'"
-            name="currentpassword"
-            label="Current Password"
-            @click:append="showPass = !showPass"
-            @keydown="clearErrors"
-            :error="hasError('currentpassword')"
-          ></v-text-field>
-          <div>
-            <p v-if="hasError('currentpassword')" class="invalid-feedback">
-              {{ getError("currentpassword") }}
-            </p>
-          </div>
-          <v-text-field
-            v-model="newpassword"
-            :append-icon="showNPass ? 'mdi-eye' : 'mdi-eye-off'"
-            :type="showNPass ? 'text' : 'password'"
-            label="New Password"
-            name="new_password"
-            @click:append="showNPass = !showNPass"
-            @keydown="clearErrors"
-            :error="hasError('new_password')"
-          ></v-text-field>
-          <div>
-            <p v-if="hasError('new_password')" class="invalid-feedback">
-              {{ getError("new_password") }}
-            </p>
-          </div>
-          <v-text-field
-            v-model="confirmPass"
-            :append-icon="showCPass ? 'mdi-eye' : 'mdi-eye-off'"
-            :type="showCPass ? 'text' : 'password'"
-            label="Confirm Password"
-            name="confirm_password"
-            @click:append="showCPass = !showCPass"
-            @keydown="clearErrors"
-            :error="hasError('confirm_password')"
-          ></v-text-field>
-          <div>
-            <p v-if="hasError('confirm_password')" class="invalid-feedback">
-              {{ getError("confirm_password") }}
-            </p>
-          </div>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn class="mr-4" color="error" @click="clear">clear</v-btn>
-            <v-btn
-              class="mr-4"
-              color="primary"
-              :loading="loading"
-              :disabled="hasAnyErors"
-              @click="submit"
-              >submit</v-btn
-            >
-          </v-card-actions>
-        </v-form>
-      </v-container>
-    </v-card>
+    </v-container>
   </v-app>
 </template>
 

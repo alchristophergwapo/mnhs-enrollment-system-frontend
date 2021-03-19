@@ -15,6 +15,20 @@ import "./assets/stylesheet/style.css";
 import VueNativeNotification from 'vue-native-notification'
 import VueSweetalert2 from 'vue-sweetalert2';
 import Axios from 'axios';
+import Echo from "laravel-echo"
+
+window.Pusher = require('pusher-js');
+
+window.Echo = new Echo({
+  broadcaster: 'pusher',
+  key: 'somekey',
+  cluster: 'mt1',
+  wsHost: 'http://127.0.0.1',
+  wsPort: 6001,
+  forceTLS: false,
+  disableStats: true
+});
+
 
 Vue.config.productionTip = false
 Vue.prototype.$axios = Axios;
@@ -33,6 +47,18 @@ new Vue({
   store,
   created() {
     this.initialize();
+
+    window.Echo.join(`chat`)
+      .here((users) => {
+        //
+        console.log("present users: ", users);
+      })
+      .joining((user) => {
+        console.log(user.name);
+      })
+      .leaving((user) => {
+        console.log(user.name);
+      });
   },
   mounted: function () {
     // this.initialize();
@@ -42,6 +68,7 @@ new Vue({
       const userInfo = localStorage.getItem('user')
       if (userInfo) {
         const userData = JSON.parse(userInfo)
+        // console.log(userData);
         this.$store.commit('setUserData', userData)
         if (userData.user.user_type == 'admin') {
           if (userData.user.updated == 1) {
@@ -57,20 +84,6 @@ new Vue({
           }
         }
       }
-
-      this.$store.dispatch('allTeacher').then(() => {
-        this.$store.state.teachersIsLoaded = true
-      })
-
-      this.$store.dispatch('allStudents').then(() => {
-        this.$store.state.studentsIsLoaded = true
-      })
-
-      this.$store.dispatch('allSections')
-
-      this.$store.dispatch('allPendingEnrollments')
-
-      this.$store.dispatch('allDeclinedEnrollments')
     }
   },
   render: h => h(App),

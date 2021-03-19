@@ -345,7 +345,13 @@
                       <v-toolbar-title>Review Enrollment</v-toolbar-title>
                       <v-spacer></v-spacer>
                       <v-toolbar-items>
-                        <v-btn dark text @click="submitEnrollment">
+                        <v-btn
+                          dark
+                          text
+                          @click="submitEnrollment"
+                          :loading="submitting"
+                          :disabled="submitting"
+                        >
                           Submit
                         </v-btn>
                       </v-toolbar-items>
@@ -405,6 +411,7 @@ export default {
   data() {
     return {
       dialog: false,
+      submitting: false,
       studentInfoValid: true,
       parentGuardianValid: true,
       transfereeValid: true,
@@ -522,6 +529,7 @@ export default {
 
     submitEnrollment() {
       if (this.$refs.submitEnrollment.validate()) {
+        this.submitting = true;
         let formdata = new FormData();
         let parent = JSON.parse(this.parentGuardian);
         // console.log(parent);
@@ -578,6 +586,7 @@ export default {
           .post(`addStudent`, formdata)
           .then((response) => {
             console.log(response);
+            this.submitting = false;
             this.$notification.show(
               "Hello World",
               {
@@ -585,7 +594,12 @@ export default {
               },
               {}
             );
-            this.$router.push({ path: "/" });
+            const userInfo = localStorage.getItem("user");
+            if (userInfo) {
+              this.$router.push({ path: "/admin" });
+            } else {
+              this.$router.push({ path: "/" });
+            }
           })
           .catch((error) => {
             console.log(error);

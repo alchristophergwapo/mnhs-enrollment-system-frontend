@@ -1,12 +1,11 @@
 <template>
-  <v-app style="background-color: #eee">
+  <v-app style="background: url('assets/images/school.jpg')">
     <v-card
       width="100%"
-      max-width="500px"
-      height="430px"
+      max-width="450px"
       outlined
       elevation="24"
-      class="mx-auto my-12"
+      class="update-card my-12"
     >
       <v-card class="table-header" color="#2e856e">
         <v-card-title class="text-center justify-center">

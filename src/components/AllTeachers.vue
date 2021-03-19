@@ -179,7 +179,7 @@ export default {
         {
           text: "Name",
           align: "start",
-          sortable: false,
+          // sortable: false,
           value: "name",
         },
         { text: "Email", value: "email" },
@@ -202,7 +202,7 @@ export default {
     //   }
     // }
     this.$axios
-      .get(`${this.HHTP_REQUEST_URL}allSections`)
+      .get(`allSections`)
       .then((response) => {
         response.data.sections.forEach((element) => {
           this.sections.push({ id: element.id, name: element.name });

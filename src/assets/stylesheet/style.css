@@ -2,8 +2,9 @@
   background-color: #eee;
 }
 
-.v-sheet.v-card {
+.update-card {
   margin: auto;
+  /* padding: 20px; */
 }
 /* Enrollment Data */
 .table {
@@ -12,7 +13,7 @@
 .table-header {
   margin: 0 50px 0 50px;
   position: inherit;
-  top: -20px;
+  top: -40px;
 }
 
 .view_dtls_btn {

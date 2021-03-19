@@ -128,6 +128,7 @@ export default new Vuex.Store({
         allDeclinedEnrollments({ commit }) {
             return axios.get('declinedEnrollments').then(response => {
                 commit('setDeclinedEnrollments', response.data.declinedEnrollment);
+                return response.data.declinedEnrollment
             })
         },
 
