@@ -254,9 +254,10 @@ export default {
               this.$router.push({ path: "/admin/profile" });
             }
           })
-          .catch(() => {
+          .catch((error) => {
+            console.log(error.response);
             this.response = "error";
-            this.message = "Invalid Credentials!";
+            this.message = error.response.data.error;
             this.loading = false;
           });
       }

@@ -26,6 +26,18 @@ Vue.use(VueNativeNotification, {
   requestOnNotify: true
 });
 
+import Echo from "laravel-echo"
+
+window.Pusher = require('pusher-js');
+
+window.Echo = new Echo({
+  broadcaster: 'pusher',
+  key: process.env.VUE_APP_WEBSOCKET_KEY,
+  wsHost: process.env.VUE_APP_WEBSOCKET_SERVER,
+  wsPort: 6001,
+  forceTLS: false,
+  disableStats: true,
+});
 
 new Vue({
   vuetify,
@@ -36,6 +48,9 @@ new Vue({
   },
   mounted: function () {
     // this.initialize();
+    this.$axios.get('broadcast').then(response => {
+      console.log(response);
+    })
   },
   methods: {
     initialize() {

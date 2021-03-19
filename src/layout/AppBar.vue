@@ -58,5 +58,20 @@ export default {
       this.$store.dispatch("logout");
     },
   },
+  mounted() {
+    window.Echo.channel("student_enroll").listen("StudentEnrollEvent", (e) => {
+      console.log(e);
+    });
+    //   window.Echo.join("student_enroll")
+    //     .here((users) => {
+    //       console.log(users);
+    //     })
+    //     .joining((user) => {
+    //       console.log(user);
+    //     })
+    //     .leaving((user) => {
+    //       console.log(user);
+    //     });
+  },
 };
 </script>
