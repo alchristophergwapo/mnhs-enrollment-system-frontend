@@ -602,7 +602,13 @@ export default {
             }
           })
           .catch((error) => {
-            console.log(error);
+            console.log(error.response);
+            this.submitting = false;
+            this.$swal.fire({
+              icon: "error",
+              title: "Error",
+              text: error.response.data.error,
+            });
           });
       }
     },

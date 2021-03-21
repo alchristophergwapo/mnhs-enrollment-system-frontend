@@ -100,5 +100,26 @@ export default {
       });
     },
   },
+  mounted() {
+    // window.Echo.channel("student_enroll").listen("StudentEnrollEvent", (e) => {
+    //   console.log(e);
+    // });
+    //   window.Echo.join("student_enroll")
+    //     .here((users) => {
+    //       console.log(users);
+    //     })
+    //     .joining((user) => {
+    //       console.log(user);
+    //     })
+    //     .leaving((user) => {
+    //       console.log(user);
+    //     });
+    console.log(this.user_details);
+    window.Echo.private("App.Models.User." + this.user_details.id).notification(
+      (notification) => {
+        console.log(notification.type);
+      }
+    );
+  },
 };
 </script>

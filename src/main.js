@@ -15,20 +15,6 @@ import "./assets/stylesheet/style.css";
 import VueNativeNotification from 'vue-native-notification'
 import VueSweetalert2 from 'vue-sweetalert2';
 import Axios from 'axios';
-import Echo from "laravel-echo"
-
-window.Pusher = require('pusher-js');
-
-window.Echo = new Echo({
-  broadcaster: 'pusher',
-  key: 'somekey',
-  cluster: 'mt1',
-  wsHost: 'http://127.0.0.1',
-  wsPort: 6001,
-  forceTLS: false,
-  disableStats: true
-});
-
 
 Vue.config.productionTip = false
 Vue.prototype.$axios = Axios;
@@ -40,6 +26,18 @@ Vue.use(VueNativeNotification, {
   requestOnNotify: true
 });
 
+import Echo from "laravel-echo"
+
+window.Pusher = require('pusher-js');
+
+window.Echo = new Echo({
+  broadcaster: 'pusher',
+  key: process.env.VUE_APP_WEBSOCKET_KEY,
+  wsHost: process.env.VUE_APP_WEBSOCKET_SERVER,
+  wsPort: 6001,
+  forceTLS: false,
+  disableStats: true,
+});
 
 new Vue({
   vuetify,
@@ -47,21 +45,12 @@ new Vue({
   store,
   created() {
     this.initialize();
-
-    window.Echo.join(`chat`)
-      .here((users) => {
-        //
-        console.log("present users: ", users);
-      })
-      .joining((user) => {
-        console.log(user.name);
-      })
-      .leaving((user) => {
-        console.log(user.name);
-      });
   },
   mounted: function () {
     // this.initialize();
+    // this.$axios.get('broadcast').then(response => {
+    //   console.log(response);
+    // })
   },
   methods: {
     initialize() {
