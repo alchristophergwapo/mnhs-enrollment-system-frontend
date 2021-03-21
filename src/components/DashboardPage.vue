@@ -21,11 +21,12 @@
             <p class="d-inline-flex font-weight-light ml-2 mt-1">
               This is a sub description.
             </p>
+            <div class="legends">this is legend</div>
           </chart>
         </v-col>
         <v-col cols="12" lg="6">
           <v-row>
-            <v-col cols="12" sm="6" lg="6">
+            <v-col cols="12" md="6" lg="6">
               <status-cards
                 color="info"
                 icon_background_color="#00b4cc"
@@ -47,7 +48,7 @@
                 </template>
               </status-cards>
             </v-col>
-            <v-col cols="12" sm="6" lg="6">
+            <v-col cols="12" md="6" lg="6">
               <status-cards
                 color="info"
                 icon_background_color="#2e856e"
@@ -69,7 +70,7 @@
                 </template>
               </status-cards>
             </v-col>
-            <v-col cols="12" sm="6" lg="6">
+            <v-col cols="12" md="6" lg="6">
               <status-cards
                 icon_background_color="#ff4d4d"
                 icon="mdi-account-multiple-minus"
@@ -84,7 +85,7 @@
                 </template>
               </status-cards>
             </v-col>
-            <v-col cols="12" sm="6" lg="6">
+            <v-col cols="12" md="6" lg="6">
               <status-cards
                 color="info"
                 icon_background_color="orange"
@@ -147,7 +148,7 @@ export default {
           showGrid: false,
         },
         low: 0,
-        high: 1000,
+        high: 2500,
         chartPadding: {
           top: 0,
           right: 5,
@@ -159,7 +160,7 @@ export default {
         [
           "screen and (max-width: 640px)",
           {
-            seriesBarDistance: 5,
+            seriesBarDistance: 10,
             axisX: {
               labelInterpolationFnc: function (value) {
                 return value[0];

@@ -7,7 +7,13 @@
     <v-spacer></v-spacer>
 
     <div class="notif" v-if="user_details.user_type == 'admin'">
-      <v-menu offset-y origin="center center" transition="scale-transition">
+      <v-menu
+        offset-y
+        rounded="0"
+        bottom
+        origin="center center"
+        transition="scale-transition"
+      >
         <template v-slot:activator="{ on, attrs }">
           <v-btn @click="markAsRead()" icon text v-on="on" v-bind="attrs">
             <v-badge
@@ -23,7 +29,8 @@
         <v-list>
           <v-list-item v-for="(item, index) in allNotifications" :key="index">
             <v-list-item-title
-              >{{ item.data.enrollment.student_id }} submitted a new
+              >{{ item.data.enrollment.firstname }}
+              {{ item.data.enrollment.lastname }} submitted a new
               enrollment.</v-list-item-title
             >
           </v-list-item>
@@ -35,10 +42,13 @@
       <v-menu left bottom>
         <template v-slot:activator="{ on, attrs }">
           <span class="label"
-            ><span v-if="user_details.type == 'student'">Hello, </span
+            ><span v-if="user_details.user_type == 'student'">Hello, </span
             >{{ user_details.firstname }}</span
           >
-          <v-icon v-if="user_details.type == 'admin'" v-bind="attrs" v-on="on"
+          <v-icon
+            v-if="user_details.user_type == 'admin'"
+            v-bind="attrs"
+            v-on="on"
             >mdi-chevron-down</v-icon
           >
         </template>
@@ -80,46 +90,62 @@ export default {
         .get(`mark-all-read/${this.user_details.id}`)
         .then((response) => {
           console.log(response);
-          this.allNotifications = [];
+          this.notifications = response.data.user.unread_notifications.length;
+          this.setUserData(response.data);
         });
+    },
+
+    setUserData(data) {
+      let storedInfo = localStorage.getItem("user");
+      let userData = JSON.parse(storedInfo);
+      userData.user = data.user;
+      this.$store.commit("setUserData", userData);
     },
   },
   created() {
     let storedInfo = localStorage.getItem("user");
     let userData = JSON.parse(storedInfo);
     this.user_details = userData.user;
-    console.log(this.user_details);
-    this.allNotifications = userData.user.notifications;
-    this.notifications = this.allNotifications.length;
+    // console.log(userData);
+    if (userData.user.notifications) {
+      this.allNotifications = userData.user.notifications;
+      this.notifications = this.unreadNotification.length;
+    }
     console.log(this.allNotifications);
   },
   computed: {
     unreadNotification() {
-      return this.allNotifications.filter((notification) => {
-        return notification.read_at == null;
-      });
+      if (this.allNotifications) {
+        return this.allNotifications.filter((notification) => {
+          return notification.read_at == null;
+        });
+      } else {
+        return null;
+      }
     },
   },
   mounted() {
-    // window.Echo.channel("student_enroll").listen("StudentEnrollEvent", (e) => {
-    //   console.log(e);
-    // });
-    //   window.Echo.join("student_enroll")
-    //     .here((users) => {
-    //       console.log(users);
-    //     })
-    //     .joining((user) => {
-    //       console.log(user);
-    //     })
-    //     .leaving((user) => {
-    //       console.log(user);
-    //     });
-    console.log(this.user_details);
-    window.Echo.private("App.Models.User." + this.user_details.id).notification(
-      (notification) => {
-        console.log(notification.type);
+    window.Echo.channel("student_enroll").listen(
+      "StudentEnrollEvent",
+      (eventData) => {
+        this.allNotifications.push(eventData.notification);
+        this.notifications = this.unreadNotification.length;
+        this.setUserData(eventData);
+        let enrollmentData = eventData.student_enrolled;
+        this.$notification.show(
+          "New Enrollment",
+          {
+            body: `${enrollmentData.firstname} ${enrollmentData.lastname} submitted an enrollment.`,
+          },
+          {}
+        );
       }
     );
+    // window.Echo.private("App.Models.User." + this.user_details.id).notification(
+    //   (notification) => {
+    //     console.log(notification.type);
+    //   }
+    // );
   },
 };
 </script>

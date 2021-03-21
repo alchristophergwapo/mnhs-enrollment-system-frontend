@@ -587,13 +587,7 @@ export default {
           .then((response) => {
             console.log(response);
             this.submitting = false;
-            this.$notification.show(
-              "Hello World",
-              {
-                body: "This is an example",
-              },
-              {}
-            );
+
             const userInfo = localStorage.getItem("user");
             if (userInfo) {
               this.$router.push({ path: "/admin" });
