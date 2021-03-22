@@ -153,16 +153,8 @@ export default {
     sections: [],
     declinedEnrollments: [],
     filterDeclined: [],
+    emitted: false,
   }),
-
-  created() {
-    if (!this.students || !this.sections) {
-      setTimeout(() => {
-        this.initializeData();
-      }, 3000);
-    }
-    this.initializeData();
-  },
 
   methods: {
     initializeData() {
@@ -228,8 +220,10 @@ export default {
 
     //Method For Filtering The Name By A GradeLevel Or All GradeLevel
     filterByName(data) {
+      // console.log(this.search);
       this.students = this.filterStudents.filter((val) => {
         if (this.gradelevel == null && data != null) {
+          // console.log("here");
           return val.fullname
             .concat(" ", val.grade_level)
             .toLowerCase()
@@ -256,6 +250,19 @@ export default {
         }
       });
     },
+  },
+  created() {},
+
+  mounted: function () {
+    if (!this.emitted) {
+      // console.log("not from emit event");
+      if (!this.students || !this.sections) {
+        setTimeout(() => {
+          this.initializeData();
+        }, 3000);
+      }
+      this.initializeData();
+    }
   },
 };
 </script>

@@ -173,6 +173,7 @@
 </template>
 
 <script>
+import { EventBus } from "../../bus/bus.js";
 export default {
   props: {
     students: {
@@ -300,6 +301,21 @@ export default {
           console.log(error);
         });
     },
+  },
+
+  created() {
+    EventBus.$on("filterData", (data) => {
+      console.log(data);
+      this.emitted = true;
+      this.students.filter((val) => {
+        // console.log(val);
+        if (val.fullname.includes(data)) {
+          // this.students = val;
+          // console.log(this.students);
+        }
+        // return val.fullname.includes(data);
+      });
+    });
   },
 };
 </script>

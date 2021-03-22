@@ -7,26 +7,26 @@
     <v-spacer></v-spacer>
 
     <div class="notif" v-if="user_details.user_type == 'admin'">
-      <v-menu
+      <!-- <v-menu
         offset-y
         rounded="0"
         bottom
         origin="center center"
         transition="scale-transition"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn @click="markAsRead()" icon text v-on="on" v-bind="attrs">
-            <v-badge
-              :content="notifications"
-              :value="unreadNotification.length"
-              color="red"
-              overlap
-            >
-              <v-icon medium color="white">mdi-bell</v-icon>
-            </v-badge>
-          </v-btn>
-        </template>
-        <v-list>
+      > -->
+      <!-- <template v-slot:activator="{ on, attrs }"> -->
+      <v-btn @click="markAsRead()" icon text link to="/admin/notifications">
+        <v-badge
+          :content="notifications"
+          :value="unreadNotification.length"
+          color="red"
+          overlap
+        >
+          <v-icon medium color="white">mdi-bell</v-icon>
+        </v-badge>
+      </v-btn>
+      <!-- </template> -->
+      <!-- <v-list>
           <v-list-item v-for="(item, index) in allNotifications" :key="index">
             <v-list-item-title
               >{{ item.data.enrollment.firstname }}
@@ -34,8 +34,8 @@
               enrollment.</v-list-item-title
             >
           </v-list-item>
-        </v-list>
-      </v-menu>
+        </v-list> -->
+      <!-- </v-menu> -->
     </div>
     <div v-if="$route.name != 'AdminProfile'">
       <span style="color: white">{{ user_details.username }}</span>
@@ -90,7 +90,7 @@ export default {
         .get(`mark-all-read/${this.user_details.id}`)
         .then((response) => {
           console.log(response);
-          this.notifications = response.data.user.unread_notifications.length;
+          this.notifications = 0;
           this.setUserData(response.data);
         });
     },
