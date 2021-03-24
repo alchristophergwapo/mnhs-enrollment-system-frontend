@@ -11,11 +11,6 @@
         </center>
         <h3>MNHS Enrollment System</h3>
         <br />
-        <alert
-          v-if="response"
-          :alert_message="message"
-          :alert_type="response"
-        ></alert>
         <v-tabs
           v-model="tab"
           show-arrows
@@ -160,11 +155,8 @@
 
 
 <script>
-import Alert from "../layout/Alert.vue";
 export default {
-  components: {
-    Alert,
-  },
+  components: {},
   data: () => ({
     loading: false,
     st_sign_in: false,
@@ -256,8 +248,11 @@ export default {
           })
           .catch((error) => {
             // console.log(error.response);
-            this.response = "error";
-            this.message = error.response.data.error;
+            this.$swal.fire({
+              icon: "error",
+              title: "Oooops....",
+              text: error.response.data.error,
+            });
             this.loading = false;
           });
       }

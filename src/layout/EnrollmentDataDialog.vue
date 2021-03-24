@@ -63,7 +63,9 @@
             }}</strong>
           </v-col>
           <v-img
-            :src="`http://127.0.0.1:8000/images/` + enrollment.card_image"
+            :src="
+              `http://127.0.0.1:8000/images/` + enrollment.enrollment.card_image
+            "
           ></v-img>
         </v-row>
       </v-card-text>

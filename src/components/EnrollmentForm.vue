@@ -324,6 +324,8 @@
                 >
                   Review
                 </v-btn>
+
+                <!-- review enrollment -->
                 <v-dialog
                   v-model="dialog"
                   fullscreen
@@ -374,7 +376,11 @@
                             <v-col cols="12" sm="6" md="6">
                               <v-select
                                 v-model="grade_level"
-                                :items="grade_levels"
+                                :items="
+                                  isSeniorHigh == 'true'
+                                    ? grade_levels[1]
+                                    : grade_levels[0]
+                                "
                                 :rules="[(v) => !!v || 'Required']"
                                 label="Select Grade Level"
                                 required
@@ -432,7 +438,10 @@ export default {
         },
       ],
 
-      grade_levels: [7, 8, 9, 10, 11, 12],
+      grade_levels: [
+        [7, 8, 9, 10],
+        [11, 12],
+      ],
 
       grade_level: null,
       card_image: null,
@@ -587,7 +596,10 @@ export default {
           .then((response) => {
             console.log(response);
             this.submitting = false;
-
+            // if (response.data.student) {
+            //   // alert("jj");
+            //   // console.log(response.data.student);
+            // }
             const userInfo = localStorage.getItem("user");
             if (userInfo) {
               this.$router.push({ path: "/admin" });
@@ -598,11 +610,13 @@ export default {
           .catch((error) => {
             console.log(error.response);
             this.submitting = false;
-            this.$swal.fire({
-              icon: "error",
-              title: "Error",
-              text: error.response.data.error,
-            });
+            if (error.response.data.currentEnrollment) {
+              this.$swal.fire({
+                icon: "error",
+                title: "Error",
+                text: error.response.data.error,
+              });
+            }
           });
       }
     },

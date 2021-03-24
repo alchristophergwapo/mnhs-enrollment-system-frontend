@@ -3,7 +3,7 @@
     <slot name="data-table-header"></slot>
     <v-data-table
       :headers="headers"
-      :items="students"
+      :items="pendingStudents"
       :search="search"
       :items-per-page="10"
       class="elevation-1"
@@ -129,7 +129,7 @@
               </v-btn>
               <v-btn
                 color="error"
-                @click="declineEnrollment(row.item.id, index)"
+                @click="declineEnrollment(row.item.id, row.index)"
               >
                 decline
               </v-btn>
@@ -173,7 +173,7 @@
 </template>
 
 <script>
-import { EventBus } from "../../bus/bus.js";
+// import { EventBus } from "../../bus/bus.js";
 export default {
   props: {
     students: {
@@ -205,7 +205,8 @@ export default {
       ],
       sections: [],
       section: "",
-      grade_level: ["7", "8", "9", "10", "11", "12", "All"],
+
+      pendingStudents: this.students,
     };
   },
 
@@ -255,7 +256,7 @@ export default {
           .post("approveEnrollment/" + id, { student_section: this.section })
           .then((response) => {
             console.log(response);
-            this.students.splice(index, 1);
+            this.pendingStudents.splice(index, 1);
             this.$swal.fire({
               icon: "success",
               title: "Success",
@@ -286,6 +287,7 @@ export default {
 
     //Method For Declining The Section
     declineEnrollment(id, index) {
+      console.log(index);
       this.$axios
         .post("declineEnrollment/" + id)
         .then((response) => {
@@ -295,7 +297,7 @@ export default {
             title: "Success",
             text: "Enrollment declined.",
           });
-          this.students.splice(index, 1);
+          this.pendingStudents.splice(index, 1);
         })
         .catch((error) => {
           console.log(error);
@@ -304,18 +306,20 @@ export default {
   },
 
   created() {
-    EventBus.$on("filterData", (data) => {
-      console.log(data);
-      this.emitted = true;
-      this.students.filter((val) => {
-        // console.log(val);
-        if (val.fullname.includes(data)) {
-          // this.students = val;
-          // console.log(this.students);
-        }
-        // return val.fullname.includes(data);
-      });
-    });
+    // EventBus.$on("filterData", (data) => {
+    //   // console.log(data);
+    //   this.emitted = true;
+    //   this.pendingStudents.filter((val) => {
+    //     if (val.firstname == data) {
+    //       console.log("true");
+    //       return val;
+    //     } else {
+    //       console.log("false");
+    //       this.pendingStudents = [];
+    //     }
+    //     // return val.fullname.includes(data);
+    //   });
+    // });
   },
 };
 </script>

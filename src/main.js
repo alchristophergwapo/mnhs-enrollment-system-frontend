@@ -45,6 +45,7 @@ new Vue({
   store,
   created() {
     this.initialize();
+    // this.$store.dispatch('logout')
   },
   mounted: function () {
     // this.initialize();
@@ -57,7 +58,7 @@ new Vue({
       const userInfo = localStorage.getItem('user')
       if (userInfo) {
         const userData = JSON.parse(userInfo)
-        // console.log(userData);
+        console.log(userData);
         this.$store.commit('setUserData', userData)
         if (userData.user.user_type == 'admin') {
           if (userData.user.updated == 1) {

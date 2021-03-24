@@ -85,7 +85,6 @@
                             :items="sections"
                             type="text"
                             label="Assigned Section Area"
-                            :disabled="disableSection"
                           ></v-select>
                         </v-container>
                       </v-card-text>

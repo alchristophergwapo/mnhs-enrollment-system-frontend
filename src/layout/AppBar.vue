@@ -83,7 +83,7 @@ export default {
   methods: {
     logout() {
       this.$router.push({ path: "/" });
-      this.$store.dispatch("logout");
+      // this.$store.dispatch("logout");
     },
     markAsRead() {
       this.$axios
@@ -106,12 +106,13 @@ export default {
     let storedInfo = localStorage.getItem("user");
     let userData = JSON.parse(storedInfo);
     this.user_details = userData.user;
-    // console.log(userData);
-    if (userData.user.notifications) {
-      this.allNotifications = userData.user.notifications;
+    console.log(userData);
+    let notificationsFromStorage = userData.user.notifications;
+    if (notificationsFromStorage) {
+      this.allNotifications = notificationsFromStorage;
       this.notifications = this.unreadNotification.length;
     }
-    console.log(this.allNotifications);
+    // console.log(this.allNotifications);
   },
   computed: {
     unreadNotification() {
@@ -125,22 +126,25 @@ export default {
     },
   },
   mounted() {
-    window.Echo.channel("student_enroll").listen(
-      "StudentEnrollEvent",
-      (eventData) => {
-        this.allNotifications.push(eventData.notification);
-        this.notifications = this.unreadNotification.length;
-        this.setUserData(eventData);
-        let enrollmentData = eventData.student_enrolled;
-        this.$notification.show(
-          "New Enrollment",
-          {
-            body: `${enrollmentData.firstname} ${enrollmentData.lastname} submitted an enrollment.`,
-          },
-          {}
-        );
-      }
-    );
+    if (this.user_details.user_type == "admin") {
+      window.Echo.channel("student_enroll").listen(
+        "StudentEnrollEvent",
+        (eventData) => {
+          console.log(eventData);
+          this.allNotifications.push(eventData.notification);
+          this.notifications = this.unreadNotification.length;
+          this.setUserData(eventData);
+          let enrollmentData = eventData.student_enrolled;
+          this.$notification.show(
+            "New Enrollment",
+            {
+              body: `${enrollmentData.firstname} ${enrollmentData.lastname} submitted an enrollment.`,
+            },
+            {}
+          );
+        }
+      );
+    }
     // window.Echo.private("App.Models.User." + this.user_details.id).notification(
     //   (notification) => {
     //     console.log(notification.type);

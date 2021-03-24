@@ -129,6 +129,13 @@
   font-size: 14px;
 }
 
+.sheet-container {
+  width: 100%;
+}
+
+.v-sheet {
+  margin: auto;
+}
 /* All Sections */
 .theme--light.v-tabs > .v-tabs-bar .v-tab:not(.v-tab--active),
 .theme--light.v-tabs > .v-tabs-bar .v-tab:not(.v-tab--active) > .v-icon,

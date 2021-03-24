@@ -4,8 +4,8 @@
     <br /><br />
     <v-container id="dashboard" tag="section">
       <v-row>
-        <v-col cols="12" lg="6" class="enrollment-chart">
-          <chart
+        <v-col cols="12" lg="5" class="enrollment-chart">
+          <!-- <chart
             :data="enrollmentChart.data"
             :options="enrollmentChart.options"
             :responsive-options="enrollmentChart.responsiveOptions"
@@ -13,6 +13,14 @@
             hover-reveal
             type="Bar"
             v-if="initialized"
+          > -->
+          <chart
+            :data="enrollmentChart.data"
+            :options="enrollmentChart.options"
+            :responsive-options="enrollmentChart.responsiveOptions"
+            color="#E91E63"
+            hover-reveal
+            type="Bar"
           >
             <h4 class="card-title font-weight-light mt-2 ml-2">
               Enrolled Students
@@ -21,10 +29,53 @@
             <p class="d-inline-flex font-weight-light ml-2 mt-1">
               This is a sub description.
             </p>
-            <div class="legends">this is legend</div>
+            <hr />
+            <div class="legends">
+              <v-card-title class="text-center justify-center">
+                <div class="font-weight-light">Legend</div>
+              </v-card-title>
+              <div class="legend">
+                <v-row>
+                  <v-col cols="12" sm="6" md="6" lg="6">
+                    <v-card-title class="text-center justify-center">
+                      <div class="sheet-container">
+                        <v-sheet
+                          class="d-flex"
+                          color="#006a4e"
+                          elevation="1"
+                          height="40"
+                          width="10"
+                        >
+                          <!-- <sheet-footer>Male </sheet-footer> -->
+                        </v-sheet>
+                      </div>
+                      <div>Male</div>
+                    </v-card-title>
+                  </v-col>
+                  <v-col cols="12" sm="6" md="6" lg="6">
+                    <v-card-title class="text-center justify-center">
+                      <div class="sheet-container">
+                        <v-sheet
+                          class="d-flex"
+                          color="#f05b4f"
+                          elevation="1"
+                          height="40"
+                          width="10"
+                        >
+                          <!-- <sheet-footer>Male </sheet-footer> -->
+                        </v-sheet>
+                      </div>
+                      <br />
+                      <div>Female</div>
+                    </v-card-title>
+                  </v-col>
+                </v-row>
+              </div>
+            </div>
+            <br />
           </chart>
         </v-col>
-        <v-col cols="12" lg="6">
+        <v-col cols="12" lg="7">
           <v-row>
             <v-col cols="12" md="6" lg="6">
               <status-cards
@@ -232,7 +283,7 @@ export default {
 </script>
 
 <style>
-.enrollment-chart {
+/* .enrollment-chart {
   max-height: 400px;
-}
+} */
 </style>
