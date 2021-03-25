@@ -392,8 +392,8 @@ export default {
               title: "Success",
               text: "Enrollment approved.",
             });
-            this.dialog = false;
-            window.location.reload(true);
+           //this.dialog = false;
+           //window.location.reload(true);
           })
           .catch((error) => {
             console.log(error);

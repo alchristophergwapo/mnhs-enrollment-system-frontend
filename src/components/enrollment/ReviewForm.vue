@@ -94,13 +94,13 @@
         
             ></v-text-field>
           </v-col>
-          <v-col cols="12" sm="4" md="4" v-if="studentInformation.IP != 'No'">
+          <v-col cols="12" sm="4" md="4" v-if="studentInformation.IP !='No'">
             <div class="font-weight-bold">
               <h4>Community</h4>
             </div>
             <v-text-field
               required
-              :value="studentInformation.IP_Community"
+              :value="studentInformation.IP_community"
             ></v-text-field>
           </v-col>
           <v-col cols="12" sm="4" md="4" lg="4">
@@ -326,6 +326,7 @@ export default {
     
     initialize() {
       this.studentInformation = JSON.parse(this.$store.getters.student);
+      console.log(this.studentInformation);
       this.parentGuardianInfo = JSON.parse(this.$store.getters.parentGuardian);
       this.balikAralOrTransfereeInfo = JSON.parse( this.$store.getters.balikOrTransfer );
       this.seniorHighInfo = JSON.parse(this.$store.getters.seniorHigh);

@@ -19,6 +19,17 @@
             </div>
           </v-card>
           <v-card-title>
+          Sort By&nbsp;&nbsp;
+          <v-select
+          v-model="selectedYear"
+          :items="schoolYear"
+           @change="filterByYear($event=selectedYear)"
+           menu-props="auto"
+           label="School Year"
+           hide-details
+           dense
+           outlined
+        ></v-select>
             <v-spacer></v-spacer>
             <!-- Adding A Teacher!-->
             <v-card-title>
@@ -120,42 +131,43 @@
             <template v-slot:item="row">
               <tr>
                 <td>{{ row.item.name }}</td>
-                <td><v-dialog transition="dialog-top-transition" max-width="500">
+                <td><v-dialog transition="dialog-top-transition" max-width="400">
                     <template  v-slot:activator="{ on, attrs }">
                       <v-btn text v-bind="attrs" v-on="on">View Details</v-btn>
                     </template>
                     <template v-slot:default="dialog">
-                      <v-card>
-                        <v-card-title>
+                      <v-card >
+                        <v-card-title >
                           <v-spacer></v-spacer>
                           <v-btn icon @click="dialog.value = false">
                             <v-icon>mdi-close</v-icon>
                           </v-btn>
+                           
                         </v-card-title>
                         <v-card-text>
                           <v-row>
                             <v-col cols="12" >
-                              Name.:&nbsp;&nbsp;<strong>{{
+                              Name:&nbsp;&nbsp;<br><strong>{{
                                 row.item.name
                               }}</strong>
                             </v-col>
                             <v-col cols="12">
-                              Email:&nbsp;&nbsp;<strong>{{
+                              Email:&nbsp;&nbsp;<br><strong>{{
                                 row.item.email
                               }}</strong>
                             </v-col>
                             <v-col cols="12">
-                             Contact:&nbsp;&nbsp;<strong>{{
+                             Contact:&nbsp;&nbsp;<br><strong>{{
                                 row.item.contact
                               }}</strong>
                             </v-col>
                            <v-col cols="12">
-                             AssignedSection:&nbsp;&nbsp;<strong>{{
+                             AssignedSection:&nbsp;&nbsp;<br><strong>{{
                                row.item.section_id ? row.item.section_id : 'No Section'
                               }}</strong>
                             </v-col>
                           <v-col cols="12">
-                             School Year:&nbsp;&nbsp;<strong>{{
+                             School Year:&nbsp;&nbsp;<br><strong>{{
                              row.item.created_at.substring(0,row.item.created_at.indexOf("-")).concat("-",parseInt(row.item.created_at.substring(0,row.item.created_at.indexOf("-")))+1)
                               }}</strong>
                           </v-col>
@@ -191,6 +203,8 @@ export default {
     return {
       search: "",
       year: new Date().getFullYear(),
+      selectedYear:null,
+      schoolYear:['All'],
       loading: false,
       statusdialog: false,
       booleanStatus: false,
@@ -227,6 +241,7 @@ export default {
         { text: "Action", value: "action" },
       ],
       teachers: [],
+      filterTeachers:[],
       errors: {},
     };
   },
@@ -243,9 +258,24 @@ export default {
   },
   mounted(){
     this.display();
+    for(let i=2021;i<=this.year;i++){
+      this.schoolYear.push(i);
+    }
   },
 
   methods: {
+//Filtery The Teacher By School Year
+filterByYear(year){
+  if (year == "All") {
+        this.teachers = this.filterTeachers;
+        this.year=new Date().getFullYear();
+      } else {
+        this.teachers=this.filterTeachers.filter(val=> {
+          return val.created_at.substring(0,val.created_at.indexOf("-")) == year || val.created_at.includes(year);
+        });
+        this.year=year;
+      }
+},
 //Methods for displaying All Sections
     allSections(){
       this.$store
@@ -270,12 +300,16 @@ export default {
           .dispatch("allTeacher")
           .then(() => {
             this.teachers=this.$store.getters.allTeacher;
+            this.filterTeachers=this.$store.getters.allTeacher;
+            this.teachers=this.filterTeachers.filter(val=>{
+             return val.created_at.substring(0,val.created_at.indexOf("-")) == this.year || val.created_at.includes(this.year);
+            });
           })
           .catch((error) => {
             console.log(error);        
           });
     },
-
+  
 //Methods for Deleting A Teacher In Delete Button
     async removeTeacher(dataid) {
       this.$axios

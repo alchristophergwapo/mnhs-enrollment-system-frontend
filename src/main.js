@@ -16,6 +16,7 @@ import VueNativeNotification from 'vue-native-notification'
 import VueSweetalert2 from 'vue-sweetalert2';
 import Axios from 'axios';
 
+
 Vue.config.productionTip = false
 Vue.prototype.$axios = Axios;
 
@@ -28,6 +29,7 @@ Vue.use(VueNativeNotification, {
 
 
 new Vue({
+ // Echo,
   vuetify,
   router,
   store,
