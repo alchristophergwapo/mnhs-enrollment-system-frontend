@@ -2,30 +2,116 @@
   <div id="app">
     <bread-crumb :item="items" page_name="Notification Settings"></bread-crumb>
     <br /><br />
-    <v-card elevation="2" outlined tile>
-      <v-list class="transparent">
-        <v-list-item>
-          <v-list-item-icon>
-            <v-icon>mdi-plus</v-icon>
-          </v-list-item-icon>
-          <v-card-text
-            >Chilla Jean Cabungcag submitted a new enrollment application gor
-            Grade 7.</v-card-text
-          >
 
-          <v-row align="center" justify="end">
-            <v-btn color="#64D8FD">View</v-btn>
-          </v-row>
-        </v-list-item>
-      </v-list>
+    <!-- notification details dialog -->
+    <v-dialog
+      v-model="openDialog"
+      transition="dialog-top-transition"
+      max-width="600"
+    >
+      <enrollment-data-dialog :enrollment="notification">
+        <template v-slot:header_action>
+          <v-card-title>
+            <v-spacer></v-spacer>
+            <v-btn icon @click="openDialog = false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+        </template>
+        <template v-slot:actions>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="error"
+              @click="declineEnrollment(notification.enrollment.id)"
+              :loading="declining"
+              >decline</v-btn
+            >
+            <v-btn
+              color="primary"
+              @click="
+                filterSections(
+                  notification.grade_level,
+                  notification.enrollment.id
+                )
+              "
+              :disabled="
+                notification.enrollment.enrollment_status == 'Approved'
+                  ? true
+                  : false
+              "
+              >approve</v-btn
+            >
+          </v-card-actions>
+        </template>
+      </enrollment-data-dialog>
+    </v-dialog>
+
+    <!-- select section dialog -->
+    <v-dialog v-model="dialog" max-width="500px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Select Student Sections</span>
+          <v-spacer></v-spacer>
+          <v-btn icon @click="dialog = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-card-text>
+          <v-select
+            :items="sections"
+            v-model="section"
+            label="Section*"
+            required
+          ></v-select>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue darken-1"
+            @click="approveEnrollment(id)"
+            :loading="loading"
+          >
+            Done
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <!-- notifications card list -->
+    <v-card elevation="2" outlined tile>
+      <v-virtual-scroll :items="notifications" :item-height="70" height="700">
+        <template v-slot:default="{ item }">
+          <v-list class="transparent">
+            <v-list-item
+              @click="markAsOpened(item.data.enrollment, item.id)"
+              :class="item.opened_at != null ? 'opened' : 'not-opened'"
+            >
+              <v-icon>mdi-plus</v-icon>
+
+              <v-list-item-content>
+                <v-list-item-title>
+                  <v-card-text
+                    >{{ item.data.enrollment.firstname }}
+                    {{ item.data.enrollment.lastname }} submitted a new
+                    enrollment application for
+                    {{ item.data.enrollment.grade_level }}.</v-card-text
+                  >
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </template>
+      </v-virtual-scroll>
     </v-card>
   </div>
 </template>
 
 <script>
+// import { EventBus } from "../bus/bus.js";
 export default {
   components: {
     BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
+    EnrollmentDataDialog: () => import("@/layout/EnrollmentDataDialog.vue"),
   },
   data() {
     return {
@@ -41,7 +127,172 @@ export default {
           href: "admin/all_sections",
         },
       ],
+      notifications: [],
+      sections: [],
+      openDialog: false,
+      dialog: false,
+      loading: false,
+      approving: false,
+      declining: false,
+      section: null,
+      id: null,
+      notification: null,
+      date: new Date(),
     };
+  },
+  methods: {
+    filterSections(gradelevel, id) {
+      this.id = id;
+      let sections = this.$store.getters.allSections;
+      // console.log(index);
+      this.dialog = true;
+      this.sections = [];
+      // console.log(grade_level);
+      for (const key in sections) {
+        if (sections.hasOwnProperty.call(sections, key)) {
+          const element = sections[key];
+          const grade_levelData = element["gradelevel"];
+          for (const glKey in grade_levelData) {
+            let section = element["name"];
+            if (grade_levelData.hasOwnProperty.call(grade_levelData, glKey)) {
+              const element1 = grade_levelData[glKey];
+              // console.log(glKey);
+              if (glKey == "grade_level") {
+                // console.log("here");
+                if (element1 == gradelevel) {
+                  // console.log("here");
+                  this.sections.push(section);
+                }
+              }
+            }
+          }
+        }
+      }
+      // console.log(this.sections);
+    },
+
+    checkIfExist(data) {
+      console.log("data: ", data);
+      let exist = false;
+      let students = this.$store.getters.allStudents;
+      for (const index in students) {
+        if (students.hasOwnProperty.call(students, index)) {
+          const element = students[index];
+          if (element.id == data.id) {
+            exist = true;
+            console.log("Exist: ", element);
+          } else {
+            exist = false;
+          }
+        }
+      }
+      if (!exist) {
+        students.push(data);
+        console.log("Not exist: ", data);
+      }
+
+      this.$store.commit("setStudents", students);
+
+      // EventBus.$emit("newApprovedStudent", students);
+    },
+    approveEnrollment(id) {
+      console.log(this.section);
+      this.loading = true;
+      if (this.section) {
+        this.$axios
+          .post("approveEnrollment/" + id, { student_section: this.section })
+          .then((response) => {
+            // console.log(response);
+            this.$swal.fire({
+              icon: "success",
+              title: "Success",
+              text: response.data.message,
+            });
+            this.checkIfExist(response.data.student);
+            this.dialog = false;
+            this.openDialog = false;
+            this.loading = false;
+            // window.location.reload(true);
+          })
+          .catch((error) => {
+            console.log(error);
+            this.$swal.fire({
+              icon: "error",
+              title: "Ooops....",
+              text: error.response.data.message,
+            });
+            this.dialog = true;
+            this.openDialog = true;
+          });
+      } else {
+        this.$swal.fire({
+          icon: "error",
+          title: "Ooops....",
+          text: "Please select a section.",
+        });
+        this.openDialog = true;
+      }
+    },
+
+    declineEnrollment(id) {
+      this.$axios
+        .post("declineEnrollment/" + id)
+        .then((response) => {
+          console.log(response);
+          this.$swal.fire({
+            icon: "info",
+            title: "Success",
+            text: "Enrollment declined.",
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+
+    markAsOpened(notif, id) {
+      console.log(notif);
+      this.notification = notif;
+      this.openDialog = true;
+      this.$axios
+        .get("mark-as-opened/" + id)
+        .then((response) => {
+          console.log(typeof response.data.notification.data);
+          this.notification.opened_at = this.date;
+          this.notification.data = JSON.parse(response.data.notification.data);
+          let index = this.notifications.indexOf(notif);
+          this.notifications[index] = response.data.notification;
+          console.log(this.notification);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+
+      // console.log(this.notification);
+    },
+  },
+  created() {
+    let storedInfo = localStorage.getItem("user");
+    let userData = JSON.parse(storedInfo);
+    console.log(userData);
+    this.notifications = userData.user.notifications;
+    // console.log(notificationsData);
+    // for (let index = 0; index < notificationsData.length; index++) {
+    //   const element = notificationsData[index];
+    //   // console.log(index);
+    //   this.notifications.push(element);
+    // }
+    // console.log(this.notifications);
   },
 };
 </script>
+
+<style>
+.opened {
+  background-color: white;
+}
+
+.not-opened {
+  background: #e6fff8;
+}
+</style>

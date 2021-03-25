@@ -1,7 +1,7 @@
 <template>
   <v-app id="sign-in">
     <v-container class="signin-container">
-      <v-card class="card1" elevation="5">
+      <v-card class="card1" elevation="10">
         <center>
           <img
             :src="require('../assets/images/enroll.png')"
@@ -11,15 +11,10 @@
         </center>
         <h3>MNHS Enrollment System</h3>
         <br />
-        <alert
-          v-if="response"
-          :alert_message="message"
-          :alert_type="response"
-        ></alert>
         <v-tabs
           v-model="tab"
           show-arrows
-          background-color="light-blue"
+          background-color="secondary"
           icons-and-text
           dark
           grow
@@ -81,7 +76,7 @@
                         x-large
                         block
                         :disabled="!valid"
-                        color="info"
+                        color="primary"
                         @click="student"
                       >
                         <h4>Sign In</h4>
@@ -140,7 +135,7 @@
                       <v-btn
                         x-large
                         block
-                        color="info"
+                        color="primary"
                         :disabled="!advalid"
                         @click="adminLogin"
                       >
@@ -160,11 +155,8 @@
 
 
 <script>
-import Alert from "../layout/Alert.vue";
 export default {
-  components: {
-    Alert,
-  },
+  components: {},
   data: () => ({
     loading: false,
     st_sign_in: false,
@@ -173,7 +165,7 @@ export default {
 
     tabs: [
       { name: "Login as Enrollee", icon: "mdi-account" },
-      { name: "Login as Admin", icon: "mdi-account-outline" },
+      { name: "Login as Admin", icon: "mdi-account-tie" },
     ],
 
     valid: true,
@@ -210,10 +202,14 @@ export default {
         this.loading = true;
         this.$store
           .dispatch("login", data)
-          .then(() => {
-            // console.log(response);
-            this.loading = false;
-            this.$router.push({ path: "/student/dashboard" });
+          .then((response) => {
+            console.log(response);
+            if (response) {
+              this.loading = false;
+              this.$router.push({ path: "student/dashboard" });
+            } else {
+              this.$router.push({ path: "student/update-password" });
+            }
           })
           .catch((error) => {
             console.log(error.response);
@@ -241,13 +237,22 @@ export default {
       if (this.$refs.regAdminForm.validate()) {
         this.$store
           .dispatch("login", data)
-          .then(() => {
-            this.loading = false;
-            this.$router.push({ path: "/admin" });
+          .then((response) => {
+            if (response) {
+              this.loading = false;
+              this.$router.push({ path: "/admin" });
+            } else {
+              this.loading = false;
+              this.$router.push({ path: "/admin/profile" });
+            }
           })
-          .catch(() => {
-            this.response = "error";
-            this.message = "Invalid Credentials!";
+          .catch((error) => {
+            // console.log(error.response);
+            this.$swal.fire({
+              icon: "error",
+              title: "Oooops....",
+              text: error.response.data.error,
+            });
             this.loading = false;
           });
       }
@@ -255,54 +260,3 @@ export default {
   },
 };
 </script>
-
-
-<style>
-/* #app{
-    background-color: rgb(57, 151, 206);
-} */
-
-.card1 {
-  padding: 2%;
-}
-
-#pwd {
-  width: 1px;
-  height: 10px;
-}
-
-.img1 {
-  width: 400px;
-  height: 250px;
-  margin-top: 15px;
-}
-
-h3 {
-  font-size: 25px;
-  letter-spacing: 1.5;
-  text-align: center;
-  color: rgb(46, 118, 160);
-  font-weight: bolder;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
-
-.signin-container {
-  width: 50%;
-  margin-top: 8%;
-}
-
-#icons {
-  width: 120px;
-  height: 120px;
-}
-
-#sign-in {
-  background: #3bbdda;
-}
-
-@media (max-width: 767px) {
-  .signin-container {
-    width: 100%;
-  }
-}
-</style>

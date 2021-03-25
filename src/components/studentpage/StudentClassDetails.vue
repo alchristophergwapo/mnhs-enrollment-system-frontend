@@ -15,7 +15,7 @@
       :headers="headers"
       :items="students"
       :search="search"
-      :items-per-page="10"
+      :items-per-page="5"
       class="elevation-1"
     >
       <template v-slot:item="row">

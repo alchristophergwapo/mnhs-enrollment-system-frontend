@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 import 'es6-promise/auto'
 
+
 Vue.use(Vuex)
 
 axios.defaults.baseURL = 'http://127.0.0.1:8000/api/'
@@ -82,8 +83,14 @@ export default new Vuex.Store({
 
     actions: {
         login({ commit }, credentials) {
-            return axios.post('login', credentials).then(({ data }) => {
-                commit('setUserData', data)
+            return axios.post('login', credentials).then((response) => {
+                if (response.data.user.updated == 0) {
+                    commit('setUserData', response.data)
+                    return false;
+                } else {
+                    commit('setUserData', response.data)
+                    return true
+                }
             })
         },
 
@@ -108,7 +115,7 @@ export default new Vuex.Store({
         },
 
         allSections({ commit }) {
-            return axios.get('allSections').then(response =>{
+            return axios.get('allSections').then(response => {
                 commit('setSections', response.data.sections)
             })
         },
@@ -121,7 +128,8 @@ export default new Vuex.Store({
 
         allDeclinedEnrollments({ commit }) {
             return axios.get('declinedEnrollments').then(response => {
-                commit('setDeclinedEnrollments', response.data.declinedEnrollments);
+                commit('setDeclinedEnrollments', response.data.declinedEnrollment);
+                return response.data.declinedEnrollment
             })
         },
 
@@ -129,7 +137,7 @@ export default new Vuex.Store({
             commit('clearUserData')
         },
 
-        reviewEnrollment({ commit }, data){
+        reviewEnrollment({ commit }, data) {
             commit('setStudentInfoData', data);
         },
 
