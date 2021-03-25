@@ -3,7 +3,7 @@
     <div class="add_btn">
       <v-card>
         <v-card-title class="headlineSection">
-          <span>Edit Section</span>
+          <span>{{ addOrEdit }} Section</span>
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -19,6 +19,11 @@
 </template>
 <script>
 export default {
-  props: {},
+  props: {
+    addOrEdit: {
+      type: String,
+      required: true,
+    },
+  },
 };
 </script>

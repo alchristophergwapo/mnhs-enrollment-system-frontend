@@ -27,52 +27,42 @@
             </h4>
 
             <p class="d-inline-flex font-weight-light ml-2 mt-1">
-              This is a sub description.
+              All yearly enrolled students data.
             </p>
             <hr />
             <div class="legends">
-              <v-card-title class="text-center justify-center">
+              <!-- <v-card-title class="text-center justify-center">
                 <div class="font-weight-light">Legend</div>
-              </v-card-title>
-              <div class="legend">
-                <v-row>
-                  <v-col cols="12" sm="6" md="6" lg="6">
-                    <v-card-title class="text-center justify-center">
-                      <div class="sheet-container">
-                        <v-sheet
-                          class="d-flex"
-                          color="#006a4e"
-                          elevation="1"
-                          height="40"
-                          width="10"
-                        >
-                          <!-- <sheet-footer>Male </sheet-footer> -->
-                        </v-sheet>
-                      </div>
-                      <div>Male</div>
-                    </v-card-title>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="6" lg="6">
-                    <v-card-title class="text-center justify-center">
-                      <div class="sheet-container">
-                        <v-sheet
-                          class="d-flex"
-                          color="#f05b4f"
-                          elevation="1"
-                          height="40"
-                          width="10"
-                        >
-                          <!-- <sheet-footer>Male </sheet-footer> -->
-                        </v-sheet>
-                      </div>
-                      <br />
-                      <div>Female</div>
-                    </v-card-title>
-                  </v-col>
-                </v-row>
-              </div>
+              </v-card-title> -->
+              <v-row>
+                <v-col cols="12" sm="6" md="4">
+                  <v-card-title class="text-center justify-center">
+                    <v-sheet
+                      class="d-flex"
+                      color="#006a4e"
+                      elevation="1"
+                      height="10"
+                      width="10"
+                    >
+                    </v-sheet>
+                    <div>Male</div>
+                  </v-card-title>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-card-title class="text-center justify-center">
+                    <v-sheet
+                      class="d-flex"
+                      color="#f05b4f"
+                      elevation="1"
+                      height="10"
+                      width="10"
+                    >
+                    </v-sheet>
+                    <div>Female</div>
+                  </v-card-title>
+                </v-col>
+              </v-row>
             </div>
-            <br />
           </chart>
         </v-col>
         <v-col cols="12" lg="7">
@@ -238,39 +228,37 @@ export default {
       this.totalPending = this.$store.getters.allPendingEnrollments.length;
       this.totalDeclined = this.$store.getters.allDeclinedEnrollments.length;
       this.totalTeachers = this.$store.getters.totalTeachers;
-      for (const index in enrollments) {
-        if (enrollments.hasOwnProperty.call(enrollments, index)) {
-          const element = enrollments[index];
-          const school_year = element["start_school_year"];
-          let gender = element["student"]["gender"];
+      for (let index = enrollments.length - 1; index >= 0; index--) {
+        const element = enrollments[index];
+        const school_year = element["start_school_year"];
+        let gender = element["student"]["gender"];
 
-          let exist = this.enrollmentChart.data.labels.some((item) => {
-            return item === school_year;
-          });
-          if (!exist) {
-            this.enrollmentChart.data.labels.push(school_year);
-            let index = this.enrollmentChart.data.labels.indexOf(school_year);
-            if (gender == "Male") {
+        let exist = this.enrollmentChart.data.labels.some((item) => {
+          return item === school_year;
+        });
+        if (!exist) {
+          this.enrollmentChart.data.labels.push(school_year);
+          let index = this.enrollmentChart.data.labels.indexOf(school_year);
+          if (gender == "Male") {
+            this.enrollmentChart.data.series[0][index] = 1;
+          }
+          if (gender == "Female") {
+            this.enrollmentChart.data.series[1][index] = 1;
+          }
+        } else {
+          let index = this.enrollmentChart.data.labels.indexOf(school_year);
+          if (gender == "Male") {
+            if (this.enrollmentChart.data.series[0][index] != null) {
+              this.enrollmentChart.data.series[0][index] += 1;
+            } else {
               this.enrollmentChart.data.series[0][index] = 1;
             }
-            if (gender == "Female") {
+          }
+          if (gender == "Female") {
+            if (this.enrollmentChart.data.series[1][index] != null) {
+              this.enrollmentChart.data.series[1][index] += 1;
+            } else {
               this.enrollmentChart.data.series[1][index] = 1;
-            }
-          } else {
-            let index = this.enrollmentChart.data.labels.indexOf(school_year);
-            if (gender == "Male") {
-              if (this.enrollmentChart.data.series[0][index] != null) {
-                this.enrollmentChart.data.series[0][index] += 1;
-              } else {
-                this.enrollmentChart.data.series[0][index] = 1;
-              }
-            }
-            if (gender == "Female") {
-              if (this.enrollmentChart.data.series[1][index] != null) {
-                this.enrollmentChart.data.series[1][index] += 1;
-              } else {
-                this.enrollmentChart.data.series[1][index] = 1;
-              }
             }
           }
         }

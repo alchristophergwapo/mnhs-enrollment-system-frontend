@@ -27,6 +27,7 @@ Vue.use(VueNativeNotification, {
 });
 
 import Echo from "laravel-echo"
+import { EventBus } from "./bus/bus.js";
 
 window.Pusher = require('pusher-js');
 
@@ -46,6 +47,14 @@ new Vue({
   created() {
     this.initialize();
     // this.$store.dispatch('logout')
+    EventBus.$on("sectionUpdated", (data) => {
+      console.log(data);
+      this.$swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Sections successfully updated.",
+      });
+    });
   },
   mounted: function () {
     // this.initialize();
@@ -74,6 +83,16 @@ new Vue({
           }
         }
       }
+
+      this.$store.dispatch("allTeacher");
+
+      this.$store.dispatch("allStudents");
+
+      this.$store.dispatch("allSections");
+
+      this.$store.dispatch("allPendingEnrollments");
+
+      this.$store.dispatch("allDeclinedEnrollments");
     },
 
     setUserData(data) {

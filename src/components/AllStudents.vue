@@ -17,18 +17,17 @@
             </div>
           </v-card>
           <v-card-title>
-            Sort By&nbsp;&nbsp;
+            <div>Sort By&nbsp;&nbsp;&nbsp;&nbsp;</div>
             <v-select
               :items="grade_level"
               menu-props="auto"
               label="Grade Level"
               hide-details
-              v-model="selectedGrade"
-              @change="gradeLevel($event)"
+              v-model="search"
+              @change="filterByGradeLevel($event)"
               dense
-              outlined
             ></v-select>
-            &nbsp;&nbsp;
+            <v-spacer></v-spacer>
             <v-select
               :items="section"
               menu-props="auto"
@@ -36,10 +35,9 @@
               hide-details
               @change="selectedSection($event)"
               dense
-              outlined
             ></v-select>
             <v-spacer></v-spacer>
-            <span>Adviser: Aileen Becher</span>
+            <!-- <span>Adviser: Aileen Becher</span> -->
           </v-card-title>
           <v-data-table
             :headers="headers"
@@ -51,7 +49,7 @@
             <template v-slot:item="row">
               <tr>
                 <td>{{ row.item.grade_level }}</td>
-                <td>{{ row.item.section }}</td>
+                <td>{{ row.item.student_section }}</td>
                 <td>{{ row.item.firstname }} {{ row.item.lastname }}</td>
                 <td>{{ row.item.age }}</td>
                 <td>{{ row.item.address }}</td>
@@ -64,6 +62,7 @@
   </div>
 </template>
 <script>
+// import { EventBus } from "../bus/bus.js";
 export default {
   components: {
     BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
@@ -87,17 +86,11 @@ export default {
     headers: [
       { text: "GradeLevel", value: "gradelevel" },
       { text: "Section", value: "section" },
-      {
-        text: "Student Name",
-        align: "start",
-        sortable: false,
-        value: "student",
-      },
+      { text: "Student Name", value: "student" },
       { text: "Age", value: "age" },
       { text: "Address", value: "address" },
     ],
-    students: [],
-    grade_level: [7, 8, 9, 10, 11, 12],
+    grade_level: ["7", "8", "9", "10", "11", "12"],
     section: [
       "Section1",
       "Section2",
@@ -106,6 +99,8 @@ export default {
       "Section5",
       "Section6",
     ],
+    filteredStudents: [],
+    students: [],
   }),
 
   created() {
@@ -118,13 +113,39 @@ export default {
     //   }
     // });
     let students = this.$store.getters.allStudents;
+    // console.log(students);
+    this.initialializeData(students);
+  },
 
-    for (let index = 0; index < students.length; index++) {
-      const element = students[index];
-      element["student"]["student_section"] = element["student_section"];
-      this.students.push(element["student"]);
-      // console.log(element);
-    }
+  mounted() {
+    // EventBus.$on("newApprovedStudent", (data) => {
+    //   console.log(data);
+    //   this.$swal.fire({
+    //     icon: "success",
+    //     title: "Success",
+    //     text: "New Enrollment is Approved.",
+    //   });
+    // });
+  },
+
+  methods: {
+    initialializeData(data) {
+      let students = data;
+
+      for (let index = 0; index < students.length; index++) {
+        const element = students[index];
+        element["student"]["student_section"] = element["student_section"];
+        this.students.push(element["student"]);
+        // console.log(element);
+      }
+      this.filteredStudents = this.students;
+    },
+
+    filterByGradeLevel(grade) {
+      this.students.filter(function (val) {
+        return (val.grade_level = grade);
+      });
+    },
   },
 };
 </script>

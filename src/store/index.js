@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import axios from 'axios'
 import 'es6-promise/auto'
 
+
 Vue.use(Vuex)
 
 axios.defaults.baseURL = 'http://127.0.0.1:8000/api/'

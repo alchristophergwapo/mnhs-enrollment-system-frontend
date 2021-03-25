@@ -4,7 +4,7 @@
       class="icon_container"
       :style="'background:' + icon_background_color + ';'"
     >
-      <v-icon large>{{ icon }}</v-icon>
+      <v-icon color="white" large>{{ icon }}</v-icon>
     </div>
     <template>
       <div class="ml-auto text-right">

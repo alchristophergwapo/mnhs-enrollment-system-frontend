@@ -62,11 +62,14 @@
               enrollment.parent_number
             }}</strong>
           </v-col>
-          <v-img
-            :src="
-              `http://127.0.0.1:8000/images/` + enrollment.enrollment.card_image
-            "
-          ></v-img>
+          <div v-if="enrollment.enrollment.card_image != 'undefined'">
+            <v-img
+              :src="
+                `http://127.0.0.1:8000/images/` +
+                enrollment.enrollment.card_image
+              "
+            ></v-img>
+          </div>
         </v-row>
       </v-card-text>
       <slot name="actions"></slot>

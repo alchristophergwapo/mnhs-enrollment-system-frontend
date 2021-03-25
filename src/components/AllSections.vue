@@ -69,7 +69,7 @@
 
             <!-- Dialog for senior high -->
             <v-dialog v-model="seniordialog" persistent max-width="300px">
-              <section-dialog>
+              <section-dialog :addOrEdit="addOrEdit">
                 <template v-slot:input-field>
                   <v-text-field
                     label="Section name"
@@ -214,6 +214,7 @@
                                 :total_students="dta.total_students"
                                 :teacher="dta.teacher_id"
                                 :progress_color="'#006a4e'"
+                                class="section_card"
                               >
                                 <template v-slot:edit>
                                   <v-btn
@@ -271,6 +272,7 @@
                               :capacity="i.capacity"
                               :total_students="i.total_students"
                               :teacher="i.teacher_id"
+                              class="section_card"
                             >
                               <template v-slot:edit>
                                 <v-btn
@@ -313,6 +315,7 @@
 </template>
 
 <script>
+import { EventBus } from "../bus/bus.js";
 export default {
   components: {
     BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
@@ -367,6 +370,8 @@ export default {
     ],
     allsections: [],
     teachers: [],
+
+    addOrEdit: "Add",
   }),
   created() {
     //Getting all teachers
@@ -483,7 +488,6 @@ export default {
     //Method For Adding A Section In Junior High School Category
     async addJunior(grades) {
       if (this.edit == false) {
-        console.log("Teacher:" + this.Junior.teacher);
         this.loading = true;
         await new Promise((resolve) => setTimeout(resolve, 3000));
         this.loading = false;
@@ -497,17 +501,14 @@ export default {
           })
           .then((response) => {
             if (response.data.message) {
-              (this.Junior.id = null),
-                (this.Junior.section = null),
-                (this.Junior.capacity = null),
-                (this.Junior.teacher = null);
-              this.juniordialog = false;
+              this.clearJunior;
               this.displayAllsection(grades, null);
               this.$swal.fire({
                 icon: "success",
                 title: "Success",
                 text: "Sections successfully added.",
               });
+              console.log(response);
             } else {
               this.$swal.fire({
                 icon: "error",
@@ -538,11 +539,8 @@ export default {
           })
           .then((response) => {
             if (response.data.message) {
-              this.$swal.fire({
-                icon: "success",
-                title: "Success",
-                text: "Sections successfully updated.",
-              });
+              console.log(response.data);
+              EventBus.$emit("sectionUpdated", response.data.section);
               this.juniordialog = false;
               this.displayAllsection(grades, null);
             } else {
@@ -570,17 +568,14 @@ export default {
                         teacher: this.Junior.teacher,
                       })
                       .then((response) => {
+                        console.log(response);
                         if (response.data.newTeacher) {
                           this.$swal.fire({
                             title: "Updated!",
                             text: response.data.newTeacher,
                             icon: "success",
                           });
-                          (this.Junior.id = null),
-                            (this.Junior.section = null),
-                            (this.Junior.capacity = null),
-                            (this.Junior.teacher = null);
-                          this.juniordialog = false;
+                          this.clearJunior();
                           this.displayAllsection(grades, null);
                         } else {
                           this.$swal.fire({
@@ -608,6 +603,20 @@ export default {
           });
       }
     },
+    clearJunior() {
+      this.Junior.id = null;
+      this.Junior.section = null;
+      this.Junior.capacity = null;
+      this.Junior.teacher = null;
+      this.juniordialog = false;
+    },
+    clearSenior() {
+      this.Senior.id = null;
+      this.Senior.section = null;
+      this.Senior.capacity = null;
+      this.Senior.teacher = null;
+      this.seniordialog = false;
+    },
     //Method For Editing The Section In Junior High
     async juniorEdit(item) {
       // console.log(item);
@@ -620,11 +629,6 @@ export default {
     },
     //Method For Editing The Section In Senior High School
     async seniorEdit(data) {
-      // this.Senior = data;
-      // this.edit = true;
-      // this.seniordialog = true;
-      // console.log(this.Senior);
-      // // console.log(data);
       this.Senior.teacher = data.gradelevel_id;
       this.edit = true;
       this.seniordialog = true;
@@ -657,7 +661,6 @@ export default {
     //Methods For Adding A Section In Senior High School
     async addSenior(item) {
       if (this.edit == false) {
-        console.log("Teacher:" + this.Senior.teacher);
         this.loading = true;
         await new Promise((resolve) => setTimeout(resolve, 3000));
         this.loading = false;
@@ -671,11 +674,7 @@ export default {
           })
           .then((response) => {
             if (response.data.message) {
-              (this.Senior.id = null),
-                (this.Senior.section = null),
-                (this.Senior.capacity = null),
-                (this.Senior.teacher = null);
-              this.seniordialog = false;
+              this.clearSenior();
               this.displayAllsection(null, item);
               this.$swal.fire({
                 icon: "success",
@@ -716,7 +715,7 @@ export default {
                 title: "Success",
                 text: "Sections successfully updated.",
               });
-              this.seniordialog = false;
+              this.clearSenior();
               this.displayAllsection(null, item);
             } else {
               this.$swal
@@ -749,11 +748,6 @@ export default {
                             text: response.data.newTeacher,
                             icon: "success",
                           });
-                          (this.Senior.id = null),
-                            (this.Senior.section = null),
-                            (this.Senior.capacity = null),
-                            (this.Senior.teacher = null);
-                          this.seniordialog = false;
                           this.displayAllsection(null, item);
                         } else {
                           this.$swal.fire({

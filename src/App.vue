@@ -16,24 +16,6 @@ export default {
       { name: "viewport", content: "width=device-width, initial-scale=1" },
     ],
   },
-
-  created() {
-    this.initializeData();
-  },
-
-  methods: {
-    initializeData() {
-      this.$store.dispatch("allTeacher");
-
-      this.$store.dispatch("allStudents");
-
-      this.$store.dispatch("allSections");
-
-      this.$store.dispatch("allPendingEnrollments");
-
-      this.$store.dispatch("allDeclinedEnrollments");
-    },
-  },
 };
 </script>
 

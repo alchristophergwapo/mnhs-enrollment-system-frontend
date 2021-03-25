@@ -44,19 +44,18 @@
               :key="index"
             >
               <div v-if="index == 0">
-                <pending-enrollment :students="students">
+                <pending-enrollment :students="students" :search="search">
                   <template v-slot:data-table-header>
                     <v-card-title>
-                      Sort By&nbsp;&nbsp;
+                      <!-- Sort By&nbsp;&nbsp; -->
                       <v-select
                         :items="grade_level"
-                        v-model="gradelevel"
+                        v-model="search"
                         @change="filterByGradeLevel($event, 'pending')"
                         menu-props="auto"
-                        label="Grade Level"
+                        label="Select Grade Level"
                         hide-details
                         dense
-                        outlined
                       ></v-select>
                       <v-spacer></v-spacer>
                       <v-text-field
@@ -114,6 +113,7 @@
   </div>
 </template>
 <script>
+// import { EventBus } from "../bus/bus.js";
 export default {
   components: {
     BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
@@ -207,9 +207,11 @@ export default {
         }
       } else {
         if (tab == "pending") {
+          console.log(tab);
           this.students = this.filterStudents.filter(function (val) {
             return val.grade_level == grade;
           });
+          console.log(this.students);
         } else {
           this.declinedEnrollments = this.filterDeclined.filter(function (val) {
             return (val.grade_level = grade);
