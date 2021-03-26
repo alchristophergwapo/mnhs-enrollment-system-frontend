@@ -212,9 +212,7 @@ export default {
             }
           })
           .catch((error) => {
-            console.log(error.response);
-            this.response = "error";
-            this.message = error.response.data.error;
+            this.showError(error.response.data.error);
             this.loading = false;
           });
         // this.$refs.regStudentForm.reset();
@@ -248,14 +246,18 @@ export default {
           })
           .catch((error) => {
             // console.log(error.response);
-            this.$swal.fire({
-              icon: "error",
-              title: "Oooops....",
-              text: error.response.data.error,
-            });
+            this.showError(error.response.data.error);
             this.loading = false;
           });
       }
+    },
+
+    showError(message) {
+      this.$swal.fire({
+        icon: "error",
+        title: "Oooops....",
+        text: message,
+      });
     },
   },
 };

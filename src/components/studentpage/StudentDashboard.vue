@@ -37,16 +37,18 @@ export default {
 
   methods: {
     initialize() {
-      this.user = this.$store.getters.userInfo;
-      console.log(this.user);
-      let classmates = this.$store.getters.classmates;
+      let storedInfo = localStorage.getItem("user");
+      let userData = JSON.parse(storedInfo);
+      this.user = userData.userInfo;
+      let classmates = userData.classmates;
       for (const key in classmates) {
         if (classmates.hasOwnProperty.call(classmates, key)) {
           const element = classmates[key];
           this.students.push(element["student"]);
-          // console.log(element);
+          // console.log(classmates["student"]);
         }
       }
+      // console.log(this.students);
     },
   },
 

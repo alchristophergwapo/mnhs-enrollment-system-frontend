@@ -84,23 +84,23 @@ new Vue({
         }
       }
 
+      this.$store.dispatch("allSections");
+
       this.$store.dispatch("allTeacher");
 
       this.$store.dispatch("allStudents");
-
-      this.$store.dispatch("allSections");
 
       this.$store.dispatch("allPendingEnrollments");
 
       this.$store.dispatch("allDeclinedEnrollments");
     },
 
-    setUserData(data) {
-      let storedInfo = localStorage.getItem("user");
-      let userData = JSON.parse(storedInfo);
-      userData.user = data.user;
-      this.$store.commit("setUserData", userData);
-    },
+    // setUserData(data) {
+    //   let storedInfo = localStorage.getItem("user");
+    //   let userData = JSON.parse(storedInfo);
+    //   userData.user = data.user;
+    //   this.$store.commit("setUserData", userData);
+    // },
   },
   render: h => h(App),
 }).$mount('#app')

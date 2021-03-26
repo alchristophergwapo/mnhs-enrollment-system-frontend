@@ -38,27 +38,31 @@
       <!-- </v-menu> -->
     </div>
     <div v-if="$route.name != 'AdminProfile'">
-      <span style="color: white">{{ user_details.username }}</span>
-      <v-menu left bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <span class="label"
-            ><span v-if="user_details.user_type == 'student'">Hello, </span
-            >{{ user_details.firstname }}</span
-          >
-          <v-icon
-            v-if="user_details.user_type == 'admin'"
-            v-bind="attrs"
-            v-on="on"
-            >mdi-chevron-down</v-icon
-          >
-        </template>
+      <v-card-title>
+        <span style="color: white" v-if="user_details.user_type == 'admin'">{{
+          user_details.username
+        }}</span>
+        <span style="color: white" v-else
+          >Hello {{ user_details.firstname }}</span
+        >
+        <v-spacer></v-spacer>
+        <v-menu left bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon
+              v-if="user_details.user_type == 'admin'"
+              v-bind="attrs"
+              v-on="on"
+              >mdi-chevron-down</v-icon
+            >
+          </template>
 
-        <v-list>
-          <v-list-item link to="/admin/profile">
-            <v-list-item-title>Profile Settings</v-list-item-title>
-          </v-list-item>
-        </v-list>
-      </v-menu>
+          <v-list>
+            <v-list-item link to="/admin/profile">
+              <v-list-item-title>Profile Settings</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-card-title>
     </div>
     <v-btn text @click="logout" color="white">Logout</v-btn>
   </v-app-bar>
@@ -83,7 +87,7 @@ export default {
   methods: {
     logout() {
       this.$router.push({ path: "/" });
-      // this.$store.dispatch("logout");
+      this.$store.dispatch("logout");
     },
     markAsRead() {
       this.$axios
@@ -105,7 +109,11 @@ export default {
   created() {
     let storedInfo = localStorage.getItem("user");
     let userData = JSON.parse(storedInfo);
-    this.user_details = userData.user;
+    if (userData.user.user_type == "admin") {
+      this.user_details = userData.user;
+    } else {
+      this.user_details = userData.userInfo;
+    }
     console.log(userData);
     let notificationsFromStorage = userData.user.notifications;
     if (notificationsFromStorage) {
@@ -145,11 +153,6 @@ export default {
         }
       );
     }
-    // window.Echo.private("App.Models.User." + this.user_details.id).notification(
-    //   (notification) => {
-    //     console.log(notification.type);
-    //   }
-    // );
   },
 };
 </script>

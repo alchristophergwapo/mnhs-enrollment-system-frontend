@@ -11,7 +11,7 @@
 } 
 
 .update-card {
-  margin: auto;
+  margin: 50px 50px auto auto;
   /* padding: 20px; */
 }
 
@@ -387,6 +387,7 @@ h3 {
   width: 50%;
   margin-top: 8%;
   margin-bottom: 8%;
+
 }
 
 #icons {
@@ -395,7 +396,9 @@ h3 {
 }
 
 #sign-in {
-  background: #eee;
+  background: url('../images/bg.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 @media (max-width: 767px) {

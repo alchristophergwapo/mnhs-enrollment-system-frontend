@@ -99,11 +99,9 @@ export default new Vuex.Store({
                 .get(`allTeacher`)
                 .then((response) => {
                     commit('setTeachers', response.data);
-                    commit('setNumberOfTeachers', response.data.length)
+                    commit('setNumberOfTeachers', response.data.length);
+                    return response.data;
                 })
-                .catch((error) => {
-                    console.log(error);
-                });
         },
 
         allStudents({ commit }) {
@@ -111,18 +109,21 @@ export default new Vuex.Store({
                 let data = response.data.approvedEnrollment
                 commit('setStudents', data)
                 commit('setNumberOfEnrolledStudents', data.length);
+                return response.data.approvedEnrollment;
             });
         },
 
         allSections({ commit }) {
             return axios.get('allSections').then(response => {
-                commit('setSections', response.data.sections)
+                commit('setSections', response.data.sections);
+                return response.data.sections;
             })
         },
 
         allPendingEnrollments({ commit }) {
             return axios.get("pendingEnrollments").then((response) => {
-                commit('setPendingEnrollments', response.data.pendingEnrollment)
+                commit('setPendingEnrollments', response.data.pendingEnrollment);
+                return response.data.pendingEnrollment;
             });
         },
 

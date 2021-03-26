@@ -218,51 +218,64 @@ export default {
       this.initialized = true;
     }, 3000);
     this.initializeData();
+
+    this.$store.dispatch("allTeacher").then((res) => {
+      this.totalTeachers = res.length;
+    });
+
+    this.$store.dispatch("allPendingEnrollments").then((res) => {
+      this.totalPending = res.length;
+    });
+
+    this.$store.dispatch("allDeclinedEnrollments").then((res) => {
+      this.totalDeclined = res.length;
+    });
   },
   mounted: () => {},
   methods: {
     initializeData() {
       this.enrollmentChart.data.series = [[0], [0]];
-      let enrollments = this.$store.getters.allStudents;
-      this.totalEnrolled = enrollments.length;
-      this.totalPending = this.$store.getters.allPendingEnrollments.length;
-      this.totalDeclined = this.$store.getters.allDeclinedEnrollments.length;
-      this.totalTeachers = this.$store.getters.totalTeachers;
-      for (let index = enrollments.length - 1; index >= 0; index--) {
-        const element = enrollments[index];
-        const school_year = element["start_school_year"];
-        let gender = element["student"]["gender"];
 
-        let exist = this.enrollmentChart.data.labels.some((item) => {
-          return item === school_year;
-        });
-        if (!exist) {
-          this.enrollmentChart.data.labels.push(school_year);
-          let index = this.enrollmentChart.data.labels.indexOf(school_year);
-          if (gender == "Male") {
-            this.enrollmentChart.data.series[0][index] = 1;
-          }
-          if (gender == "Female") {
-            this.enrollmentChart.data.series[1][index] = 1;
-          }
-        } else {
-          let index = this.enrollmentChart.data.labels.indexOf(school_year);
-          if (gender == "Male") {
-            if (this.enrollmentChart.data.series[0][index] != null) {
-              this.enrollmentChart.data.series[0][index] += 1;
-            } else {
+      this.$store.dispatch("allStudents").then((res) => {
+        let enrollments = res;
+        this.totalEnrolled = enrollments.length;
+        for (let index = enrollments.length - 1; index >= 0; index--) {
+          const element = enrollments[index];
+          const school_year = element["start_school_year"];
+          let gender = element["student"]["gender"];
+
+          let exist = this.enrollmentChart.data.labels.some((item) => {
+            return item === school_year;
+          });
+          if (!exist) {
+            this.enrollmentChart.data.labels.push(school_year);
+            let index = this.enrollmentChart.data.labels.indexOf(school_year);
+            if (gender == "Male") {
               this.enrollmentChart.data.series[0][index] = 1;
             }
-          }
-          if (gender == "Female") {
-            if (this.enrollmentChart.data.series[1][index] != null) {
-              this.enrollmentChart.data.series[1][index] += 1;
-            } else {
+            if (gender == "Female") {
               this.enrollmentChart.data.series[1][index] = 1;
+            }
+          } else {
+            let index = this.enrollmentChart.data.labels.indexOf(school_year);
+            if (gender == "Male") {
+              if (this.enrollmentChart.data.series[0][index] != null) {
+                this.enrollmentChart.data.series[0][index] += 1;
+              } else {
+                this.enrollmentChart.data.series[0][index] = 1;
+              }
+            }
+            if (gender == "Female") {
+              if (this.enrollmentChart.data.series[1][index] != null) {
+                this.enrollmentChart.data.series[1][index] += 1;
+              } else {
+                this.enrollmentChart.data.series[1][index] = 1;
+              }
             }
           }
         }
-      }
+      });
+
       // console.log(this.enrollmentChart.data.labels);
       // console.log(this.enrollmentChart.data.series);
     },

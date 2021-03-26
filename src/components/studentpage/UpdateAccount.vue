@@ -1,17 +1,16 @@
 <template>
-  <v-app style="background: url('assets/images/school.jpg')">
+  <v-app id="sign-in">
     <v-card
       width="100%"
       max-width="450px"
       outlined
       elevation="24"
-      class="update-card my-12"
+      class="update-card"
     >
-      <v-card class="table-header" color="#2e856e">
-        <v-card-title class="text-center justify-center">
-          <h4 style="color: white">Update Account Information</h4>
-        </v-card-title>
-      </v-card>
+      <v-card-title class="text-center justify-center">
+        <img src="../../assets/images/update.png" alt="" width="150px" />
+        <h3>Update Account Information</h3>
+      </v-card-title>
       <v-container>
         <v-form ref="update" v-model="valid" lazy-validation>
           <v-text-field
@@ -29,7 +28,8 @@
             @click:append="showPass = !showPass"
             @keydown="clearErrors"
             :error="hasError('currentpassword')"
-          ></v-text-field>
+          >
+          </v-text-field>
           <div>
             <p v-if="hasError('currentpassword')" class="invalid-feedback">
               {{ getError("currentpassword") }}

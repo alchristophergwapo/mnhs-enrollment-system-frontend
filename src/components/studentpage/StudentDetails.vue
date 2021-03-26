@@ -2,8 +2,8 @@
   <div app>
     <v-card class="student_profile" elevation="3" outlined tile width="100%">
       <v-card-title class="mt-8 justify-center">
-        <v-avatar size="56">
-          <v-icon x-large>mdi-account</v-icon>
+        <v-avatar size="100">
+          <img src="../../assets/images/avatar.png" alt="" />
         </v-avatar>
       </v-card-title>
       <v-container>
