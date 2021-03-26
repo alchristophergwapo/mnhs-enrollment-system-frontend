@@ -137,12 +137,20 @@
       ></v-checkbox>
     </v-col>
     <v-col cols="12" xs="6" sm="4" md="4" lg="4">
-      <v-text-field
+      <v-text-field v-if="studentInfo.IP==='No'"
         v-model="studentInfo.IP_community"
         name="IP_Community"
-        :rules="[studentInfo.IP === 'No' || 'This field is required']"
+         readonly
         label="If yes, please specify"
         required
+      ></v-text-field>
+       <v-text-field
+          v-if="studentInfo.IP==='Yes'"
+          v-model="studentInfo.IP_community"
+          name="IP_Community"
+         :rules="[(IP_Community) => !!IP_Community || 'This field is required']"
+         label="If yes, please specify"
+         required
       ></v-text-field>
     </v-col>
     <v-col cols="12" xs="6" sm="6" md="6" lg="6">
@@ -162,7 +170,7 @@
         name="contact"
         :rules="[(contact) => !!contact || 'Contact is required']"
         type="number"
-        label="Contact Number"
+        label="Contact Number(for receiving enrollment notification)"
         required
       ></v-text-field>
     </v-col>
@@ -212,6 +220,7 @@ export default {
 
   computed:{
     getData() {
+     // console.log(this.studentInfo);
       return JSON.stringify(this.studentInfo);
     },
   },

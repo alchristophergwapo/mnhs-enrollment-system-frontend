@@ -11,7 +11,7 @@
             <v-dialog v-model="juniordialog" persistent max-width="300px">
               <v-card>
                 <v-card-title class="headlineSection">
-                  <span>Add {{ juniorSection.name }} Sections</span>
+                  <span :type="'Add'">{{ juniorSection.name }} Sections</span>
                 </v-card-title>
                 <v-card-text>
                   <v-container fluid>
@@ -69,7 +69,7 @@
 
             <!-- Dialog for senior high -->
             <v-dialog v-model="seniordialog" persistent max-width="300px">
-              <section-dialog :addOrEdit="addOrEdit">
+              <section-dialog :type="sectionSenior.name">
                 <template v-slot:input-field>
                   <v-text-field
                     label="Section name"
@@ -97,7 +97,7 @@
                     <v-select
                       item-text="teacher"
                       item-value="id"
-                      v-model="Junior.teacher"
+                      v-model="Senior.teacher"
                       :items="teachers"
                       label="Assigned Teacher"
                     ></v-select>
@@ -194,7 +194,7 @@
                               color="primary"
                               small
                               dark
-                              @click="openJunior"
+                              @click="openJunior(item.text)"
                             >
                               <v-icon>mdi-plus</v-icon>Add Section
                             </v-btn>
@@ -227,6 +227,11 @@
                                   </v-btn>
                                 </template>
                               </sections-card>
+                              <!-- <v-card-text>
+                            <v-icon @click="juniorRemove(dta.id)"
+                              color="red">mdi-delete</v-icon
+                            >
+                          </v-card-text> -->
                             </v-col>
                             <v-card-title
                               class="text-center justify-center py-6"
@@ -253,7 +258,12 @@
                       >
                         <v-card-title>
                           <v-spacer></v-spacer>
-                          <v-btn color="primary" small dark @click="openSenior">
+                          <v-btn
+                            color="primary"
+                            small
+                            dark
+                            @click="openSenior(item.text)"
+                          >
                             <v-icon>mdi-plus</v-icon>Add Section
                           </v-btn>
                         </v-card-title>
@@ -337,10 +347,10 @@ export default {
     levelTab: null,
     errors: {},
     juniorSection: {
-      name: "Grade 7",
+      name: "Add Grade 7",
     },
     sectionSenior: {
-      name: "Grade 11",
+      name: "Add Grade 11",
     },
 
     Junior: {
@@ -375,18 +385,20 @@ export default {
   }),
   created() {
     //Getting all teachers
-    this.$axios
-      .get("allTeachersForSection")
-      .then((response) => {
-        response.data.forEach((element) => {
+    this.displayAllsection(this.juniorSection.name, this.sectionSenior.name);
+
+    this.$store
+      .dispatch("allTeacher")
+      .then(() => {
+        this.$store.getters.allTeacher.forEach((element) => {
           this.teachers.push({ id: element.id, teacher: element.name });
         });
       })
       .catch((error) => {
         console.log(error);
       });
-    this.displayAllsection(this.juniorSection.name, this.sectionSenior.name);
   },
+
   methods: {
     displayAllsection(juniors, seniors) {
       this.$axios
@@ -431,9 +443,8 @@ export default {
           console.log(error);
         });
     },
-    // Select and Getting The Sections For The Selected Grade Level In Junior High School
+    //Select and Getting The Sections For The Selected Grade Level In Junior High School
     selectedJHS(item) {
-      this.juniorSection.name = item;
       this.junior_high.forEach((junior) => {
         if (junior.text.split(" ")[1] == item.split(" ")[1]) {
           junior.content = this.allsections.filter(function (val) {
@@ -445,7 +456,7 @@ export default {
 
     //Selected Senior High School Section In V-For
     selectedSHS(value) {
-      this.sectionSenior.name = value;
+      this.sectionSenior.name;
       this.senior_high.forEach((senior) => {
         if (senior.text.split(" ")[1] == value.split(" ")[1]) {
           senior.content = this.allsections.filter(function (val) {
@@ -455,12 +466,14 @@ export default {
       });
     },
     //Method For Opening The Junior High School Dialog
-    openJunior() {
+    openJunior(grade) {
+      this.juniorSection.name = "Add " + grade;
       this.juniordialog = true;
       this.edit = false;
     },
     //Method For Opening The Dialog Of Senior High School
-    openSenior() {
+    openSenior(grade) {
+      this.sectionSenior.name = "Add " + grade;
       this.seniordialog = true;
       this.edit = false;
     },
@@ -543,6 +556,9 @@ export default {
               EventBus.$emit("sectionUpdated", response.data.section);
               this.juniordialog = false;
               this.displayAllsection(grades, null);
+              this.Junior.section = null;
+              this.Junior.capacity = null;
+              this.Junior.teacher = null;
             } else {
               this.$swal
                 .fire({
@@ -619,7 +635,7 @@ export default {
     },
     //Method For Editing The Section In Junior High
     async juniorEdit(item) {
-      // console.log(item);
+      this.juniorSection.name = "Edit Grade " + item.gradelevel.grade_level;
       this.Junior.teacher = item.gradelevel_id;
       this.edit = true;
       this.juniordialog = true;
@@ -629,13 +645,13 @@ export default {
     },
     //Method For Editing The Section In Senior High School
     async seniorEdit(data) {
+      this.sectionSenior.name = "Edit Grade " + data.gradelevel.grade_level;
       this.Senior.teacher = data.gradelevel_id;
       this.edit = true;
       this.seniordialog = true;
       this.Senior.section = data.name;
       this.Senior.capacity = data.capacity;
       this.Senior.id = data.id;
-      this.Senior.teacher = data.teacher_id;
     },
     //Method For Removing The Section In Junior High Category
     juniorRemove(sec) {
@@ -702,6 +718,7 @@ export default {
           });
       } else {
         //update
+        console.log("Teacher:" + this.Senior.teacher);
         this.$axios
           .post("updateSection/" + this.Senior.id, {
             name: this.Senior.section,
@@ -717,6 +734,9 @@ export default {
               });
               this.clearSenior();
               this.displayAllsection(null, item);
+              this.Senior.section = null;
+              this.Senior.capacity = null;
+              this.Senior.teacher = null;
             } else {
               this.$swal
                 .fire({

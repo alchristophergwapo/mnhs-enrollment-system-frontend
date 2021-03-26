@@ -50,12 +50,13 @@
                       <!-- Sort By&nbsp;&nbsp; -->
                       <v-select
                         :items="grade_level"
-                        v-model="search"
-                        @change="filterByGradeLevel($event, 'pending')"
+                        v-model="gradelevel"
+                        @change="filterByGradeLevel($event)"
                         menu-props="auto"
-                        label="Select Grade Level"
+                        label="Grade Level"
                         hide-details
                         dense
+                        outlined
                       ></v-select>
                       <v-spacer></v-spacer>
                       <v-text-field
@@ -156,6 +157,18 @@ export default {
     emitted: false,
   }),
 
+  created() {
+    if (!this.emitted) {
+      // console.log("not from emit event");
+      if (!this.students || !this.sections) {
+        setTimeout(() => {
+          this.initializeData();
+        }, 3000);
+      }
+      this.initializeData();
+    }
+  },
+
   methods: {
     initializeData() {
       let pendingEnrollment = this.$store.getters.allPendingEnrollments;
@@ -252,19 +265,84 @@ export default {
         }
       });
     },
-  },
-  created() {},
 
-  mounted: function () {
-    if (!this.emitted) {
-      // console.log("not from emit event");
-      if (!this.students || !this.sections) {
-        setTimeout(() => {
-          this.initializeData();
-        }, 3000);
+    //Method For Approving the enrollment
+    approveEnrollment(id, index) {
+      alert("approve:" + id);
+      console.log(this.section);
+      if (this.section) {
+        this.$axios
+          .post("approveEnrollment/" + id, { student_section: this.section })
+          .then((response) => {
+            console.log(response);
+            this.students.splice(index, 1);
+            this.$swal.fire({
+              icon: "success",
+              title: "Success",
+              text: "Enrollment approved.",
+            });
+            this.dialog = false;
+            this.sendSms(id);
+            window.location.reload(true);
+          })
+          .catch((error) => {
+            console.log(error);
+            this.$swal.fire({
+              icon: "error",
+              title: "Ooops....",
+              text: error.response.data.message,
+            });
+            this.dialog = true;
+          });
+      } else {
+        this.$swal.fire({
+          icon: "error",
+          title: "Ooops....",
+          text: "Please select a section.",
+        });
+        this.dialog = true;
       }
-      this.initializeData();
-    }
+    },
+    //Sending a sms notification to a user's cellphone number
+    sendSms(studentId) {
+      this.$axios
+        .get("send-sms/" + studentId)
+        .then((response) => {
+          if (response.data.success == "success") {
+            this.$swal.fire({
+              icon: "info",
+              title: "Success",
+              text: "Successfully send a notification.",
+            });
+          } else {
+            this.$swal.fire({
+              icon: "error",
+              title: "Failed",
+              text: "Not successfully send a notification.",
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    //Method For Declining The Section
+    declineEnrollment(id, index) {
+      this.$axios
+        .post("declineEnrollment/" + id)
+        .then((response) => {
+          console.log(response);
+          this.$swal.fire({
+            icon: "info",
+            title: "Success",
+            text: "Enrollment declined.",
+          });
+          this.students.splice(index, 1);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
   },
 };
 </script>

@@ -2,10 +2,11 @@
   <v-app id="sign-in">
     <v-card
       width="100%"
-      max-width="450px"
+      max-width="500px"
+      max-height="100%"
       outlined
       elevation="24"
-      class="update-card"
+      class="my-12 update-card"
     >
       <v-card-title class="text-center justify-center">
         <img src="../../assets/images/update.png" alt="" width="150px" />
@@ -145,7 +146,7 @@ export default {
           .catch((error) => {
             console.log(error.response);
             this.loading = false;
-            if (error.response.status == 200) {
+            if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);
             } else {
               this.$swal.fire({

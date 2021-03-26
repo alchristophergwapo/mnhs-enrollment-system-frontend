@@ -19,6 +19,17 @@
             </div>
           </v-card>
           <v-card-title>
+            Sort By&nbsp;&nbsp;
+            <v-select
+              v-model="selectedYear"
+              :items="schoolYear"
+              @change="filterByYear(($event = selectedYear))"
+              menu-props="auto"
+              label="School Year"
+              hide-details
+              dense
+              outlined
+            ></v-select>
             <v-spacer></v-spacer>
             <!-- Adding A Teacher!-->
             <v-card-title>
@@ -82,6 +93,8 @@
                           </p>
                           <v-select
                             v-model="selected_section"
+                            item-text="name"
+                            item-value="id"
                             :items="sections"
                             type="text"
                             label="Assigned Section Area"
@@ -118,13 +131,70 @@
             <template v-slot:item="row">
               <tr>
                 <td>{{ row.item.name }}</td>
-                <td>{{ row.item.email }}</td>
+                <td>
+                  <v-dialog transition="dialog-top-transition" max-width="400">
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn text v-bind="attrs" v-on="on">View Details</v-btn>
+                    </template>
+                    <template v-slot:default="dialog">
+                      <v-card>
+                        <v-card-title>
+                          <v-spacer></v-spacer>
+                          <v-btn icon @click="dialog.value = false">
+                            <v-icon>mdi-close</v-icon>
+                          </v-btn>
+                        </v-card-title>
+                        <v-card-text>
+                          <v-row>
+                            <v-col cols="12">
+                              Name:&nbsp;&nbsp;<br /><strong>{{
+                                row.item.name
+                              }}</strong>
+                            </v-col>
+                            <v-col cols="12">
+                              Email:&nbsp;&nbsp;<br /><strong>{{
+                                row.item.email
+                              }}</strong>
+                            </v-col>
+                            <v-col cols="12">
+                              Contact:&nbsp;&nbsp;<br /><strong>{{
+                                row.item.contact
+                              }}</strong>
+                            </v-col>
+                            <v-col cols="12">
+                              AssignedSection:&nbsp;&nbsp;<br /><strong>{{
+                                row.item.section_id
+                                  ? row.item.section_id
+                                  : "No Section"
+                              }}</strong>
+                            </v-col>
+                            <v-col cols="12">
+                              School Year:&nbsp;&nbsp;<br /><strong>{{
+                                row.item.created_at
+                                  .substring(
+                                    0,
+                                    row.item.created_at.indexOf("-")
+                                  )
+                                  .concat(
+                                    "-",
+                                    parseInt(
+                                      row.item.created_at.substring(
+                                        0,
+                                        row.item.created_at.indexOf("-")
+                                      )
+                                    ) + 1
+                                  )
+                              }}</strong>
+                            </v-col>
+                          </v-row>
+                        </v-card-text>
+                      </v-card>
+                    </template>
+                  </v-dialog>
+                </td>
                 <td>{{ row.item.contact }}</td>
                 <td>{{ row.item.section_id }}</td>
                 <td>
-                  <!-- <v-icon @click="showsTeacherById(row.item)" color="primary"
-                >mdi-pencil</v-icon
-              > -->
                   <v-icon @click="editTeacher(row.item)" color="primary"
                     >mdi-pencil</v-icon
                   >
@@ -149,9 +219,10 @@ export default {
 
   data() {
     return {
-      HHTP_REQUEST_URL: "http://127.0.0.1:8000/api/",
       search: "",
       year: new Date().getFullYear(),
+      selectedYear: null,
+      schoolYear: ["All"],
       loading: false,
       statusdialog: false,
       booleanStatus: false,
@@ -162,6 +233,7 @@ export default {
       Contact: null,
       selected_section: null,
       sections: [],
+      dialog: false,
       items: [
         {
           text: "Home",
@@ -181,16 +253,16 @@ export default {
           // sortable: false,
           value: "name",
         },
-        { text: "Email", value: "email" },
+        { text: "Details", value: "detatils" },
         { text: "Phone Number", value: "contact" },
         { text: "Assigned Section", value: "section_id" },
         { text: "Action", value: "action" },
       ],
       teachers: [],
+      filterTeachers: [],
       errors: {},
     };
   },
-
   created() {
     //this.teachers =this.$store.getters.allTeacher;
     // let sections =this.$store.getters.allSections;
@@ -200,30 +272,62 @@ export default {
     //     this.sections.push({id:element["id"],name:element["name"]});
     //   }
     // }
-    this.$axios
-      .get(`allSections`)
-      .then((response) => {
-        response.data.sections.forEach((element) => {
-          this.sections.push({ id: element.id, name: element.name });
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    console.log(this.sections);
+    this.allSections();
   },
-
   mounted() {
     this.display();
+    for (let i = 2021; i <= this.year; i++) {
+      this.schoolYear.push(i);
+    }
   },
 
   methods: {
+    //Filtery The Teacher By School Year
+    filterByYear(year) {
+      if (year == "All") {
+        this.teachers = this.filterTeachers;
+        this.year = new Date().getFullYear();
+      } else {
+        this.teachers = this.filterTeachers.filter((val) => {
+          return (
+            val.created_at.substring(0, val.created_at.indexOf("-")) == year ||
+            val.created_at.includes(year)
+          );
+        });
+        this.year = year;
+      }
+    },
+    //Methods for displaying All Sections
+    allSections() {
+      this.$store
+        .dispatch("allSections")
+        .then(() => {
+          let sections = this.$store.getters.allSections;
+          for (const key in sections) {
+            if (sections.hasOwnProperty.call(sections, key)) {
+              const element = sections[key];
+              this.sections.push({ id: element["id"], name: element["name"] });
+            }
+            //console.log(this.sections);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     //Methods for displaying all teachers
     display() {
-      this.$axios
-        .get(`allTeacher`)
-        .then((response) => {
-          this.teachers = response.data;
+      this.$store
+        .dispatch("allTeacher")
+        .then(() => {
+          this.teachers = this.$store.getters.allTeacher;
+          this.filterTeachers = this.$store.getters.allTeacher;
+          this.teachers = this.filterTeachers.filter((val) => {
+            return (
+              val.created_at.substring(0, val.created_at.indexOf("-")) ==
+                this.year || val.created_at.includes(this.year)
+            );
+          });
         })
         .catch((error) => {
           console.log(error);
@@ -233,7 +337,7 @@ export default {
     //Methods for Deleting A Teacher In Delete Button
     async removeTeacher(dataid) {
       this.$axios
-        .get(`delTeacher/` + `${dataid}`)
+        .get("delTeacher/" + dataid)
         .then((response) => {
           if (response.data.message) {
             this.$swal.fire({
@@ -309,7 +413,7 @@ export default {
         await new Promise((resolve) => setTimeout(resolve, 700));
         this.loading = false;
         this.$axios
-          .post(`${this.HHTP_REQUEST_URL}addNewTeacher`, {
+          .post("addNewTeacher", {
             name: this.Teacher,
             email: this.Email,
             contact: this.Contact,
@@ -355,7 +459,7 @@ export default {
         await new Promise((resolve) => setTimeout(resolve, 700));
         this.loading = false;
         this.$axios
-          .post(`${this.HHTP_REQUEST_URL}updateTeacher/` + `${this.Id}`, {
+          .post("updateTeacher/" + this.Id, {
             name: this.Teacher,
             email: this.Email,
             contact: this.Contact,
@@ -394,16 +498,13 @@ export default {
                 .then((result) => {
                   if (result.isConfirmed) {
                     this.$axios
-                      .post(
-                        `${this.HHTP_REQUEST_URL}updateTeacher/` + "update",
-                        {
-                          updateId: this.Id,
-                          name: this.Teacher,
-                          email: this.Email,
-                          contact: this.Contact,
-                          section_id: this.selected_section,
-                        }
-                      )
+                      .post("updateTeacher/" + "update", {
+                        updateId: this.Id,
+                        name: this.Teacher,
+                        email: this.Email,
+                        contact: this.Contact,
+                        section_id: this.selected_section,
+                      })
                       .then((response) => {
                         if (response.data.newSection) {
                           this.$swal.fire({

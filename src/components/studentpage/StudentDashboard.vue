@@ -11,12 +11,38 @@
         </v-col>
         <v-col sm="8" md="8" lg="8" class="class_details">
           <student-class-details
-            :section_name="user.section.adviser.name"
+            :section_name="user.section.adviser ? user.section.adviser.name : 'No Adviser'"
             :classmates="students"
           ></student-class-details>
         </v-col>
       </v-row>
     </v-container>
+
+    <v-footer dark padless>
+      <v-card flat tile width="100%" class="primary white--text text-center">
+        <v-card-text>
+          <h1 class="pb-2 white--text"> You can contact us at</h1>
+         <v-btn class="ma-2" text icon color="white lighten-2"  href="http://mantalongonnhs.weebly.com/">
+            <v-icon>mdi-facebook</v-icon>
+        </v-btn>
+
+         <v-btn class="ma-2" text icon color="white lighten-2" href="http://mantalongonnhs.weebly.com/">
+            <v-icon>mdi-google</v-icon>
+        </v-btn>
+
+         <v-btn class="ma-2" text icon color="white lighten-2" href="http://mantalongonnhs.weebly.com/">
+            <v-icon>mdi-web</v-icon>
+        </v-btn>
+        </v-card-text>
+
+        <v-divider></v-divider>
+
+        <v-card-text class="white--text">
+          Copyright 2021 - {{ new Date().getFullYear() }} <a class="white--text"
+            href="https://google.com">Online Enrollment System for Mantalongon National High School</a>
+        </v-card-text>
+      </v-card>
+    </v-footer>
   </v-app>
 </template>
 
@@ -32,7 +58,13 @@ export default {
     return {
       user: [],
       students: [],
+      panel: [],
     };
+  },
+   beforeDestroy() {
+    if (typeof window !== "undefined") {
+      window.removeEventListener("resize", this.onResize, { passive: true });
+    }
   },
 
   methods: {
@@ -50,6 +82,13 @@ export default {
       }
       // console.log(this.students);
     },
+    onResize() {
+      if (window.innerWidth >= 960) {
+        this.panel = [...Array(4).keys()].map((k, i) => i);
+      } else {
+        this.panel = [];
+      }
+    }
   },
 
   created() {
@@ -61,6 +100,7 @@ export default {
 <style>
 .stdnt-dash-container {
   margin-top: 100px;
+  margin-bottom: 5%;
 }
 
 .header-title {
@@ -83,4 +123,48 @@ export default {
 .v-data-table-header {
   background: rgba(78, 190, 215, 0.33);
 }
+@media (min-width:960px) {
+    .v-expansion-panel:before {
+        box-shadow: none !important;
+    }
+    .v-expansion-panel:not(:first-child)::after {
+        border-top: none;
+    }
+}
+.resize {
+  text-align: center;
+}
+.resize {
+  margin-top: 3rem;
+  font-size: 1.25rem;
+}
+/*RESIZESCREEN ANIMATION*/
+.right {
+  animation: rightanime 1s linear infinite;
+}
+
+.left {
+  animation: leftanime 1s linear infinite;
+}
+@keyframes rightanime {
+  50% {
+    transform: translateX(10px);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(10px);
+    opacity: 0;
+  }
+}
+@keyframes leftanime {
+  50% {
+    transform: translateX(-10px);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(-10px);
+    opacity: 0;
+  }
+}
+
 </style>

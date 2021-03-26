@@ -1,22 +1,23 @@
 <template>
-  <v-card outlined class="sections-base-card" elevation="8">
+  <v-card outlined class="sections-base-card" elevation="8" >
     <!-- <v-card class="icon-container" outlined elevation="4"> -->
     <div class="text-center justify-center" style="width: 100%">
-      <v-icon large color="black">mdi-home-group</v-icon>
+      <v-icon large color="primary">mdi-home-group</v-icon>
       <h3 class="display-1 font-weight-light">
         {{ section }}
       </h3>
     </div>
+
     <!-- </v-card> -->
     <template> </template>
-    <v-card-text>
+    <v-card-text >
       <div>
-        <v-icon color="black">mdi-home-account</v-icon>
+        <v-icon color="primary">mdi-home-account</v-icon>
         Capacity: {{ capacity }}
       </div>
     </v-card-text>
     <v-card-text>
-      <v-icon color="black">mdi-account-box</v-icon>
+      <v-icon color="primary">mdi-account-box</v-icon>
       Adviser: {{ teacher }}
     </v-card-text>
     <v-card-text>
@@ -24,7 +25,7 @@
         <slot name="edit"></slot>
       </div>
     </v-card-text>
-    <v-progress-linear
+    <v-progress-linear 
       :value="(total_students / capacity) * 100"
       height="25"
       :color="progress_color"
@@ -66,13 +67,13 @@ export default {
   display: flex;
   flex-wrap: wrap;
   position: relative;
-  padding: 10px;
+  padding: 20px;
   margin: 10px;
 }
 
 .icon-container {
   height: 60px;
-  max-height: 60px;
+  max-height: 80px;
   width: 100%;
   align-items: center;
   display: -webkit-inline-box;

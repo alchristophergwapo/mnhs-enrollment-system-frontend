@@ -47,7 +47,10 @@
                           (value) =>
                             !!value || `Learner's Reference No. is required!`,
                         ]"
-                        maxlength="20"
+                        maxlength="12"
+                        :hint="
+                          lrn.length >= 12 ? '' : 'LRN must be 12 characters.'
+                        "
                         required
                       ></v-text-field>
                     </v-col>
@@ -57,7 +60,7 @@
                       <div class="font-weight-bold">
                         <h4>Password</h4>
                       </div>
-                      <v-text-field
+                      <v-text-field 
                         id="pwd"
                         v-model="password"
                         :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
@@ -65,7 +68,7 @@
                         :type="show1 ? 'text' : 'password'"
                         name="input-10-1"
                         :hint="
-                          password.length >= 8 ? '' : 'At least 8 characters'
+                          password.length >= 8 ? '' : 'Password must be at least 8 characters.'
                         "
                         @click:append="show1 = !show1"
                       ></v-text-field>
