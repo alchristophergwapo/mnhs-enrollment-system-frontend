@@ -392,8 +392,9 @@ export default {
               title: "Success",
               text: "Enrollment approved.",
             });
-           //this.dialog = false;
-           //window.location.reload(true);
+           this.dialog = false;
+           this.sendSms(id);
+           window.location.reload(true);
           })
           .catch((error) => {
             console.log(error);
@@ -413,7 +414,30 @@ export default {
         this.dialog = true;
       }
     },
-
+    //Sending a sms notification to a user's cellphone number
+    sendSms(studentId){
+       this.$axios
+        .get("send-sms/"+studentId)
+        .then((response)=>{
+          if(response.data.success=='success'){
+            this.$swal.fire({
+            icon: "info",
+            title: "Success",
+            text: "Successfully send a notification.",
+          });
+          }
+          else{
+            this.$swal.fire({
+            icon: "error",
+            title: "Failed",
+            text: "Not successfully send a notification.",
+          });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
     //Method For Declining The Section
     declineEnrollment(id, index) {
       this.$axios
