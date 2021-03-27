@@ -45,7 +45,7 @@
                       width="10"
                     >
                     </v-sheet>
-                    <div>Male</div>
+                    <div class="label">Male</div>
                   </v-card-title>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
@@ -58,7 +58,7 @@
                       width="10"
                     >
                     </v-sheet>
-                    <div>Female</div>
+                    <div class="label">Female</div>
                   </v-card-title>
                 </v-col>
               </v-row>

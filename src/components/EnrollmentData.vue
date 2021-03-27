@@ -171,24 +171,28 @@ export default {
 
   methods: {
     initializeData() {
-      let pendingEnrollment = this.$store.getters.allPendingEnrollments;
-      for (var index in pendingEnrollment) {
-        let element = pendingEnrollment[index];
-        let studentData = element["student"];
-        let enrollmentData = [];
-        enrollmentData["enrollment_id"] = element["id"];
-        enrollmentData["card_image"] = element["card_image"];
-        enrollmentData["fullname"] = studentData["firstname"].concat(
-          " ",
-          studentData["lastname"]
-        );
-        for (const data in studentData) {
-          const element1 = studentData[data];
-          enrollmentData[data] = element1;
+      this.$store.dispatch("allPendingEnrollments").then((res) => {
+        let pendingEnrollment = res;
+        console.log(pendingEnrollment);
+        for (var index in pendingEnrollment) {
+          let element = pendingEnrollment[index];
+          let studentData = element["student"];
+          let enrollmentData = [];
+          enrollmentData["enrollment_id"] = element["id"];
+          enrollmentData["card_image"] = element["card_image"];
+          enrollmentData["fullname"] = studentData["firstname"].concat(
+            " ",
+            studentData["lastname"]
+          );
+          for (const data in studentData) {
+            const element1 = studentData[data];
+            enrollmentData[data] = element1;
+          }
+          this.students.push(enrollmentData);
+          this.filterStudents.push(enrollmentData);
         }
-        this.students.push(enrollmentData);
-        this.filterStudents.push(enrollmentData);
-      }
+      });
+
       // console.log(this.students);
       this.$store.dispatch("allDeclinedEnrollments").then((response) => {
         for (var index in response) {

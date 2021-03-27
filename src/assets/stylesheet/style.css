@@ -19,6 +19,10 @@
   color: white;
 }
 
+.label {
+  margin-left: 10px;
+}
+
 /* Enrollment Data */
 .table {
   margin-top: 50px;

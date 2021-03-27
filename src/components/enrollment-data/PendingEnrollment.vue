@@ -222,29 +222,31 @@ export default {
       // console.log(index);
       this.dialog = true;
       this.sections = [];
-      let sections = this.$store.getters.allSections;
-      // console.log(grade_level);
-      for (const key in sections) {
-        if (sections.hasOwnProperty.call(sections, key)) {
-          const element = sections[key];
-          const grade_levelData = element["gradelevel"];
-          for (const glKey in grade_levelData) {
-            let section = element["name"];
-            if (grade_levelData.hasOwnProperty.call(grade_levelData, glKey)) {
-              const element1 = grade_levelData[glKey];
-              // console.log(glKey);
-              if (glKey == "grade_level") {
-                // console.log("here");
-                if (element1 == gradelevel) {
+      this.$store.dispatch("allSections").then((res) => {
+        let sections = res;
+        // console.log(grade_level);
+        for (const key in sections) {
+          if (sections.hasOwnProperty.call(sections, key)) {
+            const element = sections[key];
+            const grade_levelData = element["gradelevel"];
+            for (const glKey in grade_levelData) {
+              let section = element["name"];
+              if (grade_levelData.hasOwnProperty.call(grade_levelData, glKey)) {
+                const element1 = grade_levelData[glKey];
+                // console.log(glKey);
+                if (glKey == "grade_level") {
                   // console.log("here");
-                  this.sections.push(section);
+                  if (element1 == gradelevel) {
+                    // console.log("here");
+                    this.sections.push(section);
+                  }
                 }
               }
             }
           }
         }
-      }
-      // console.log(this.sections);
+        // console.log(this.sections);
+      });
     },
 
     //Method For Approving the enrollment
