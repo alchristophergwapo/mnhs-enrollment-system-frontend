@@ -275,9 +275,6 @@ export default {
           }
         }
       });
-
-      // console.log(this.enrollmentChart.data.labels);
-      // console.log(this.enrollmentChart.data.series);
     },
   },
 };

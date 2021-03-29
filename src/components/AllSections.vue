@@ -7,59 +7,20 @@
       <v-row>
         <v-container>
           <div class="add_btn">
-            <!-- Dialog -->
-            <v-dialog v-model="actionDialog" persistent max-width="300px">
-              <section-dialog :type="addOrEdit.name">
-                <template v-slot:input-field>
-                  <v-text-field
-                    label="Section name"
-                    v-model="Section.section"
-                    @keydown="clearError"
-                    name="name"
-                    :error="hasError('name')"
-                  ></v-text-field>
-                  <p v-if="hasError('name')" class="invalid-feedback">
-                    {{ getError("name") }}
-                  </p>
-                  <v-text-field
-                    label="Capacity"
-                    type="number"
-                    name="capacity"
-                    @keydown="clearError"
-                    v-model="Section.capacity"
-                    :error="hasError('capacity')"
-                    min="0"
-                  ></v-text-field>
-                  <p v-if="hasError('capacity')" class="invalid-feedback">
-                    {{ getError("capacity") }}
-                  </p>
-                  <div>
-                    <v-select
-                      item-text="teacher"
-                      item-value="id"
-                      v-model="Section.teacher"
-                      :items="teachers"
-                      label="Assigned Teacher"
-                    ></v-select>
-                  </div>
-                </template>
-                <template v-slot:actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    :disabled="loading"
-                    color="error darken-1"
-                    @click="close"
-                    >Cancel</v-btn
-                  >
-                  <v-btn
-                    :loading="loading"
-                    :disabled="hasAnyErors"
-                    color="blue darken-1"
-                    @click="addSection(addOrEdit.name)"
-                    >Save</v-btn
-                  >
-                </template>
+            <!-- Dialog for add and edit section-->
+            <v-dialog v-model="actionDialog" persistent max-width="500px">
+              <section-dialog
+                :type="addOrEdit.name"
+                :Section="Section"
+                :teachers="teachers"
+                :edit="edit"
+              >
               </section-dialog>
+            </v-dialog>
+            <v-dialog v-model="addSubject" persistent max-width="700px">
+              <add-subject-dialog
+                :gradeLevel="addOrEdit.name.split(' ')[2]"
+              ></add-subject-dialog>
             </v-dialog>
           </div>
           <div>
@@ -130,6 +91,13 @@
                         >
                           <v-card-title>
                             <v-spacer></v-spacer>
+                            <v-btn
+                              color="secondary"
+                              small
+                              dark
+                              @click="addSubject = true"
+                              >add subject(s)</v-btn
+                            >
                             <v-btn
                               color="primary"
                               small
@@ -265,17 +233,18 @@
 </template>
 
 <script>
-// import { EventBus } from "../bus/bus.js";
+import { EventBus } from "../bus/bus";
 export default {
   components: {
     BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
     SectionsCard: () => import("@/layout/SectionsCard.vue"),
     SectionDialog: () => import("@/layout/SectionDialog.vue"),
+    AddSubjectDialog: () => import("@/layout/AddSubjectDialog.vue"),
   },
   data: () => ({
     actionDialog: false,
-    edit: null,
-    loading: false,
+    addSubject: false,
+    edit: false,
     state: null,
     items: [
       { text: "Home", disabled: false, href: "/admin" },
@@ -284,7 +253,6 @@ export default {
     tab1: null,
     tab2: null,
     levelTab: null,
-    errors: {},
     Section: {
       id: null,
       section: null,
@@ -322,6 +290,18 @@ export default {
       .catch((error) => {
         console.log(error);
       });
+
+    EventBus.$on("closeModal", (data) => {
+      this.close(data);
+    });
+
+    EventBus.$on("displayAllsection", (data) => {
+      this.displayAllsection(data.data1, data.data2);
+    });
+
+    EventBus.$on("closeSubjectModal", (data) => {
+      this.addSubject = data;
+    });
   },
 
   methods: {
@@ -407,136 +387,6 @@ export default {
       this.actionDialog = false;
     },
 
-    //Method For Adding A Section In Junior High School Category
-    async addSection(grades) {
-      if (this.edit == false) {
-        this.loading = true;
-        // console.log(grades.split(" ")[2]);
-        this.$axios
-          .post("addSection", {
-            grade: grades.split(" ")[2],
-            name: this.Section.section,
-            capacity: this.Section.capacity,
-            total_students: 0,
-            teacher: this.Section.teacher,
-          })
-          .then((response) => {
-            if (response.data.message) {
-              this.clear();
-              this.displayAllsection(grades, null);
-              this.showResponse("Success", response.data.message, "success");
-              this.loading = false;
-              this.actionDialog = false;
-              console.log(response);
-            } else {
-              let text =
-                response.data.teacher +
-                " was already assigned to section " +
-                response.data.failed +
-                ".";
-              this.showResponse("Ooops...", text, 'info');
-              this.loading = false;
-            }
-          })
-          .catch((error) => {
-            this.loading = false
-            if (error.response.status == 422) {
-              this.setErrors(error.response.data.errors);
-            } else {
-              console.log(error);
-            }
-          });
-      } else {
-        this.$axios
-          .post("updateSection/" + this.Section.id, {
-            name: this.Section.section,
-            capacity: this.Section.capacity,
-            teacher: this.Section.teacher,
-          })
-          .then((response) => {
-            if (response.data.message) {
-              this.showResponse("Success", response.data.message, "success");
-              this.actionDialog = false;
-              this.displayAllsection(grades, null);
-              this.clear();
-            } else {
-              this.$swal
-                .fire({
-                  title:
-                    response.data.teacher +
-                    " was assigned to " +
-                    response.data.failed +
-                    ".",
-                  text: "Are you sure to update this!",
-                  icon: "warning",
-                  showCancelButton: true,
-                  confirmButtonColor: "#3085d6",
-                  cancelButtonColor: "#d33",
-                  confirmButtonText: "Update",
-                })
-                .then((result) => {
-                  if (result.isConfirmed) {
-                    this.$axios
-                      .post("updateSection/" + "update", {
-                        updateId: this.Section.id,
-                        name: this.Section.section,
-                        capacity: this.Section.capacity,
-                        teacher: this.Section.teacher,
-                      })
-                      .then((response) => {
-                        console.log(response);
-                        if (response.data.newTeacher) {
-                          this.showResponse(
-                            "Updated!",
-                            response.data.newTeacher,
-                            "success"
-                          );
-                          this.actionDialog = false;
-                          this.clear();
-                          this.displayAllsection(grades, null);
-                        } else {
-                          let text = "Not successfully updated!";
-                          this.showResponse("Not Updated!", text, "error");
-                          this.actionDialog = false;
-                          this.displayAllsection(grades, null);
-                          this.clear();
-                        }
-                      })
-                      .catch((error) => {
-                        console.log(error);
-                        this.clear();
-                        this.actionDialog = false;
-                      });
-                  }
-                });
-            }
-          })
-          .catch((error) => {
-            this.actionDialog = false;
-            this.loading = false;
-            if (error.response.status == 422) {
-              this.setErrors(error.response.data.errors);
-            } else {
-              console.log(error);
-            }
-          });
-      }
-    },
-
-    showResponse(title, message, icon) {
-      this.$swal.fire({
-        icon: icon,
-        title: title,
-        text: message,
-      });
-    },
-    clear() {
-      this.Section.id = null;
-      this.Section.section = null;
-      this.Section.capacity = null;
-      this.Section.teacher = null;
-    },
-
     //Method For Editing The Section
     async editSection(data) {
       this.addOrEdit.name = "Edit Grade " + data.gradelevel.grade_level;
@@ -567,28 +417,6 @@ export default {
         .catch((error) => {
           console.log(error);
         });
-    },
-
-    //Methods For All Errors In Junior High School
-    setErrors(error) {
-      this.errors = error;
-    },
-    hasError(fieldname) {
-      return fieldname in this.errors;
-    },
-    clearError(event) {
-      this.$delete(this.errors, event.target.name);
-    },
-    getError(fieldName) {
-      return this.errors[fieldName][0];
-    },
-    filter(data) {
-      console.log(data);
-    },
-  },
-  computed: {
-    hasAnyErors() {
-      return Object.keys(this.errors).length > 0;
     },
   },
 };
