@@ -8,11 +8,10 @@
         <v-container>
           <div class="add_btn">
             <!-- Dialog for add and edit section-->
-            <v-dialog v-model="actionDialog" persistent max-width="500px">
+            <v-dialog v-model="actionDialog" persistent max-width="700px">
               <section-dialog
                 :type="addOrEdit.name"
                 :Section="Section"
-                :teachers="teachers"
                 :edit="edit"
               >
               </section-dialog>
@@ -103,6 +102,7 @@
                               small
                               dark
                               @click="open(item.text)"
+                              style="margin-left: 10px"
                             >
                               <v-icon>mdi-plus</v-icon>Add Section
                             </v-btn>
@@ -126,20 +126,16 @@
                               >
                                 <template v-slot:edit>
                                   <v-btn
-                                    @click="edit(dta)"
+                                    @click="editSection(dta)"
                                     outlined
                                     color="#006a4e"
+                                    small
                                   >
                                     edit section
                                     <v-icon>mdi-pencil</v-icon>
                                   </v-btn>
                                 </template>
                               </sections-card>
-                              <!-- <v-card-text>
-                            <v-icon @click="juniorRemove(dta.id)"
-                              color="red">mdi-delete</v-icon
-                            >
-                          </v-card-text> -->
                             </v-col>
                             <v-card-title
                               class="text-center justify-center py-6"
@@ -175,7 +171,6 @@
                             <v-icon>mdi-plus</v-icon>Add Section
                           </v-btn>
                         </v-card-title>
-                        <!-- <v-container> -->
                         <v-row dense>
                           <v-col
                             v-for="(i, index) in item.content"
@@ -197,6 +192,7 @@
                                   @click="editSection(i)"
                                   outlined
                                   color="primary"
+                                  small
                                 >
                                   edit section
                                   <v-icon>mdi-pencil</v-icon>
@@ -217,7 +213,6 @@
                             </v-card-title>
                           </v-col>
                         </v-row>
-                        <!-- </v-container> -->
                       </v-tab-item>
                     </v-tabs-items>
                   </div>
@@ -279,17 +274,6 @@ export default {
   created() {
     //Getting all teachers
     this.displayAllsection(this.addOrEdit.name, this.addOrEdit.name);
-
-    this.$store
-      .dispatch("allTeacher")
-      .then(() => {
-        this.$store.getters.allTeacher.forEach((element) => {
-          this.teachers.push({ id: element.id, teacher: element.name });
-        });
-      })
-      .catch((error) => {
-        console.log(error);
-      });
 
     EventBus.$on("closeModal", (data) => {
       this.close(data);

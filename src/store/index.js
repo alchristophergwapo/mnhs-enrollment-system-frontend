@@ -25,6 +25,7 @@ export default new Vuex.Store({
         numberOfSections: 0,
         pendingEnrollments: [],
         declinedEnrollments: [],
+        gradeLevelSub: [],
     },
 
     mutations: {
@@ -78,7 +79,10 @@ export default new Vuex.Store({
             if (declinedEnrollments) {
                 state.declinedEnrollments = declinedEnrollments
             }
-        }
+        },
+        setGradeLevelSubjects(state, gradeLevelSub) {
+            state.gradeLevelSub = gradeLevelSub
+        },
     },
 
     actions: {
@@ -132,6 +136,14 @@ export default new Vuex.Store({
                 commit('setDeclinedEnrollments', response.data.declinedEnrollment);
                 return response.data.declinedEnrollment
             })
+        },
+
+        allSubjectsInGradeLevel({commit},gradeLevel) {
+            console.log(gradeLevel);
+            return axios.get(`gradelevelSubject/${gradeLevel}`).then(response => {
+                commit('setGradeLevelSubjects',response.data.subjects)
+                return response.data.subjects
+            });
         },
 
         logout({ commit }) {
