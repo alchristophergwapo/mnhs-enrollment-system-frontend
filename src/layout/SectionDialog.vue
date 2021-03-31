@@ -1,232 +1,237 @@
 <template>
-  <div>
-    <div class="add_btn">
-      <v-card>
-        <v-card-title class="headlineSection">
-          <span>{{ type }} Section</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  label="Section name"
-                  v-model="Section.section"
-                  @keydown="clearError"
-                  name="name"
-                  :error="hasError('name')"
-                ></v-text-field>
-                <p v-if="hasError('name')" class="invalid-feedback">
-                  {{ getError("name") }}
-                </p>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-text-field
-                  label="Capacity"
-                  type="number"
-                  name="capacity"
-                  @keydown="clearError"
-                  v-model="Section.capacity"
-                  :error="hasError('capacity')"
-                  min="0"
-                ></v-text-field>
-                <p v-if="hasError('capacity')" class="invalid-feedback">
-                  {{ getError("capacity") }}
-                </p>
-              </v-col>
-            </v-row>
-            <div>
-              <!-- <v-select
+  <v-card>
+    <v-toolbar dark color="primary">
+      <v-btn
+        icon
+        dark
+        :disabled="loading"
+        color="error darken-1"
+        @click="close"
+      >
+        <v-icon>mdi-close</v-icon>
+      </v-btn>
+      <v-toolbar-title>{{ type }} Section</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-toolbar-items>
+        <v-btn
+          dark
+          text
+          :loading="loading"
+          :disabled="hasAnyErors"
+          color="blue darken-1"
+          @click="addSection(type)"
+          >Save</v-btn
+        >
+      </v-toolbar-items>
+    </v-toolbar>
+    <v-card-text>
+      <v-container>
+        <v-row>
+          <v-col cols="12" sm="6">
+            <v-text-field
+              label="Section name"
+              v-model="Section.section"
+              @keydown="clearError"
+              name="name"
+              :error="hasError('name')"
+            ></v-text-field>
+            <p v-if="hasError('name')" class="invalid-feedback">
+              {{ getError("name") }}
+            </p>
+          </v-col>
+          <v-col cols="12" sm="6">
+            <v-text-field
+              label="Capacity"
+              type="number"
+              name="capacity"
+              @keydown="clearError"
+              v-model="Section.capacity"
+              :error="hasError('capacity')"
+              min="0"
+            ></v-text-field>
+            <p v-if="hasError('capacity')" class="invalid-feedback">
+              {{ getError("capacity") }}
+            </p>
+          </v-col>
+        </v-row>
+        <div>
+          <!-- <v-select
                 item-text="teacher"
                 item-value="id"
                 v-model="Section.teacher"
               ></v-select> -->
-              <label for="teacher">Select Adviser</label>
-              <v-autocomplete
-                v-model="Section.teacher"
-                :items="teachers"
-                :loading="isLoading"
-                :search-input.sync="search"
-                chips
-                clearable
-                hide-details
-                hide-selected
-                item-text="name"
-                item-value="symbol"
-                label="Search for a teacher..."
-                solo
+          <label for="teacher">Select Adviser</label>
+          <v-autocomplete
+            v-model="Section.teacher"
+            :items="teachers"
+            :loading="isLoading"
+            :search-input.sync="search"
+            chips
+            clearable
+            hide-details
+            hide-selected
+            item-text="name"
+            item-value="symbol"
+            label="Search for a teacher..."
+            solo
+          >
+            <template v-slot:no-data>
+              <v-list-item>
+                <v-list-item-title>
+                  No
+                  <strong>Teacher</strong>
+                </v-list-item-title>
+              </v-list-item>
+            </template>
+            <template v-slot:selection="{ attr, on, item, selected }">
+              <v-chip
+                v-bind="attr"
+                :input-value="selected"
+                color="blue-grey"
+                class="white--text"
+                v-on="on"
               >
-                <template v-slot:no-data>
-                  <v-list-item>
-                    <v-list-item-title>
-                      No
-                      <strong>Teacher</strong>
-                    </v-list-item-title>
-                  </v-list-item>
-                </template>
-                <template v-slot:selection="{ attr, on, item, selected }">
-                  <v-chip
-                    v-bind="attr"
-                    :input-value="selected"
-                    color="blue-grey"
-                    class="white--text"
-                    v-on="on"
-                  >
-                    <!-- <v-icon left> mdi-bitcoin </v-icon> -->
-                    <span v-text="item.name"></span>
-                  </v-chip>
-                </template>
-                <template v-slot:item="{ item }" click>
-                  <v-list-item-avatar
-                    color="indigo"
-                    class="headline font-weight-light white--text"
-                  >
-                    {{ item.name.charAt(0) }}
-                  </v-list-item-avatar>
-                  <v-list-item-content>
-                    <v-list-item-title v-text="item.name"></v-list-item-title>
-                  </v-list-item-content>
-                </template>
-              </v-autocomplete>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn text @click="schedule = true">add schedules</v-btn>
-              </v-card-actions>
-            </div>
-          </v-container>
-        </v-card-text>
-        <div v-if="schedule">
-          <v-data-table
-            :headers="headers"
-            :items="schedules"
-            item-key="name"
-            :items-per-page="5"
-            class="elevation-1"
-          ></v-data-table>
-          <v-container>
-            <v-row>
-              <v-col cols="12" sm="6">
-                <v-dialog
-                  ref="dialog"
-                  v-model="pickStartTime"
-                  :return-value.sync="start_time"
-                  persistent
-                  width="290px"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="start_time"
-                      label="Start time"
-                      prepend-icon="mdi-clock-time-four-outline"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                    ></v-text-field>
-                  </template>
-                  <v-time-picker
-                    v-if="pickStartTime"
-                    v-model="start_time"
-                    full-width
-                  >
-                    <v-spacer></v-spacer>
-                    <v-btn text color="primary" @click="pickStartTime = false">
-                      Cancel
-                    </v-btn>
-                    <v-btn
-                      text
-                      color="primary"
-                      @click="$refs.dialog.save(start_time)"
-                    >
-                      OK
-                    </v-btn>
-                  </v-time-picker>
-                </v-dialog>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-dialog
-                  ref="dialog"
-                  v-model="pickEndTime"
-                  :return-value.sync="end_time"
-                  persistent
-                  width="290px"
-                >
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field
-                      v-model="end_time"
-                      label="Start time"
-                      prepend-icon="mdi-clock-time-four-outline"
-                      readonly
-                      v-bind="attrs"
-                      v-on="on"
-                    ></v-text-field>
-                  </template>
-                  <v-time-picker
-                    v-if="pickEndTime"
-                    v-model="end_time"
-                    full-width
-                  >
-                    <v-spacer></v-spacer>
-                    <v-btn text color="primary" @click="pickEndTime = false">
-                      Cancel
-                    </v-btn>
-                    <v-btn
-                      text
-                      color="primary"
-                      @click="$refs.dialog.save(end_time)"
-                    >
-                      OK
-                    </v-btn>
-                  </v-time-picker>
-                </v-dialog>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <!-- Auto complete for all subject in a grade level -->
-                <autocomplete
-                  request="allSubjectsInGradeLevel"
-                  :gradelevel="Number(type.split(' ')[2])"
-                >
-                  <template v-slot:label>
-                    <label for="">Select Subject</label>
-                  </template>
-                </autocomplete>
-              </v-col>
-              <v-col cols="12" sm="6">
-                <v-select
-                  v-model="day"
-                  :items="[
-                    'Monday',
-                    'Tuesday',
-                    'Wednesday',
-                    'Thursday',
-                    'Friday',
-                  ]"
-                  :rules="[(v) => !!v || 'Day is required']"
-                  label="Day"
-                  required
-                ></v-select>
-              </v-col>
-            </v-row>
-            <br />
-            <v-btn color="primary">Add to {{ day }}</v-btn>
-          </v-container>
+                <!-- <v-icon left> mdi-bitcoin </v-icon> -->
+                <span v-text="item.teacher_name"></span>
+              </v-chip>
+            </template>
+            <template v-slot:item="{ item }" click>
+              <v-list-item-avatar
+                color="indigo"
+                class="headline font-weight-light white--text"
+              >
+                {{ item.teacher_name.charAt(0) }}
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title
+                  v-text="item.teacher_name"
+                ></v-list-item-title>
+              </v-list-item-content>
+            </template>
+          </v-autocomplete>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn text @click="schedule = true">add schedules</v-btn>
+          </v-card-actions>
         </div>
-        <v-divider></v-divider>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn :disabled="loading" color="error darken-1" @click="close"
-            >Cancel</v-btn
-          >
-          <v-btn
-            :loading="loading"
-            :disabled="hasAnyErors"
-            color="blue darken-1"
-            @click="addSection(type)"
-            >Save</v-btn
-          >
-        </v-card-actions>
-      </v-card>
+      </v-container>
+    </v-card-text>
+
+    <!-- schedule table -->
+    <div v-if="schedule">
+      <v-container>
+        <v-row>
+          <v-col cols="4">
+            <div>Span of each schedule of classes</div>
+          </v-col>
+          <v-col cols="2">
+            <v-text-field
+              v-model="spanOfClasses.hour"
+              label="Hours"
+              type="number"
+            ></v-text-field>
+          </v-col>
+          <v-col cols="2">
+            <v-text-field
+              v-model="spanOfClasses.minutes"
+              label="Minutes"
+              type="number"
+            ></v-text-field>
+          </v-col>
+        </v-row>
+      </v-container>
+      <v-data-table
+        :headers="headers"
+        :items="schedules"
+        item-key="name"
+        :items-per-page="5"
+        class="elevation-1"
+      >
+        <template v-slot:item="row">
+          <tr>
+            <td>{{ row.item.Time }}</td>
+            <td>{{ row.item.Monday }})</td>
+            <td>{{ row.item.Tuesday }}</td>
+            <td>{{ row.item.Wednesday }}</td>
+            <td>{{ row.item.Thursday }}</td>
+            <td>{{ row.item.Friday }}</td>
+            <td>
+              <v-icon color="primary" @click="openEditSub(row.item, row.index)"
+                >mdi-pencil</v-icon
+              >
+              <v-icon color="error" @click="deleteData(row.index)"
+                >mdi-delete</v-icon
+              >
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <v-text-field></v-text-field>
+            </td>
+            <td>
+              <v-text-field></v-text-field>
+            </td>
+            <td>
+              <v-text-field></v-text-field>
+            </td>
+            <td>
+              <v-text-field></v-text-field>
+            </td>
+            <td>
+              <v-text-field></v-text-field>
+            </td>
+            <td>
+              <v-text-field></v-text-field>
+            </td>
+            <td>
+              <v-btn>add</v-btn>
+            </td>
+          </tr>
+        </template>
+      </v-data-table>
+
+      <v-container>
+        <v-form ref="scheduleForm" v-model="scheduleValid" lazy-validation>
+          <add-schedule-form
+            :gradelevel="Number(type.split(' ')[2])"
+            day="Monday"
+            :sched="schedules"
+            :spanOfClasses="Number(spanOfClasses)"
+          ></add-schedule-form>
+          <br />
+          <add-schedule-form
+            :gradelevel="Number(type.split(' ')[2])"
+            day="Tuesday"
+            :sched="schedules"
+            :spanOfClasses="Number(spanOfClasses)"
+          ></add-schedule-form>
+          <br />
+          <add-schedule-form
+            :gradelevel="Number(type.split(' ')[2])"
+            day="Wednesday"
+            :sched="schedules"
+            :spanOfClasses="Number(spanOfClasses)"
+          ></add-schedule-form>
+          <br />
+          <add-schedule-form
+            :gradelevel="Number(type.split(' ')[2])"
+            day="Thursday"
+            :sched="schedules"
+            :spanOfClasses="Number(spanOfClasses)"
+          ></add-schedule-form>
+          <br />
+          <add-schedule-form
+            :gradelevel="Number(type.split(' ')[2])"
+            day="Friday"
+            :sched="schedules"
+            :spanOfClasses="Number(spanOfClasses)"
+          ></add-schedule-form>
+          <br />
+          <v-btn color="primary" @click="addSchedule()">Add Schedule</v-btn>
+        </v-form>
+      </v-container>
     </div>
-  </div>
+  </v-card>
 </template>
 <script>
 import { EventBus } from "../bus/bus.js";
@@ -246,32 +251,122 @@ export default {
     },
   },
   components: {
-    Autocomplete: () => import("@/layout/Autocomplete.vue"),
+    AddScheduleForm: () => import("@/layout/AddScheduleForm.vue"),
   },
   data() {
     return {
       headers: [
-        { text: "Time" },
-        { text: "Monday" },
-        { text: "Tuesday" },
-        { text: "Wednesday" },
-        { text: "Thursday" },
-        { text: "Friday" },
+        { text: "Time", value: "Time", sortable: false },
+        { text: "Monday", value: "Monday", sortable: false },
+        { text: "Tuesday", value: "Tuesday", sortable: false },
+        { text: "Wednesday", value: "Wednesday", sortable: false },
+        { text: "Thursday", value: "Thursday", sortable: false },
+        { text: "Friday", value: "Friday", sortable: false },
         { text: "Update", sortable: false },
       ],
-      schedules: [],
+      // scheduleData: {
+      //   Monday: {
+      //     start_time: null,
+      //     end_time: null,
+      //     subject: null,
+      //     teacher: null,
+      //     subject_id: null,
+      //     teacher_id: null,
+      //     day: "Monday",
+      //   },
+      //   Tuesday: {
+      //     start_time: null,
+      //     end_time: null,
+      //     subject: null,
+      //     teacher: null,
+      //     subject_id: null,
+      //     teacher_id: null,
+      //     day: "Tuesday",
+      //   },
+      //   Wednesday: {
+      //     start_time: null,
+      //     end_time: null,
+      //     subject: null,
+      //     teacher: null,
+      //     subject_id: null,
+      //     teacher_id: null,
+      //     day: "Wednesday",
+      //   },
+      //   Thursday: {
+      //     start_time: null,
+      //     end_time: null,
+      //     subject: null,
+      //     teacher: null,
+      //     subject_id: null,
+      //     teacher_id: null,
+      //     day: "Thursday",
+      //   },
+      //   Friday: {
+      //     start_time: null,
+      //     end_time: null,
+      //     subject: null,
+      //     teacher: null,
+      //     subject_id: null,
+      //     teacher_id: null,
+      //     day: "Friday",
+      //   },
+      // },
+      schedules: [
+        {
+          Time: "08:00-09:00",
+          Monday: "English (Raquel Kovacek)",
+          Tuesday: "Math (Eliane Gutmann)",
+          Wednesday: "Physics (Dr. Theodore Gerlach PhD)",
+          Thursday: "P.E. (Barrett McGlynn)",
+          Friday: "English (Raquel Kovacek)",
+        },
+      ],
+
+      scheduleInputs: {
+        Time: null,
+        Monday: {
+          subject: null,
+          teacher: null,
+          subject_id: null,
+          teacher_id: null,
+        },
+        Tuesday: {
+          subject: null,
+          teacher: null,
+          subject_id: null,
+          teacher_id: null,
+        },
+        Wednesday: {
+          subject: null,
+          teacher: null,
+          subject_id: null,
+          teacher_id: null,
+        },
+        Thursday: {
+          subject: null,
+          teacher: null,
+          subject_id: null,
+          teacher_id: null,
+        },
+        Friday: {
+          subject: null,
+          teacher: null,
+          subject_id: null,
+          teacher_id: null,
+        },
+      },
+
       teachers: [],
       errors: {},
       loading: false,
       isLoading: false,
-      pickStartTime: false,
-      pickEndTime: false,
       schedule: false,
+      scheduleValid: false,
       search: "",
-      timeSpan: null,
-      start_time: null,
-      end_time: null,
-      day: null,
+      spanOfClasses: {
+        hour: 1,
+        minutes: 0,
+      },
     };
   },
   watch: {
@@ -294,6 +389,31 @@ export default {
           this.isLoading = false;
         });
     },
+  },
+  created() {
+    if (this.schedules.length > 0) {
+      this.scheduleInputs.start_time = this.schedules[
+        this.schedules.length - 1
+      ].Time.split("-")[1];
+      let hour =
+        Number(this.scheduleInputs.start_time.split(":")[0]) +
+        this.spanOfClasses.hour;
+      let min =
+        Number(this.scheduleInputs.start_time.split(":")[1]) +
+        this.spanOfClasses.minutes;
+      console.log(hour, min);
+      // this.scheduleInputs.end_time = hour+;
+    }
+    EventBus.$on("inputTrigger", (data) => {
+      console.log(data);
+      // this.scheduleData[data.day].start_time = data.schedule.start_time;
+      // this.scheduleData[data.day].end_time = data.schedule.end_time;
+      // this.scheduleData[data.day].subject = data.schedule.subject;
+      // this.scheduleData[data.day].teacher = data.schedule.teacher;
+      // this.scheduleData[data.day].subject_id = data.schedule.subject_id;
+      // this.scheduleData[data.day].teacher_id = data.schedule.teacher_id;
+      // console.log(this.scheduleData);
+    });
   },
   methods: {
     //Method For Adding A Section In Junior High School Category
@@ -432,6 +552,14 @@ export default {
         title: title,
         text: message,
       });
+    },
+
+    addSchedule() {
+      if (this.$refs.scheduleForm.validate()) {
+        // this.schedules.push(this.scheduleData);
+
+        console.log(this.schedules);
+      }
     },
 
     close(data) {

@@ -15,7 +15,8 @@ import "./assets/stylesheet/style.css";
 import VueNativeNotification from 'vue-native-notification'
 import VueSweetalert2 from 'vue-sweetalert2';
 import Axios from 'axios';
-
+import VueMoment from 'vue-moment'
+import moment from 'moment-timezone'
 
 Vue.config.productionTip = false
 Vue.prototype.$axios = Axios;
@@ -26,6 +27,10 @@ Vue.use(VueSweetalert2);
 Vue.use(VueNativeNotification, {
   requestOnNotify: true
 });
+ 
+Vue.use(VueMoment, {
+    moment,
+})
 
 import Echo from "laravel-echo"
 import { EventBus } from "./bus/bus.js";

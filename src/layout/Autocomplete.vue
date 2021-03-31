@@ -3,17 +3,16 @@
     <slot name="label"></slot>
     <v-autocomplete
       v-model="model"
+      :rules="[(value) => !!value || 'This field is required.']"
       :items="items"
+      :filter="searchData"
       :loading="isLoading"
-      :search-input.sync="search"
-      chips
       clearable
       hide-details
       hide-selected
-      item-text="name"
-      item-value="symbol"
-      :label="'Search ...'"
-      solo
+      color="white"
+      item-text="subject_name"
+      label="Search ..."
     >
       <template v-slot:no-data>
         <v-list-item>
@@ -31,8 +30,7 @@
           class="white--text"
           v-on="on"
         >
-          <!-- <v-icon left> mdi-bitcoin </v-icon> -->
-          <span v-text="item.name"></span>
+          <span v-text="item.subject_name"></span>
         </v-chip>
       </template>
       <template v-slot:item="{ item }" click>
@@ -40,10 +38,10 @@
           color="indigo"
           class="headline font-weight-light white--text"
         >
-          {{ item.name.charAt(0) }}
+          {{ item.subject_name.charAt(0) }}
         </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-title v-text="item.name"></v-list-item-title>
+        <v-list-item-content @click="selectItem(item)">
+          <v-list-item-title v-text="item.subject_name"></v-list-item-title>
         </v-list-item-content>
       </template>
     </v-autocomplete>
@@ -51,6 +49,7 @@
 </template>
 
 <script>
+import { EventBus } from "../bus/bus";
 export default {
   props: {
     request: {
@@ -65,33 +64,34 @@ export default {
     return {
       model: "",
       isLoading: false,
-      search: "",
       items: [],
     };
   },
-  watch: {
-    search(val) {
-      console.log(val);
-
-      if (this.items.length > 0) return;
-      this.isLoading = true;
-
-      this.$store
-        .dispatch(`${this.request}`, this.gradelevel)
-        .then((res) => {
-          // console.log(res);
-          this.items = res;
-        })
-        .catch((error) => {
-          console.log(error);
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
-    },
-  },
   created() {
-    console.log(this.gradelevel);
+    this.$store
+      .dispatch(`${this.request}`, this.gradelevel)
+      .then((res) => {
+        // console.log(res);
+        this.items = res;
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        this.isLoading = false;
+      });
+  },
+  methods: {
+    selectItem(item) {
+      EventBus.$emit(`${this.request}`, item);
+    },
+    searchData(item, queryText, itemText) {
+      console.log(itemText);
+      const textOne = item.subject_name.toLowerCase();
+      const searchText = queryText.toLowerCase();
+
+      return textOne.indexOf(searchText) > -1;
+    },
   },
 };
 </script>

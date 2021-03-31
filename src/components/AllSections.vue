@@ -6,9 +6,14 @@
     <div>
       <v-row>
         <v-container>
-          <div class="add_btn">
+          <v-row justify="center" class="add_btn">
             <!-- Dialog for add and edit section-->
-            <v-dialog v-model="actionDialog" persistent max-width="700px">
+            <v-dialog
+              v-model="actionDialog"
+              fullscreen
+              hide-overlay
+              transition="dialog-bottom-transition"
+            >
               <section-dialog
                 :type="addOrEdit.name"
                 :Section="Section"
@@ -21,7 +26,7 @@
                 :gradeLevel="addOrEdit.name.split(' ')[2]"
               ></add-subject-dialog>
             </v-dialog>
-          </div>
+          </v-row>
           <div>
             <v-card>
               <v-card class="table-header" color="#2e856e">

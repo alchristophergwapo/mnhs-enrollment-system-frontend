@@ -8,7 +8,7 @@
 
 .v-data-table-header {
   background-color: #eee;
-} 
+}
 
 .update-card {
   margin: 50px 50px auto auto;
@@ -21,6 +21,13 @@
 
 .label {
   margin-left: 10px;
+}
+
+.v-text-field.v-text-field--solo:not(.v-text-field--solo-flat)
+  > .v-input__control
+  > .v-input__slot {
+  box-shadow: 0;
+  border-bottom: 1px solid;
 }
 
 /* Enrollment Data */
@@ -245,8 +252,8 @@
 .mx-auto {
   padding: 10px;
   text-align: justify;
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
+    'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 .footer-copyright {
@@ -384,14 +391,13 @@ h3 {
   text-align: center;
   color: #006a4e;
   font-weight: bolder;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .signin-container {
   width: 50%;
   margin-top: 8%;
   margin-bottom: 8%;
-
 }
 
 #icons {

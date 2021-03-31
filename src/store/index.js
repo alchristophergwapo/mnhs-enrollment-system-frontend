@@ -139,7 +139,6 @@ export default new Vuex.Store({
         },
 
         allSubjectsInGradeLevel({commit},gradeLevel) {
-            console.log(gradeLevel);
             return axios.get(`gradelevelSubject/${gradeLevel}`).then(response => {
                 commit('setGradeLevelSubjects',response.data.subjects)
                 return response.data.subjects
