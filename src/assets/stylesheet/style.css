@@ -30,6 +30,9 @@
   border-bottom: 1px solid;
 }
 
+.add_sched {
+  margin-top: -22px;
+}
 /* Enrollment Data */
 .table {
   margin-top: 50px;

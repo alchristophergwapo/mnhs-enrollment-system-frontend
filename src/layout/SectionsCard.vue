@@ -1,5 +1,5 @@
 <template>
-  <v-card outlined class="sections-base-card" elevation="8" >
+  <v-card outlined class="sections-base-card" elevation="8">
     <!-- <v-card class="icon-container" outlined elevation="4"> -->
     <div class="text-center justify-center" style="width: 100%">
       <v-icon large color="primary">mdi-home-group</v-icon>
@@ -10,7 +10,7 @@
 
     <!-- </v-card> -->
     <template> </template>
-    <v-card-text >
+    <v-card-text>
       <div>
         <v-icon color="primary">mdi-home-account</v-icon>
         Capacity: {{ capacity }}
@@ -25,7 +25,7 @@
         <slot name="edit"></slot>
       </div>
     </v-card-text>
-    <v-progress-linear 
+    <v-progress-linear
       :value="(total_students / capacity) * 100"
       height="25"
       :color="progress_color"

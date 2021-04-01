@@ -4,9 +4,9 @@
     <!-- <v-col cols="12" sm="6"> -->
     <!-- Auto complete for all subject in a grade level -->
     <autocomplete request="allSubjectsInGradeLevel" :gradelevel="gradelevel">
-      <template v-slot:label>
+      <!-- <template v-slot:label>
         <label for="">{{ day }}</label>
-      </template>
+      </template> -->
     </autocomplete>
     <!-- </v-col> -->
     <!-- <v-col cols="12" sm="3">
@@ -144,12 +144,6 @@ export default {
     } else {
       // this.start_time = this.sched[this.day].start_time;
     }
-    EventBus.$on("allSubjectsInGradeLevel", (data) => {
-      this.schedule.subject = data.subject_name;
-      this.schedule.teacher = data.teacher_name;
-      this.schedule.subject_id = data.id;
-      this.schedule.teacher_id = data.teacher_id;
-    });
     // console.log(this.schedule);
   },
   methods: {

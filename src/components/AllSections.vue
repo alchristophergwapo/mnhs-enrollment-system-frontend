@@ -125,7 +125,7 @@
                                 :section="dta.name"
                                 :capacity="dta.capacity"
                                 :total_students="dta.total_students"
-                                :teacher="dta.teacher_id"
+                                :teacher="dta.teacher_name"
                                 :progress_color="'#006a4e'"
                                 class="section_card"
                               >
@@ -189,7 +189,7 @@
                               :section="i.name"
                               :capacity="i.capacity"
                               :total_students="i.total_students"
-                              :teacher="i.teacher_id"
+                              :teacher="i.teacher_name"
                               class="section_card"
                             >
                               <template v-slot:edit>
@@ -296,9 +296,11 @@ export default {
   methods: {
     displayAllsection(juniors, seniors) {
       this.$axios
-        .get("allGradeLevelSections")
+        // .get("allGradeLevelSections")
+        .get("allSections")
         .then((response) => {
           this.allsections = response.data.sections;
+          console.log(this.allsections);
           if (juniors != null && seniors != null) {
             this.junior_high.forEach((junior) => {
               if (junior.text.split(" ")[1] == juniors.split(" ")[2]) {

@@ -3,7 +3,7 @@
     <slot name="label"></slot>
     <v-autocomplete
       v-model="model"
-      :rules="[(value) => !!value || 'This field is required.']"
+      :rules="rules"
       :items="items"
       :filter="searchData"
       :loading="isLoading"
@@ -11,8 +11,8 @@
       hide-details
       hide-selected
       color="white"
-      item-text="subject_name"
-      label="Search ..."
+      :item-text="[property]"
+      :label="'Search/Select ' + property.split('_')[0] + '...'"
     >
       <template v-slot:no-data>
         <v-list-item>
@@ -22,26 +22,19 @@
           </v-list-item-title>
         </v-list-item>
       </template>
-      <template v-slot:selection="{ attr, on, item, selected }">
-        <v-chip
-          v-bind="attr"
-          :input-value="selected"
-          color="blue-grey"
-          class="white--text"
-          v-on="on"
-        >
-          <span v-text="item.subject_name"></span>
-        </v-chip>
-      </template>
       <template v-slot:item="{ item }" click>
         <v-list-item-avatar
           color="indigo"
           class="headline font-weight-light white--text"
+          @click="selectItem(item)"
         >
-          {{ item.subject_name.charAt(0) }}
+          {{ item[property].charAt(0) }}
         </v-list-item-avatar>
-        <v-list-item-content @click="selectItem(item)">
-          <v-list-item-title v-text="item.subject_name"></v-list-item-title>
+        <v-list-item-content
+          @click="selectItem(item)"
+          @mousedown="selectItem(item)"
+        >
+          <v-list-item-title v-text="item[property]"></v-list-item-title>
         </v-list-item-content>
       </template>
     </v-autocomplete>
@@ -59,12 +52,31 @@ export default {
     gradelevel: {
       type: Number,
     },
+    day: {
+      type: String,
+      default: "",
+    },
+    property: {
+      type: String,
+      required: true,
+    },
+    rules: {
+      type: Array,
+    },
   },
   data() {
     return {
       model: "",
       isLoading: false,
       items: [],
+      schedules: {
+        Monday: null,
+        Tuesday: null,
+        Wednesday: null,
+        Thursday: null,
+        Friday: null,
+      },
+      selectedItem: null,
     };
   },
   created() {
@@ -80,14 +92,22 @@ export default {
       .finally(() => {
         this.isLoading = false;
       });
+
+    EventBus.$on("save", () => {
+      // console.log(data);
+      this.model = null;
+    });
   },
   methods: {
     selectItem(item) {
-      EventBus.$emit(`${this.request}`, item);
+      // this.selectedItem = item;
+      // this.schedules[this.day] =
+      //   item[this.property] + " (" + item.teacher_name + ")";
+      EventBus.$emit(`${this.request}`, { data: item, day: this.day });
     },
-    searchData(item, queryText, itemText) {
-      console.log(itemText);
-      const textOne = item.subject_name.toLowerCase();
+    searchData(item, queryText) {
+      // console.log(itemText);
+      const textOne = item[this.property].toLowerCase();
       const searchText = queryText.toLowerCase();
 
       return textOne.indexOf(searchText) > -1;
