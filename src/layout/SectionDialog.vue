@@ -376,7 +376,8 @@ export default {
                 this.showResponse("Success", response.data.message, "success");
                 this.loading = false;
                 this.close();
-              } else {
+              }
+              if (response.data.failed) {
                 let text =
                   response.data.teacher +
                   " was already assigned to section " +
