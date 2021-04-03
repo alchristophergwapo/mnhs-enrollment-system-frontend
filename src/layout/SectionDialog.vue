@@ -316,15 +316,23 @@ export default {
       let newEndTime = this.addTimes(time, span);
       this.scheduleInputs.Time = time + "-" + newEndTime;
     } else {
-      this.scheduleInputs.Time = "8:00-9:00";
+      this.scheduleInputs.Time = "08:00-09:00";
     }
 
     EventBus.$on("allSubjectsInGradeLevel", (data) => {
       console.log(data);
+      let startTime =
+        this.$moment(new Date()).format("YYYY/MM/DD") +
+        " " +
+        this.scheduleInputs.Time.split("-")[0];
+      let endTime =
+        this.$moment(new Date()).format("YYYY/MM/DD") +
+        " " +
+        this.scheduleInputs.Time.split("-")[1];
       var sched = {
         day: data.day,
-        start_time: this.scheduleInputs.Time.split("-")[0],
-        end_time: this.scheduleInputs.Time.split("-")[1],
+        start_time: this.$moment(startTime).format("hh:mm A"),
+        end_time: this.$moment(endTime).format("hh:mm A"),
         subject_name: data.data.subject_name,
         teacher_name: data.data.teacher_name,
         teacher_id: data.data.teacher_id,
@@ -343,6 +351,7 @@ export default {
   methods: {
     //Method For Adding A Section In Junior High School Category
     async addSection(grades) {
+      console.log(typeof this.scheduleInputs.Time);
       if (this.$refs.sectionForm.validate()) {
         if (this.edit == false) {
           this.loading = true;
