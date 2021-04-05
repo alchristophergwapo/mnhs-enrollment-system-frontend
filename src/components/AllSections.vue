@@ -280,8 +280,8 @@ export default {
     //Getting all teachers
     this.displayAllsection(this.addOrEdit.name, this.addOrEdit.name);
 
-    EventBus.$on("closeModal", (data) => {
-      this.close(data);
+    EventBus.$on("closeModal", () => {
+      this.close();
     });
 
     EventBus.$on("displayAllsection", (data) => {
@@ -340,6 +340,7 @@ export default {
     },
     //Select and Getting The Sections For The Selected Grade Level In Junior High School
     selectedJHS(item) {
+      this.addOrEdit.name = "Add " + item;
       this.junior_high.forEach((junior) => {
         if (junior.text.split(" ")[1] == item.split(" ")[1]) {
           junior.content = this.allsections.filter(function (val) {
@@ -362,6 +363,7 @@ export default {
     },
     //Method For Opening Dialog
     open(grade) {
+      console.log(grade);
       this.addOrEdit.name = "Add " + grade;
       this.actionDialog = true;
       this.edit = false;

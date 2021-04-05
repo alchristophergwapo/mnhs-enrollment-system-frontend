@@ -11,53 +11,12 @@
                 :rules="[(name) => !!name || 'Subject name is required']"
               >
               </v-text-field>
-              <v-autocomplete
-                v-model="editSubjectDetails.teacher_id"
-                :items="teachers"
-                :loading="isLoading"
-                :search-input.sync="search"
-                chips
-                clearable
-                hide-details
-                hide-selected
-                item-text="name"
-                item-value="symbol"
-                label="Search for a teacher..."
-                solo
-                @keydown="clearError"
-              >
-                <template v-slot:no-data>
-                  <v-list-item>
-                    <v-list-item-title>
-                      Search for
-                      <strong>Teacher</strong>
-                    </v-list-item-title>
-                  </v-list-item>
-                </template>
-                <template v-slot:selection="{ attr, on, item, selected }">
-                  <v-chip
-                    v-bind="attr"
-                    :input-value="selected"
-                    color="blue-grey"
-                    class="white--text"
-                    v-on="on"
-                  >
-                    <!-- <v-icon left> mdi-bitcoin </v-icon> -->
-                    <span v-text="item.name"></span>
-                  </v-chip>
-                </template>
-                <template v-slot:item="{ item }" click>
-                  <v-list-item-avatar
-                    color="indigo"
-                    class="headline font-weight-light white--text"
-                  >
-                    {{ item.name.charAt(0) }}
-                  </v-list-item-avatar>
-                  <v-list-item-content>
-                    <v-list-item-title v-text="item.name"></v-list-item-title>
-                  </v-list-item-content>
-                </template>
-              </v-autocomplete>
+              <autocomplete
+                request="allTeacher"
+                :gradelevel="Number(gradeLevel)"
+                property="teacher_name"
+                :rules="[(value) => !!value || 'This field is required']"
+              ></autocomplete>
             </v-card-text>
             <v-divider></v-divider>
             <v-card-actions>
@@ -101,7 +60,7 @@
                 {{ getError("name") }}
               </p>
             </td>
-            <td>{{ row.item.teacher_id }}</td>
+            <td>{{ row.item.teacher_name }}</td>
             <td>
               <v-icon color="primary" @click="openEditSub(row.item, row.index)"
                 >mdi-pencil</v-icon
@@ -128,53 +87,12 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
-                <v-autocomplete
-                  v-model="teacher"
-                  :items="teachers"
-                  :loading="isLoading"
-                  :search-input.sync="search"
-                  chips
-                  clearable
-                  hide-details
-                  hide-selected
-                  item-text="name"
-                  item-value="symbol"
-                  label="Search for a teacher..."
-                  solo
-                  @keydown="clearError"
-                >
-                  <template v-slot:no-data>
-                    <v-list-item>
-                      <v-list-item-title>
-                        Search for
-                        <strong>Teacher</strong>
-                      </v-list-item-title>
-                    </v-list-item>
-                  </template>
-                  <template v-slot:selection="{ attr, on, item, selected }">
-                    <v-chip
-                      v-bind="attr"
-                      :input-value="selected"
-                      color="blue-grey"
-                      class="white--text"
-                      v-on="on"
-                    >
-                      <!-- <v-icon left> mdi-bitcoin </v-icon> -->
-                      <span v-text="item.name"></span>
-                    </v-chip>
-                  </template>
-                  <template v-slot:item="{ item }" click>
-                    <v-list-item-avatar
-                      color="indigo"
-                      class="headline font-weight-light white--text"
-                    >
-                      {{ item.name.charAt(0) }}
-                    </v-list-item-avatar>
-                    <v-list-item-content>
-                      <v-list-item-title v-text="item.name"></v-list-item-title>
-                    </v-list-item-content>
-                  </template>
-                </v-autocomplete>
+                <autocomplete
+                  request="allTeacher"
+                  :gradelevel="Number(gradeLevel)"
+                  property="teacher_name"
+                  :rules="[(value) => !!value || 'This field is required']"
+                ></autocomplete>
               </v-col>
             </v-row>
           </v-form>
@@ -211,6 +129,9 @@ export default {
       required: true,
     },
   },
+  components: {
+    Autocomplete: () => import("@/layout/Autocomplete.vue"),
+  },
   data() {
     return {
       search: "",
@@ -236,22 +157,14 @@ export default {
       },
     };
   },
-  watch: {
-    search(val) {
-      console.log(val);
-      if (this.teachers.length > 0) return;
-      this.isLoading = true;
-
-      this.$store
-        .dispatch("allTeacher")
-        .then((res) => {
-          this.teachers = res;
-        })
-        .catch((error) => {
-          console.log(error);
-        })
-        .finally(() => (this.isLoading = false));
-    },
+  watch: {},
+  created() {
+    console.log(this.gradeLevel);
+    EventBus.$on("allTeacher", (data) => {
+      console.log(data);
+      this.teacher = data.data.teacher_name;
+      this.teacher_id = data.data.id;
+    });
   },
   methods: {
     add() {
@@ -259,12 +172,14 @@ export default {
       if (this.$refs.subject.validate()) {
         let subject = {
           name: this.name,
-          teacher_id: this.teacher,
+          teacher_name: this.teacher,
+          teacher_id: this.teacher_id,
           grade_level_id: Number(this.gradeLevel),
         };
         this.subjects.push(subject);
         // console.log(this.subjects);
         this.clear();
+        EventBus.$emit("save");
       }
     },
     addSectionToDB() {
@@ -297,6 +212,7 @@ export default {
     },
 
     openEditSub(itemData, index) {
+      console.log(itemData);
       this.editSubjectDetails.name = itemData.name;
       this.editSubjectDetails.teacher_id = itemData.teacher_id;
       this.editSubjectDetails.index = index;
@@ -310,6 +226,9 @@ export default {
       this.subjects[
         this.editSubjectDetails.index
       ].teacher_id = this.editSubjectDetails.teacher_id;
+      this.subjects[
+        this.editSubjectDetails.index
+      ].teacher_name = this.editSubjectDetails.teacher_name;
       this.closeEdit();
     },
 
@@ -357,9 +276,6 @@ export default {
     filter(data) {
       console.log(data);
     },
-  },
-  created() {
-    console.log(this.gradeLevel);
   },
   computed: {
     hasAnyErors() {

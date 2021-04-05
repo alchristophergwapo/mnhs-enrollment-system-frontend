@@ -88,13 +88,13 @@ export default new Vuex.Store({
     actions: {
         login({ commit }, credentials) {
             return axios.post('login', credentials).then((response) => {
-                if (response.data.user.updated == 0) {
+                // if (response.data.user.updated == 0) {
                     commit('setUserData', response.data)
-                    return false;
-                } else {
-                    commit('setUserData', response.data)
-                    return true
-                }
+                    return response;
+                // } else {
+                //     commit('setUserData', response.data)
+                //     return true
+                // }
             })
         },
 

@@ -51,6 +51,7 @@ export default {
     },
     gradelevel: {
       type: Number,
+      required: true,
     },
     day: {
       type: String,
@@ -80,6 +81,8 @@ export default {
     };
   },
   created() {
+    this.items = [];
+    console.log(this.gradelevel);
     this.$store
       .dispatch(`${this.request}`, this.gradelevel)
       .then((res) => {
@@ -97,6 +100,35 @@ export default {
       // console.log(data);
       this.model = null;
     });
+
+    // EventBus.$on("closeModal", () => {
+
+    // });
+  },
+  mounted() {
+    this.items = [];
+    console.log(this.gradelevel);
+    this.$store
+      .dispatch(`${this.request}`, this.gradelevel)
+      .then((res) => {
+        // console.log(res);
+        this.items = res;
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        this.isLoading = false;
+      });
+
+    EventBus.$on("save", () => {
+      // console.log(data);
+      this.model = null;
+    });
+
+    // EventBus.$on("closeModal", () => {
+
+    // });
   },
   methods: {
     selectItem(item) {

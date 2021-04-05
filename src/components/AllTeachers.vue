@@ -130,7 +130,7 @@
           >
             <template v-slot:item="row">
               <tr>
-                <td>{{ row.item.name }}</td>
+                <td>{{ row.item.teacher_name }}</td>
                 <td>
                   <v-dialog transition="dialog-top-transition" max-width="400">
                     <template v-slot:activator="{ on, attrs }">
@@ -148,7 +148,7 @@
                           <v-row>
                             <v-col cols="12">
                               Name:&nbsp;&nbsp;<br /><strong>{{
-                                row.item.name
+                                row.item.teacher_name
                               }}</strong>
                             </v-col>
                             <v-col cols="12">

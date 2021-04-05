@@ -43,7 +43,7 @@
           user_details.username
         }}</span>
         <span style="color: white" v-else
-          >Hello {{ user_details.firstname }}</span
+          >Hello, {{ user_details.firstname }}</span
         >
         <v-spacer></v-spacer>
         <v-menu left bottom>

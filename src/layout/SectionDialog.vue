@@ -6,7 +6,7 @@
         dark
         :disabled="loading"
         color="error darken-1"
-        @click="close"
+        @click="close()"
       >
         <v-icon>mdi-close</v-icon>
       </v-btn>
@@ -309,7 +309,7 @@ export default {
   },
   watch: {},
   created() {
-    console.log(this.Section);
+    console.log(this.type);
     if (this.schedules.length > 0) {
       var time = this.schedules[this.schedules.length - 1].Time.split("-")[1];
       var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
@@ -331,8 +331,8 @@ export default {
         this.scheduleInputs.Time.split("-")[1];
       var sched = {
         day: data.day,
-        start_time: this.$moment(startTime).format("hh:mm A"),
-        end_time: this.$moment(endTime).format("hh:mm A"),
+        start_time: this.$moment(startTime).format("hh:mm"),
+        end_time: this.$moment(endTime).format("hh:mm"),
         subject_name: data.data.subject_name,
         teacher_name: data.data.teacher_name,
         teacher_id: data.data.teacher_id,
@@ -581,8 +581,9 @@ export default {
       return ("0" + hours).slice(-2) + ":" + ("0" + minutes).slice(-2);
     },
 
-    close(data) {
-      EventBus.$emit("closeModal", data);
+    close() {
+      this.$refs.scheduleForm.resetValidation();
+      EventBus.$emit("closeModal", "close-modal");
     },
     clear() {
       this.Section.id = null;
