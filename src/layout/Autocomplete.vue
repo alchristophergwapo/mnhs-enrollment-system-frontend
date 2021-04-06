@@ -55,7 +55,6 @@ export default {
     },
     day: {
       type: String,
-      default: "",
     },
     property: {
       type: String,
@@ -66,6 +65,10 @@ export default {
     },
     rules: {
       type: Array,
+    },
+    edit: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -85,7 +88,7 @@ export default {
   },
   created() {
     this.items = [];
-    console.log(this.modelValue);
+    // console.log(this.modelValue);
     this.$store
       .dispatch(`${this.request}`, this.gradelevel)
       .then((res) => {
@@ -110,7 +113,7 @@ export default {
   },
   mounted() {
     this.items = [];
-    console.log(this.gradelevel);
+    // console.log(this.gradelevel);
     this.$store
       .dispatch(`${this.request}`, this.gradelevel)
       .then((res) => {
@@ -138,7 +141,11 @@ export default {
       // this.selectedItem = item;
       // this.schedules[this.day] =
       //   item[this.property] + " (" + item.teacher_name + ")";
-      EventBus.$emit(`${this.request}`, { data: item, day: this.day });
+      if (this.edit) {
+        EventBus.$emit(`edit${this.request}`, { data: item, day: this.day });
+      } else {
+        EventBus.$emit(`${this.request}`, { data: item, day: this.day });
+      }
     },
     searchData(item, queryText) {
       // console.log(itemText);

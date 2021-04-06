@@ -1,7 +1,25 @@
 <template>
   <div app>
     <v-card>
-      <v-card-text>this is edit schedules</v-card-text>
+      <v-toolbar color="primary" dark>
+        <v-card-title class="text-center justify-center">
+          <div class="display-1 font-weight-light">
+            Edit Schedule for <strong>{{ schedules.Time }}</strong>
+          </div>
+        </v-card-title>
+      </v-toolbar>
+      <v-card-text>
+        <v-container>
+          <v-row>
+            <v-col cols="12" sm="6">
+              <v-text-field></v-text-field>
+            </v-col>
+            <v-col cols="12" sm="6">
+              <v-text-field></v-text-field>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn :disabled="loading" color="error darken-1">Cancel</v-btn>
@@ -27,11 +45,19 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      loading: false,
+      errors: {},
+    };
   },
   created() {
     console.log(this.schedules, this.section_id);
   },
   methods: {},
+  computed: {
+    hasAnyErors() {
+      return Object.keys(this.errors).length > 0;
+    },
+  },
 };
 </script>

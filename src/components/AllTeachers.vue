@@ -35,7 +35,7 @@
             <v-card-title>
               <v-spacer></v-spacer>
               <div class="add_btn">
-                <v-dialog v-model="statusdialog" persistent max-width="300px">
+                <v-dialog v-model="statusdialog" persistent max-width="500px">
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
                       color="primary"
