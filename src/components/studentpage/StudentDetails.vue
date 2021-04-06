@@ -2,8 +2,11 @@
   <div app>
     <v-card class="student_profile" elevation="3" outlined tile width="100%">
       <v-card-title class="mt-8 justify-center">
-        <v-avatar size="100">
+        <v-avatar size="100" v-if="student.gender == 'Male'">
           <img src="../../assets/images/avatar.png" alt="" />
+        </v-avatar>
+        <v-avatar size="100" v-else>
+          <img src="../../assets/images/girl_avatar.png" alt="" />
         </v-avatar>
       </v-card-title>
       <v-container>

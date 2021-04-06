@@ -64,6 +64,7 @@
                 request="allTeacher"
                 :gradelevel="Number(type.split(' ')[2])"
                 :teacher="Section.teacher_name"
+                :modelValue="Section.teacher"
                 property="teacher_name"
               >
                 <template v-slot:label>
@@ -150,7 +151,7 @@
                 <td>
                   <v-icon
                     color="primary"
-                    @click="openEditSub(row.item, row.index)"
+                    @click="openEditSched(row.item, row.index)"
                   >
                     mdi-pencil
                   </v-icon>
@@ -238,6 +239,14 @@
         </div>
       </v-form>
     </div>
+
+    <!-- Dialog -->
+    <v-dialog v-model="editSchedule" persistent max-width="500px">
+      <edit-schedule-form
+        :schedules="sched"
+        :section_id="Section.id"
+      ></edit-schedule-form>
+    </v-dialog>
   </v-card>
 </template>
 <script>
@@ -260,6 +269,7 @@ export default {
   components: {
     // AddScheduleForm: () => import("@/layout/AddScheduleForm.vue"),
     Autocomplete: () => import("@/layout/Autocomplete.vue"),
+    EditScheduleForm: () => import("@/layout/EditSchedule"),
   },
   data() {
     return {
@@ -283,21 +293,13 @@ export default {
         Friday: null,
       },
 
-      newSched: {
-        day: null,
-        start_time: null,
-        end_time: null,
-        teacher_id: null,
-        subject_id: null,
-        section_id: this.Section.id,
-      },
-
       schedulesToAdd: [],
       teachers: [],
       errors: {},
       loading: false,
       isLoading: false,
       schedule: false,
+      editSchedule: false,
       scheduleValid: false,
       sectionValid: false,
       search: "",
@@ -305,11 +307,22 @@ export default {
         hour: 1,
         minutes: 0,
       },
+      sched: {
+        Time: null,
+        Monday: null,
+        Tuesday: null,
+        Wednesday: null,
+        Thursday: null,
+        Friday: null,
+      },
     };
   },
   watch: {},
   created() {
-    console.log(this.type);
+    console.log(this.Section);
+    // if (this.Section.id) {
+    //   this.retrieveSchedule(this.Section.id);
+    // }
     if (this.schedules.length > 0) {
       var time = this.schedules[this.schedules.length - 1].Time.split("-")[1];
       var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
@@ -347,6 +360,11 @@ export default {
       this.Section.teacher = data.data.id;
       console.log(this.Section);
     });
+  },
+  mounted() {
+    if (this.Section.id) {
+      this.retrieveSchedule(this.Section.id);
+    }
   },
   methods: {
     //Method For Adding A Section In Junior High School Category
@@ -388,8 +406,9 @@ export default {
               }
             })
             .catch((error) => {
-              this.clear();
-              this.close();
+              // this.showResponse("Ooops...", error.response.error, "error");
+              // this.clear();
+              // this.close();
               this.loading = false;
               if (error.response.status == 422) {
                 this.setErrors(error.response.data.errors);
@@ -523,6 +542,39 @@ export default {
       }
     },
 
+    retrieveSchedule(id) {
+      this.$axios.get(`classSchedules/${id}`).then((response) => {
+        const schedules = response.data.schedules;
+        console.log(schedules);
+
+        let count = 0;
+        let friday = false;
+        for (const index in schedules) {
+          if (schedules.hasOwnProperty.call(schedules, index)) {
+            const element = schedules[index];
+            this.sched.Time = `${element.start_time}-${element.end_time}`;
+
+            this.sched[element.day] = element;
+            if (element.day == "Friday") {
+              friday = true;
+            }
+            count += 1;
+          }
+          if (count == 5 && friday) {
+            this.schedules.push(this.sched);
+            this.sched = {
+              Time: null,
+              Monday: null,
+              Tuesday: null,
+              Wednesday: null,
+              Thursday: null,
+              Friday: null,
+            };
+          }
+        }
+      });
+    },
+
     clearScheduleInputs() {
       var time = this.schedules[this.schedules.length - 1].Time.split("-")[1];
       var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
@@ -535,6 +587,11 @@ export default {
         Thursday: null,
         Friday: null,
       };
+    },
+
+    openEditSched(item, index) {
+      console.log(item, index);
+      this.editSchedule = true;
     },
 
     changeSpanOfClassess(hour, minutes) {

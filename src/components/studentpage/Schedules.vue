@@ -85,6 +85,7 @@ export default {
         },
       };
       let count = 0;
+      let friday = false;
       for (const index in schedules) {
         if (schedules.hasOwnProperty.call(schedules, index)) {
           const element = schedules[index];
@@ -112,10 +113,11 @@ export default {
           if (element.day == "Friday") {
             sched.Friday.subject_name = element.subject_name;
             sched.Friday.teacher_name = element.teacher_name;
+            friday = true;
             count += 1;
           }
         }
-        if (count == 5) {
+        if (count == 5 && friday) {
           this.schedules.push(sched);
           sched = {
             Time: null,

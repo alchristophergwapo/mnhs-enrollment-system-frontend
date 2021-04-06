@@ -20,8 +20,11 @@
     >
       <template v-slot:item="row">
         <tr>
-          <td>{{ row.item.firstname }} {{ row.item.lastname }}</td>
-          <td>{{ row.item.age }}</td>
+          <td>
+            {{ row.item.lastname }},
+            {{ row.item.firstname }}
+            {{ row.item.middlename.split("")[0] + "." }}
+          </td>
           <td>{{ row.item.address }}</td>
         </tr>
       </template>
@@ -39,10 +42,8 @@ export default {
         {
           text: "Student Name",
           align: "start",
-          sortable: false,
           value: "student",
         },
-        { text: "Age", value: "age" },
         { text: "Address", value: "address" },
       ],
       students: this.classmates,

@@ -61,13 +61,16 @@ export default {
       type: String,
       required: true,
     },
+    modelValue: {
+      type: String,
+    },
     rules: {
       type: Array,
     },
   },
   data() {
     return {
-      model: "",
+      model: this.modelValue,
       isLoading: false,
       items: [],
       schedules: {
@@ -82,7 +85,7 @@ export default {
   },
   created() {
     this.items = [];
-    console.log(this.gradelevel);
+    console.log(this.modelValue);
     this.$store
       .dispatch(`${this.request}`, this.gradelevel)
       .then((res) => {

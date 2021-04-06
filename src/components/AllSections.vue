@@ -125,7 +125,11 @@
                                 :section="dta.name"
                                 :capacity="dta.capacity"
                                 :total_students="dta.total_students"
-                                :teacher="dta.teacher_name"
+                                :teacher="
+                                  dta.adviser == null
+                                    ? ''
+                                    : dta.adviser.teacher_name
+                                "
                                 :progress_color="'#006a4e'"
                                 class="section_card"
                               >
@@ -189,7 +193,9 @@
                               :section="i.name"
                               :capacity="i.capacity"
                               :total_students="i.total_students"
-                              :teacher="i.teacher_name"
+                              :teacher="
+                                i.adviser == null ? '' : i.adviser.teacher_name
+                              "
                               class="section_card"
                             >
                               <template v-slot:edit>
@@ -258,6 +264,7 @@ export default {
       section: null,
       capacity: null,
       teacher: null,
+      teacher_id: null,
     },
     junior_high: [
       {
@@ -382,10 +389,14 @@ export default {
 
     //Method For Editing The Section
     async editSection(data) {
+      console.log(data);
       this.addOrEdit.name = "Edit Grade " + data.gradelevel.grade_level;
-      this.Section.teacher = data.gradelevel_id;
       this.edit = true;
       this.actionDialog = true;
+      if (data.adviser != null) {
+        this.Section.teacher = data.adviser.teacher_name;
+      }
+      this.Section.teacher_id = data.teacher_id;
       this.Section.section = data.name;
       this.Section.capacity = data.capacity;
       this.Section.id = data.id;

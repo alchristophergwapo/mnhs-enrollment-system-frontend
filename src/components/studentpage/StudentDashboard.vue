@@ -29,12 +29,12 @@
 
                 <v-tab href="#tab-1">
                   My Schedule
-                  <v-icon>mdi-clock</v-icon>
+                  <v-icon large>mdi-clock</v-icon>
                 </v-tab>
 
                 <v-tab href="#tab-2">
                   My Section
-                  <!-- <v-icon>mdi-heart</v-icon> -->
+                  <v-icon large>mdi-google-classroom</v-icon>
                 </v-tab>
               </v-tabs>
             </v-card>
@@ -144,8 +144,23 @@ export default {
           // console.log(classmates["student"]);
         }
       }
+
+      const section = this.user.enrollment.student_section;
+
+      this.$axios.get(`studentSectionDetails/${section}`).then((res) => {
+        console.log(res);
+        this.students = res.data.classmates;
+        this.students.sort(this.sortData("lastname"));
+      });
       // console.log(this.students);
     },
+
+    sortData(property) {
+      return function (data1, data2) {
+        return data1[property].localeCompare(data2[property]);
+      };
+    },
+
     onResize() {
       if (window.innerWidth >= 960) {
         this.panel = [...Array(4).keys()].map((k, i) => i);
@@ -157,7 +172,7 @@ export default {
 
   created() {
     this.initialize();
-    console.log(this.user);
+    // console.log(this.user);
   },
 };
 </script>
