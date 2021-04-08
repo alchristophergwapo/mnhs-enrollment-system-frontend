@@ -18,7 +18,7 @@
     </v-card-text>
     <v-card-text>
       <v-icon color="primary">mdi-account-box</v-icon>
-      Adviser: {{ teacher }}
+      Adviser: <span v-if="teacher">{{ teacher }}</span><span v-else>None</span>
     </v-card-text>
     <v-card-text>
       <div class="ml-auto text-right">

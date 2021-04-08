@@ -7,13 +7,15 @@
             <v-card-text>
               <v-text-field
                 label="Subject name"
-                v-model="editSubjectDetails.name"
+                v-model="editSubjectDetails.subject_name"
                 :rules="[(name) => !!name || 'Subject name is required']"
               >
               </v-text-field>
               <autocomplete
                 request="allTeacher"
                 :gradelevel="Number(gradeLevel)"
+                :modelValue="editSubjectDetails.teacher_name"
+                :edit="true"
                 property="teacher_name"
                 :rules="[(value) => !!value || 'This field is required']"
               ></autocomplete>
@@ -31,7 +33,7 @@
                 :loading="loading"
                 :disabled="hasAnyErors"
                 color="blue darken-1"
-                @click="editSubject()"
+                @click="editSubject(editSubjectDetails)"
                 >Save</v-btn
               >
             </v-card-actions>
@@ -39,20 +41,20 @@
         </v-card>
       </v-dialog>
       <div class="subtitle-1 font-weight-light text-center justify-center">
-        <h1>Add Subject(s)</h1>
+        <h1>Grade {{gradeLevel}} Subject(s)</h1>
       </div>
       <br />
       <v-data-table
         :headers="headers"
         :items="subjects"
         item-key="name"
-        :items-per-page="5"
+        :items-per-page="10"
         class="elevation-1"
       >
         <template v-slot:item="row">
           <tr>
             <td>
-              {{ row.item.name }}
+              {{ row.item.subject_name }}
               <p
                 v-if="hasError('name') && row.item.name.length < 2"
                 class="invalid-feedback"
@@ -65,7 +67,7 @@
               <v-icon color="primary" @click="openEditSub(row.item, row.index)"
                 >mdi-pencil</v-icon
               >
-              <v-icon color="error" @click="deleteData(row.index)"
+              <v-icon color="error" @click="deleteData(row.item.id, row.index)"
                 >mdi-delete</v-icon
               >
             </td>
@@ -96,25 +98,19 @@
               </v-col>
             </v-row>
           </v-form>
-          <v-card-actions>
+          <!-- <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" @click="add()">add</v-btn>
-          </v-card-actions>
+          </v-card-actions> -->
         </v-container>
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn :disabled="loading" color="error darken-1" @click="close"
-          >Cancel</v-btn
-        >
-        <v-btn
-          :loading="loading"
-          :disabled="hasAnyErors"
-          color="blue darken-1"
-          @click="addSectionToDB()"
-          >Save</v-btn
-        >
+        <v-btn :disabled="loading" color="error darken-1" @click="close">
+          Cancel
+        </v-btn>
+        <v-btn color="primary" @click="addSubjectToDB()">add</v-btn>
       </v-card-actions>
     </v-container>
   </v-card>
@@ -151,8 +147,11 @@ export default {
       subjects: [],
       teachers: [],
       editSubjectDetails: {
-        name: null,
-        teacher: null,
+        grade_level_id: null,
+        id: null,
+        subject_name: null,
+        teacher_id: null,
+        teacher_name: null,
         index: null,
       },
     };
@@ -160,38 +159,43 @@ export default {
   watch: {},
   created() {
     console.log(this.gradeLevel);
+    this.$axios.get(`gradelevelSubject/${this.gradeLevel}`).then((response) => {
+      console.log(response);
+      this.subjects = response.data.subjects;
+    });
     EventBus.$on("allTeacher", (data) => {
       console.log(data);
       this.teacher = data.data.teacher_name;
       this.teacher_id = data.data.id;
     });
+
+    EventBus.$on("editallTeacher", (data) => {
+      console.log(data.data);
+      this.editSubjectDetails.teacher_name = data.data.teacher_name;
+      this.editSubjectDetails.teacher_id = data.data.id;
+      console.log(this.editSubjectDetails);
+    });
   },
   methods: {
-    add() {
-      //   console.log(this.teacher_id);
+    addSubjectToDB() {
       if (this.$refs.subject.validate()) {
         let subject = {
-          name: this.name,
+          subject_name: this.name,
           teacher_name: this.teacher,
           teacher_id: this.teacher_id,
           grade_level_id: Number(this.gradeLevel),
         };
-        this.subjects.push(subject);
-        // console.log(this.subjects);
-        this.clear();
-        EventBus.$emit("save");
-      }
-    },
-    addSectionToDB() {
-      if (this.subjects.length != 0) {
         this.loading = true;
         this.$axios
-          .post("/addSubject", this.subjects)
+          .post("/addSubject", subject)
           .then((response) => {
             this.showResponse("success", "Success", response.data.success);
-            this.subjects = [];
+
+            this.subjects.push(subject);
+            // console.log(this.subjects);
             this.clear();
-            this.close();
+            EventBus.$emit("save");
+            this.clear();
           })
           .catch((error) => {
             console.log(error.response);
@@ -204,17 +208,16 @@ export default {
           .finally(() => {
             this.loading = false;
           });
-      } else {
-        let text = "Please add at least on subject.";
-        this.showResponse("info", "Ooops.....", text);
-        this.errors = { error: "no data" };
       }
     },
 
     openEditSub(itemData, index) {
       console.log(itemData);
-      this.editSubjectDetails.name = itemData.name;
+      this.editSubjectDetails.grade_level_id = itemData.grade_level_id;
+      this.editSubjectDetails.subject_name = itemData.subject_name;
+      this.editSubjectDetails.teacher_name = itemData.teacher_name;
       this.editSubjectDetails.teacher_id = itemData.teacher_id;
+      this.editSubjectDetails.id = itemData.id;
       this.editSubjectDetails.index = index;
       this.edit = true;
     },
@@ -229,11 +232,35 @@ export default {
       this.subjects[
         this.editSubjectDetails.index
       ].teacher_name = this.editSubjectDetails.teacher_name;
+      this.$axios
+        .post(`updateSubject`, this.editSubjectDetails)
+        .then((response) => {
+          this.showResponse("success", "", response.data.success);
+        })
+        .catch((error) => {
+          if (error.response.status == 422) {
+            let text = error.response.data.failed;
+            this.showResponse("info", "Ooops...", text);
+          }
+        });
+
       this.closeEdit();
     },
 
-    deleteData(index) {
-      this.subjects.splice(index, 1);
+    deleteData(id, index) {
+      this.$axios
+        .get(`deleteSubject/${id}`)
+        .then((response) => {
+          this.showResponse("success", "", response.data.success);
+          this.subjects.splice(index, 1);
+        })
+        .catch(() => {
+          this.showResponse(
+            "error",
+            "Ooops...",
+            "An error encountered! Please try again or reload the page."
+          );
+        });
     },
 
     closeEdit() {

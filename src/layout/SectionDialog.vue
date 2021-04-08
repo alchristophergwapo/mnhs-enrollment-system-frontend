@@ -80,7 +80,8 @@
     <div>
       <v-card-title class="text-center justify-center py-6">
         <h1 class="font-weight-bold display-1 basil--text">
-          Class schedule (Optional)
+          Class schedule
+          <span v-if="type.split(' ')[0] != 'Edit'">(Optional)</span>
         </h1>
       </v-card-title>
       <v-form ref="scheduleForm" v-model="scheduleValid" lazy-validation>
@@ -345,14 +346,6 @@
         </div>
       </v-form>
     </div>
-
-    <!-- Dialog -->
-    <!-- <v-dialog v-model="editSchedule" persistent max-width="700px">
-      <edit-schedule-form
-        :schedules="schedToEdit"
-        :section_id="Section.id"
-      ></edit-schedule-form>
-    </v-dialog> -->
   </v-card>
 </template>
 <script>
@@ -399,6 +392,7 @@ export default {
         Friday: null,
       },
       schedToEdit: null,
+      sectionToEdit: this.Section,
       schedulesToAdd: [],
       teachers: [],
       errors: {},
@@ -425,6 +419,7 @@ export default {
   },
   watch: {},
   created() {
+    console.log(this.sectionToEdit);
     EventBus.$on("allSubjectsInGradeLevel", (data) => {
       console.log(data);
       let startTime =
@@ -462,6 +457,10 @@ export default {
       this.Section.teacher = data.data.id;
       console.log(this.Section);
     });
+
+    EventBus.$on('editallTeacher', (data) =>{
+      console.log(data.data);
+    })
   },
   mounted() {
     if (this.Section.id) {
