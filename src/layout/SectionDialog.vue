@@ -65,7 +65,7 @@
                 :gradelevel="Number(type.split(' ')[2])"
                 :edit="type.split(' ')[0] == 'Edit' ? true : false"
                 :teacher="Section.teacher_name"
-                :modelValue="Section.teacher"
+                :modelValue="Section.teacher_name"
                 property="teacher_name"
               >
                 <template v-slot:label>
@@ -119,6 +119,7 @@
               </v-col>
             </v-row>
           </v-container>
+
           <v-data-table
             :headers="headers"
             :items="schedules"
@@ -262,6 +263,7 @@
               </tr>
             </template>
           </v-data-table>
+
           <v-data-table
             :headers="headers"
             :items="scheduleInput"

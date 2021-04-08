@@ -192,7 +192,152 @@
                     </template>
                   </v-dialog>
                 </td>
-                <td>{{ row.item.contact }}</td>
+                <td>
+                  <v-dialog>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        text
+                        v-bind="attrs"
+                        v-on="on"
+                        @click="getTeacherSchedule(row.item.id)"
+                        >View Schedules</v-btn
+                      >
+                    </template>
+                    <template v-slot:default="dialog">
+                      <v-card>
+                        <v-card-title>
+                          <v-spacer></v-spacer>
+                          <v-btn icon @click="dialog.value = false">
+                            <v-icon>mdi-close</v-icon>
+                          </v-btn>
+                        </v-card-title>
+                        <v-card class="table-header" color="#2e856e">
+                          <v-tabs
+                            v-model="tab"
+                            fixed-tabs
+                            background-color="#2e856e"
+                            color="white"
+                            show-arrows
+                            dark
+                            icons-and-text
+                          >
+                            <v-tabs-slider color="white"></v-tabs-slider>
+                            <v-tab href="#tab-1"> MONDAY </v-tab>
+                            <v-tab href="#tab-2"> TUESDAY </v-tab>
+                            <v-tab href="#tab-3"> WEDNESDAY </v-tab>
+                            <v-tab href="#tab-4"> THURSDAY </v-tab>
+                            <v-tab href="#tab-5"> FRIDAY </v-tab>
+                          </v-tabs>
+                        </v-card>
+
+                        <v-tabs-items v-model="tab">
+                          <v-tab-item :value="'tab-1'">
+                            <v-data-table
+                              :headers="schedules_headers"
+                              :items="monday_sched"
+                              item-key="Time"
+                              hide-default-footer
+                              class="elevation-1"
+                            >
+                              <template v-slot:item="row">
+                                <tr>
+                                  <td>
+                                    {{ row.item.start_time }} -
+                                    {{ row.item.end_time }}
+                                  </td>
+                                  <td>{{ row.item.subject_name }}</td>
+                                  <td>{{ row.item.name }}</td>
+                                </tr></template
+                              >
+                            </v-data-table>
+                          </v-tab-item>
+                          <v-tab-item :value="'tab-2'">
+                            <v-data-table
+                              :headers="schedules_headers"
+                              :items="tuesday_sched"
+                              item-key="Time"
+                              hide-default-footer
+                              class="elevation-1"
+                            >
+                              <template v-slot:item="row">
+                                <tr>
+                                  <td>
+                                    {{ row.item.start_time }} -
+                                    {{ row.item.end_time }}
+                                  </td>
+                                  <td>{{ row.item.subject_name }}</td>
+                                  <td>{{ row.item.name }}</td>
+                                </tr></template
+                              >
+                            </v-data-table>
+                          </v-tab-item>
+                          <v-tab-item :value="'tab-3'">
+                            <v-data-table
+                              :headers="schedules_headers"
+                              :items="wednesday_sched"
+                              item-key="Time"
+                              hide-default-footer
+                              class="elevation-1"
+                            >
+                              <template v-slot:item="row">
+                                <tr>
+                                  <td>
+                                    {{ row.item.start_time }} -
+                                    {{ row.item.end_time }}
+                                  </td>
+                                  <td>{{ row.item.subject_name }}</td>
+                                  <td>{{ row.item.name }}</td>
+                                </tr></template
+                              >
+                            </v-data-table>
+                          </v-tab-item>
+                          <v-tab-item :value="'tab-4'">
+                            <v-data-table
+                              :headers="schedules_headers"
+                              :items="thursday_sched"
+                              item-key="Time"
+                              hide-default-footer
+                              class="elevation-1"
+                            >
+                              <template v-slot:item="row">
+                                <tr>
+                                  <td>
+                                    {{ row.item.start_time }} -
+                                    {{ row.item.end_time }}
+                                  </td>
+                                  <td>{{ row.item.subject_name }}</td>
+                                  <td>{{ row.item.name }}</td>
+                                </tr></template
+                              >
+                            </v-data-table>
+                          </v-tab-item>
+                          <v-tab-item :value="'tab-5'">
+                            <v-data-table
+                              :headers="schedules_headers"
+                              :items="friday_sched"
+                              item-key="Time"
+                              hide-default-footer
+                              class="elevation-1"
+                            >
+                              <template v-slot:item="row">
+                                <tr>
+                                  <td>
+                                    {{ row.item.start_time }} -
+                                    {{ row.item.end_time }}
+                                  </td>
+                                  <td>{{ row.item.subject_name }}</td>
+                                  <td>{{ row.item.name }}</td>
+                                </tr></template
+                              >
+                            </v-data-table>
+                          </v-tab-item>
+                        </v-tabs-items>
+                      </v-card>
+                      <v-spacer></v-spacer>
+                    </template>
+                  </v-dialog>
+                </td>
+
                 <td>{{ row.item.section_id }}</td>
                 <td>
                   <v-icon @click="editTeacher(row.item)" color="primary"
@@ -234,6 +379,7 @@ export default {
       selected_section: null,
       sections: [],
       dialog: false,
+      tab: null,
       items: [
         {
           text: "Home",
@@ -254,13 +400,37 @@ export default {
           value: "name",
         },
         { text: "Details", value: "detatils" },
-        { text: "Phone Number", value: "contact" },
+        { text: "Schedules", value: "schedules" },
         { text: "Assigned Section", value: "section_id" },
         { text: "Action", value: "action" },
       ],
+      schedules_headers: [
+        { text: "Time", value: "Time", sortable: false },
+        { text: "Subject", value: "Subject", sortable: false },
+        { text: "Section", value: "Section", sortable: false },
+      ],
+
       teachers: [],
       filterTeachers: [],
       errors: {},
+      schedules: [],
+      spanOfClasses: {
+        hour: 1,
+        minutes: 0,
+      },
+      sched: {
+        Time: null,
+        Monday: null,
+        Tuesday: null,
+        Wednesday: null,
+        Thursday: null,
+        Friday: null,
+      },
+      monday_sched: [],
+      tuesday_sched: [],
+      wednesday_sched: [],
+      thursday_sched: [],
+      friday_sched: [],
     };
   },
   created() {
@@ -273,6 +443,7 @@ export default {
     //   }
     // }
     this.allSections();
+    // this.retrieveSchedule();
   },
   mounted() {
     this.display();
@@ -315,6 +486,35 @@ export default {
           console.log(error);
         });
     },
+    //Method for displaying schedules
+    getTeacherSchedule(id) {
+      this.$axios.get(`getTeacherSchedule/${id}`).then((res) => {
+        const schedules = res.data.schedules;
+        for (const index in schedules) {
+          if (schedules.hasOwnProperty.call(schedules, index)) {
+            const element = schedules[index];
+            this.sched.Time = `${element.start_time}-${element.end_time}`;
+            this.sched[element.day] = element;
+
+            if (this.sched[element.day].day == "Monday") {
+              this.monday_sched.push(this.sched[element.day]);
+              console.log(this.monday_sched);
+            } else if (this.sched[element.day].day == "Tuesday") {
+              this.tuesday_sched.push(this.sched[element.day]);
+            } else if (this.sched[element.day].day == "Wednesday") {
+              this.wednesday_sched.push(this.sched[element.day]);
+            } else if (this.sched[element.day].day == "Thursday") {
+              this.thursday_sched.push(this.sched[element.day]);
+            } else if (this.sched[element.day].day == "Friday") {
+              this.friday_sched.push(this.sched[element.day]);
+            } else {
+              console.error("Schedule not on weekdays");
+            }
+          }
+        }
+      });
+    },
+
     //Methods for displaying all teachers
     display() {
       this.$store
