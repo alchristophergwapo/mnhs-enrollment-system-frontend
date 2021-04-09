@@ -13,10 +13,6 @@ export default new Vuex.Store({
         studentLogInfo: null,
         user: null,
         classmates: null,
-        studentInfo: null,
-        parentGuardianInfo: null,
-        balikOrTransferInfo: null,
-        seniorHighInfo: null,
         teachers: [],
         numberOfTeachers: 0,
         enrolledStudents: [],
@@ -40,13 +36,6 @@ export default new Vuex.Store({
         clearUserData() {
             localStorage.removeItem('user')
             location.reload()
-        },
-
-        setStudentInfoData(state, data) {
-            state.studentInfo = data.studentInfo
-            state.parentGuardianInfo = data.parentGuardianInfo
-            state.balikOrTransferInfo = data.balikOrTransferInfo
-            state.seniorHighInfo = data.seniorHighInfo
         },
 
         setNumberOfTeachers(state, totalTeachers) {
@@ -147,10 +136,6 @@ export default new Vuex.Store({
 
         logout({ commit }) {
             commit('clearUserData')
-        },
-
-        reviewEnrollment({ commit }, data) {
-            commit('setStudentInfoData', data);
         },
 
         setTotalTeachers({ commit }, data) {
