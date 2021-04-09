@@ -4,78 +4,76 @@
     <br /><br />
     <div>
       <v-container>
-        <v-card outlined>
-          <v-card class="table-header" color="#00b4cc">
-            <v-card-title class="text-center justify-center">
-              <div
-                class="subtitle-1 font-weight-light text-center justify-center"
-              >
-                All students enrolled as of year {{ year }}
-              </div>
-            </v-card-title>
-          </v-card>
-          <v-card-title>
-            Sort By&nbsp;&nbsp;
-            <v-select
-              v-model="selectedYear"
-              :items="schoolYear"
-              @change="filterByYear(($event = selectedYear))"
-              menu-props="auto"
-              label="School Year"
-              hide-details
-              dense
-              outlined
-            ></v-select>
-            <v-select
-              v-model="gradelevel"
-              :items="grade_level"
-              @change="filterByGradeLevel(($event = gradelevel))"
-              menu-props="auto"
-              label="Grade Level"
-              hide-details
-              dense
-              outlined
-            ></v-select>
-            &nbsp;&nbsp;
-            <v-select
-              v-model="selectedSection"
-              @change="filterBySection(($event = selectedSection))"
-              :items="section"
-              menu-props="auto"
-              label="Section"
-              hide-details
-              dense
-              outlined
-            ></v-select>
-            <v-spacer></v-spacer>
-            <span v-if="adviser != null">Adviser:{{ adviser }}</span>
+        <!-- <v-card outlined> -->
+        <v-card class="table-header" color="#00b4cc">
+          <v-card-title class="text-center justify-center">
+            <div class="display-2 font-weight-light">Enrolled Students</div>
           </v-card-title>
-          <v-data-table
-            :headers="headers"
-            :items="students"
-            :search="search"
-            :items-per-page="10"
-            class="elevation-1"
-          >
-            <template v-slot:item="row">
-              <tr>
-                <td>{{ row.item.student.grade_level }}</td>
-                <td>{{ row.item.student_section }}</td>
-                <td>
-                  {{ row.item.student.firstname }}
-                  {{ row.item.student.lastname }}
-                </td>
-                <td>{{ row.item.student.age }}</td>
-                <td>{{ row.item.student.address }}</td>
-                <td>
-                  <v-btn text @click="editDetails(row.item.student)"
-                    >Edit Details</v-btn
-                  >
-                </td>
-              </tr>
-            </template>
-          </v-data-table>
+          <div class="subtitle-1 font-weight-light text-center justify-center">
+            All students enrolled as of year {{ year }}
+          </div>
+          <br />
         </v-card>
+        <v-card-title>
+          <v-select
+            v-model="selectedYear"
+            :items="schoolYear"
+            @change="filterByYear(($event = selectedYear))"
+            menu-props="auto"
+            label="School Year"
+            hide-details
+            dense
+            outlined
+          ></v-select>
+          <v-spacer></v-spacer>
+          <v-select
+            v-model="gradelevel"
+            :items="grade_level"
+            @change="filterByGradeLevel(($event = gradelevel))"
+            menu-props="auto"
+            label="Grade Level"
+            hide-details
+            dense
+            outlined
+          ></v-select>
+          <v-spacer></v-spacer>
+          <v-select
+            v-model="selectedSection"
+            @change="filterBySection(($event = selectedSection))"
+            :items="section"
+            menu-props="auto"
+            label="Section"
+            hide-details
+            dense
+            outlined
+          ></v-select>
+        </v-card-title>
+        <v-data-table
+          :headers="headers"
+          :items="students"
+          :search="search"
+          :items-per-page="10"
+          class="elevation-1"
+        >
+          <template v-slot:item="row">
+            <tr>
+              <td>{{ row.item.student.grade_level }}</td>
+              <td>{{ row.item.student_section }}</td>
+              <td>
+                {{ row.item.student.firstname }}
+                {{ row.item.student.lastname }}
+              </td>
+              <td>{{ row.item.student.age }}</td>
+              <td>{{ row.item.student.address }}</td>
+              <td>
+                <v-btn text @click="editDetails(row.item.student)"
+                  >Edit Details</v-btn
+                >
+              </td>
+            </tr>
+          </template>
+        </v-data-table>
+        <!-- </v-card> -->
         <v-dialog
           v-model="studentDialog"
           transition="dialog-top-transition"

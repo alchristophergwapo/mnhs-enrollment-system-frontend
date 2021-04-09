@@ -39,21 +39,19 @@
               </v-tabs>
             </v-card>
             <v-tabs-items v-model="tab">
-              <v-tabs-items v-model="tab">
-                <v-tab-item :value="'tab-1'">
-                  <schedules :sectionId="user.section.id"></schedules>
-                </v-tab-item>
-                <v-tab-item :value="'tab-2'">
-                  <student-class-details
-                    :section_name="
-                      user.section.adviser
-                        ? user.section.adviser.teacher_name
-                        : 'No Adviser'
-                    "
-                    :classmates="students"
-                  ></student-class-details>
-                </v-tab-item>
-              </v-tabs-items>
+              <v-tab-item :value="'tab-1'">
+                <schedules :sectionId="user.section.id"></schedules>
+              </v-tab-item>
+              <v-tab-item :value="'tab-2'">
+                <student-class-details
+                  :section_name="
+                    user.section.adviser
+                      ? user.section.adviser.teacher_name
+                      : 'No Adviser'
+                  "
+                  :classmates="students"
+                ></student-class-details>
+              </v-tab-item>
             </v-tabs-items>
           </v-card>
         </v-col>

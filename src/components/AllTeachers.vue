@@ -6,351 +6,346 @@
     <br />
     <div>
       <v-container>
-        <v-card outlined>
-          <v-card class="table-header" color="orange">
-            <v-card-title class="text-center justify-center">
-              <div class="display-2 font-weight-light">All Teachers</div>
-            </v-card-title>
+        <!-- <v-card outlined> -->
+        <v-card class="table-header" color="orange">
+          <v-card-title class="text-center justify-center">
+            <div class="display-2 font-weight-light">All Teachers</div>
+          </v-card-title>
 
-            <div
-              class="subtitle-1 font-weight-light text-center justify-center"
-            >
-              All teachers as of year {{ year }}
-            </div>
-          </v-card>
+          <div class="subtitle-1 font-weight-light text-center justify-center">
+            All teachers as of year {{ year }}
+          </div>
+        </v-card>
+        <v-card-title>
+          <v-select
+            v-model="selectedYear"
+            :items="schoolYear"
+            @change="filterByYear(($event = selectedYear))"
+            menu-props="auto"
+            label="School Year"
+            hide-details
+            dense
+            outlined
+          ></v-select>
+          <v-spacer></v-spacer>
+          <!-- Adding A Teacher!-->
           <v-card-title>
-            Sort By&nbsp;&nbsp;
-            <v-select
-              v-model="selectedYear"
-              :items="schoolYear"
-              @change="filterByYear(($event = selectedYear))"
-              menu-props="auto"
-              label="School Year"
-              hide-details
-              dense
-              outlined
-            ></v-select>
             <v-spacer></v-spacer>
-            <!-- Adding A Teacher!-->
-            <v-card-title>
-              <v-spacer></v-spacer>
-              <div class="add_btn">
-                <v-dialog v-model="statusdialog" persistent max-width="500px">
+            <div class="add_btn">
+              <v-dialog v-model="statusdialog" persistent max-width="500px">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    color="primary"
+                    v-bind="attrs"
+                    v-on="on"
+                    @click="showTeacher"
+                  >
+                    <v-icon>mdi-plus</v-icon>Add Teacher
+                  </v-btn>
+                </template>
+                <v-form>
+                  <v-card>
+                    <v-card-title class="headline">
+                      <span>{{ status }}</span>
+                    </v-card-title>
+                    <v-card-text>
+                      <v-container>
+                        <v-text-field
+                          @keydown="clearError"
+                          label="Teacher's Fullname"
+                          type="text"
+                          class="form-control"
+                          v-model="Teacher"
+                          :error="hasError('teacher_name')"
+                          name="teacher_name"
+                        ></v-text-field>
+                        <p
+                          v-if="hasError('teacher_name')"
+                          class="invalid-feedback"
+                        >
+                          {{ getError("name") }}
+                        </p>
+                        <v-text-field
+                          @keydown="clearError"
+                          label="Email"
+                          type="email"
+                          :error="hasError('email')"
+                          v-model="Email"
+                          name="email"
+                        ></v-text-field>
+                        <p v-if="hasError('email')" class="invalid-feedback">
+                          {{ getError("email") }}
+                        </p>
+                        <v-text-field
+                          @keydown="clearError"
+                          label="Phone Number"
+                          type="number"
+                          min="0"
+                          v-model="Contact"
+                          name="contact"
+                          :error="hasError('contact')"
+                        ></v-text-field>
+                        <p v-if="hasError('contact')" class="invalid-feedback">
+                          {{ getError("contact") }}
+                        </p>
+                        <v-select
+                          v-model="selected_section"
+                          item-text="name"
+                          item-value="id"
+                          :items="sections"
+                          type="text"
+                          label="Assigned Section Area"
+                        ></v-select>
+                      </v-container>
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+                      <v-btn color="error darken-1" @click="dialogs"
+                        >Cancel</v-btn
+                      >
+                      <v-btn
+                        color="blue darken-1"
+                        :loading="loading"
+                        :disabled="hasAnyErors"
+                        @click="addTeacher()"
+                        >Save</v-btn
+                      >
+                    </v-card-actions>
+                  </v-card>
+                </v-form>
+              </v-dialog>
+            </div>
+          </v-card-title>
+          <!-- Adding A Teacher!-->
+        </v-card-title>
+        <v-data-table
+          :headers="headers"
+          :items="teachers"
+          :search="search"
+          :items-per-page="10"
+          class="elevation-1"
+        >
+          <template v-slot:item="row">
+            <tr>
+              <td>{{ row.item.teacher_name }}</td>
+              <td>
+                <v-dialog transition="dialog-top-transition" max-width="400">
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      color="primary"
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="showTeacher"
-                    >
-                      <v-icon>mdi-plus</v-icon>Add Teacher
-                    </v-btn>
+                    <v-btn text v-bind="attrs" v-on="on">View Details</v-btn>
                   </template>
-                  <v-form>
+                  <template v-slot:default="dialog">
                     <v-card>
-                      <v-card-title class="headline">
-                        <span>{{ status }}</span>
+                      <v-card-title>
+                        <v-spacer></v-spacer>
+                        <v-btn icon @click="dialog.value = false">
+                          <v-icon>mdi-close</v-icon>
+                        </v-btn>
                       </v-card-title>
                       <v-card-text>
-                        <v-container>
-                          <v-text-field
-                            @keydown="clearError"
-                            label="Teacher's Fullname"
-                            type="text"
-                            class="form-control"
-                            v-model="Teacher"
-                            :error="hasError('name')"
-                            name="name"
-                          ></v-text-field>
-                          <p v-if="hasError('name')" class="invalid-feedback">
-                            {{ getError("name") }}
-                          </p>
-                          <v-text-field
-                            @keydown="clearError"
-                            label="Email"
-                            type="email"
-                            :error="hasError('email')"
-                            v-model="Email"
-                            name="email"
-                          ></v-text-field>
-                          <p v-if="hasError('email')" class="invalid-feedback">
-                            {{ getError("email") }}
-                          </p>
-                          <v-text-field
-                            @keydown="clearError"
-                            label="Phone Number"
-                            type="number"
-                            min="0"
-                            v-model="Contact"
-                            name="contact"
-                            :error="hasError('contact')"
-                          ></v-text-field>
-                          <p
-                            v-if="hasError('contact')"
-                            class="invalid-feedback"
-                          >
-                            {{ getError("contact") }}
-                          </p>
-                          <v-select
-                            v-model="selected_section"
-                            item-text="name"
-                            item-value="id"
-                            :items="sections"
-                            type="text"
-                            label="Assigned Section Area"
-                          ></v-select>
-                        </v-container>
+                        <v-row>
+                          <v-col cols="12">
+                            Name:&nbsp;&nbsp;<br /><strong>{{
+                              row.item.teacher_name
+                            }}</strong>
+                          </v-col>
+                          <v-col cols="12">
+                            Email:&nbsp;&nbsp;<br /><strong>{{
+                              row.item.email
+                            }}</strong>
+                          </v-col>
+                          <v-col cols="12">
+                            Contact:&nbsp;&nbsp;<br /><strong>{{
+                              row.item.contact
+                            }}</strong>
+                          </v-col>
+                          <v-col cols="12">
+                            AssignedSection:&nbsp;&nbsp;<br /><strong>{{
+                              row.item.section_id
+                                ? row.item.section_id
+                                : "No Section"
+                            }}</strong>
+                          </v-col>
+                          <v-col cols="12">
+                            School Year:&nbsp;&nbsp;<br /><strong>{{
+                              row.item.created_at
+                                .substring(0, row.item.created_at.indexOf("-"))
+                                .concat(
+                                  "-",
+                                  parseInt(
+                                    row.item.created_at.substring(
+                                      0,
+                                      row.item.created_at.indexOf("-")
+                                    )
+                                  ) + 1
+                                )
+                            }}</strong>
+                          </v-col>
+                        </v-row>
                       </v-card-text>
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="error darken-1" @click="dialogs"
-                          >Cancel</v-btn
-                        >
-                        <v-btn
-                          color="blue darken-1"
-                          :loading="loading"
-                          :disabled="hasAnyErors"
-                          @click="addTeacher()"
-                          >Save</v-btn
-                        >
-                      </v-card-actions>
                     </v-card>
-                  </v-form>
+                  </template>
                 </v-dialog>
-              </div>
-            </v-card-title>
-            <!-- Adding A Teacher!-->
-          </v-card-title>
-          <v-data-table
-            :headers="headers"
-            :items="teachers"
-            :search="search"
-            :items-per-page="10"
-            class="elevation-1"
-          >
-            <template v-slot:item="row">
-              <tr>
-                <td>{{ row.item.teacher_name }}</td>
-                <td>
-                  <v-dialog transition="dialog-top-transition" max-width="400">
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn text v-bind="attrs" v-on="on">View Details</v-btn>
-                    </template>
-                    <template v-slot:default="dialog">
-                      <v-card>
-                        <v-card-title>
-                          <v-spacer></v-spacer>
-                          <v-btn icon @click="dialog.value = false">
-                            <v-icon>mdi-close</v-icon>
-                          </v-btn>
-                        </v-card-title>
-                        <v-card-text>
-                          <v-row>
-                            <v-col cols="12">
-                              Name:&nbsp;&nbsp;<br /><strong>{{
-                                row.item.teacher_name
-                              }}</strong>
-                            </v-col>
-                            <v-col cols="12">
-                              Email:&nbsp;&nbsp;<br /><strong>{{
-                                row.item.email
-                              }}</strong>
-                            </v-col>
-                            <v-col cols="12">
-                              Contact:&nbsp;&nbsp;<br /><strong>{{
-                                row.item.contact
-                              }}</strong>
-                            </v-col>
-                            <v-col cols="12">
-                              AssignedSection:&nbsp;&nbsp;<br /><strong>{{
-                                row.item.section_id
-                                  ? row.item.section_id
-                                  : "No Section"
-                              }}</strong>
-                            </v-col>
-                            <v-col cols="12">
-                              School Year:&nbsp;&nbsp;<br /><strong>{{
-                                row.item.created_at
-                                  .substring(
-                                    0,
-                                    row.item.created_at.indexOf("-")
-                                  )
-                                  .concat(
-                                    "-",
-                                    parseInt(
-                                      row.item.created_at.substring(
-                                        0,
-                                        row.item.created_at.indexOf("-")
-                                      )
-                                    ) + 1
-                                  )
-                              }}</strong>
-                            </v-col>
-                          </v-row>
-                        </v-card-text>
+              </td>
+              <td>
+                <v-dialog max-width="800px">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      text
+                      v-bind="attrs"
+                      v-on="on"
+                      @click="getTeacherSchedule(row.item.id)"
+                      >View Schedules</v-btn
+                    >
+                  </template>
+                  <template v-slot:default="dialog">
+                    <v-card>
+                      <v-card-title>
+                        <v-spacer></v-spacer>
+                        <v-btn icon @click="dialog.value = false">
+                          <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                      </v-card-title>
+                      <br />
+                      <v-card class="table-header" color="#2e856e">
+                        <v-tabs
+                          v-model="tab"
+                          fixed-tabs
+                          background-color="#2e856e"
+                          color="white"
+                          show-arrows
+                          dark
+                          icons-and-text
+                        >
+                          <v-tabs-slider color="white"></v-tabs-slider>
+                          <v-tab href="#tab-1"> MONDAY </v-tab>
+                          <v-tab href="#tab-2"> TUESDAY </v-tab>
+                          <v-tab href="#tab-3"> WEDNESDAY </v-tab>
+                          <v-tab href="#tab-4"> THURSDAY </v-tab>
+                          <v-tab href="#tab-5"> FRIDAY </v-tab>
+                        </v-tabs>
                       </v-card>
-                    </template>
-                  </v-dialog>
-                </td>
-                <td>
-                  <v-dialog>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        text
-                        v-bind="attrs"
-                        v-on="on"
-                        @click="getTeacherSchedule(row.item.id)"
-                        >View Schedules</v-btn
-                      >
-                    </template>
-                    <template v-slot:default="dialog">
-                      <v-card>
-                        <v-card-title>
-                          <v-spacer></v-spacer>
-                          <v-btn icon @click="dialog.value = false">
-                            <v-icon>mdi-close</v-icon>
-                          </v-btn>
-                        </v-card-title>
-                        <v-card class="table-header" color="#2e856e">
-                          <v-tabs
-                            v-model="tab"
-                            fixed-tabs
-                            background-color="#2e856e"
-                            color="white"
-                            show-arrows
-                            dark
-                            icons-and-text
+
+                      <v-tabs-items v-model="tab">
+                        <v-tab-item :value="'tab-1'">
+                          <v-data-table
+                            :headers="schedules_headers"
+                            :items="monday_sched"
+                            item-key="Time"
+                            hide-default-footer
+                            class="elevation-1"
                           >
-                            <v-tabs-slider color="white"></v-tabs-slider>
-                            <v-tab href="#tab-1"> MONDAY </v-tab>
-                            <v-tab href="#tab-2"> TUESDAY </v-tab>
-                            <v-tab href="#tab-3"> WEDNESDAY </v-tab>
-                            <v-tab href="#tab-4"> THURSDAY </v-tab>
-                            <v-tab href="#tab-5"> FRIDAY </v-tab>
-                          </v-tabs>
-                        </v-card>
+                            <template v-slot:item="row">
+                              <tr>
+                                <td>
+                                  {{ row.item.start_time }} -
+                                  {{ row.item.end_time }}
+                                </td>
+                                <td>{{ row.item.subject_name }}</td>
+                                <td>{{ row.item.name }}</td>
+                              </tr></template
+                            >
+                          </v-data-table>
+                        </v-tab-item>
+                        <v-tab-item :value="'tab-2'">
+                          <v-data-table
+                            :headers="schedules_headers"
+                            :items="tuesday_sched"
+                            item-key="Time"
+                            hide-default-footer
+                            class="elevation-1"
+                          >
+                            <template v-slot:item="row">
+                              <tr>
+                                <td>
+                                  {{ row.item.start_time }} -
+                                  {{ row.item.end_time }}
+                                </td>
+                                <td>{{ row.item.subject_name }}</td>
+                                <td>{{ row.item.name }}</td>
+                              </tr></template
+                            >
+                          </v-data-table>
+                        </v-tab-item>
+                        <v-tab-item :value="'tab-3'">
+                          <v-data-table
+                            :headers="schedules_headers"
+                            :items="wednesday_sched"
+                            item-key="Time"
+                            hide-default-footer
+                            class="elevation-1"
+                          >
+                            <template v-slot:item="row">
+                              <tr>
+                                <td>
+                                  {{ row.item.start_time }} -
+                                  {{ row.item.end_time }}
+                                </td>
+                                <td>{{ row.item.subject_name }}</td>
+                                <td>{{ row.item.name }}</td>
+                              </tr></template
+                            >
+                          </v-data-table>
+                        </v-tab-item>
+                        <v-tab-item :value="'tab-4'">
+                          <v-data-table
+                            :headers="schedules_headers"
+                            :items="thursday_sched"
+                            item-key="Time"
+                            hide-default-footer
+                            class="elevation-1"
+                          >
+                            <template v-slot:item="row">
+                              <tr>
+                                <td>
+                                  {{ row.item.start_time }} -
+                                  {{ row.item.end_time }}
+                                </td>
+                                <td>{{ row.item.subject_name }}</td>
+                                <td>{{ row.item.name }}</td>
+                              </tr></template
+                            >
+                          </v-data-table>
+                        </v-tab-item>
+                        <v-tab-item :value="'tab-5'">
+                          <v-data-table
+                            :headers="schedules_headers"
+                            :items="friday_sched"
+                            item-key="Time"
+                            hide-default-footer
+                            class="elevation-1"
+                          >
+                            <template v-slot:item="row">
+                              <tr>
+                                <td>
+                                  {{ row.item.start_time }} -
+                                  {{ row.item.end_time }}
+                                </td>
+                                <td>{{ row.item.subject_name }}</td>
+                                <td>{{ row.item.name }}</td>
+                              </tr></template
+                            >
+                          </v-data-table>
+                        </v-tab-item>
+                      </v-tabs-items>
+                    </v-card>
+                    <v-spacer></v-spacer>
+                  </template>
+                </v-dialog>
+              </td>
 
-                        <v-tabs-items v-model="tab">
-                          <v-tab-item :value="'tab-1'">
-                            <v-data-table
-                              :headers="schedules_headers"
-                              :items="monday_sched"
-                              item-key="Time"
-                              hide-default-footer
-                              class="elevation-1"
-                            >
-                              <template v-slot:item="row">
-                                <tr>
-                                  <td>
-                                    {{ row.item.start_time }} -
-                                    {{ row.item.end_time }}
-                                  </td>
-                                  <td>{{ row.item.subject_name }}</td>
-                                  <td>{{ row.item.name }}</td>
-                                </tr></template
-                              >
-                            </v-data-table>
-                          </v-tab-item>
-                          <v-tab-item :value="'tab-2'">
-                            <v-data-table
-                              :headers="schedules_headers"
-                              :items="tuesday_sched"
-                              item-key="Time"
-                              hide-default-footer
-                              class="elevation-1"
-                            >
-                              <template v-slot:item="row">
-                                <tr>
-                                  <td>
-                                    {{ row.item.start_time }} -
-                                    {{ row.item.end_time }}
-                                  </td>
-                                  <td>{{ row.item.subject_name }}</td>
-                                  <td>{{ row.item.name }}</td>
-                                </tr></template
-                              >
-                            </v-data-table>
-                          </v-tab-item>
-                          <v-tab-item :value="'tab-3'">
-                            <v-data-table
-                              :headers="schedules_headers"
-                              :items="wednesday_sched"
-                              item-key="Time"
-                              hide-default-footer
-                              class="elevation-1"
-                            >
-                              <template v-slot:item="row">
-                                <tr>
-                                  <td>
-                                    {{ row.item.start_time }} -
-                                    {{ row.item.end_time }}
-                                  </td>
-                                  <td>{{ row.item.subject_name }}</td>
-                                  <td>{{ row.item.name }}</td>
-                                </tr></template
-                              >
-                            </v-data-table>
-                          </v-tab-item>
-                          <v-tab-item :value="'tab-4'">
-                            <v-data-table
-                              :headers="schedules_headers"
-                              :items="thursday_sched"
-                              item-key="Time"
-                              hide-default-footer
-                              class="elevation-1"
-                            >
-                              <template v-slot:item="row">
-                                <tr>
-                                  <td>
-                                    {{ row.item.start_time }} -
-                                    {{ row.item.end_time }}
-                                  </td>
-                                  <td>{{ row.item.subject_name }}</td>
-                                  <td>{{ row.item.name }}</td>
-                                </tr></template
-                              >
-                            </v-data-table>
-                          </v-tab-item>
-                          <v-tab-item :value="'tab-5'">
-                            <v-data-table
-                              :headers="schedules_headers"
-                              :items="friday_sched"
-                              item-key="Time"
-                              hide-default-footer
-                              class="elevation-1"
-                            >
-                              <template v-slot:item="row">
-                                <tr>
-                                  <td>
-                                    {{ row.item.start_time }} -
-                                    {{ row.item.end_time }}
-                                  </td>
-                                  <td>{{ row.item.subject_name }}</td>
-                                  <td>{{ row.item.name }}</td>
-                                </tr></template
-                              >
-                            </v-data-table>
-                          </v-tab-item>
-                        </v-tabs-items>
-                      </v-card>
-                      <v-spacer></v-spacer>
-                    </template>
-                  </v-dialog>
-                </td>
-
-                <td>{{ row.item.section_id }}</td>
-                <td>
-                  <v-icon @click="editTeacher(row.item)" color="primary"
-                    >mdi-pencil</v-icon
-                  >
-                  <v-icon @click="removeTeacher(row.item.id)" color="error"
-                    >mdi-delete</v-icon
-                  >
-                </td>
-              </tr>
-            </template>
-          </v-data-table>
-        </v-card>
+              <td>{{ row.item.section_id }}</td>
+              <td>
+                <v-icon @click="editTeacher(row.item)" color="primary"
+                  >mdi-pencil</v-icon
+                >
+                <v-icon @click="removeTeacher(row.item.id)" color="error"
+                  >mdi-delete</v-icon
+                >
+              </td>
+            </tr>
+          </template>
+        </v-data-table>
+        <!-- </v-card> -->
       </v-container>
     </div>
   </div>
@@ -564,7 +559,7 @@ export default {
       this.status = "Update Teacher";
       this.statusdialog = true;
       this.booleanStatus = true;
-      this.Teacher = teacher.name;
+      this.Teacher = teacher.teacher_name;
       this.Email = teacher.email;
       this.Contact = teacher.contact;
       this.Id = teacher.id;

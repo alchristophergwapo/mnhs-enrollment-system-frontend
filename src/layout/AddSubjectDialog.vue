@@ -41,7 +41,7 @@
         </v-card>
       </v-dialog>
       <div class="subtitle-1 font-weight-light text-center justify-center">
-        <h1>Grade {{gradeLevel}} Subject(s)</h1>
+        <h1>Grade {{ gradeLevel }} Subject(s)</h1>
       </div>
       <br />
       <v-data-table
@@ -124,6 +124,10 @@ export default {
       type: String,
       required: true,
     },
+    subjectsInGradeLevel: {
+      type: Array,
+      required: true,
+    },
   },
   components: {
     Autocomplete: () => import("@/layout/Autocomplete.vue"),
@@ -144,7 +148,7 @@ export default {
         { text: "Teacher", value: "subjects.teacher" },
         { text: "Update", sortable: false },
       ],
-      subjects: [],
+      subjects: this.subjectsInGradeLevel,
       teachers: [],
       editSubjectDetails: {
         grade_level_id: null,
@@ -158,11 +162,6 @@ export default {
   },
   watch: {},
   created() {
-    console.log(this.gradeLevel);
-    this.$axios.get(`gradelevelSubject/${this.gradeLevel}`).then((response) => {
-      console.log(response);
-      this.subjects = response.data.subjects;
-    });
     EventBus.$on("allTeacher", (data) => {
       console.log(data);
       this.teacher = data.data.teacher_name;
@@ -283,9 +282,11 @@ export default {
       this.$refs.subject.resetValidation();
     },
     close() {
+      this.subjects = [];
       EventBus.$emit("closeSubjectModal", false);
 
-      (this.name = null), (this.teacher = null);
+      this.name = null;
+      this.teacher = null;
     },
     //Methods For All Errors In Junior High School
     setErrors(error) {

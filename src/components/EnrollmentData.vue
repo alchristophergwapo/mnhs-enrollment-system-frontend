@@ -11,104 +11,92 @@
     </v-container>
     <div class="table">
       <v-container>
-        <v-card outlined>
-          <v-card class="table-header" color="#2e856e">
-            <v-card-title class="text-center justify-center">
-              <div class="display-2 font-weight-light">Enrollments</div>
-            </v-card-title>
+        <!-- <v-card outlined> -->
+        <v-card class="table-header" color="#2e856e">
+          <v-card-title class="text-center justify-center">
+            <div class="display-2 font-weight-light">Enrollments</div>
+          </v-card-title>
 
-            <div
-              class="subtitle-1 font-weight-light text-center justify-center"
+          <div class="subtitle-1 font-weight-light text-center justify-center">
+            All enrollments as of year {{ year }}
+          </div>
+          <v-container>
+            <v-tabs
+              v-model="enrollmentTab"
+              fixed-tabs
+              background-color="#2e856e"
+              color="white"
+              show-arrows
+              icons-and-text
             >
-              All enrollments as of year {{ year }}
-            </div>
-            <v-container>
-              <v-tabs
-                v-model="enrollmentTab"
-                fixed-tabs
-                background-color="#2e856e"
-                color="white"
-                show-arrows
-              >
-                <v-tab
-                  v-for="(item, index) in ['Pending', 'Declined']"
-                  :key="index"
-                  >{{ item }}</v-tab
-                >
-              </v-tabs>
-            </v-container>
-          </v-card>
-          <v-tabs-items v-model="enrollmentTab">
-            <v-tab-item
-              v-for="(item, index) in ['Pending', 'Declined']"
-              :key="index"
-            >
-              <div v-if="index == 0">
-                <pending-enrollment :students="students" :search="search">
-                  <template v-slot:data-table-header>
-                    <v-card-title>
-                      <!-- Sort By&nbsp;&nbsp; -->
-                      <v-select
-                        :items="grade_level"
-                        v-model="gradelevel"
-                        @change="filterByGradeLevel($event)"
-                        menu-props="auto"
-                        label="Grade Level"
-                        hide-details
-                        dense
-                        outlined
-                      ></v-select>
-                      <v-spacer></v-spacer>
-                      <v-text-field
-                        v-model="search"
-                        @keyup="filterByName(($event = search))"
-                        append-icon="mdi-magnify"
-                        label="Search"
-                        single-line
-                        hide-details
-                      ></v-text-field>
-                    </v-card-title>
-                  </template>
-                </pending-enrollment>
-              </div>
-              <div v-else>
-                <declined-enrollments
-                  :declinedEnrollments="declinedEnrollments"
-                  :searchDeclined="searchDeclined"
-                >
-                  <template v-slot:data-table-header>
-                    <v-card-title>
-                      Sort By&nbsp;&nbsp;
-                      <v-select
-                        :items="grade_level"
-                        v-model="searchDeclined"
-                        menu-props="auto"
-                        label="Grade Level"
-                        hide-details
-                        dense
-                        outlined
-                      ></v-select>
-                      <v-spacer></v-spacer>
-                      <v-text-field
-                        v-model="searchDeclined"
-                        @keyup="filterByName(($event = searchDeclined))"
-                        append-icon="mdi-magnify"
-                        label="Search"
-                        single-line
-                        hide-details
-                      ></v-text-field>
-                    </v-card-title>
-                  </template>
-                </declined-enrollments>
-              </div>
-            </v-tab-item>
+              <v-tab href="#tab-1">
+                Pending
+                <v-icon color="info" large>mdi-account-alert</v-icon>
+              </v-tab>
 
-            <!-- <v-tab-item v-else> -->
-
-            <!-- </v-tab-item> -->
-          </v-tabs-items>
-          <br />
+              <v-tab href="#tab-2">
+                Declined
+                <v-icon color="error" large>mdi-account-minus</v-icon>
+              </v-tab>
+            </v-tabs>
+          </v-container>
         </v-card>
+        <v-tabs-items v-model="enrollmentTab">
+          <v-tab-item :value="'tab-1'">
+            <pending-enrollment :students="students" :search="search">
+              <template v-slot:data-table-header>
+                <v-card-title>
+                  <!-- Sort By&nbsp;&nbsp; -->
+                  <v-select
+                    :items="grade_level"
+                    v-model="gradelevel"
+                    @change="filterByGradeLevel($event, 'pending')"
+                    label="Grade Level"
+                    outlined
+                  ></v-select>
+                  <v-spacer></v-spacer>
+                  <v-text-field
+                    v-model="search"
+                    @keyup="filterByName(($event = search))"
+                    append-icon="mdi-magnify"
+                    label="Search"
+                    outlined
+                  ></v-text-field>
+                </v-card-title>
+              </template>
+            </pending-enrollment>
+          </v-tab-item>
+          <v-tab-item :value="'tab-2'">
+            <declined-enrollments
+              :declinedEnrollments="declinedEnrollments"
+              :searchDeclined="searchDeclined"
+            >
+              <template v-slot:data-table-header>
+                <v-card-title>
+                  Sort By&nbsp;&nbsp;
+                  <v-select
+                    :items="grade_level"
+                    v-model="searchDeclined"
+                    menu-props="auto"
+                    label="Grade Level"
+                    dense
+                    outlined
+                  ></v-select>
+                  <v-spacer></v-spacer>
+                  <v-text-field
+                    v-model="searchDeclined"
+                    @keyup="filterByName(($event = searchDeclined))"
+                    append-icon="mdi-magnify"
+                    label="Search"
+                    outlined
+                  ></v-text-field>
+                </v-card-title>
+              </template>
+            </declined-enrollments>
+          </v-tab-item>
+        </v-tabs-items>
+        <br />
+        <!-- </v-card> -->
       </v-container>
     </div>
   </div>
@@ -224,11 +212,7 @@ export default {
         }
       } else {
         if (tab == "pending") {
-          console.log(tab);
-          this.students = this.filterStudents.filter(function (val) {
-            return val.grade_level == grade;
-          });
-          console.log(this.students);
+          this.search = grade;
         } else {
           this.declinedEnrollments = this.filterDeclined.filter(function (val) {
             return (val.grade_level = grade);

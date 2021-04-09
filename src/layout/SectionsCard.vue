@@ -18,11 +18,12 @@
     </v-card-text>
     <v-card-text>
       <v-icon color="primary">mdi-account-box</v-icon>
-      Adviser: <span v-if="teacher">{{ teacher }}</span><span v-else>None</span>
+      Adviser: <span v-if="teacher">{{ teacher }}</span
+      ><span v-else>None</span>
     </v-card-text>
     <v-card-text>
       <div class="ml-auto text-right">
-        <slot name="edit"></slot>
+        <slot name="btns"></slot>
       </div>
     </v-card-text>
     <v-progress-linear
