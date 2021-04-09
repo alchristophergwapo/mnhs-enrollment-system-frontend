@@ -67,7 +67,7 @@
             text
             icon
             color="white lighten-2"
-            href="http://mantalongonnhs.weebly.com/"
+            href="https://www.facebook.com/MantalongonNHSOfficial.Dalaguete/"
           >
             <v-icon>mdi-facebook</v-icon>
           </v-btn>
@@ -77,7 +77,7 @@
             text
             icon
             color="white lighten-2"
-            href="http://mantalongonnhs.weebly.com/"
+            href="http://mantalongonnhs.weebly.com/contact-us.html"
           >
             <v-icon>mdi-google</v-icon>
           </v-btn>

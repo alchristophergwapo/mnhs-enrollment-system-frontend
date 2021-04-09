@@ -164,11 +164,12 @@ export default {
               }
             });
         } else {
+          //console.log("Teacher:"+this.Section.teacher);
           this.$axios
             .post("updateSection/" + this.Section.id, {
               name: this.Section.section,
               capacity: this.Section.capacity,
-              teacher: this.Section.teacher,
+              teacher: this.Section.id,
             })
             .then((response) => {
               if (response.data.message) {
@@ -201,7 +202,7 @@ export default {
                           updateId: this.Section.id,
                           name: this.Section.section,
                           capacity: this.Section.capacity,
-                          teacher: this.Section.teacher,
+                          teacher:this.Section.id,
                         })
                         .then((response) => {
                           console.log(response);

@@ -335,10 +335,6 @@
                         :rules="[
                           (guardian) =>
                             !!guardian || 'Guardian name is required',
-                          (guardian) =>
-                            (/^[a-z]/.test(guardian) == true &&
-                              /[^a-zA-Z.ñÑ| ]/.test(guardian) == false) ||
-                            'This special character is not allowed!',
                         ]"
                         label="Guardian's Name"
                         required
@@ -549,11 +545,17 @@ export default {
     //UPDATE A STUDENT DETAILS
     updateStudent(formdata) {
       if (this.$refs.studentDetails.validate()) {
+        console.log("id:" + formdata.id);
         this.$axios
           .post(`updateStudent/` + formdata.id, formdata)
           .then((response) => {
             if (response.data.updated) {
-              alert("Successfully Updated!");
+              this.$swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Student details successfully updated!",
+              });
+
               this.studentDialog = false;
               this.$refs.studentDetails.resetValidation();
             } else {

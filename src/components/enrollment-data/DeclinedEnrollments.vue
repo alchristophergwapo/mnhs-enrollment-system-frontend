@@ -131,18 +131,43 @@
                 >
                   approve
                 </v-btn>
-                <v-btn
-                  color="error"
-                  @click="declineEnrollment(row.item.id, index)"
-                >
-                  decline
-                </v-btn>
               </v-row>
             </td>
           </tr>
         </template>
       </v-data-table>
     </v-card>
+    <v-row justify="center">
+      <v-dialog v-model="dialog" max-width="500px">
+        <v-card>
+          <v-card-title>
+            <span class="headline">Select Student Sections</span>
+            <v-spacer></v-spacer>
+            <v-btn icon @click="dialog = false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-card-text>
+            <v-select
+              :items="sections"
+              v-model="section"
+              label="Section*"
+              required
+            ></v-select>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              color="blue darken-1"
+              @click="approveEnrollment(id, index)"
+              :loading="loading"
+            >
+              Done
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
   </v-container>
 </template>
 
@@ -170,7 +195,87 @@ export default {
         { text: "Details", value: "details" },
         { text: "Action", value: "action" },
       ],
+      id: null,
+      index: null,
+      dialog: false,
+      loading: false,
+      section: "",
+      sections: [],
     };
+  },
+  methods: {
+    filterSections(gradelevel, id, index) {
+      console.log(gradelevel);
+      this.id = id;
+      this.index = index;
+      // console.log(index);
+      this.dialog = true;
+      this.sections = [];
+      this.$store.dispatch("allSections").then((res) => {
+        let sections = res;
+        // console.log(grade_level);
+        for (const key in sections) {
+          if (sections.hasOwnProperty.call(sections, key)) {
+            const element = sections[key];
+            const grade_levelData = element["gradelevel"];
+            for (const glKey in grade_levelData) {
+              let section = element["name"];
+              if (grade_levelData.hasOwnProperty.call(grade_levelData, glKey)) {
+                const element1 = grade_levelData[glKey];
+                // console.log(glKey);
+                if (glKey == "grade_level") {
+                  // console.log("here");
+                  if (element1 == gradelevel) {
+                    // console.log("here");
+                    this.sections.push(section);
+                  }
+                }
+              }
+            }
+          }
+        }
+        // console.log(this.sections);
+      });
+    },
+
+    //Method For Approving the enrollment
+    approveEnrollment(id, index) {
+      console.log(this.section);
+      this.loading = true;
+      if (this.section) {
+        this.$axios
+          .post("approveEnrollment/" + id, { student_section: this.section })
+          .then((response) => {
+            console.log(response);
+            this.pendingStudents.splice(index, 1);
+            this.$swal.fire({
+              icon: "success",
+              title: "Success",
+              text: "Enrollment approved.",
+            });
+            this.dialog = false;
+            this.loading = false;
+            // window.location.reload(true);
+          })
+          .catch((error) => {
+            console.log(error);
+            this.$swal.fire({
+              icon: "error",
+              title: "Ooops....",
+              text: error.response.data.error,
+            });
+            this.loading = false;
+            this.dialog = true;
+          });
+      } else {
+        this.$swal.fire({
+          icon: "error",
+          title: "Ooops....",
+          text: "Please select a section.",
+        });
+        this.dialog = true;
+      }
+    },
   },
 };
 </script>

@@ -153,55 +153,26 @@
                               class="section_card"
                             >
                               <template v-slot:btns>
-                                <v-speed-dial
-                                  v-model="openAction"
-                                  :right="true"
-                                  :direction="'right'"
-                                  :open-on-hover="true"
-                                  :transition="'scale'"
-                                >
-                                  <template v-slot:activator>
-                                    <v-btn
-                                      v-model="openAction"
-                                      color="blue darken-2"
-                                      dark
-                                      fab
-                                    >
-                                      <v-icon v-if="openAction">
-                                        mdi-close
-                                      </v-icon>
-                                      <v-icon v-else>
-                                        mdi-account-circle
-                                      </v-icon>
-                                    </v-btn>
-                                  </template>
-                                  <v-btn fab dark small color="green">
-                                    <v-icon>mdi-pencil</v-icon>
-                                  </v-btn>
-                                  <v-btn fab dark small color="indigo">
-                                    <v-icon>mdi-plus</v-icon>
-                                  </v-btn>
-                                  <v-btn fab dark small color="red">
-                                    <v-icon>mdi-delete</v-icon>
-                                  </v-btn>
-                                </v-speed-dial>
-                                <!-- <v-btn
-                                  @click="viewSchedules(dta.id)"
-                                  color="primary"
+                                <v-btn
+                                  dark
                                   small
+                                  color="green"
+                                  @click="viewSchedules(dta.id)"
                                 >
                                   schedules
                                 </v-btn>
-                                <v-spacer></v-spacer>
                                 <v-btn
-                                  @click="editSection(dta)"
-                                  outlined
-                                  color="#006a4e"
+                                  dark
                                   small
+                                  @click="editSection(dta)"
+                                  color="#006a4e"
                                 >
                                   edit section
                                   <v-icon>mdi-pencil</v-icon>
-                                </v-btn> -->
+                                </v-btn>
+                                <!-- 
+                                <v-spacer></v-spacer>
+                                 -->
                               </template>
                             </sections-card>
                           </v-col>

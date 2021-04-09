@@ -276,6 +276,7 @@ export default {
               title: "Ooops....",
               text: error.response.data.message,
             });
+            this.loading = false;
             this.dialog = true;
           });
       } else {
