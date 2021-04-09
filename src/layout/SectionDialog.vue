@@ -104,6 +104,7 @@ export default {
   },
   watch: {},
   created() {
+    console.log(this.Section);
     EventBus.$on("allTeacher", (data) => {
       console.log(data);
       this.Section.teacher = data.data.id;
@@ -111,7 +112,10 @@ export default {
     });
 
     EventBus.$on("editallTeacher", (data) => {
+      // console.log(data);
       this.Section.teacher = data.data.teacher_name;
+      this.Section.teacher_id = data.data.id;
+      console.log(this.Section);
     });
   },
   mounted() {},
@@ -168,7 +172,7 @@ export default {
             .post("updateSection/" + this.Section.id, {
               name: this.Section.section,
               capacity: this.Section.capacity,
-              teacher: this.Section.teacher,
+              teacher_id: this.Section.teacher_id,
             })
             .then((response) => {
               if (response.data.message) {
@@ -201,7 +205,7 @@ export default {
                           updateId: this.Section.id,
                           name: this.Section.section,
                           capacity: this.Section.capacity,
-                          teacher: this.Section.teacher,
+                          teacher_id: this.Section.teacher_id,
                         })
                         .then((response) => {
                           console.log(response);
