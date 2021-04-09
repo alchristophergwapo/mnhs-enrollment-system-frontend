@@ -21,11 +21,11 @@
       Adviser: <span v-if="teacher">{{ teacher }}</span
       ><span v-else>None</span>
     </v-card-text>
-    <v-card-text>
-      <div class="ml-auto text-right">
-        <slot name="btns"></slot>
-      </div>
-    </v-card-text>
+    <v-card-actions>
+      <!-- <div class="ml-auto text-right"> -->
+      <slot name="btns"></slot>
+      <!-- </div> -->
+    </v-card-actions>
     <v-progress-linear
       :value="(total_students / capacity) * 100"
       height="25"

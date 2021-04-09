@@ -155,9 +155,10 @@
                               <template v-slot:btns>
                                 <v-speed-dial
                                   v-model="openAction"
-                                  :direction="'top'"
+                                  :right="true"
+                                  :direction="'right'"
                                   :open-on-hover="true"
-                                  :transition="'slide-y-reverse-transition'"
+                                  :transition="'scale'"
                                 >
                                   <template v-slot:activator>
                                     <v-btn
@@ -184,7 +185,7 @@
                                     <v-icon>mdi-delete</v-icon>
                                   </v-btn>
                                 </v-speed-dial>
-                                <v-btn
+                                <!-- <v-btn
                                   @click="viewSchedules(dta.id)"
                                   color="primary"
                                   small
@@ -200,7 +201,7 @@
                                 >
                                   edit section
                                   <v-icon>mdi-pencil</v-icon>
-                                </v-btn>
+                                </v-btn> -->
                               </template>
                             </sections-card>
                           </v-col>
