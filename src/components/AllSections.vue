@@ -200,6 +200,13 @@
                       <v-card-title>
                         <v-spacer></v-spacer>
                         <v-btn
+                            color="secondary"
+                            small
+                            dark
+                            @click="retrieveSubjects()"
+                            >subject(s)</v-btn
+                          >
+                        <v-btn
                           color="primary"
                           small
                           dark
@@ -360,7 +367,7 @@ export default {
         .get("allSections")
         .then((response) => {
           this.allsections = response.data.sections;
-          console.log(this.allsections);
+          //console.log(this.allsections);
           if (juniors != null && seniors != null) {
             this.junior_high.forEach((junior) => {
               if (junior.text.split(" ")[1] == juniors.split(" ")[2]) {
@@ -505,6 +512,7 @@ export default {
       this.Section.capacity = data.capacity;
       this.Section.id = data.id;
     },
+
     //Method For Removing The Section In Junior High Category
     juniorRemove(sec) {
       this.$axios

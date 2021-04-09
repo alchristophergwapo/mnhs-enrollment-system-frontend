@@ -131,7 +131,9 @@
               <td>
                 <v-dialog transition="dialog-top-transition" max-width="400">
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn text v-bind="attrs" v-on="on">View Details</v-btn>
+                    <v-btn text small v-bind="attrs" v-on="on"
+                      >View Details</v-btn
+                    >
                   </template>
                   <template v-slot:default="dialog">
                     <v-card>
@@ -190,6 +192,7 @@
                 <v-dialog max-width="800px">
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
+                      small
                       text
                       v-bind="attrs"
                       v-on="on"
@@ -609,7 +612,7 @@ export default {
         this.loading = false;
         this.$axios
           .post("addNewTeacher", {
-            name: this.Teacher,
+            teacher_name: this.Teacher,
             email: this.Email,
             contact: this.Contact,
             section_id: this.selected_section,
@@ -655,7 +658,7 @@ export default {
         this.loading = false;
         this.$axios
           .post("updateTeacher/" + this.Id, {
-            name: this.Teacher,
+            teacher_name: this.Teacher,
             email: this.Email,
             contact: this.Contact,
             section_id: this.selected_section,
@@ -695,7 +698,7 @@ export default {
                     this.$axios
                       .post("updateTeacher/" + "update", {
                         updateId: this.Id,
-                        name: this.Teacher,
+                        teacher_name: this.Teacher,
                         email: this.Email,
                         contact: this.Contact,
                         section_id: this.selected_section,
