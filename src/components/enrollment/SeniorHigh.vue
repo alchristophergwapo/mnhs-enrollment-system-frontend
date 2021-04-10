@@ -1,10 +1,10 @@
 <template>
   <v-row>
     <div class="form-head">For Senior High Learners</div>
-    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+    <v-col cols="12" xs="6" sm="4" md="4" lg="2">
       <p class="checkbox-label" style="padding-top: 28px">Semester</p>
     </v-col>
-    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+    <v-col cols="12" xs="6" sm="4" md="4" lg="2">
       <v-checkbox
         v-model="senior_high.semester"
         :rules="[(semester) => !!semester || 'Semester is required.']"
@@ -13,7 +13,7 @@
         type="checkbox"
       ></v-checkbox>
     </v-col>
-    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+    <v-col cols="12" xs="6" sm="4" md="4" lg="2">
       <v-checkbox
         v-model="senior_high.semester"
         :rules="[(semester) => !!semester || 'Semester is required.']"
@@ -22,21 +22,23 @@
         type="checkbox"
       ></v-checkbox>
     </v-col>
-    <v-col cols="12" xs="6" sm="6" md="6" lg="6">
+    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
       <v-select
         v-model="senior_high.track"
         :rules="[(track) => !!track || 'Track is required.']"
         :items="tracks"
         label="Track"
+        outlined
         required
       ></v-select>
     </v-col>
-    <v-col cols="12" xs="6" sm="6" md="6" lg="6">
+    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
       <v-select
         v-model="senior_high.strand"
         :items="strands[0][senior_high.track]"
         :rules="[(strand) => !!strand || 'Strand is required.']"
         label="Strand"
+        outlined
         required
       ></v-select>
     </v-col>
@@ -76,7 +78,6 @@ export default {
 </script>
 
 <style>
-
 .checkbox-label {
   font-weight: 700;
   font-size: 16px;
@@ -84,5 +85,4 @@ export default {
   /* or 13px */
   color: #82869a;
 }
-
 </style>

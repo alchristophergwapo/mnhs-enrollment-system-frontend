@@ -87,6 +87,7 @@
                     label="Card Picture"
                     :rules="[(value) => !!value || 'Required.']"
                     accept="image/*"
+                    outlined
                     prepend-icon="mdi-camera"
                   ></v-file-input>
                 </v-col>
@@ -98,6 +99,7 @@
                     "
                     :rules="[(v) => !!v || 'Required']"
                     label="Select Grade Level"
+                    outlined
                     required
                   ></v-select>
                 </v-col>
@@ -172,18 +174,19 @@ export default {
       enrollmentDate: Date.now(),
     };
   },
-  computed: {
-  },
+  computed: {},
   mounted: () => {},
   methods: {
-
     submitEnrollment() {
-      if (this.$refs.submitEnrollment.validate() && this.$refs.basicInfo.validate()) {
+      if (
+        this.$refs.submitEnrollment.validate() &&
+        this.$refs.basicInfo.validate()
+      ) {
         this.submitting = true;
-        this.student = JSON.parse(this.$refs.studentInfoData.getData)
+        this.student = JSON.parse(this.$refs.studentInfoData.getData);
         let formdata = new FormData();
         let parent = JSON.parse(this.$refs.parentGuardianInfoData.getData);
-        let noError = false;
+        // let noError = false;
         // console.log(parent);
         for (const key in parent) {
           if (parent[key]) {
@@ -193,7 +196,9 @@ export default {
         }
 
         if (this.isTransfereeOrBalikAral) {
-          let balikOrTransfer = JSON.parse(this.$refs.balikAralorTransferInfoData.getData);
+          let balikOrTransfer = JSON.parse(
+            this.$refs.balikAralorTransferInfoData.getData
+          );
           for (const key in balikOrTransfer) {
             if (balikOrTransfer[key]) {
               const element = balikOrTransfer[key];
@@ -205,16 +210,16 @@ export default {
         }
 
         if (this.isSeniorHigh) {
-          let seniorHigh = this.$refs.seniorHighData.getData;
+          let seniorHigh = JSON.parse(this.$refs.seniorHighData.getData);
           if (this.$refs.seniorHigh.validate()) {
             for (const key in seniorHigh) {
-            if (seniorHigh[key]) {
-              const element = seniorHigh[key];
-              this.student[key] = element;
+              if (seniorHigh[key]) {
+                const element = seniorHigh[key];
+                this.student[key] = element;
+              }
             }
-          }
 
-          formdata.append("isSeniorHigh", true);
+            formdata.append("isSeniorHigh", true);
           }
         }
 
@@ -236,31 +241,36 @@ export default {
         for (let [key, value] of formdata.entries()) {
           console.log(key, value);
         }
-        if (noError) {
-          // this.$axios
-        //   .post(`addStudent`, formdata)
-        //   .then((response) => {
-        //     console.log(response);
-        //     this.submitting = false;
-        //     const userInfo = localStorage.getItem("user");
-        //     if (userInfo) {
-        //       this.$router.push({ path: "/admin" });
-        //     } else {
-        //       this.$router.push({ path: "/" });
-        //     }
-        //   })
-        //   .catch((error) => {
-        //     console.log(error.response);
-        //     this.submitting = false;
-        //     if (error.response.data.currentEnrollment) {
-        //       this.$swal.fire({
-        //         icon: "error",
-        //         title: "Error",
-        //         text: error.response.data.error,
-        //       });
-        //     }
-        //   });
-        }
+        // if (noError) {
+        this.$axios
+          .post(`addStudent`, formdata)
+          .then((response) => {
+            console.log(response);
+            this.$swal.fire({
+              title: 'Success',
+              text: response.data.success,
+              icon: 'success'
+            })
+            this.submitting = false;
+            const userInfo = localStorage.getItem("user");
+            if (userInfo) {
+              this.$router.push({ path: "/admin" });
+            } else {
+              this.$router.push({ path: "/" });
+            }
+          })
+          .catch((error) => {
+            console.log(error.response);
+            this.submitting = false;
+            if (error.response.data.currentEnrollment) {
+              this.$swal.fire({
+                icon: "error",
+                title: "Error",
+                text: error.response.data.error,
+              });
+            }
+          });
+        // }
       }
     },
   },

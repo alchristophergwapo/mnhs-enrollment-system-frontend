@@ -3,9 +3,7 @@
     <bread-crumb :item="items" page_name="Dashboard"></bread-crumb>
     <br /><br />
     <v-container id="dashboard" tag="section">
-      <v-row>
-        <v-col cols="12" lg="5" class="enrollment-chart">
-          <!-- <chart
+      <!-- <chart
             :data="enrollmentChart.data"
             :options="enrollmentChart.options"
             :responsive-options="enrollmentChart.responsiveOptions"
@@ -14,147 +12,137 @@
             type="Bar"
             v-if="initialized"
           > -->
-          <chart
-            :data="enrollmentChart.data"
-            :options="enrollmentChart.options"
-            :responsive-options="enrollmentChart.responsiveOptions"
-            color="#E91E63"
-            hover-reveal
-            type="Bar"
-          >
-            <h4 class="card-title font-weight-light mt-2 ml-2">
-              Enrolled Students
-            </h4>
+      <chart
+        :data="enrollmentChart.data"
+        :options="enrollmentChart.options"
+        :responsive-options="enrollmentChart.responsiveOptions"
+        color="#E91E63"
+        type="Bar"
+      >
+        <h4 class="card-title font-weight-light mt-2 ml-2">
+          Enrolled Students
+        </h4>
 
-            <p class="d-inline-flex font-weight-light ml-2 mt-1">
-              All yearly enrolled students data.
-            </p>
-            <hr />
-            <div class="legends">
-              <!-- <v-card-title class="text-center justify-center">
-                <div class="font-weight-light">Legend</div>
-              </v-card-title> -->
-              <v-row>
-                <v-col cols="12" sm="6" md="4">
-                  <v-card-title class="text-center justify-center">
-                    <v-sheet
-                      class="d-flex"
-                      color="#006a4e"
-                      elevation="1"
-                      height="10"
-                      width="10"
-                    >
-                    </v-sheet>
-                    <div class="label">Male</div>
-                  </v-card-title>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-card-title class="text-center justify-center">
-                    <v-sheet
-                      class="d-flex"
-                      color="#f05b4f"
-                      elevation="1"
-                      height="10"
-                      width="10"
-                    >
-                    </v-sheet>
-                    <div class="label">Female</div>
-                  </v-card-title>
-                </v-col>
-              </v-row>
-            </div>
-          </chart>
-        </v-col>
-        <v-col cols="12" lg="7">
+        <p class="d-inline-flex font-weight-light ml-2 mt-1">
+          All yearly enrolled students data.
+        </p>
+        <hr />
+        <div class="legends">
           <v-row>
-            <v-col cols="12" md="6" lg="6">
-              <status-cards
-                color="info"
-                icon_background_color="#00b4cc"
-                icon="mdi-account-multiple-check"
-                title="Enrolled Students"
-                :value="totalEnrolled"
-              >
-                <template v-slot:actions>
-                  <v-btn
-                    id="btn"
-                    block
-                    link
-                    to="/admin/all_students"
-                    elevation="24"
-                  >
-                    see all
-                    <v-icon dark right>mdi-arrow-right</v-icon>
-                  </v-btn>
-                </template>
-              </status-cards>
+            <v-col cols="12" sm="6" md="4">
+              <v-card-title class="text-center justify-center">
+                <v-sheet
+                  class="d-flex"
+                  color="#006a4e"
+                  elevation="1"
+                  height="10"
+                  width="10"
+                >
+                </v-sheet>
+                <div class="label">Male</div>
+              </v-card-title>
             </v-col>
-            <v-col cols="12" md="6" lg="6">
-              <status-cards
-                color="info"
-                icon_background_color="#2e856e"
-                icon="mdi-account-alert"
-                title="Pending Enrollments"
-                :value="totalPending"
-              >
-                <template v-slot:actions>
-                  <v-btn
-                    id="btn"
-                    block
-                    link
-                    to="/admin/enrollment"
-                    elevation="24"
-                  >
-                    see all
-                    <v-icon dark right>mdi-arrow-right</v-icon>
-                  </v-btn>
-                </template>
-              </status-cards>
-            </v-col>
-            <v-col cols="12" md="6" lg="6">
-              <status-cards
-                icon_background_color="#ff4d4d"
-                icon="mdi-account-multiple-minus"
-                title="Declined Enrollments"
-                :value="totalDeclined"
-              >
-                <template v-slot:actions>
-                  <v-btn id="btn" block link elevation="24">
-                    see all
-                    <v-icon dark right>mdi-arrow-right</v-icon>
-                  </v-btn>
-                </template>
-              </status-cards>
-            </v-col>
-            <v-col cols="12" md="6" lg="6">
-              <status-cards
-                color="info"
-                icon_background_color="orange"
-                icon="mdi-account-multiple"
-                title="Teachers"
-                :value="totalTeachers"
-              >
-                <template v-slot:actions>
-                  <v-btn
-                    id="btn"
-                    block
-                    link
-                    to="/admin/all_teachers"
-                    elevation="24"
-                  >
-                    see all
-                    <v-icon dark right>mdi-arrow-right</v-icon>
-                  </v-btn>
-                </template>
-              </status-cards>
+            <v-col cols="12" sm="6" md="4">
+              <v-card-title class="text-center justify-center">
+                <v-sheet
+                  class="d-flex"
+                  color="#f05b4f"
+                  elevation="1"
+                  height="10"
+                  width="10"
+                >
+                </v-sheet>
+                <div class="label">Female</div>
+              </v-card-title>
             </v-col>
           </v-row>
+        </div>
+      </chart>
+      <v-row class="row-item">
+        <v-col cols="12" md="6">
+          <status-cards
+            color="info"
+            icon_background_color="#00b4cc"
+            icon="mdi-account-multiple-check"
+            title="Enrolled Students"
+            :value="totalEnrolled"
+          >
+            <template v-slot:actions>
+              <v-btn
+                id="btn"
+                block
+                link
+                to="/admin/all_students"
+                elevation="24"
+              >
+                see all
+                <v-icon dark right>mdi-arrow-right</v-icon>
+              </v-btn>
+            </template>
+          </status-cards>
+        </v-col>
+        <v-col cols="12" md="6">
+          <status-cards
+            color="info"
+            icon_background_color="#2e856e"
+            icon="mdi-account-alert"
+            title="Pending Enrollments"
+            :value="totalPending"
+          >
+            <template v-slot:actions>
+              <v-btn id="btn" block link to="/admin/enrollment" elevation="24">
+                see all
+                <v-icon dark right>mdi-arrow-right</v-icon>
+              </v-btn>
+            </template>
+          </status-cards>
+        </v-col>
+        <v-col cols="12" md="6">
+          <status-cards
+            icon_background_color="#ff4d4d"
+            icon="mdi-account-multiple-minus"
+            title="Declined Enrollments"
+            :value="totalDeclined"
+          >
+            <template v-slot:actions>
+              <v-btn id="btn" block link elevation="24">
+                see all
+                <v-icon dark right>mdi-arrow-right</v-icon>
+              </v-btn>
+            </template>
+          </status-cards>
+        </v-col>
+        <v-col cols="12" md="6">
+          <status-cards
+            color="info"
+            icon_background_color="orange"
+            icon="mdi-account-multiple"
+            title="Teachers"
+            :value="totalTeachers"
+          >
+            <template v-slot:actions>
+              <v-btn
+                id="btn"
+                block
+                link
+                to="/admin/all_teachers"
+                elevation="24"
+              >
+                see all
+                <v-icon dark right>mdi-arrow-right</v-icon>
+              </v-btn>
+            </template>
+          </status-cards>
         </v-col>
       </v-row>
     </v-container>
   </div>
 </template>
 <script>
+// import Vue from "vue";
+// const lineSmooth = Vue.chartist.Interpolation.cardinal({
+//   tension: 0,
+// });
 export default {
   components: {
     BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
@@ -184,7 +172,7 @@ export default {
         series: [[0], [0]],
       },
       options: {
-        // seriesBarDistance: 10,
+        seriesBarDistance: 10,
         axisX: {
           showGrid: false,
         },
@@ -201,7 +189,7 @@ export default {
         [
           "screen and (max-width: 640px)",
           {
-            seriesBarDistance: 10,
+            seriesBarDistance: 5,
             axisX: {
               labelInterpolationFnc: function (value) {
                 return value[0];
@@ -230,6 +218,7 @@ export default {
     this.$store.dispatch("allDeclinedEnrollments").then((res) => {
       this.totalDeclined = res.length;
     });
+    console.log(this.enrollmentChart);
   },
   mounted: () => {},
   methods: {

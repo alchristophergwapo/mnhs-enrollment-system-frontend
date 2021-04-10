@@ -205,7 +205,7 @@ export default {
         { text: "Action", value: "action" },
       ],
       sections: [],
-      section: "",
+      section: null,
 
       pendingStudents: this.students,
     };
@@ -310,6 +310,7 @@ export default {
   },
 
   created() {
+    this.section = this.sections[0];
     // EventBus.$on("filterData", (data) => {
     //   // console.log(data);
     //   this.emitted = true;

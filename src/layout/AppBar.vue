@@ -1,5 +1,6 @@
 <template>
-  <v-app-bar app color="primary">
+  <v-app-bar app color="primary" dark elevation="0">
+    <v-app-bar-nav-icon @click="toggleSideBar()"></v-app-bar-nav-icon>
     <v-toolbar-title class="header-title"
       >Welcome to Mantalongon, Dalaguete NHS</v-toolbar-title
     >
@@ -7,14 +8,6 @@
     <v-spacer></v-spacer>
 
     <div class="notif" v-if="user_details.user_type == 'admin'">
-      <!-- <v-menu
-        offset-y
-        rounded="0"
-        bottom
-        origin="center center"
-        transition="scale-transition"
-      > -->
-      <!-- <template v-slot:activator="{ on, attrs }"> -->
       <v-btn @click="markAsRead()" icon text link to="/admin/notifications">
         <v-badge
           :content="notifications"
@@ -69,6 +62,7 @@
 </template>
 
 <script>
+import { EventBus } from "../bus/bus";
 export default {
   // props: {
   //   user_details: {
@@ -104,6 +98,10 @@ export default {
       let userData = JSON.parse(storedInfo);
       userData.user = data.user;
       this.$store.commit("setUserData", userData);
+    },
+
+    toggleSideBar() {
+      EventBus.$emit("toggleSidebar", "click");
     },
   },
   created() {

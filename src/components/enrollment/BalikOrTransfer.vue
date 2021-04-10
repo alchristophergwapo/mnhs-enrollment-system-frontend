@@ -3,7 +3,7 @@
     <div class="form-head">
       For Returning Learners (Balik Aral) and Those Who Shall Transfer/ Move In
     </div>
-    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+    <v-col cols="12" xs="6" sm="4" md="4" lg="2">
       <v-text-field
         v-model="balikOrTransferInfo.last_grade_completed"
         :rules="[
@@ -12,10 +12,11 @@
         ]"
         label="Last Grade Level Completed"
         type="number"
+        outlined
         required
       ></v-text-field>
     </v-col>
-    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+    <v-col cols="12" xs="6" sm="4" md="4" lg="2">
       <v-text-field
         v-model="balikOrTransferInfo.last_year_completed"
         :rules="[
@@ -23,10 +24,11 @@
             !!last_year_completed || 'Last School Year Completed is required',
         ]"
         label="Last School Year Completed"
+        outlined
         required
       ></v-text-field>
     </v-col>
-    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+    <v-col cols="12" xs="6" sm="4" md="4" lg="2">
       <v-text-field
         v-model="balikOrTransferInfo.last_school_ID"
         :rules="[
@@ -34,10 +36,11 @@
         ]"
         label="School ID"
         type="number"
+        outlined
         required
       ></v-text-field>
     </v-col>
-    <v-col cols="12" xs="6" sm="6" md="6" lg="6">
+    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
       <v-text-field
         v-model="balikOrTransferInfo.last_school_attended"
         :rules="[
@@ -45,10 +48,11 @@
             !!last_school_attended || 'School name is required',
         ]"
         label="School Name"
+        outlined
         required
       ></v-text-field>
     </v-col>
-    <v-col cols="12" xs="6" sm="6" md="6" lg="6">
+    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
       <v-text-field
         v-model="balikOrTransferInfo.last_school_address"
         :rules="[
@@ -56,6 +60,7 @@
             !!last_school_address || 'Scholl adress is required',
         ]"
         label="School Address"
+        outlined
         required
       ></v-text-field>
     </v-col>

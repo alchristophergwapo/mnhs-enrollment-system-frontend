@@ -1,11 +1,5 @@
 <template>
-  <v-navigation-drawer
-    v-model="drawer"
-    color="#F0F9FC"
-    permanent
-    expand-on-hover
-    app
-  >
+  <v-navigation-drawer v-model="sidebarMenu" color="#F0F9FC" permanent app>
     <v-list-item class="px-2">
       <v-list-item-avatar size="50">
         <v-img src="../assets/images/mnhs-logo.png"></v-img>
@@ -60,11 +54,18 @@
 </template>
 
 <script>
+import { EventBus } from "../bus/bus";
 export default {
   data() {
     return {
-      drawer: true,
+      sidebarMenu: true,
     };
+  },
+  created() {
+    EventBus.$on("toggleSidebar", () => {
+      console.log("clicked");
+      this.sidebarMenu = !this.sidebarMenu;
+    });
   },
 };
 </script>
@@ -72,7 +73,7 @@ export default {
 <style>
 .v-list .v-list-item--active {
   color: white;
-  background-color: #006a4e;
+  background-color: #5ca08e;
 }
 
 .v-list .v-list-item:hover {

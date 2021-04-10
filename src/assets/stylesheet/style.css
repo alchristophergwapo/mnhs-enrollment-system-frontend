@@ -61,6 +61,12 @@
   font-size: 14px;
 }
 
+/* Dashboard */
+.row-item {
+  width: 80%;
+  margin: auto;
+}
+
 /* Status Card */
 .v-card--material-stats {
   display: flex;
@@ -102,9 +108,11 @@
 .v-card--material-chart {
   /* background-color: #d9d9d9; */
   border-radius: 4px;
-  width: 100%;
-  height: auto;
+  width: 80%;
+  margin: auto;
+  /* height: 420px; */
   padding: 0 15px 0 15px;
+  margin-bottom: 100px;
   display: block;
   max-width: 100%;
   outline: none;
@@ -123,7 +131,7 @@
   background-color: white;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 4px;
-  position: inherit;
+  /* position: inherit; */
   top: -20px;
 }
 
@@ -261,8 +269,8 @@
 .mx-auto {
   padding: 10px;
   text-align: justify;
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande',
-    'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
 .footer-copyright {
@@ -380,6 +388,7 @@
 /* Sign In ****************************************************************************************************************************************************/
 
 .card1 {
+  margin: auto;
   padding: 2%;
 }
 
@@ -400,7 +409,7 @@ h3 {
   text-align: center;
   color: #006a4e;
   font-weight: bolder;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .signin-container {
@@ -415,7 +424,7 @@ h3 {
 }
 
 #sign-in {
-  background: url('../images/bg.jpg');
+  /* background: url("../images/bg.jpg"); */
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -491,6 +500,14 @@ h3 {
   #stepper-container {
     width: 80%;
   }
+
+  .v-card--material-chart {
+    width: 90%;
+  }
+
+  .row-item {
+    width: 90%;
+  }
 }
 
 @media (max-width: 767.98px) {
@@ -518,5 +535,13 @@ h3 {
   .col-12 {
     padding-top: 5px;
     padding-bottom: 5px;
+  }
+
+  .v-card--material-chart {
+    width: 100%;
+  }
+
+  .row-item {
+    width: 100%;
   }
 }

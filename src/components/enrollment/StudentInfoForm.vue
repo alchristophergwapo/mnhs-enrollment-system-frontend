@@ -6,6 +6,7 @@
         v-model="studentInfo.PSA"
         name="PSA"
         label="PSA Birth Certificate No."
+        outlined
       ></v-text-field>
     </v-col>
 
@@ -23,6 +24,7 @@
         :counter="12"
         label="Learners Reference No. (LRN)"
         type="number"
+        outlined
         required
       ></v-text-field>
     </v-col>
@@ -37,6 +39,7 @@
         ]"
         type="number"
         label="Average"
+        outlined
         required
       ></v-text-field>
     </v-col>
@@ -46,6 +49,7 @@
         name="firstname"
         :rules="[(v) => !!v || 'Firstname is required']"
         label="Firstname"
+        outlined
         required
       ></v-text-field>
     </v-col>
@@ -55,6 +59,7 @@
         name="middlename"
         :rules="[(v) => !!v || 'Middlename is required']"
         label="Middlename"
+        outlined
         required
       ></v-text-field>
     </v-col>
@@ -64,6 +69,7 @@
         name="lastname"
         :rules="[(v) => !!v || 'Lastname is required']"
         label="Lastname"
+        outlined
         required
       ></v-text-field>
     </v-col>
@@ -74,6 +80,7 @@
         :rules="[(v) => !!v || 'Birthdate is required']"
         label="Date of Birth"
         type="date"
+        outlined
         required
       ></v-text-field>
     </v-col>
@@ -84,6 +91,7 @@
         :rules="[(v) => !!v || 'Age is required']"
         label="Age"
         type="number"
+        outlined
         required
       ></v-text-field>
     </v-col>
@@ -137,23 +145,27 @@
       ></v-checkbox>
     </v-col>
     <v-col cols="12" xs="6" sm="4" md="4" lg="4">
-      <v-text-field v-if="studentInfo.IP==='No'"
+      <v-text-field
+        v-if="studentInfo.IP === 'No'"
         v-model="studentInfo.IP_community"
         name="IP_Community"
-         readonly
-        label="If yes, please specify"
+        readonly
+        label="Community"
+        placeholder="If yes, please specify"
+        outlined
         required
       ></v-text-field>
-       <v-text-field
-          v-if="studentInfo.IP==='Yes'"
-          v-model="studentInfo.IP_community"
-          name="IP_Community"
-         :rules="[(IP_Community) => !!IP_Community || 'This field is required']"
-         label="If yes, please specify"
-         required
+      <v-text-field
+        v-if="studentInfo.IP === 'Yes'"
+        v-model="studentInfo.IP_community"
+        name="IP_Community"
+        :rules="[(IP_Community) => !!IP_Community || 'This field is required']"
+        label="If yes, please specify"
+        outlined
+        required
       ></v-text-field>
     </v-col>
-    <v-col cols="12" xs="6" sm="6" md="6" lg="6">
+    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
       <v-text-field
         v-model="studentInfo.mother_tongue"
         name="mother_tongue"
@@ -161,34 +173,38 @@
           (mother_tongue) => !!mother_tongue || 'Mother tongue is required',
         ]"
         label="Mother Tongue"
+        outlined
         required
       ></v-text-field>
     </v-col>
-    <v-col cols="12" xs="6" sm="6" md="6" lg="6">
+    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
       <v-text-field
         v-model="studentInfo.contact"
         name="contact"
         :rules="[(contact) => !!contact || 'Contact is required']"
         type="number"
         label="Contact Number(for receiving enrollment notification)"
+        outlined
         required
       ></v-text-field>
     </v-col>
-    <v-col cols="12" xs="6" sm="6" md="6" lg="6">
+    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
       <v-text-field
         v-model="studentInfo.address"
         name="address"
         :rules="[(address) => !!address || 'Address is required']"
         label="Address"
+        outlined
         required
       ></v-text-field>
     </v-col>
-    <v-col cols="12" xs="6" sm="6" md="6" lg="6">
+    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
       <v-text-field
         v-model="studentInfo.zipcode"
         name="zipcode"
         :rules="[(zipcode) => !!zipcode || 'Zipcode is required']"
         label="Zipcode"
+        outlined
         required
       ></v-text-field>
     </v-col>
@@ -199,14 +215,14 @@
 export default {
   data: () => ({
     studentInfo: {
-      PSA:"",
+      PSA: "",
       LRN: 303000123456,
       average: 80,
       firstname: "Christopher",
       middlename: "De Guzman",
       lastname: "Alonzo",
       //birthdate: new Date("1997-09-13"),
-      birthdate:null,
+      birthdate: null,
       age: 23,
       gender: "Male",
       IP: "No",
@@ -218,9 +234,9 @@ export default {
     },
   }),
 
-  computed:{
+  computed: {
     getData() {
-     // console.log(this.studentInfo);
+      // console.log(this.studentInfo);
       return JSON.stringify(this.studentInfo);
     },
   },

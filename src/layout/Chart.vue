@@ -1,6 +1,7 @@
 <template>
-  <v-card outlined class="v-card--material-chart" color="#e6e6e6">
+  <v-card class="v-card--material-chart" color="#e6e6e6">
     <template>
+      <!-- <div class="pa-4"> -->
       <chartist
         :data="data"
         :event-handlers="eventHandlers"
@@ -8,8 +9,9 @@
         :ratio="ratio"
         :responsive-options="responsiveOptions"
         :type="type"
-        style="max-height: 270px"
+        style="max-height: 300px"
       />
+      <!-- </div> -->
     </template>
 
     <slot slot="reveal-actions" name="reveal-actions" />

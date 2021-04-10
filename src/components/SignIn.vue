@@ -1,7 +1,7 @@
 <template>
   <v-app id="sign-in">
     <v-container class="signin-container">
-      <v-card class="card1" elevation="10">
+      <v-card class="card1" elevation="10" max-width="500px">
         <center>
           <img
             :src="require('../assets/images/enroll.png')"
@@ -22,6 +22,7 @@
                   v-model="username"
                   :rules="[(value) => !!value || 'Username is required!']"
                   maxlength="20"
+                  outlined
                   required
                 ></v-text-field>
               </v-col>
@@ -38,6 +39,7 @@
                   :rules="[(value) => !!value || 'Password is required!']"
                   :type="show ? 'text' : 'password'"
                   name="input-10-1"
+                  outlined
                   @click:append="show = !show"
                 ></v-text-field>
               </v-col>
