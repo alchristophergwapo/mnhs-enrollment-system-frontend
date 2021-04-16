@@ -207,7 +207,7 @@ export default {
           }
 
           formdata.append("isBalikOrTransfer", true);
-        }
+        } else formdata.append("isBalikOrTransfer", false);
 
         if (this.isSeniorHigh) {
           let seniorHigh = JSON.parse(this.$refs.seniorHighData.getData);
@@ -221,7 +221,7 @@ export default {
 
             formdata.append("isSeniorHigh", true);
           }
-        }
+        } else formdata.append("isSeniorHigh", false);
 
         for (const key in this.student) {
           if (this.student[key]) {
