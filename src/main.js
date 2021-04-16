@@ -44,16 +44,16 @@ window.Echo = new Echo({
   broadcaster: 'pusher',
   key: '2041a966486dd958514c',
   cluster: process.env.VUE_APP_PUSHER_CLUSTER,
-  encrypted: false,
-  authEndpoint: 'http://localhost:8000/broadcasting/auth',
-  auth: {
-    headers: {
-      Authorization: null,
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
-    }
-  },
+  encrypted: true,
+  // authEndpoint: 'http://127.0.0.1:8000/broadcasting/auth',
+  // auth: {
+  //   headers: {
+  //     Authorization: null,
+  //     'Accept': 'application/json',
+  //     'Content-Type': 'application/json',
+  //     'Access-Control-Allow-Origin': '*'
+  //   }
+  // },
 });
 
 new Vue({

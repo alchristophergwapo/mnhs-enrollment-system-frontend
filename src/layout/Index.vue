@@ -239,20 +239,23 @@ export default {
   },
   mounted() {
     if (this.user_details.user_type == "admin") {
-      window.Echo.private("App.Models.User."+this.user_details.id).notification((eventData) => {
-        console.log(eventData);
-        this.allNotifications.push(eventData.notification);
-        this.notifications = this.unreadNotification.length;
-        this.setUserData(eventData);
-        let enrollmentData = eventData.student_enrolled;
-        this.$notification.show(
-          "New Enrollment",
-          {
-            body: `${enrollmentData.firstname} ${enrollmentData.lastname} submitted an enrollment.`,
-          },
-          {}
-        );
-      });
+      window.Echo.channel("student_enroll").listen(
+        "new-enrollment",
+        (eventData) => {
+          console.log(eventData);
+          this.allNotifications.push(eventData.notification);
+          this.notifications = this.unreadNotification.length;
+          this.setUserData(eventData);
+          let enrollmentData = eventData.student_enrolled;
+          this.$notification.show(
+            "New Enrollment",
+            {
+              body: `${enrollmentData.firstname} ${enrollmentData.lastname} submitted an enrollment.`,
+            },
+            {}
+          );
+        }
+      );
     }
   },
 };
