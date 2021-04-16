@@ -66,9 +66,7 @@
               <td>{{ row.item.student.age }}</td>
               <td>{{ row.item.student.address }}</td>
               <td>
-                <v-btn text @click="editDetails(row.item.student)"
-                  >Edit Details</v-btn
-                >
+                <v-btn text @click="editDetails(row.item)">Edit Details</v-btn>
               </td>
             </tr>
           </template>
@@ -77,18 +75,26 @@
         <v-dialog
           v-model="studentDialog"
           transition="dialog-top-transition"
-          max-width="600"
+          max-width="800"
         >
           <template>
             <v-form ref="studentDetails" lazy-validation>
               <v-card>
-                <v-card-title>
+                <v-card-title class="text-center justify-center">
                   <v-spacer></v-spacer>
-                  <v-row>S.Y. {{ studentInfo.created_at }}</v-row>
+                  <v-row>
+                    <h2>Student Details</h2>
+                  </v-row>
                   <v-btn icon @click="closestudentDetails()">
                     <v-icon>mdi-close</v-icon>
                   </v-btn>
                 </v-card-title>
+                <hr />
+                <v-card-title>
+                  <v-spacer></v-spacer>
+                  <v-row>S.Y. {{ studentInfo.school_year }}</v-row>
+                </v-card-title>
+                <br />
                 <v-card-text>
                   <v-row>
                     <v-col cols="12" xs="3" sm="4" md="4" lg="4">
@@ -96,6 +102,8 @@
                         v-model="studentInfo.PSA"
                         name="PSA"
                         label="PSA Birth Certificate No."
+                        outlined
+                        :readonly="readonly"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" xs="3" sm="4" md="4" lg="4">
@@ -116,6 +124,8 @@
                         :counter="12"
                         label="Learners Reference No. (LRN)"
                         type="number"
+                        outlined
+                        :readonly="readonly"
                         required
                       ></v-text-field>
                     </v-col>
@@ -132,6 +142,8 @@
                         ]"
                         label="Average"
                         type="number"
+                        outlined
+                        :readonly="readonly"
                         required
                       ></v-text-field>
                     </v-col>
@@ -142,6 +154,8 @@
                         name="firstname"
                         :rules="[(v) => !!v || 'Firstname is required']"
                         label="Firstname"
+                        outlined
+                        :readonly="readonly"
                         required
                       ></v-text-field>
                     </v-col>
@@ -151,6 +165,8 @@
                         name="middlename"
                         :rules="[(v) => !!v || 'Middlename is required']"
                         label="Middlename"
+                        outlined
+                        :readonly="readonly"
                         required
                       ></v-text-field>
                     </v-col>
@@ -160,6 +176,8 @@
                         name="lastname"
                         :rules="[(v) => !!v || 'Lastname is required']"
                         label="Lastname"
+                        outlined
+                        :readonly="readonly"
                         required
                       ></v-text-field>
                     </v-col>
@@ -171,6 +189,8 @@
                         :rules="[(v) => !!v || 'Birthdate is required']"
                         label="Date of Birth"
                         type="date"
+                        outlined
+                        :readonly="readonly"
                         required
                       ></v-text-field>
                     </v-col>
@@ -187,6 +207,8 @@
                         ]"
                         label="Age"
                         type="number"
+                        outlined
+                        :readonly="readonly"
                         required
                       ></v-text-field>
                     </v-col>
@@ -198,6 +220,7 @@
                         value="Male"
                         label="Male"
                         type="checkbox"
+                        :readonly="readonly"
                         :required="!studentInfo.gender ? true : false"
                       ></v-checkbox>
                       <v-spacer></v-spacer>
@@ -211,6 +234,7 @@
                         value="Female"
                         label="Female"
                         type="checkbox"
+                        :readonly="readonly"
                         required
                       ></v-checkbox>
                     </v-col>
@@ -227,6 +251,7 @@
                         :rules="[(IP) => !!IP || 'This field is required']"
                         value="Yes"
                         label="Yes"
+                        :readonly="readonly"
                         type="checkbox"
                       ></v-checkbox>
                     </v-col>
@@ -238,6 +263,7 @@
                         value="No"
                         label="No"
                         @change="ipCommunity()"
+                        :readonly="readonly"
                         type="checkbox"
                       ></v-checkbox>
                     </v-col>
@@ -245,8 +271,9 @@
                       <v-text-field
                         v-if="studentInfo.IP === 'No'"
                         v-model="studentInfo.IP_community"
-                        readonly
                         label="If yes, please specify"
+                        outlined
+                        :readonly="readonly"
                         required
                       ></v-text-field>
                       <v-text-field
@@ -262,6 +289,8 @@
                             'This special character is not allowed!',
                         ]"
                         label="If yes, please specify"
+                        outlined
+                        :readonly="readonly"
                         required
                       ></v-text-field>
                     </v-col>
@@ -274,6 +303,8 @@
                             !!mother_tongue || 'Mother tongue is required',
                         ]"
                         label="Mother Tongue"
+                        outlined
+                        :readonly="readonly"
                         required
                       ></v-text-field>
                     </v-col>
@@ -286,6 +317,8 @@
                         ]"
                         type="number"
                         label="Contact Number"
+                        outlined
+                        :readonly="readonly"
                         required
                       ></v-text-field>
                     </v-col>
@@ -297,6 +330,8 @@
                           (address) => !!address || 'Address is required',
                         ]"
                         label="Address"
+                        outlined
+                        :readonly="readonly"
                         required
                       ></v-text-field>
                     </v-col>
@@ -311,6 +346,8 @@
                             'Only Number is  allowed!',
                         ]"
                         label="Zipcode"
+                        outlined
+                        :readonly="readonly"
                         required
                       ></v-text-field>
                     </v-col>
@@ -318,14 +355,16 @@
                       <v-text-field
                         v-model="studentInfo.father"
                         label="Father's Name"
-                        required
+                        outlined
+                        :readonly="readonly"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" xs="6" sm="6" md="6" lg="6">
                       <v-text-field
                         v-model="studentInfo.mother"
                         label="Mother's Maiden Name"
-                        required
+                        outlined
+                        :readonly="readonly"
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" xs="6" sm="6" md="6" lg="6">
@@ -337,6 +376,8 @@
                             !!guardian || 'Guardian name is required',
                         ]"
                         label="Guardian's Name"
+                        outlined
+                        :readonly="readonly"
                         required
                       ></v-text-field>
                     </v-col>
@@ -350,18 +391,31 @@
                         ]"
                         label="Contact Number"
                         type="number"
+                        outlined
+                        :readonly="readonly"
                         required
                       ></v-text-field>
                     </v-col>
                   </v-row>
-                  <v-btn
-                    elevation="5"
-                    small
-                    color="blue darken-1"
-                    @click="updateStudent(studentInfo)"
-                    >SAVE</v-btn
-                  >
                 </v-card-text>
+                <v-card-actions>
+                  <v-container>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      elevation="5"
+                      block
+                      color="blue darken-1"
+                      @click="
+                        readonly
+                          ? (readonly = false)
+                          : updateStudent(studentInfo)
+                      "
+                    >
+                      {{ btnText }}
+                    </v-btn>
+                  </v-container>
+                </v-card-actions>
+                <br />
               </v-card>
             </v-form>
           </template>
@@ -380,6 +434,7 @@ export default {
   data: () => ({
     year: new Date().getFullYear(),
     studentDialog: false,
+    readonly: true,
     studentInfo: {},
     search: "",
     gradelevel: null,
@@ -425,12 +480,12 @@ export default {
       .then((response) => {
         this.students = response;
         this.filteredStudents = response;
-        this.students = this.filteredStudents.filter((val) => {
-          return (
-            val.student.created_at.substring(0, val.created_at.indexOf("-")) ==
-              this.year || val.student.created_at.includes(this.year)
-          );
-        });
+        // this.students = this.filteredStudents.filter((val) => {
+        //   return (
+        //     val.student.created_at.substring(0, val.created_at.indexOf("-")) ==
+        //       this.year || val.student.created_at.includes(this.year)
+        //   );
+        // });
       })
       .catch((error) => {
         console.log(error);
@@ -526,15 +581,13 @@ export default {
     },
     //Open Or View Student Details
     editDetails(student) {
-      this.studentInfo = student;
-      this.studentInfo.created_at = student.created_at
-        .substring(0, student.created_at.indexOf("-"))
-        .concat(
-          "-",
-          parseInt(
-            student.created_at.substring(0, student.created_at.indexOf("-"))
-          ) + 1
-        );
+      console.log(student);
+      let studentInfo = student.student;
+      studentInfo["school_year"] =
+        student.start_school_year + " - " + student.end_school_year;
+
+      this.studentInfo = studentInfo;
+
       this.studentDialog = true;
     },
     //Close The Student Details Dialog
@@ -605,6 +658,18 @@ export default {
         Address: item.student.address.replace(/[^a-zA-Z ]/g, " "),
         //Address:item.student.address.replaceAll(","," ").replaceAll(/\s+/g," ")
       }));
+    },
+
+    btnText() {
+      let text = "update";
+
+      if (this.readonly) {
+        text = "update";
+      } else {
+        text = "save";
+      }
+
+      return text;
     },
   },
 };

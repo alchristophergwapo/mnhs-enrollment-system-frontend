@@ -89,11 +89,17 @@ export default {
   created() {
     this.items = [];
     // console.log(this.modelValue);
-    this.$store
-      .dispatch(`${this.request}`, this.gradelevel)
+    let resRef = this.property.split("_")[0];
+    let request = this.request
+    if (request != 'allNoneAdvisoryTeacher') {
+      request += `/${this.gradelevel}` 
+    }
+    this.$axios
+      .get(request)
+      // .get(`${this.request}`)
       .then((res) => {
-        // console.log(res);
-        this.items = res;
+        console.log(res);
+        this.items = res.data[resRef];
       })
       .catch((error) => {
         console.log(error);
@@ -114,18 +120,18 @@ export default {
   mounted() {
     this.items = [];
     // console.log(this.gradelevel);
-    this.$store
-      .dispatch(`${this.request}`, this.gradelevel)
-      .then((res) => {
-        // console.log(res);
-        this.items = res;
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
-        this.isLoading = false;
-      });
+    // this.$store
+    //   .dispatch(`${this.request}`, this.gradelevel)
+    //   .then((res) => {
+    //     // console.log(res);
+    //     this.items = res;
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   })
+    //   .finally(() => {
+    //     this.isLoading = false;
+    //   });
 
     EventBus.$on("save", () => {
       // console.log(data);

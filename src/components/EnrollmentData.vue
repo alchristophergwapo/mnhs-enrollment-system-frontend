@@ -44,14 +44,15 @@
         <v-tabs-items v-model="enrollmentTab">
           <v-tab-item :value="'tab-1'">
             <pending-enrollment :students="students" :search="search">
-              <template v-slot:data-table-header>
+              <!-- <template v-slot:data-table-header>
                 <v-card-title>
-                  <!-- Sort By&nbsp;&nbsp; -->
+                  Sort By&nbsp;&nbsp;
                   <v-select
                     :items="grade_level"
                     v-model="gradelevel"
                     @change="filterByGradeLevel($event, 'pending')"
                     label="Grade Level"
+                    class="select-data"
                     outlined
                   ></v-select>
                   <v-spacer></v-spacer>
@@ -63,35 +64,14 @@
                     outlined
                   ></v-text-field>
                 </v-card-title>
-              </template>
+              </template> -->
             </pending-enrollment>
           </v-tab-item>
           <v-tab-item :value="'tab-2'">
             <declined-enrollments
               :declinedEnrollments="declinedEnrollments"
-              :searchDeclined="searchDeclined"
+              :search="searchDeclined"
             >
-              <template v-slot:data-table-header>
-                <v-card-title>
-                  Sort By&nbsp;&nbsp;
-                  <v-select
-                    :items="grade_level"
-                    v-model="searchDeclined"
-                    menu-props="auto"
-                    label="Grade Level"
-                    dense
-                    outlined
-                  ></v-select>
-                  <v-spacer></v-spacer>
-                  <v-text-field
-                    v-model="searchDeclined"
-                    @keyup="filterByName(($event = searchDeclined))"
-                    append-icon="mdi-magnify"
-                    label="Search"
-                    outlined
-                  ></v-text-field>
-                </v-card-title>
-              </template>
             </declined-enrollments>
           </v-tab-item>
         </v-tabs-items>
@@ -203,23 +183,23 @@ export default {
     },
 
     //Methods For Filtering
-    filterByGradeLevel(grade, tab) {
-      if (grade == "All") {
-        if (tab == "pending") {
-          this.students = this.filterStudents;
-        } else {
-          this.declinedEnrollments = this.filterDeclined;
-        }
-      } else {
-        if (tab == "pending") {
-          this.search = grade;
-        } else {
-          this.declinedEnrollments = this.filterDeclined.filter(function (val) {
-            return (val.grade_level = grade);
-          });
-        }
-      }
-    },
+    // filterByGradeLevel(grade, tab) {
+    //   if (grade == "All") {
+    //     if (tab == "pending") {
+    //       this.search = "";
+    //     } else {
+    //       this.searchDeclined = "";
+    //     }
+    //   } else {
+    //     if (tab == "pending") {
+    //       this.search = grade;
+    //     } else {
+    //       this.declinedEnrollments = this.filterDeclined.filter(function (val) {
+    //         return (val.grade_level = grade);
+    //       });
+    //     }
+    //   }
+    // },
 
     //Method For Filtering The Name By A GradeLevel Or All GradeLevel
     filterByName(data) {

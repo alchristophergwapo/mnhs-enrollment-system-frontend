@@ -3,8 +3,9 @@
     <v-app-bar app color="primary" dark elevation="0">
       <v-app-bar-nav-icon
         @click="sidebarMenu = !sidebarMenu"
+        color="white"
       ></v-app-bar-nav-icon>
-      <v-toolbar-title class="header-title"
+      <v-toolbar-title class="header-title" v-if="!mini"
         >Welcome to Mantalongon, Dalaguete NHS</v-toolbar-title
       >
 
@@ -51,64 +52,81 @@
       </div>
       <v-btn text @click="logout" color="white">Logout</v-btn>
     </v-app-bar>
+    <!-- src="../assets/images/mnhs_bg.jpg" -->
     <v-navigation-drawer
       v-model="sidebarMenu"
       app
-      floating
       :permanent="sidebarMenu"
       :mini-variant.sync="mini"
     >
-      <v-list dense color="primary" dark text>
-        <v-list-item class="px-2">
-          <v-list-item-avatar size="50">
-            <v-img src="../assets/images/mnhs-logo.png"></v-img>
-          </v-list-item-avatar>
-          <v-list-item-title style="font-weight: bold; font-size: 20px"
-            >ADMINISTRATOR</v-list-item-title
-          >
-        </v-list-item>
-      </v-list>
+      <v-list-item class="px-2" style="background: #006a4e">
+        <v-list-item-avatar size="50">
+          <v-img src="../assets/images/mnhs-logo.png"></v-img>
+        </v-list-item-avatar>
+        <v-list-item-title style="font-weight: bold; font-size: 20px"
+          >ADMINISTRATOR</v-list-item-title
+        >
+      </v-list-item>
       <v-divider></v-divider>
       <v-list>
-        <v-list-item class="nav-link" link to="/admin/" exact>
-          <v-icon color="black">mdi-view-dashboard</v-icon>
-
-          <v-list-item-content class="nav-def">
-            <v-list-item-title>Dashboard</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-        <v-list-item class="nav-link" link to="/admin/enrollment">
-          <v-icon color="black">mdi-account-multiple-plus</v-icon>
-
-          <v-list-item-content class="nav-def">
-            <v-list-item-title>Enrollment</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-        <v-list-item class="nav-link" link to="/admin/all_students">
-          <v-icon color="black">mdi-account-group</v-icon>
-
-          <v-list-item-content class="nav-def">
-            <v-list-item-title>All Students</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-        <v-list-item class="nav-link" link to="/admin/all_teachers">
-          <v-icon color="black">mdi-account-tie</v-icon>
-
-          <v-list-item-content class="nav-def">
-            <v-list-item-title>All Teachers</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-        <v-list-item class="nav-link" link to="/admin/all_sections" exact>
-          <v-icon color="black">mdi-google-classroom</v-icon>
-
-          <v-list-item-content class="nav-def">
-            <v-list-item-title>All Sections</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        <template v-for="item in items">
+          <v-list-item
+            v-if="!item.children"
+            :key="item.text"
+            @click="currentSelection = item.text"
+            class="nav-link"
+            :to="item.to"
+            exact
+          >
+            <v-list-item-action>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-action>
+            <v-list-item-content class="nav-def">
+              <v-list-item-title>
+                {{ item.text }}
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-group
+            v-if="item.children"
+            :key="item.text"
+            v-model="item.model"
+            :prepend-icon="item.icon"
+            class="nav-link"
+          >
+            <template v-slot:activator>
+              <v-list-item class="activator-text">
+                <v-list-item-content>
+                  <v-list-item-title>
+                    {{ item.text }}
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item> </template
+            ><br />
+            <v-list-item
+              v-for="(child, i) in item.children"
+              :key="i"
+              @click="
+                item.model = false;
+                currentSelection = child.text;
+              "
+              :class="[
+                currentSelection == child.text ? 'grey' : '',
+                'nav-link',
+              ]"
+              :to="child.to"
+            >
+              <v-list-item-action v-if="child.icon">
+                <v-icon>{{ child.icon }}</v-icon>
+              </v-list-item-action>
+              <v-list-item-content class="nav-def">
+                <v-list-item-title>
+                  {{ child.text }}
+                </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-group>
+        </template>
       </v-list>
     </v-navigation-drawer>
     <!-- <side-bar></side-bar>
@@ -134,10 +152,37 @@ export default {
       menuOpen: false,
       sidebarMenu: true,
       toggleMini: false,
-      user: {
-        type: "admin",
-        username: "Admin",
-      },
+      subMenu: false,
+      currentSelection: "",
+      items: [
+        { icon: "mdi-view-dashboard", text: "Dashboard", to: "/admin" },
+        {
+          icon: "mdi-account-multiple-plus",
+          text: "Enrollment",
+          to: "/admin/enrollment",
+        },
+        {
+          icon: "mdi-account-group",
+          text: "Students",
+          to: "/admin/all_students",
+        },
+        {
+          icon: "mdi-account-tie",
+          text: "Teachers",
+          to: "/admin/all_teachers",
+        },
+        {
+          icon: "mdi-google-classroom",
+          append_icon: "mdi-chevron-down",
+          "icon-alt": "mdi-chevron-up",
+          text: "Sections",
+          model: false,
+          children: [
+            { text: "Junior High", to: "/admin/sections/junior_high" },
+            { text: "Senior High", to: "/admin/sections/senior_high" },
+          ],
+        },
+      ],
     };
   },
   methods: {
@@ -194,23 +239,20 @@ export default {
   },
   mounted() {
     if (this.user_details.user_type == "admin") {
-      window.Echo.channel("student_enroll").listen(
-        "StudentEnrollEvent",
-        (eventData) => {
-          console.log(eventData);
-          this.allNotifications.push(eventData.notification);
-          this.notifications = this.unreadNotification.length;
-          this.setUserData(eventData);
-          let enrollmentData = eventData.student_enrolled;
-          this.$notification.show(
-            "New Enrollment",
-            {
-              body: `${enrollmentData.firstname} ${enrollmentData.lastname} submitted an enrollment.`,
-            },
-            {}
-          );
-        }
-      );
+      window.Echo.private("App.Models.User."+this.user_details.id).notification((eventData) => {
+        console.log(eventData);
+        this.allNotifications.push(eventData.notification);
+        this.notifications = this.unreadNotification.length;
+        this.setUserData(eventData);
+        let enrollmentData = eventData.student_enrolled;
+        this.$notification.show(
+          "New Enrollment",
+          {
+            body: `${enrollmentData.firstname} ${enrollmentData.lastname} submitted an enrollment.`,
+          },
+          {}
+        );
+      });
     }
   },
 };
@@ -222,22 +264,25 @@ export default {
 }
 
 .nav-link {
-  margin-bottom: 15px;
+  margin: 0 8px 0 8px;
+  border-radius: 4px;
+  margin-bottom: 10px;
   padding-bottom: 5px;
   padding-top: 5px;
 }
 
-.nav-link:hover {
-  background: rgba(59, 189, 218, 0.5);
+.activator-text {
+  margin-left: -15px;
 }
 
-.nav-link:active {
-  background-color: rgba(59, 189, 218);
+.v-list .v-list-item--active .v-list-item__content {
+  color: blue;
 }
 
 .nav-def {
   position: absolute;
-  left: 80px;
+  left: 70px;
+  /* color: white; */
 }
 
 img.icon {

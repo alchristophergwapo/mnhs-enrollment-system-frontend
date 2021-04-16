@@ -1,11 +1,21 @@
 <template>
   <v-container>
-    <v-card outlined>
-      <slot name="data-table-header"></slot>
+      <v-card-title>
+        <v-spacer></v-spacer>
+        <v-text-field
+          v-model="search"
+          @keyup="filterByName(($event = search))"
+          append-icon="mdi-magnify"
+          label="Search"
+          dense
+          style="width: 0px"
+          outlined
+        ></v-text-field>
+      </v-card-title>
       <v-data-table
         :headers="headers"
         :items="declinedEnrollments"
-        :search="searchDeclined"
+        :search="search"
         :items-per-page="10"
         class="elevation-1"
       >
@@ -136,7 +146,6 @@
           </tr>
         </template>
       </v-data-table>
-    </v-card>
     <v-row justify="center">
       <v-dialog v-model="dialog" max-width="500px">
         <v-card>
@@ -178,9 +187,6 @@ export default {
       type: Array,
       required: true,
     },
-    searchDeclined: {
-      type: String,
-    },
   },
   data() {
     return {
@@ -200,6 +206,7 @@ export default {
       dialog: false,
       loading: false,
       section: "",
+      search: "",
       sections: [],
     };
   },
@@ -275,6 +282,38 @@ export default {
         });
         this.dialog = true;
       }
+    },
+
+    filterByName(data) {
+      // console.log(this.search);
+      this.declinedEnrollments.filter((val) => {
+        if (this.gradelevel == null && data != null) {
+          // console.log("here");
+          return val.fullname
+            .concat(" ", val.grade_level)
+            .toLowerCase()
+            .includes(data.toLowerCase());
+        } else if (this.gradelevel == "All" && data != null) {
+          return val.fullname
+            .concat(" ", val.grade_level)
+            .toLowerCase()
+            .includes(data.toLowerCase());
+        } else {
+          if (val.grade_level == this.gradelevel) {
+            if (data != null) {
+              return val.fullname
+                .concat(" ", val.grade_level)
+                .toLowerCase()
+                .includes(data.toLowerCase());
+            } else {
+              return val.fullname
+                .concat(" ", val.grade_level)
+                .toLowerCase()
+                .includes(val.grade_level.toLowerCase());
+            }
+          }
+        }
+      });
     },
   },
 };

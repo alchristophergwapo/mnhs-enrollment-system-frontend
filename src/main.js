@@ -23,16 +23,16 @@ Vue.prototype.$axios = Axios;
 
 window.Vue = Vue;
 Vue.use(require('vue-chartist'), {
-    messageNoData: "You have not enough data",
-    classNoData: "empty"
+  messageNoData: "You have not enough data",
+  classNoData: "empty"
 });
 Vue.use(VueSweetalert2);
 Vue.use(VueNativeNotification, {
   requestOnNotify: true
 });
- 
+
 Vue.use(VueMoment, {
-    moment,
+  moment,
 })
 
 import Echo from "laravel-echo"
@@ -42,15 +42,22 @@ window.Pusher = require('pusher-js');
 
 window.Echo = new Echo({
   broadcaster: 'pusher',
-  key: process.env.VUE_APP_WEBSOCKET_KEY,
-  wsHost: process.env.VUE_APP_WEBSOCKET_SERVER,
-  wsPort: 6001,
-  forceTLS: false,
-  disableStats: true,
+  key: '2041a966486dd958514c',
+  cluster: process.env.VUE_APP_PUSHER_CLUSTER,
+  encrypted: false,
+  authEndpoint: 'http://localhost:8000/broadcasting/auth',
+  auth: {
+    headers: {
+      Authorization: null,
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*'
+    }
+  },
 });
 
 new Vue({
- // Echo,
+  // Echo,
   vuetify,
   router,
   store,

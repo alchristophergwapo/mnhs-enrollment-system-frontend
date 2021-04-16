@@ -1,6 +1,6 @@
-/* .body {
+.body {
   background-color: #eee;
-} */
+}
 
 .v-data-table {
   margin: 0 20px 20px 20px;
@@ -60,6 +60,11 @@
   color: red;
   font-size: 14px;
 }
+
+/* .v-list .v-list-item--active {
+  border-radius: 4px;
+  margin: 0 4px 0 4px;
+} */
 
 /* Dashboard */
 .row-item {
@@ -230,6 +235,10 @@
 
 .edit {
   margin-left: 53%;
+}
+
+.add-btn {
+  margin-left: 20px;
 }
 
 /* All Students */

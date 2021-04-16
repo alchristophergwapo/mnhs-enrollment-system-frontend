@@ -64,11 +64,18 @@ const routes = [
                 },
             },
             {
-                path: 'all_sections',
-                component: () => import('@/components/AllSections.vue'),
+                path: 'sections/junior_high',
+                component: () => import('@/components/adminpage/JuniorHighSections.vue'),
                 meta: {
-                    title: 'Sections'
-                },
+                    title: 'Junior High Sections'
+                }
+            },
+            {
+                path: 'sections/senior_high',
+                component: () => import('@/components/adminpage/SeniorHighSections.vue'),
+                meta: {
+                    title: 'Senior High Sections'
+                }
             },
             {
                 path: 'notifications',

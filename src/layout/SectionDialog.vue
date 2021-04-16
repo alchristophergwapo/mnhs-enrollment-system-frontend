@@ -25,6 +25,7 @@
             {{ getError("name") }}
           </p>
           <v-text-field
+          
             type="number"
             name="capacity"
             label="Max Capacity"
@@ -40,7 +41,7 @@
             {{ getError("capacity") }}
           </p>
           <autocomplete
-            request="allTeacher"
+            request="allNoneAdvisoryTeacher"
             :gradelevel="Number(type.split(' ')[2])"
             :edit="type.split(' ')[0] == 'Edit' ? true : false"
             :teacher="Section.teacher_name"

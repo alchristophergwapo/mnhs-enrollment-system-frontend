@@ -26,6 +26,7 @@ export default {
 }
 
 .v-main {
+  /* background: #eee; */
   padding-bottom: 48px;
 }
 

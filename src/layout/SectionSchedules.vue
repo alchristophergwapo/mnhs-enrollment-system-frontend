@@ -79,7 +79,7 @@
               <td>
                 <span v-if="editSchedule">
                   <autocomplete
-                    request="allSubjectsInGradeLevel"
+                    request="gradelevelSubject"
                     :gradelevel="gradelevel"
                     :edit="true"
                     day="Monday"
@@ -99,7 +99,7 @@
               <td>
                 <span v-if="editSchedule">
                   <autocomplete
-                    request="allSubjectsInGradeLevel"
+                    request="gradelevelSubject"
                     :gradelevel="gradelevel"
                     :edit="true"
                     day="Tuesday"
@@ -119,7 +119,7 @@
               <td>
                 <span v-if="editSchedule">
                   <autocomplete
-                    request="allSubjectsInGradeLevel"
+                    request="gradelevelSubject"
                     :gradelevel="gradelevel"
                     :edit="true"
                     day="Wednesday"
@@ -139,7 +139,7 @@
               <td>
                 <span v-if="editSchedule">
                   <autocomplete
-                    request="allSubjectsInGradeLevel"
+                    request="gradelevelSubject"
                     :gradelevel="gradelevel"
                     :edit="true"
                     day="Thursday"
@@ -159,7 +159,7 @@
               <td>
                 <span v-if="editSchedule">
                   <autocomplete
-                    request="allSubjectsInGradeLevel"
+                    request="gradelevelSubject"
                     :gradelevel="gradelevel"
                     :edit="true"
                     day="Friday"
@@ -215,7 +215,7 @@
               </td>
               <td>
                 <autocomplete
-                  request="allSubjectsInGradeLevel"
+                  request="gradelevelSubject"
                   :gradelevel="gradelevel"
                   :edit="false"
                   day="Monday"
@@ -226,7 +226,7 @@
               </td>
               <td>
                 <autocomplete
-                  request="allSubjectsInGradeLevel"
+                  request="gradelevelSubject"
                   :gradelevel="gradelevel"
                   :edit="false"
                   day="Tuesday"
@@ -237,7 +237,7 @@
               </td>
               <td>
                 <autocomplete
-                  request="allSubjectsInGradeLevel"
+                  request="gradelevelSubject"
                   :gradelevel="gradelevel"
                   day="Wednesday"
                   property="subject_name"
@@ -247,7 +247,7 @@
               </td>
               <td>
                 <autocomplete
-                  request="allSubjectsInGradeLevel"
+                  request="gradelevelSubject"
                   :gradelevel="gradelevel"
                   :edit="false"
                   day="Thursday"
@@ -258,7 +258,7 @@
               </td>
               <td>
                 <autocomplete
-                  request="allSubjectsInGradeLevel"
+                  request="gradelevelSubject"
                   :gradelevel="gradelevel"
                   :edit="false"
                   day="Friday"
