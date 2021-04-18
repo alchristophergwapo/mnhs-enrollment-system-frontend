@@ -243,11 +243,6 @@ export default {
     });
     // console.log(this.allNotifications);
   },
-  computed: {
-    mini() {
-      return this.$vuetify.breakpoint.smAndDown || this.toggleMini;
-    },
-  },
   mounted() {
     if (this.user_details.user_type == "admin") {
       var channel = this.$pusher.subscribe("student-enroll");
@@ -281,9 +276,6 @@ export default {
     mini() {
       return this.$vuetify.breakpoint.smAndDown || this.toggleMini;
     },
-  },
-  mounted() {
-    
   },
 };
 </script>
