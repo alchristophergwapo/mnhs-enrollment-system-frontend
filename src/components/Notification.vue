@@ -13,7 +13,7 @@
         <template v-slot:header_action>
           <v-card-title>
             <v-spacer></v-spacer>
-            <v-btn icon @click="openDialog = false">
+            <v-btn icon @click="closeDialog()">
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
@@ -78,13 +78,12 @@
       </v-card>
     </v-dialog>
     <!-- notifications card list -->
-    <v-card elevation="2" outlined tile>
+    <v-card elevation="2" outlined tile v-if="notifications.length > 0">
       <v-virtual-scroll :items="notifications" :item-height="70" height="700">
         <template v-slot:default="{ item }">
           <v-list class="transparent">
             <v-list-item
-              @click="markAsOpened(item.data.enrollment, item.id)"
-              :class="item.opened_at != null ? 'opened' : 'not-opened'"
+              @click="markAsOpened(item.data.enrollment, item.id, item.index)"
             >
               <v-icon>mdi-plus</v-icon>
 
@@ -103,6 +102,14 @@
         </template>
       </v-virtual-scroll>
     </v-card>
+    <v-card v-else elevation="2" outlined tile>
+      <v-card-text>
+        <h1>No notifications</h1>
+      </v-card-text>
+    </v-card>
+    <v-overlay :value="overlay">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
   </div>
 </template>
 
@@ -134,8 +141,10 @@ export default {
       loading: false,
       approving: false,
       declining: false,
+      overlay: false,
       section: null,
       id: null,
+      indexToDel: null,
       notification: null,
       date: new Date(),
     };
@@ -202,7 +211,7 @@ export default {
         this.$axios
           .post("approveEnrollment/" + id, { student_section: this.section })
           .then((response) => {
-            // console.log(response);
+            this.deleteNotif();
             this.$swal.fire({
               icon: "success",
               title: "Success",
@@ -238,11 +247,11 @@ export default {
       this.$axios
         .post("declineEnrollment/" + id)
         .then((response) => {
-          console.log(response);
+          this.deleteNotif();
           this.$swal.fire({
             icon: "info",
             title: "Success",
-            text: "Enrollment declined.",
+            text: response.data.success,
           });
         })
         .catch((error) => {
@@ -250,10 +259,10 @@ export default {
         });
     },
 
-    markAsOpened(notif, id) {
-      console.log(notif);
+    markAsOpened(notif, id, index) {
       this.notification = notif;
       this.openDialog = true;
+      this.indexToDel = index;
       this.$axios
         .get("mark-as-opened/" + id)
         .then((response) => {
@@ -270,19 +279,27 @@ export default {
 
       // console.log(this.notification);
     },
+
+    closeDialog() {
+      this.openDialog = false;
+    },
+
+    deleteNotif() {
+      this.notifications.splice(this.indexToDel, 1);
+    },
   },
   created() {
+    this.overlay = true;
     let storedInfo = localStorage.getItem("user");
     let userData = JSON.parse(storedInfo);
     console.log(userData);
-    this.notifications = userData.user.notifications;
-    // console.log(notificationsData);
-    // for (let index = 0; index < notificationsData.length; index++) {
-    //   const element = notificationsData[index];
-    //   // console.log(index);
-    //   this.notifications.push(element);
-    // }
-    // console.log(this.notifications);
+    // this.notifications = userData.user.notifications;
+    this.$axios
+      .get(`/allNotifications/${userData.user.id}`)
+      .then((response) => {
+        this.overlay = false;
+        this.notifications = response.data.notifications;
+      });
   },
 };
 </script>

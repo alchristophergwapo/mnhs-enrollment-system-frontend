@@ -1,6 +1,5 @@
 <template>
   <v-app-bar app color="primary" dark elevation="0">
-    <v-app-bar-nav-icon @click="toggleSideBar()"></v-app-bar-nav-icon>
     <v-toolbar-title class="header-title"
       >Welcome to Mantalongon, Dalaguete NHS</v-toolbar-title
     >

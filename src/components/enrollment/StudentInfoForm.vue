@@ -57,10 +57,8 @@
       <v-text-field
         v-model="studentInfo.middlename"
         name="middlename"
-        :rules="[(v) => !!v || 'Middlename is required']"
         label="Middlename"
         outlined
-        required
       ></v-text-field>
     </v-col>
     <v-col cols="12" xs="6" sm="4" md="4" lg="4">

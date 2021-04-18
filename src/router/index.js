@@ -87,10 +87,18 @@ const routes = [
 
         ]
     },
+    // {
+    //     path: '/admin/profile',
+    //     name: 'AdminProfile',
+    //     component: () => import('@/components/AdminProfileSettings.vue'),
+    //     meta: {
+    //         title: 'Admin Profile Settings'
+    //     },
+    // },
     {
         path: '/admin/profile',
         name: 'AdminProfile',
-        component: () => import('@/components/AdminProfileSettings.vue'),
+        component: () => import('@/components/adminpage/AdminProfile.vue'),
         meta: {
             title: 'Admin Profile Settings'
         },

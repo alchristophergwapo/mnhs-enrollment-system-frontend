@@ -35,26 +35,33 @@ Vue.use(VueMoment, {
   moment,
 })
 
-import Echo from "laravel-echo"
+// import Echo from "laravel-echo"
 import { EventBus } from "./bus/bus.js";
 
-window.Pusher = require('pusher-js');
+import Pusher from 'pusher-js';
 
-window.Echo = new Echo({
-  broadcaster: 'pusher',
-  key: '2041a966486dd958514c',
-  cluster: process.env.VUE_APP_PUSHER_CLUSTER,
-  encrypted: true,
-  // authEndpoint: 'http://127.0.0.1:8000/broadcasting/auth',
-  // auth: {
-  //   headers: {
-  //     Authorization: null,
-  //     'Accept': 'application/json',
-  //     'Content-Type': 'application/json',
-  //     'Access-Control-Allow-Origin': '*'
-  //   }
-  // },
-});
+// window.Pusher.logToConsole = true;
+
+Vue.prototype.$pusher = new Pusher('2041a966486dd958514c', {
+  cluster: 'mt1'
+})
+// window.Echo = new Echo({
+//   broadcaster: 'pusher',
+//   key: '2041a966486dd958514c',
+// wsHost: process.env.VUE_APP_WEBSOCKET_SERVER,
+// wsPort: 6001,
+// forceTLS: false,
+// disableStats: true,
+// authEndpoint: 'http://127.0.0.1:8000/broadcasting/auth',
+// auth: {
+//   headers: {
+//     Authorization: null,
+//     'Accept': 'application/json',
+//     'Content-Type': 'application/json',
+//     'Access-Control-Allow-Origin': '*'
+//   }
+// },
+// });
 
 new Vue({
   // Echo,
@@ -64,8 +71,8 @@ new Vue({
   created() {
     this.initialize();
     // this.$store.dispatch('logout')
-    EventBus.$on("sectionUpdated", (data) => {
-      console.log(data);
+    EventBus.$on("sectionUpdated", () => {
+      // console.log(data);
       this.$swal.fire({
         icon: "success",
         title: "Success",
@@ -84,7 +91,7 @@ new Vue({
       const userInfo = localStorage.getItem('user')
       if (userInfo) {
         const userData = JSON.parse(userInfo)
-        console.log(userData);
+        // console.log(userData);
         this.$store.commit('setUserData', userData)
         if (userData.user.user_type == 'admin') {
           if (userData.user.updated == 1) {

@@ -21,200 +21,201 @@
         </v-btn>
       </v-toolbar-items>
     </v-toolbar>
-    <v-form ref="scheduleForm" v-model="scheduleValid" lazy-validation>
-      <!-- schedule table -->
-      <div>
-        <v-container>
-          <v-row>
-            <v-col cols="4">
-              <div>Span of each schedule of classes</div>
-            </v-col>
-            <v-col cols="2">
-              <v-text-field
-                v-model="spanOfClasses.hour"
-                label="Hour(s)"
-                type="number"
-                @change="
-                  changeSpanOfClassess(
-                    spanOfClasses.hour,
-                    spanOfClasses.minutes
-                  )
-                "
-              ></v-text-field>
-            </v-col>
-            <v-col cols="2">
-              <v-text-field
-                v-model="spanOfClasses.minutes"
-                label="Minutes"
-                type="number"
-                @change="
-                  changeSpanOfClassess(
-                    spanOfClasses.hour,
-                    spanOfClasses.minutes
-                  )
-                "
-              ></v-text-field>
-            </v-col>
-          </v-row>
-        </v-container>
-
-        <v-data-table
-          :headers="headers"
-          :items="schedules"
-          item-key="Time"
-          hide-default-footer
-          class="elevation-1"
-        >
-          <template v-slot:item="row">
-            <tr>
-              <td>
+    <br /><br />
+    <v-container>
+      <v-form ref="scheduleForm" v-model="scheduleValid" lazy-validation>
+        <!-- schedule table -->
+        <div>
+          <v-container>
+            <v-row>
+              <v-col cols="4">
+                <div>Span of each schedule of classes</div>
+              </v-col>
+              <v-col cols="2">
                 <v-text-field
-                  :value="row.item.Time"
-                  v-model="schedToEdit.Time"
-                  @change="editScheduleTime(($event = schedToEdit.Time))"
-                  v-if="editSchedule"
+                  v-model="spanOfClasses.hour"
+                  label="Hour(s)"
+                  type="number"
+                  @change="
+                    changeSpanOfClassess(
+                      spanOfClasses.hour,
+                      spanOfClasses.minutes
+                    )
+                  "
+                  outlined
                 ></v-text-field>
-                <span v-else>{{ row.item.Time }}</span>
-              </td>
-              <td>
-                <span v-if="editSchedule">
-                  <autocomplete
-                    request="gradelevelSubject"
-                    :gradelevel="gradelevel"
-                    :edit="true"
-                    day="Monday"
-                    :modelValue="row.item.Monday.subject_name"
-                    property="subject_name"
-                    :rules="[(value) => !!value || 'This field is required.']"
-                  >
-                  </autocomplete
-                  ><br />
-                  <strong>{{ schedToEdit.Monday.teacher_name }}</strong>
-                </span>
-                <span v-else
-                  >{{ row.item.Monday.subject_name }} <br />
-                  {{ row.item.Monday.teacher_name }}</span
-                >
-              </td>
-              <td>
-                <span v-if="editSchedule">
-                  <autocomplete
-                    request="gradelevelSubject"
-                    :gradelevel="gradelevel"
-                    :edit="true"
-                    day="Tuesday"
-                    :modelValue="row.item.Tuesday.subject_name"
-                    property="subject_name"
-                    :rules="[(value) => !!value || 'This field is required.']"
-                  >
-                  </autocomplete
-                  ><br />
-                  <strong>{{ schedToEdit.Tuesday.teacher_name }}</strong>
-                </span>
-                <span v-else
-                  >{{ row.item.Tuesday.subject_name }} <br />
-                  {{ row.item.Tuesday.teacher_name }}</span
-                >
-              </td>
-              <td>
-                <span v-if="editSchedule">
-                  <autocomplete
-                    request="gradelevelSubject"
-                    :gradelevel="gradelevel"
-                    :edit="true"
-                    day="Wednesday"
-                    :modelValue="row.item.Wednesday.subject_name"
-                    property="subject_name"
-                    :rules="[(value) => !!value || 'This field is required.']"
-                  >
-                  </autocomplete
-                  ><br />
-                  <strong>{{ schedToEdit.Wednesday.teacher_name }}</strong>
-                </span>
-                <span v-else
-                  >{{ row.item.Wednesday.subject_name }} <br />
-                  {{ row.item.Wednesday.teacher_name }}</span
-                >
-              </td>
-              <td>
-                <span v-if="editSchedule">
-                  <autocomplete
-                    request="gradelevelSubject"
-                    :gradelevel="gradelevel"
-                    :edit="true"
-                    day="Thursday"
-                    :modelValue="row.item.Thursday.subject_name"
-                    property="subject_name"
-                    :rules="[(value) => !!value || 'This field is required.']"
-                  >
-                  </autocomplete
-                  ><br />
-                  <strong>{{ schedToEdit.Thursday.teacher_name }}</strong>
-                </span>
-                <span v-else
-                  >{{ row.item.Thursday.subject_name }} <br />
-                  {{ row.item.Thursday.teacher_name }}</span
-                >
-              </td>
-              <td>
-                <span v-if="editSchedule">
-                  <autocomplete
-                    request="gradelevelSubject"
-                    :gradelevel="gradelevel"
-                    :edit="true"
-                    day="Friday"
-                    :modelValue="row.item.Friday.subject_name"
-                    property="subject_name"
-                    :rules="[(value) => !!value || 'This field is required.']"
-                  >
-                  </autocomplete
-                  ><br />
-                  <strong>{{ schedToEdit.Friday.teacher_name }}</strong>
-                </span>
-                <span v-else
-                  >{{ row.item.Friday.subject_name }} <br />
-                  {{ row.item.Friday.teacher_name }}</span
-                >
-              </td>
-              <td>
-                <v-icon
-                  v-if="!editSchedule"
-                  color="primary"
-                  @click="editSched(row.item, row.index)"
-                >
-                  mdi-pencil
-                </v-icon>
-                <v-icon
-                  v-else
-                  color="success"
-                  @click="saveEditSchedChanges(row.index)"
-                  >mdi-check</v-icon
-                >
-              </td>
-            </tr>
-          </template>
-        </v-data-table>
+              </v-col>
+              <v-col cols="2">
+                <v-text-field
+                  v-model="spanOfClasses.minutes"
+                  label="Minutes"
+                  type="number"
+                  @change="
+                    changeSpanOfClassess(
+                      spanOfClasses.hour,
+                      spanOfClasses.minutes
+                    )
+                  "
+                  outlined
+                ></v-text-field>
+              </v-col>
+            </v-row>
+          </v-container>
 
-        <v-data-table
-          :headers="headers"
-          :items="scheduleInput"
-          hide-default-header
-          hide-default-footer
-          class="elevation-1 add_sched"
-        >
-          <template v-slot:item="row">
-            <tr hidden>
-              <td>{{ row }}</td>
-            </tr>
-            <tr>
-              <td>
+          <v-data-table
+            :headers="headers"
+            :items="schedules"
+            item-key="Time"
+            hide-default-footer
+            class="elevation-1"
+          >
+            <template v-slot:item="row">
+              <tr class="table-row">
+                <td>
+                  <v-text-field
+                    :value="row.item.Time"
+                    v-model="schedToEdit.Time"
+                    @change="editScheduleTime(($event = schedToEdit.Time))"
+                    v-if="editSchedule"
+                  ></v-text-field>
+                  <span v-else>{{ row.item.Time }}</span>
+                </td>
+                <td>
+                  <span v-if="editSchedule">
+                    <autocomplete
+                      request="gradelevelSubject"
+                      :gradelevel="gradelevel"
+                      :edit="true"
+                      day="Monday"
+                      :modelValue="row.item.Monday.subject_name"
+                      property="subject_name"
+                      :rules="[(value) => !!value || 'This field is required.']"
+                    >
+                    </autocomplete
+                    ><br />
+                    <strong>{{ schedToEdit.Monday.teacher_name }}</strong>
+                  </span>
+                  <span v-else
+                    >{{ row.item.Monday.subject_name }} <br />
+                    {{ row.item.Monday.teacher_name }}</span
+                  >
+                </td>
+                <td>
+                  <span v-if="editSchedule">
+                    <autocomplete
+                      request="gradelevelSubject"
+                      :gradelevel="gradelevel"
+                      :edit="true"
+                      day="Tuesday"
+                      :modelValue="row.item.Tuesday.subject_name"
+                      property="subject_name"
+                      :rules="[(value) => !!value || 'This field is required.']"
+                    >
+                    </autocomplete
+                    ><br />
+                    <strong>{{ schedToEdit.Tuesday.teacher_name }}</strong>
+                  </span>
+                  <span v-else
+                    >{{ row.item.Tuesday.subject_name }} <br />
+                    {{ row.item.Tuesday.teacher_name }}</span
+                  >
+                </td>
+                <td>
+                  <span v-if="editSchedule">
+                    <autocomplete
+                      request="gradelevelSubject"
+                      :gradelevel="gradelevel"
+                      :edit="true"
+                      day="Wednesday"
+                      :modelValue="row.item.Wednesday.subject_name"
+                      property="subject_name"
+                      :rules="[(value) => !!value || 'This field is required.']"
+                    >
+                    </autocomplete
+                    ><br />
+                    <strong>{{ schedToEdit.Wednesday.teacher_name }}</strong>
+                  </span>
+                  <span v-else
+                    >{{ row.item.Wednesday.subject_name }} <br />
+                    {{ row.item.Wednesday.teacher_name }}</span
+                  >
+                </td>
+                <td>
+                  <span v-if="editSchedule">
+                    <autocomplete
+                      request="gradelevelSubject"
+                      :gradelevel="gradelevel"
+                      :edit="true"
+                      day="Thursday"
+                      :modelValue="row.item.Thursday.subject_name"
+                      property="subject_name"
+                      :rules="[(value) => !!value || 'This field is required.']"
+                    >
+                    </autocomplete
+                    ><br />
+                    <strong>{{ schedToEdit.Thursday.teacher_name }}</strong>
+                  </span>
+                  <span v-else
+                    >{{ row.item.Thursday.subject_name }} <br />
+                    {{ row.item.Thursday.teacher_name }}</span
+                  >
+                </td>
+                <td>
+                  <span v-if="editSchedule">
+                    <autocomplete
+                      request="gradelevelSubject"
+                      :gradelevel="gradelevel"
+                      :edit="true"
+                      day="Friday"
+                      :modelValue="row.item.Friday.subject_name"
+                      property="subject_name"
+                      :rules="[(value) => !!value || 'This field is required.']"
+                    >
+                    </autocomplete
+                    ><br />
+                    <strong>{{ schedToEdit.Friday.teacher_name }}</strong>
+                  </span>
+                  <span v-else
+                    >{{ row.item.Friday.subject_name }} <br />
+                    {{ row.item.Friday.teacher_name }}</span
+                  >
+                </td>
+                <td>
+                  <v-icon
+                    v-if="!editSchedule"
+                    color="primary"
+                    @click="editSched(row.item, row.index)"
+                  >
+                    mdi-pencil
+                  </v-icon>
+                  <v-icon
+                    v-else
+                    color="success"
+                    @click="saveEditSchedChanges(row.index)"
+                    >mdi-check</v-icon
+                  >
+                </td>
+              </tr>
+            </template>
+          </v-data-table>
+          <v-container>
+            <v-row>
+              <v-col sm="4">
+                <label for="Time">Time</label>
                 <v-text-field
                   v-model="scheduleInputs.Time"
                   name="Time"
+                  dense
+                  outlined
                 ></v-text-field>
-              </td>
-              <td>
+              </v-col>
+              <v-col sm="4">
                 <autocomplete
+                  :prepend_icon="
+                    scheduleInputs.Monday && scheduleInputs.Monday.icon
+                      ? scheduleInputs.Monday.icon
+                      : 'mdi-help'
+                  "
                   request="gradelevelSubject"
                   :gradelevel="gradelevel"
                   :edit="false"
@@ -222,10 +223,16 @@
                   property="subject_name"
                   :rules="[(value) => !!value || 'This field is required.']"
                 >
+                  <template v-slot:label>Monday</template>
                 </autocomplete>
-              </td>
-              <td>
+              </v-col>
+              <v-col sm="4">
                 <autocomplete
+                  :prepend_icon="
+                    scheduleInputs.Tuesday && scheduleInputs.Tuesday.icon
+                      ? scheduleInputs.Tuesday.icon
+                      : 'mdi-help'
+                  "
                   request="gradelevelSubject"
                   :gradelevel="gradelevel"
                   :edit="false"
@@ -233,20 +240,32 @@
                   property="subject_name"
                   :rules="[(value) => !!value || 'This field is required.']"
                 >
+                  <template v-slot:label>Tuesday</template>
                 </autocomplete>
-              </td>
-              <td>
+              </v-col>
+              <v-col sm="4">
                 <autocomplete
+                  :prepend_icon="
+                    scheduleInputs.Wednesday && scheduleInputs.Wednesday.icon
+                      ? scheduleInputs.Wednesday.icon
+                      : 'mdi-help'
+                  "
                   request="gradelevelSubject"
                   :gradelevel="gradelevel"
                   day="Wednesday"
                   property="subject_name"
                   :rules="[(value) => !!value || 'This field is required.']"
                 >
+                  <template v-slot:label>Wednesday</template>
                 </autocomplete>
-              </td>
-              <td>
+              </v-col>
+              <v-col sm="4">
                 <autocomplete
+                  :prepend_icon="
+                    scheduleInputs.Thursday && scheduleInputs.Thursday.icon
+                      ? scheduleInputs.Thursday.icon
+                      : 'mdi-help'
+                  "
                   request="gradelevelSubject"
                   :gradelevel="gradelevel"
                   :edit="false"
@@ -254,10 +273,16 @@
                   property="subject_name"
                   :rules="[(value) => !!value || 'This field is required.']"
                 >
+                  <template v-slot:label>Thursday</template>
                 </autocomplete>
-              </td>
-              <td>
+              </v-col>
+              <v-col sm="4">
                 <autocomplete
+                  :prepend_icon="
+                    scheduleInputs.Friday && scheduleInputs.Friday.icon
+                      ? scheduleInputs.Friday.icon
+                      : 'mdi-help'
+                  "
                   request="gradelevelSubject"
                   :gradelevel="gradelevel"
                   :edit="false"
@@ -265,16 +290,20 @@
                   property="subject_name"
                   :rules="[(value) => !!value || 'This field is required.']"
                 >
+                  <template v-slot:label>Friday</template>
                 </autocomplete>
-              </td>
-              <td>
-                <v-btn @click="addSchedule()">add</v-btn>
-              </td>
-            </tr>
-          </template>
-        </v-data-table>
-      </div>
-    </v-form>
+              </v-col>
+              <br />
+            </v-row>
+          </v-container>
+        </div>
+      </v-form>
+
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn @click="addSchedule()" color="primary" :loading="loading">add</v-btn>
+      </v-card-actions>
+    </v-container>
   </v-card>
 </template>
 
@@ -340,8 +369,8 @@ export default {
     } else {
       this.scheduleInputs.Time = "08:00-09:00";
     }
-    EventBus.$on("allSubjectsInGradeLevel", (data) => {
-      console.log(data);
+    EventBus.$on("gradelevelSubject", (data) => {
+      // console.log(data);
       let startTime =
         this.$moment(new Date()).format("YYYY/MM/DD") +
         " " +
@@ -351,6 +380,7 @@ export default {
         " " +
         this.scheduleInputs.Time.split("-")[1];
       var sched = {
+        icon: "mdi-check-underline",
         day: data.day,
         start_time: this.$moment(startTime).format("hh:mm"),
         end_time: this.$moment(endTime).format("hh:mm"),
@@ -361,9 +391,10 @@ export default {
         section_id: this.section_id,
       };
       this.scheduleInputs[data.day] = sched;
+      console.log(this.scheduleInputs[data.day]);
     });
 
-    EventBus.$on("editallSubjectsInGradeLevel", (data) => {
+    EventBus.$on("editgradelevelSubject", (data) => {
       // console.log(this.schedToEdit, data);
       this.schedToEdit[data.day].subject_id = data.data.id;
       this.schedToEdit[data.day].subject_name = data.data.subject_name;
@@ -375,6 +406,7 @@ export default {
   methods: {
     addSchedule() {
       if (this.$refs.scheduleForm.validate()) {
+        this.loading = true;
         for (const index in this.scheduleInputs) {
           if (
             this.scheduleInputs.hasOwnProperty.call(this.scheduleInputs, index)
@@ -400,12 +432,16 @@ export default {
         this.$axios
           .post("addSchedules", this.schedulesToAdd)
           .then((response) => {
+            this.loading = false;
             this.schedules.push(this.scheduleInputs);
             this.showResponse("", response.data.success, "success");
             this.this.clearScheduleInputs();
             EventBus.$emit("save");
             this.$refs.scheduleForm.resetValidation();
-          });
+          }).catch(error=>{
+            this.loading = false
+            this.showResponse('', error.response.data.error, 'error')
+          }).finally(this.loading = false);
       }
     },
 
