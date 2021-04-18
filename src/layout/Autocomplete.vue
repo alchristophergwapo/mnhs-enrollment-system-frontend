@@ -7,12 +7,15 @@
       :items="items"
       :filter="searchData"
       :loading="isLoading"
+      :item-text="[property]"
+      :placeholder="'Search/Select ' + property.split('_')[0] + '...'"
+      :prepend-inner-icon="model ? prepend_icon : 'mdi-help'"
+      auto-select-first
+      dense
       clearable
       hide-details
       hide-selected
-      color="white"
-      :item-text="[property]"
-      :label="'Search/Select ' + property.split('_')[0] + '...'"
+      outlined
     >
       <template v-slot:no-data>
         <v-list-item>
@@ -70,6 +73,9 @@ export default {
       type: Boolean,
       default: false,
     },
+    prepend_icon: {
+      type: String,
+    },
   },
   data() {
     return {
@@ -88,17 +94,16 @@ export default {
   },
   created() {
     this.items = [];
-    // console.log(this.modelValue);
+    console.log(this.modelValue);
     let resRef = this.property.split("_")[0];
-    let request = this.request
-    if (request != 'allNoneAdvisoryTeacher') {
-      request += `/${this.gradelevel}` 
+    let request = this.request;
+    if (request != "allNoneAdvisoryTeacher" && request != "allTeacher") {
+      request += `/${this.gradelevel}`;
     }
     this.$axios
       .get(request)
-      // .get(`${this.request}`)
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         this.items = res.data[resRef];
       })
       .catch((error) => {
@@ -109,38 +114,15 @@ export default {
       });
 
     EventBus.$on("save", () => {
-      // console.log(data);
       this.model = null;
     });
-
-    // EventBus.$on("closeModal", () => {
-
-    // });
   },
   mounted() {
     this.items = [];
-    // console.log(this.gradelevel);
-    // this.$store
-    //   .dispatch(`${this.request}`, this.gradelevel)
-    //   .then((res) => {
-    //     // console.log(res);
-    //     this.items = res;
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   })
-    //   .finally(() => {
-    //     this.isLoading = false;
-    //   });
 
     EventBus.$on("save", () => {
-      // console.log(data);
       this.model = null;
     });
-
-    // EventBus.$on("closeModal", () => {
-
-    // });
   },
   methods: {
     selectItem(item) {

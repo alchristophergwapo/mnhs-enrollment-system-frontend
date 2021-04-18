@@ -33,6 +33,9 @@
         </tr>
       </template>
     </v-data-table>
+    <v-container>
+      <v-btn @click="csvExport(csvData)" dark color="teal">Download File</v-btn>
+    </v-container>
   </div>
 </template>
 
@@ -146,6 +149,46 @@ export default {
       }
       //   console.log(this.schedules);
     });
+  },
+  methods: {
+    //Dowloadcsv
+    csvExport(arrData) {
+      let csvContent = "data:text/csv;charset=utf-8,";
+      csvContent += [
+        Object.keys(arrData[0]),
+        ...arrData.map((item) => Object.values(item)),
+      ]
+        .join("\n")
+        .replace(/(^\[)|(\]$)/gm, "");
+      const data = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", data);
+      link.setAttribute("download", this.selectGrade + ".csv");
+      link.click();
+    },
+  },
+  computed: {
+    csvData() {
+      return this.students.map((item) => ({
+        SchoolYear: item.student.created_at
+          .substring(0, item.student.created_at.indexOf("-"))
+          .concat(
+            "-",
+            parseInt(
+              item.student.created_at.substring(
+                0,
+                item.student.created_at.indexOf("-")
+              )
+            ) + 1
+          ),
+        GradeLevel: item.student.grade_level,
+        Section: item.student_section,
+        StudentName: item.student.firstname + " " + item.student.lastname,
+        Age: item.student.age,
+        Address: item.student.address.replace(/[^a-zA-Z ]/g, " "),
+        //Address:item.student.address.replaceAll(","," ").replaceAll(/\s+/g," ")
+      }));
+    },
   },
 };
 </script>

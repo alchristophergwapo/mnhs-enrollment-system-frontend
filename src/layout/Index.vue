@@ -12,10 +12,16 @@
       <v-spacer></v-spacer>
 
       <div class="notif" v-if="user_details.user_type == 'admin'">
-        <v-btn @click="markAsRead()" icon text link to="/admin/notifications">
+        <v-btn
+          @click="markAsRead()"
+          color="accent"
+          link
+          to="/admin/notifications"
+          class="app-bar-btns"
+        >
           <v-badge
             :content="notifications"
-            :value="unreadNotification.length"
+            :value="notifications"
             color="red"
             overlap
           >
@@ -23,34 +29,31 @@
           </v-badge>
         </v-btn>
       </div>
-      <div v-if="$route.name != 'AdminProfile'">
-        <v-card-title>
-          <span style="color: white" v-if="user_details.user_type == 'admin'">{{
-            user_details.username
-          }}</span>
-          <span style="color: white" v-else
-            >Hello, {{ user_details.firstname }}</span
-          >
-          <v-spacer></v-spacer>
-          <v-menu left bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-icon
-                v-if="user_details.user_type == 'admin'"
-                v-bind="attrs"
-                v-on="on"
-                >mdi-chevron-down</v-icon
-              >
-            </template>
+      <!-- <div v-if="$route.name != 'AdminProfile'"> -->
+      <v-card-title>
+        <v-menu offset-y open-on-hover bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn v-bind="attrs" v-on="on" color="info" class="app-bar-btns">
+              <v-icon dark color="white"> mdi-account-circle </v-icon>
+            </v-btn>
+          </template>
 
-            <v-list>
-              <v-list-item link to="/admin/profile">
-                <v-list-item-title>Profile Settings</v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </v-card-title>
-      </div>
-      <v-btn text @click="logout" color="white">Logout</v-btn>
+          <v-list>
+            <v-list-item link to="/admin/profile" class="nav-link">
+              <v-list-item-title>My Profile </v-list-item-title>
+              <v-list-item-icon>
+                <v-icon>mdi-account-cog</v-icon></v-list-item-icon
+              >
+            </v-list-item>
+            <v-list-item @click="logout" class="nav-link">
+              <v-list-item-title>Logout </v-list-item-title>
+              <v-list-item-icon
+                ><v-icon>mdi-logout-variant</v-icon></v-list-item-icon
+              >
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </v-card-title>
     </v-app-bar>
     <!-- src="../assets/images/mnhs_bg.jpg" -->
     <v-navigation-drawer
@@ -63,7 +66,8 @@
         <v-list-item-avatar size="50">
           <v-img src="../assets/images/mnhs-logo.png"></v-img>
         </v-list-item-avatar>
-        <v-list-item-title style="font-weight: bold; font-size: 20px"
+        <v-list-item-title
+          style="font-weight: bold; font-size: 20px; color: white"
           >ADMINISTRATOR</v-list-item-title
         >
       </v-list-item>
@@ -116,14 +120,14 @@
               ]"
               :to="child.to"
             >
-              <v-list-item-action v-if="child.icon">
-                <v-icon>{{ child.icon }}</v-icon>
-              </v-list-item-action>
               <v-list-item-content class="nav-def">
                 <v-list-item-title>
                   {{ child.text }}
                 </v-list-item-title>
               </v-list-item-content>
+              <v-list-item-action v-if="child.icon">
+                <v-icon>{{ child.icon }}</v-icon>
+              </v-list-item-action>
             </v-list-item>
           </v-list-group>
         </template>
@@ -154,6 +158,7 @@ export default {
       toggleMini: false,
       subMenu: false,
       currentSelection: "",
+      notifications: 0,
       items: [
         { icon: "mdi-view-dashboard", text: "Dashboard", to: "/admin" },
         {
@@ -178,8 +183,16 @@ export default {
           text: "Sections",
           model: false,
           children: [
-            { text: "Junior High", to: "/admin/sections/junior_high" },
-            { text: "Senior High", to: "/admin/sections/senior_high" },
+            {
+              text: "Junior High",
+              to: "/admin/sections/junior_high",
+              icon: "mdi-home",
+            },
+            {
+              text: "Senior High",
+              to: "/admin/sections/senior_high",
+              icon: "mdi-home-outline",
+            },
           ],
         },
       ],
@@ -215,31 +228,43 @@ export default {
     } else {
       this.user_details = userData.userInfo;
     }
-    console.log(userData);
-    let notificationsFromStorage = userData.user.notifications;
-    if (notificationsFromStorage) {
-      this.allNotifications = notificationsFromStorage;
-      this.notifications = this.unreadNotification.length;
-    }
+    // console.log(userData);
+    // let notificationsFromStorage = userData.user.notifications;
+    // if (notificationsFromStorage) {
+    //   this.allNotifications = notificationsFromStorage;
+    //   this.notifications = this.unreadNotification.length;
+    // }
 
+    this.$axios.get(`unreadNotif/${this.user_details.id}`).then((res) => {
+      console.log(res);
+      this.notifications = res.data.notifications.length;
+      this.allNotifications = res.data.notifications;
+      console.log(this.notifications);
+    });
+    // console.log(this.allNotifications);
+  },
+  computed: {
+    mini() {
+      return this.$vuetify.breakpoint.smAndDown || this.toggleMini;
+    },
+  },
+  mounted() {
     if (this.user_details.user_type == "admin") {
-      window.Echo.channel("student_enroll").listen(
-        "StudentEnrollEvent",
-        (eventData) => {
-          console.log(eventData);
-          this.allNotifications.push(eventData.notification);
-          this.notifications = this.unreadNotification.length;
-          // this.setUserData(eventData);
-          let enrollmentData = eventData.student_enrolled;
-          this.$notification.show(
-            "New Enrollment",
-            {
-              body: `${enrollmentData.firstname} ${enrollmentData.lastname} submitted an enrollment.`,
-            },
-            {}
-          );
-        }
-      );
+      var channel = this.$pusher.subscribe("student-enroll");
+      // console.log(channel);
+      channel.bind("new-enrollment", (eventData) => {
+        console.log(eventData);
+        this.notifications += 1;
+        this.allNotifications.push(eventData.notification);
+        let enrollmentData = eventData.student;
+        this.$notification.show(
+          "New Enrollment",
+          {
+            body: `${enrollmentData.firstname} ${enrollmentData.lastname} submitted an enrollment.`,
+          },
+          {}
+        );
+      });
     }
     // console.log(this.allNotifications);
   },
@@ -264,6 +289,19 @@ export default {
 </script>
 
 <style>
+.v-list .v-list-item--active {
+  color: white;
+  background-color: #5ca08e;
+}
+
+.v-list .v-list-item:hover {
+  background-color: #5ca08e;
+}
+
+.px-2 {
+  padding-top: 30px !important;
+  padding-bottom: 30px !important;
+}
 .main-view {
   margin: 10px;
 }

@@ -1,27 +1,24 @@
 <template>
   <div class="body" app>
-    <div class="header">
-      <div class="col" id="col1">
-        <img id="logo" src="../assets/images/mnhs-logo.png" />
+    <v-card tile style="background-color: #006a4e">
+      <div class="header">
+        <div class="col" id="col1">
+          <img id="logo" src="../assets/images/mnhs-logo.png" />
+        </div>
+        <div class="col" id="col2">
+          <h2>Online Enrollment System</h2>
+          <h6>Mantalongon National High School</h6>
+          <h6>Mantalongon, Dalaguete Cebu</h6>
+        </div>
+        <div class="col" id="col3">
+          <img id="logo2" src="../assets/images/deped-logo.png" />
+        </div>
       </div>
-      <div class="col" id="col2">
-        <h2>Online Enrollment System</h2>
-        <h6>Mantalongon National High School</h6>
-        <h6>Mantalongon, Dalaguete Cebu</h6>
-      </div>
-      <div class="col" id="col3">
-        <img id="logo2" src="../assets/images/deped-logo.png" />
-        <br />
-        <!-- <div class="login-btn">
-          
-        </div> -->
-        <v-card-actions class="login-btn">
-          <v-spacer></v-spacer>
-          <v-btn outlined color="white" link to="/sign-in">login</v-btn>
-        </v-card-actions>
-      </div>
-    </div>
-
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn outlined color="white" link to="/sign-in">login</v-btn>
+      </v-card-actions>
+    </v-card>
     <v-carousel cycle height="500" :show-arrows="false">
       <v-carousel-item
         :src="require('../assets/images/mnhs.jpg')"

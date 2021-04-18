@@ -9,6 +9,7 @@
                 label="Subject name"
                 v-model="editSubjectDetails.subject_name"
                 :rules="[(name) => !!name || 'Subject name is required']"
+                outlined
               >
               </v-text-field>
               <autocomplete
@@ -16,9 +17,12 @@
                 :gradelevel="Number(gradeLevel)"
                 :modelValue="editSubjectDetails.teacher_name"
                 :edit="true"
+                :prepend_icon="editSubjectDetails.teacher_name ? 'mdi-check-underline' : 'mdi-help'"
                 property="teacher_name"
                 :rules="[(value) => !!value || 'This field is required']"
-              ></autocomplete>
+              >
+              <template v-slot:label>Teacher</template>
+              </autocomplete>
             </v-card-text>
             <v-divider></v-divider>
             <v-card-actions>
@@ -86,12 +90,16 @@
                   @keydown="clearError"
                   name="name"
                   :error="hasError('name')"
+                  outlined
+                  dense
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
                 <autocomplete
                   request="allTeacher"
                   :gradelevel="Number(gradeLevel)"
+                  :edit="false"
+                  :prepend_icon="teacher != null ? 'mdi-check-underline' : 'mdi-help'"
                   property="teacher_name"
                   :rules="[(value) => !!value || 'This field is required']"
                 ></autocomplete>
@@ -157,11 +165,13 @@ export default {
         teacher_id: null,
         teacher_name: null,
         index: null,
+        icon: null,
       },
     };
   },
   watch: {},
   created() {
+    console.log(this.subjects);
     EventBus.$on("allTeacher", (data) => {
       console.log(data);
       this.teacher = data.data.teacher_name;
@@ -172,6 +182,7 @@ export default {
       console.log(data.data);
       this.editSubjectDetails.teacher_name = data.data.teacher_name;
       this.editSubjectDetails.teacher_id = data.data.id;
+this.editSubjectDetails.icon = 'mdi-check-underline'
       console.log(this.editSubjectDetails);
     });
   },
@@ -222,15 +233,16 @@ export default {
     },
 
     editSubject() {
-      this.subjects[
-        this.editSubjectDetails.index
-      ].name = this.editSubjectDetails.name;
-      this.subjects[
-        this.editSubjectDetails.index
-      ].teacher_id = this.editSubjectDetails.teacher_id;
-      this.subjects[
-        this.editSubjectDetails.index
-      ].teacher_name = this.editSubjectDetails.teacher_name;
+      // this.subjects[
+      //   this.editSubjectDetails.index
+      // ].name = this.editSubjectDetails.name;
+      // this.subjects[
+      //   this.editSubjectDetails.index
+      // ].teacher_id = this.editSubjectDetails.teacher_id;
+      // this.subjects[
+      //   this.editSubjectDetails.index
+      // ].teacher_name = this.editSubjectDetails.teacher_name;
+      console.log(this.editSubjectDetails);
       this.$axios
         .post(`updateSubject`, this.editSubjectDetails)
         .then((response) => {
@@ -282,7 +294,9 @@ export default {
       this.$refs.subject.resetValidation();
     },
     close() {
-      this.subjects = [];
+      // this.subjects = [];
+
+      this.$refs.subject.resetValidation();
       EventBus.$emit("closeSubjectModal", false);
 
       this.name = null;

@@ -25,7 +25,13 @@
             <v-btn color="secondary" small dark @click="retrieveSubjects()"
               >subject(s)</v-btn
             >
-            <v-btn color="primary" small dark @click="open(item.text)" class="add-btn">
+            <v-btn
+              color="primary"
+              small
+              dark
+              @click="open(item.text)"
+              class="add-btn"
+            >
               <v-icon>mdi-plus</v-icon>Add Section
             </v-btn>
           </v-card-title>
@@ -88,7 +94,7 @@
           >
           </section-dialog>
         </v-dialog>
-        <v-dialog v-model="addSubject" persistent max-width="700px">
+        <v-dialog v-model="addSubject" persistent max-width="800px">
           <add-subject-dialog
             :gradeLevel="addOrEdit.name.split(' ')[2]"
             :subjectsInGradeLevel="subjects"
@@ -170,7 +176,7 @@ export default {
 
     EventBus.$on("displayAllsection", (data) => {
       console.log(data);
-      this.displayAllsection(data.data1);
+      this.displayAllsection(data.data1.split(' ')[2]);
     });
 
     EventBus.$on("closeSubjectModal", (data) => {
@@ -256,7 +262,7 @@ export default {
       this.$axios
         .get(`gradelevelSubject/${Number(this.addOrEdit.name.split(" ")[2])}`)
         .then((response) => {
-          this.subjects = response.data.subjects;
+          this.subjects = response.data.subject;
           this.addSubject = true;
           this.overlay = false;
         });

@@ -12,7 +12,7 @@
       <v-form ref="sectionForm" v-model="sectionValid" lazy-validation>
         <v-container>
           <v-text-field
-            v-model="Section.section"
+            v-model="sectionData.section"
             label="Section name"
             :rules="[(value) => !!value || 'This field is required']"
             required
@@ -25,12 +25,11 @@
             {{ getError("name") }}
           </p>
           <v-text-field
-          
             type="number"
             name="capacity"
             label="Max Capacity"
             @keydown="clearError"
-            v-model="Section.capacity"
+            v-model="sectionData.capacity"
             :rules="[(value) => !!value || 'This field is required']"
             required
             :error="hasError('capacity')"
@@ -44,12 +43,17 @@
             request="allNoneAdvisoryTeacher"
             :gradelevel="Number(type.split(' ')[2])"
             :edit="type.split(' ')[0] == 'Edit' ? true : false"
-            :teacher="Section.teacher_name"
-            :modelValue="Section.teacher_name"
+            :teacher="Section.teacher"
+            :modelValue="Section.teacher"
+            :prepend_icon="
+              sectionData.teacher != null ? 'mdi-check-underline' : 'mdi-help'
+            "
             property="teacher_name"
           >
             <template v-slot:label>
-              <span>Adviser</span>
+              <span
+                >Adviser : <strong>{{ Section.teacher }}</strong></span
+              >
             </template>
           </autocomplete>
         </v-container>
@@ -98,7 +102,7 @@ export default {
       loading: false,
       teachers: [],
       errors: {},
-      sectionToEdit: this.Section,
+      sectionData: this.Section,
       sectionValid: false,
       search: "",
     };
@@ -106,17 +110,18 @@ export default {
   watch: {},
   created() {
     console.log(this.Section);
-    EventBus.$on("allTeacher", (data) => {
+
+    EventBus.$on("allNoneAdvisoryTeacher", (data) => {
       console.log(data);
-      this.Section.teacher = data.data.id;
-      console.log(this.Section);
+      this.sectionData.teacher = data.data.id;
+      console.log(this.sectionData);
     });
 
-    EventBus.$on("editallTeacher", (data) => {
+    EventBus.$on("editallNoneAdvisoryTeacher", (data) => {
       // console.log(data);
-      this.Section.teacher = data.data.teacher_name;
-      this.Section.teacher_id = data.data.id;
-      console.log(this.Section);
+      this.sectionData.teacher = data.data.teacher_name;
+      this.sectionData.teacher_id = data.data.id;
+      console.log(this.sectionData);
     });
   },
   mounted() {},
@@ -127,13 +132,14 @@ export default {
         if (this.edit == false) {
           this.loading = true;
           // console.log(grades.split(" ")[2]);
+          console.log(this.sectionData);
           this.$axios
             .post("addSection", {
               grade: grades.split(" ")[2],
-              name: this.Section.section,
-              capacity: this.Section.capacity,
+              name: this.sectionData.section,
+              capacity: this.sectionData.capacity,
               total_students: 0,
-              teacher: this.Section.teacher,
+              teacher: this.sectionData.teacher,
             })
             .then((response) => {
               if (response.data.message) {
@@ -141,7 +147,6 @@ export default {
                 // this.displayAllsection(grades, null);
                 EventBus.$emit("displayAllsection", {
                   data1: grades,
-                  data2: null,
                 });
                 this.showResponse("Success", response.data.message, "success");
                 this.loading = false;
@@ -171,17 +176,16 @@ export default {
         } else {
           //console.log("Teacher:"+this.Section.teacher);
           this.$axios
-            .post("updateSection/" + this.Section.id, {
-              name: this.Section.section,
-              capacity: this.Section.capacity,
-              teacher_id: this.Section.teacher_id,
+            .post("updateSection/" + this.sectionData.id, {
+              name: this.sectionData.section,
+              capacity: this.sectionData.capacity,
+              teacher_id: this.sectionData.teacher_id,
             })
             .then((response) => {
               if (response.data.message) {
                 this.showResponse("Success", response.data.message, "success");
                 EventBus.$emit("displayAllsection", {
                   data1: grades,
-                  data2: null,
                 });
                 this.clear();
                 this.close();
@@ -204,10 +208,10 @@ export default {
                     if (result.isConfirmed) {
                       this.$axios
                         .post("updateSection/" + "update", {
-                          updateId: this.Section.id,
-                          name: this.Section.section,
-                          capacity: this.Section.capacity,
-                          teacher_id: this.Section.teacher_id,
+                          updateId: this.sectionData.id,
+                          name: this.sectionData.section,
+                          capacity: this.sectionData.capacity,
+                          teacher_id: this.sectionData.teacher_id,
                         })
                         .then((response) => {
                           console.log(response);
@@ -221,14 +225,12 @@ export default {
                             this.clear();
                             EventBus.$emit("displayAllsection", {
                               data1: grades,
-                              data2: null,
                             });
                           } else {
                             let text = "Not successfully updated!";
                             this.showResponse("Not Updated!", text, "error");
                             EventBus.$emit("displayAllsection", {
                               data1: grades,
-                              data2: null,
                             });
                             this.clear();
                             this.close();
@@ -268,10 +270,11 @@ export default {
       EventBus.$emit("closeModal", "close-modal");
     },
     clear() {
-      this.Section.id = null;
-      this.Section.section = null;
-      this.Section.capacity = null;
-      this.Section.teacher = null;
+      this.sectionData.id = null;
+      this.sectionData.section = null;
+      this.sectionData.capacity = null;
+      this.sectionData.teacher = null;
+      this.$refs.sectionForm.resetValidation();
     },
     //Methods For All Errors In Junior High School
     setErrors(error) {

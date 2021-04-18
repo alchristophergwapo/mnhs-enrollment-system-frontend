@@ -3,15 +3,6 @@
     <bread-crumb :item="items" page_name="Dashboard"></bread-crumb>
     <br /><br />
     <v-container id="dashboard" tag="section">
-      <!-- <chart
-            :data="enrollmentChart.data"
-            :options="enrollmentChart.options"
-            :responsive-options="enrollmentChart.responsiveOptions"
-            color="#E91E63"
-            hover-reveal
-            type="Bar"
-            v-if="initialized"
-          > -->
       <chart
         :data="enrollmentChart.data"
         :options="enrollmentChart.options"
@@ -208,7 +199,7 @@ export default {
     this.initializeData();
 
     this.$store.dispatch("allTeacher").then((res) => {
-      this.totalTeachers = res.length;
+      this.totalTeachers = res.teacher.length;
     });
 
     this.$store.dispatch("allPendingEnrollments").then((res) => {

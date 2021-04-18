@@ -6,7 +6,6 @@
     <br />
     <div>
       <v-container>
-        <!-- <v-card outlined> -->
         <v-card class="table-header" color="orange">
           <v-card-title class="text-center justify-center">
             <div class="display-2 font-weight-light">All Teachers</div>
@@ -28,7 +27,7 @@
             outlined
           ></v-select>
           <v-spacer></v-spacer>
-          <!-- Adding A Teacher!-->
+
           <v-card-title>
             <v-spacer></v-spacer>
             <div class="add_btn">
@@ -124,7 +123,6 @@
               </v-dialog>
             </div>
           </v-card-title>
-          <!-- Adding A Teacher!-->
         </v-card-title>
         <v-data-table
           :headers="headers"
@@ -228,77 +226,111 @@
                             <td>
                               <div v-if="row.item.Monday">
                                 <span
-                                  >Time: <strong>{{ row.item.Monday.start_time }}-{{
-                                    row.item.Monday.end_time
-                                  }}</strong> </span
+                                  >Time:
+                                  <strong
+                                    >{{ row.item.Monday.start_time }}-{{
+                                      row.item.Monday.end_time
+                                    }}</strong
+                                  > </span
                                 ><br />
                                 <span
                                   >Subject:
-                                  <strong>{{ row.item.Monday.subject_name }}</strong> </span
+                                  <strong>{{
+                                    row.item.Monday.subject_name
+                                  }}</strong> </span
                                 ><br />
-                                <span>Section: <strong>{{ row.item.Monday.name }}</strong> </span>
+                                <span
+                                  >Section:
+                                  <strong>{{ row.item.Monday.name }}</strong>
+                                </span>
                               </div>
                             </td>
                             <td>
                               <div v-if="row.item.Tuesday">
                                 <span
-                                  >Time: <strong>{{ row.item.Tuesday.start_time }}-{{
-                                    row.item.Tuesday.end_time
-                                  }}</strong> </span
+                                  >Time:
+                                  <strong
+                                    >{{ row.item.Tuesday.start_time }}-{{
+                                      row.item.Tuesday.end_time
+                                    }}</strong
+                                  > </span
                                 ><br />
                                 <span
                                   >Subject:
-                                  <strong>{{ row.item.Tuesday.subject_name }}</strong> </span
+                                  <strong>{{
+                                    row.item.Tuesday.subject_name
+                                  }}</strong> </span
                                 ><br />
                                 <span
-                                  >Section: <strong>{{ row.item.Tuesday.name }}</strong> </span
-                                >
+                                  >Section:
+                                  <strong>{{ row.item.Tuesday.name }}</strong>
+                                </span>
                               </div>
                             </td>
                             <td>
                               <div v-if="row.item.Wednesday">
                                 <span
-                                  >Time: <strong>{{ row.item.Wednesday.start_time }}-{{
-                                    row.item.Wednesday.end_time
-                                  }}</strong> </span
+                                  >Time:
+                                  <strong
+                                    >{{ row.item.Wednesday.start_time }}-{{
+                                      row.item.Wednesday.end_time
+                                    }}</strong
+                                  > </span
                                 ><br />
                                 <span
                                   >Subject:
-                                  <strong>{{ row.item.Wednesday.subject_name }}</strong> </span
+                                  <strong>{{
+                                    row.item.Wednesday.subject_name
+                                  }}</strong> </span
                                 ><br />
                                 <span
-                                  >Section: <strong>{{ row.item.Wednesday.name }}</strong> </span
-                                >
+                                  >Section:
+                                  <strong>{{ row.item.Wednesday.name }}</strong>
+                                </span>
                               </div>
                             </td>
                             <td>
                               <div v-if="row.item.Thursday">
                                 <span
-                                  >Time: <strong>{{ row.item.Thursday.start_time }}-{{
-                                    row.item.Thursday.end_time
-                                  }}</strong> </span
+                                  >Time:
+                                  <strong
+                                    >{{ row.item.Thursday.start_time }}-{{
+                                      row.item.Thursday.end_time
+                                    }}</strong
+                                  > </span
                                 ><br />
                                 <span>
                                   Subject:
-                                  <strong>{{ row.item.Thursday.subject_name }}</strong>  </span
+                                  <strong>{{
+                                    row.item.Thursday.subject_name
+                                  }}</strong> </span
                                 ><br />
                                 <span
-                                  >Section: <strong>{{ row.item.Thursday.name }}</strong> </span
-                                >
+                                  >Section:
+                                  <strong>{{ row.item.Thursday.name }}</strong>
+                                </span>
                               </div>
                             </td>
                             <td>
                               <div v-if="row.item.Friday">
                                 <span
-                                  >Time: <strong>{{ row.item.Friday.start_time }}-{{
-                                    row.item.Friday.end_time
-                                  }}</strong> </span
+                                  >Time:
+                                  <strong
+                                    >{{ row.item.Friday.start_time }}-{{
+                                      row.item.Friday.end_time
+                                    }}</strong
+                                  > </span
                                 ><br />
                                 <span
                                   >Subject:
-                                  <strong>{{ row.item.Friday.subject_name }}</strong> </span
+                                  <strong>{{
+                                    row.item.Friday.subject_name
+                                  }}</strong> </span
                                 ><br />
-                                <span>Section: <strong>{{ row.item.Friday.name }}</strong> </span>
+                                <span
+                                  >Section:
+                                  <strong>{{ row.item.Friday.name }}</strong>
+                                </span>
                               </div>
                             </td>
                           </tr>
@@ -323,7 +355,6 @@
             </tr>
           </template>
         </v-data-table>
-        <!-- </v-card> -->
       </v-container>
     </div>
   </div>
@@ -400,24 +431,10 @@ export default {
         Thursday: null,
         Friday: null,
       },
-      // monday_sched: [],
-      // tuesday_sched: [],
-      // wednesday_sched: [],
-      // thursday_sched: [],
-      // friday_sched: [],
     };
   },
   created() {
-    //this.teachers =this.$store.getters.allTeacher;
-    // let sections =this.$store.getters.allSections;
-    // for (const key in sections) {
-    //   if (sections.hasOwnProperty.call(sections, key)) {
-    //     const element = sections[key];
-    //     this.sections.push({id:element["id"],name:element["name"]});
-    //   }
-    // }
     this.allNoAdviserSections();
-    // this.retrieveSchedule();
   },
   mounted() {
     this.display();
@@ -451,14 +468,15 @@ export default {
           for (const key in sections) {
             if (sections.hasOwnProperty.call(sections, key)) {
               const element = sections[key];
-              this.sections.push({ id: element["id"], name: element["name"] });
+              this.sections.push(element);
             }
             //console.log(this.sections);
           }
         })
         .catch((error) => {
-          console.log(error);
+          console.log(error.response);
         });
+      console.log(this.sections);
     },
     //Method for displaying schedules
     getTeacherSchedule(id) {
@@ -476,19 +494,8 @@ export default {
         let count = 0;
         for (let index = 0; index < schedules.length; index++) {
           const element = schedules[index];
-          // if (this.schedules[element.day]) {
-          // console.log(this.sched[element.day]);
           if (this.sched[element.day] == null)
             (this.sched[element.day] = element), (count += 1);
-          // if (this.sched[element.day] != null)
-          //   this.schedules.push(this.sched),
-          //     (this.sched = {
-          //       Monday: null,
-          //       Tuesday: null,
-          //       Wednesday: null,
-          //       Thursday: null,
-          //       Friday: null,
-          //     });
           if (count == 5 || count == schedules.length)
             this.schedules.push(this.sched),
               (this.sched = {
@@ -499,8 +506,6 @@ export default {
                 Friday: null,
               });
         }
-
-        // console.log(this.schedules);
       });
     },
 
@@ -508,9 +513,10 @@ export default {
     display() {
       this.$store
         .dispatch("allTeacher")
-        .then(() => {
-          this.teachers = this.$store.getters.allTeacher;
-          this.filterTeachers = this.$store.getters.allTeacher;
+        .then((res) => {
+          this.teachers = res.teacher;
+          console.log(this.teachers);
+          this.filterTeachers = this.teachers;
           this.teachers = this.filterTeachers.filter((val) => {
             return (
               val.created_at.substring(0, val.created_at.indexOf("-")) ==
@@ -599,8 +605,6 @@ export default {
       console.log("section:" + this.selected_section);
       if (this.booleanStatus == false) {
         this.loading = true;
-        await new Promise((resolve) => setTimeout(resolve, 700));
-        this.loading = false;
         this.$axios
           .post("addNewTeacher", {
             teacher_name: this.Teacher,
@@ -609,33 +613,36 @@ export default {
             section_id: this.selected_section,
           })
           .then((response) => {
-            if (response.data.message) {
+            if (response.data.message)
               this.$swal.fire({
                 icon: "success",
                 title: "Success",
                 text: "Successfully saved.",
-              });
-              this.statusdialog = false;
-              (this.Teacher = null),
+              }),
+                (this.loading = false),
+                (this.statusdialog = false),
+                (this.Teacher = null),
                 (this.Email = null),
                 (this.Contact = null),
                 (this.selected_section = null),
-                (this.Id = null);
-              this.display();
-            } else {
-              this.$swal.fire({
-                icon: "error",
-                title: "Error",
-                text:
-                  "Section " +
-                  response.data.section +
-                  " was already assigned to " +
-                  response.data.teacher +
-                  ".",
-              });
-            }
+                (this.Id = null),
+                this.display();
+            else
+              (this.loading = false),
+                this.$swal.fire({
+                  icon: "error",
+                  title: "Error",
+                  text:
+                    "Section " +
+                    response.data.section +
+                    " was already assigned to " +
+                    response.data.teacher +
+                    ".",
+                });
+            this.sections.splice(this.sections.indexOf(this.selected_section, 1))
           })
           .catch((error) => {
+            this.loading = false;
             if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);
             } else {
@@ -645,8 +652,6 @@ export default {
       } else {
         //For Updating The  Teachers
         this.loading = true;
-        await new Promise((resolve) => setTimeout(resolve, 700));
-        this.loading = false;
         this.$axios
           .post("updateTeacher/" + this.Id, {
             teacher_name: this.Teacher,
@@ -656,6 +661,7 @@ export default {
           })
           .then((response) => {
             if (response.data.message) {
+              this.loading = false;
               this.$swal.fire({
                 icon: "success",
                 title: "Success",
@@ -670,6 +676,7 @@ export default {
               this.statusdialog = false;
               this.display();
             } else {
+              this.loading = false;
               this.$swal
                 .fire({
                   title:
@@ -695,6 +702,7 @@ export default {
                         section_id: this.selected_section,
                       })
                       .then((response) => {
+                        this.loading = false;
                         if (response.data.newSection) {
                           this.$swal.fire({
                             title: "Updated!",
@@ -719,6 +727,7 @@ export default {
                         }
                       })
                       .catch((error) => {
+                        this.loading = false;
                         console.log(error);
                       });
                   }
@@ -726,6 +735,7 @@ export default {
             }
           })
           .catch((error) => {
+            this.loading = false;
             console.log(error);
             if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);

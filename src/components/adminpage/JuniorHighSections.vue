@@ -101,10 +101,10 @@
           >
           </section-dialog>
         </v-dialog>
-        <v-dialog v-model="addSubject" persistent max-width="700px">
+        <v-dialog v-model="addSubject" persistent max-width="800px">
           <add-subject-dialog
             :gradeLevel="addOrEdit.name.split(' ')[2]"
-            :subjectsInGradeLevel="subjects"
+            :subjectsInGradeLevel="gradelevelSubjects"
           ></add-subject-dialog>
         </v-dialog>
         <v-dialog
@@ -173,7 +173,7 @@ export default {
         Friday: null,
       },
       allsections: [],
-      subjects: [],
+      gradelevelSubjects: [],
       schedules: [],
       gradelevel: "7",
       addOrEdit: { name: "Add Grade 7" },
@@ -188,7 +188,7 @@ export default {
 
     EventBus.$on("displayAllsection", (data) => {
       console.log(data);
-      this.displayAllsection(data.data1);
+      this.displayAllsection(data.data1.split(" ")[2]);
     });
 
     EventBus.$on("closeSubjectModal", (data) => {
@@ -212,7 +212,7 @@ export default {
               junior.content = this.allsections.filter(function (val) {
                 return val.gradelevel.grade_level == gradelevel;
               });
-              console.log(junior.content);
+              // console.log(junior.content);
             }
           });
         })
@@ -228,7 +228,7 @@ export default {
         this.viewScheds = true;
         this.overlay = false;
         const schedulesOnDB = response.data.schedules;
-        console.log(schedulesOnDB);
+        // console.log(schedulesOnDB);
 
         let count = 0;
         let friday = false;
@@ -268,13 +268,14 @@ export default {
       });
     },
     retrieveSubjects() {
-      this.subjects = [];
-      console.log(this.subjects);
+      // this.subjects = [];
+      // console.log(this.subjects);
       this.overlay = true;
       this.$axios
         .get(`gradelevelSubject/${Number(this.addOrEdit.name.split(" ")[2])}`)
         .then((response) => {
-          this.subjects = response.data.subjects;
+          console.log(response);
+          this.gradelevelSubjects = response.data.subject;
           this.addSubject = true;
           this.overlay = false;
         });
@@ -303,7 +304,7 @@ export default {
       this.addOrEdit.name = "Edit Grade " + data.gradelevel.grade_level;
       this.edit = true;
       this.actionDialog = true;
-      if (data.adviser != null) {
+      if (data.adviser) {
         this.Section.teacher = data.adviser.teacher_name;
       }
       this.Section.teacher_id = data.teacher_id;
