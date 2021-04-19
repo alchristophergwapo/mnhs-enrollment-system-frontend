@@ -183,7 +183,7 @@ export default {
         this.$refs.basicInfo.validate()
       ) {
         this.submitting = true;
-        this.student = JSON.parse(this.$refs.studentInfoData.getData);
+        this.student = this.$refs.studentInfoData.getData;
         let formdata = new FormData();
         let parent = JSON.parse(this.$refs.parentGuardianInfoData.getData);
         // let noError = false;
@@ -247,10 +247,10 @@ export default {
           .then((response) => {
             console.log(response);
             this.$swal.fire({
-              title: 'Success',
+              title: "Success",
               text: response.data.success,
-              icon: 'success'
-            })
+              icon: "success",
+            });
             this.submitting = false;
             const userInfo = localStorage.getItem("user");
             if (userInfo) {

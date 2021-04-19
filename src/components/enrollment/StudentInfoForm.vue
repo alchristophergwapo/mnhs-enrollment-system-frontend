@@ -219,7 +219,6 @@ export default {
       firstname: "Christopher",
       middlename: "De Guzman",
       lastname: "Alonzo",
-      //birthdate: new Date("1997-09-13"),
       birthdate: null,
       age: 23,
       gender: "Male",
@@ -235,7 +234,7 @@ export default {
   computed: {
     getData() {
       // console.log(this.studentInfo);
-      return JSON.stringify(this.studentInfo);
+      return this.studentInfo;
     },
   },
 };

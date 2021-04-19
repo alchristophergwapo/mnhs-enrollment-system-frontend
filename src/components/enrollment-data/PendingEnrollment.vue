@@ -121,11 +121,7 @@
                           row.item.parent_number
                         }}</strong>
                       </v-col>
-                      <v-img
-                        :src="
-                          `http://127.0.0.1:8000/images/` + row.item.card_image
-                        "
-                      ></v-img>
+                      <v-img :src="imageUrl + row.item.card_image"></v-img>
                     </v-row>
                   </v-card-text>
                 </v-card>
@@ -172,6 +168,7 @@
               :items="sections"
               v-model="section"
               label="Section"
+              outlined
               required
             ></v-select>
           </v-card-text>
@@ -209,6 +206,7 @@ export default {
     return {
       dialog: false,
       loading: false,
+      imageUrl: "https://mnhs-enrollment-system.herokuapp.com/",
       item: null,
       id: null,
       index: null,
