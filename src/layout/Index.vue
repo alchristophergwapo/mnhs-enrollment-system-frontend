@@ -40,7 +40,7 @@
 
           <v-list>
             <v-list-item link to="/admin/profile" class="nav-link">
-              <v-list-item-title>My Profile </v-list-item-title>
+              <v-list-item-title>Profile Settings</v-list-item-title>
               <v-list-item-icon>
                 <v-icon>mdi-account-cog</v-icon></v-list-item-icon
               >
@@ -228,12 +228,6 @@ export default {
     } else {
       this.user_details = userData.userInfo;
     }
-    // console.log(userData);
-    // let notificationsFromStorage = userData.user.notifications;
-    // if (notificationsFromStorage) {
-    //   this.allNotifications = notificationsFromStorage;
-    //   this.notifications = this.unreadNotification.length;
-    // }
 
     this.$axios.get(`unreadNotif/${this.user_details.id}`).then((res) => {
       console.log(res);
@@ -241,7 +235,6 @@ export default {
       this.allNotifications = res.data.notifications;
       console.log(this.notifications);
     });
-    // console.log(this.allNotifications);
   },
   mounted() {
     if (this.user_details.user_type == "admin") {
@@ -252,13 +245,35 @@ export default {
         this.notifications += 1;
         this.allNotifications.push(eventData.notification);
         let enrollmentData = eventData.student;
-        this.$notification.show(
-          "New Enrollment",
-          {
+        const notification = {
+          title: "New Enrollment",
+          options: {
             body: `${enrollmentData.firstname} ${enrollmentData.lastname} submitted an enrollment.`,
           },
-          {}
+          events: {
+            onerror: function () {
+              console.log("Custom error event was called");
+            },
+            onclick: function () {
+              console.log("Custom click event was called");
+            },
+            onclose: function () {
+              console.log("Custom close event was called");
+            },
+          },
+        };
+        this.$notification.show(
+          notification.title,
+          notification.options,
+          notification.events
         );
+        // this.$notification.show(
+        //   "New Enrollment",
+        //   {
+        //     body: `${enrollmentData.firstname} ${enrollmentData.lastname} submitted an enrollment.`,
+        //   },
+        //   {}
+        // );
       });
     }
     // console.log(this.allNotifications);

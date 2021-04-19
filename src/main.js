@@ -45,23 +45,6 @@ import Pusher from 'pusher-js';
 Vue.prototype.$pusher = new Pusher('2041a966486dd958514c', {
   cluster: 'mt1'
 })
-// window.Echo = new Echo({
-//   broadcaster: 'pusher',
-//   key: '2041a966486dd958514c',
-// wsHost: process.env.VUE_APP_WEBSOCKET_SERVER,
-// wsPort: 6001,
-// forceTLS: false,
-// disableStats: true,
-// authEndpoint: 'http://127.0.0.1:8000/broadcasting/auth',
-// auth: {
-//   headers: {
-//     Authorization: null,
-//     'Accept': 'application/json',
-//     'Content-Type': 'application/json',
-//     'Access-Control-Allow-Origin': '*'
-//   }
-// },
-// });
 
 new Vue({
   // Echo,
