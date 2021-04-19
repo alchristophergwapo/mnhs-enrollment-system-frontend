@@ -17,11 +17,15 @@
                 :gradelevel="Number(gradeLevel)"
                 :modelValue="editSubjectDetails.teacher_name"
                 :edit="true"
-                :prepend_icon="editSubjectDetails.teacher_name ? 'mdi-check-underline' : 'mdi-help'"
+                :prepend_icon="
+                  editSubjectDetails.teacher_name
+                    ? 'mdi-check-underline'
+                    : 'mdi-help'
+                "
                 property="teacher_name"
                 :rules="[(value) => !!value || 'This field is required']"
               >
-              <template v-slot:label>Teacher</template>
+                <template v-slot:label>Teacher</template>
               </autocomplete>
             </v-card-text>
             <v-divider></v-divider>
@@ -99,7 +103,9 @@
                   request="allTeacher"
                   :gradelevel="Number(gradeLevel)"
                   :edit="false"
-                  :prepend_icon="teacher != null ? 'mdi-check-underline' : 'mdi-help'"
+                  :prepend_icon="
+                    teacher != null ? 'mdi-check-underline' : 'mdi-help'
+                  "
                   property="teacher_name"
                   :rules="[(value) => !!value || 'This field is required']"
                 ></autocomplete>
@@ -182,7 +188,7 @@ export default {
       console.log(data.data);
       this.editSubjectDetails.teacher_name = data.data.teacher_name;
       this.editSubjectDetails.teacher_id = data.data.id;
-this.editSubjectDetails.icon = 'mdi-check-underline'
+      this.editSubjectDetails.icon = "mdi-check-underline";
       console.log(this.editSubjectDetails);
     });
   },
@@ -233,15 +239,15 @@ this.editSubjectDetails.icon = 'mdi-check-underline'
     },
 
     editSubject() {
-      // this.subjects[
-      //   this.editSubjectDetails.index
-      // ].name = this.editSubjectDetails.name;
-      // this.subjects[
-      //   this.editSubjectDetails.index
-      // ].teacher_id = this.editSubjectDetails.teacher_id;
-      // this.subjects[
-      //   this.editSubjectDetails.index
-      // ].teacher_name = this.editSubjectDetails.teacher_name;
+      this.subjects[
+        this.editSubjectDetails.index
+      ].name = this.editSubjectDetails.name;
+      this.subjects[
+        this.editSubjectDetails.index
+      ].teacher_id = this.editSubjectDetails.teacher_id;
+      this.subjects[
+        this.editSubjectDetails.index
+      ].teacher_name = this.editSubjectDetails.teacher_name;
       console.log(this.editSubjectDetails);
       this.$axios
         .post(`updateSubject`, this.editSubjectDetails)
