@@ -115,7 +115,8 @@
                       </v-col>
                       <v-img
                         :src="
-                          `http://127.0.0.1:8000/images/` + row.item.card_image
+                          `https://mnhs-enrollment-system.herokuapp.com/images/` +
+                          row.item.card_image
                         "
                       ></v-img>
                     </v-row>
