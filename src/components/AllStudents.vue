@@ -57,14 +57,14 @@
         >
           <template v-slot:item="row">
             <tr>
-              <td>{{ row.item.student.grade_level }}</td>
-              <td>{{ row.item.student_section }}</td>
+              <td>{{ row.item.grade_level }}</td>
+              <td>{{ row.item.section_name }}</td>
               <td>
-                {{ row.item.student.firstname }}
-                {{ row.item.student.lastname }}
+                {{ row.item.firstname }}
+                {{ row.item.lastname }}
               </td>
-              <td>{{ row.item.student.age }}</td>
-              <td>{{ row.item.student.address }}</td>
+              <td>{{ row.item.age }}</td>
+              <td>{{ row.item.address }}</td>
               <td>
                 <v-btn text @click="editDetails(row.item)">Edit Details</v-btn>
               </td>
@@ -458,12 +458,7 @@ export default {
     headers: [
       { text: "GradeLevel", value: "student.grade_level" },
       { text: "Section", value: "student_section" },
-      {
-        text: "Student Name",
-        align: "start",
-        sortable: false,
-        value: "student.firstname",
-      },
+      { text: "Student Name", value: "student.firstname" },
       { text: "Age", value: "student.age" },
       { text: "Address", value: "student.address" },
       { text: "Edit", value: "Edit" },
@@ -475,17 +470,14 @@ export default {
     filteredSections: [],
   }),
   created() {
+    this.students = this.$store.getters.allStudents;
+    console.log(this.students);
+    this.filteredStudents = this.$store.getters.allStudents;
     this.$store
       .dispatch("allStudents")
       .then((response) => {
         this.students = response;
         this.filteredStudents = response;
-        // this.students = this.filteredStudents.filter((val) => {
-        //   return (
-        //     val.student.created_at.substring(0, val.created_at.indexOf("-")) ==
-        //       this.year || val.student.created_at.includes(this.year)
-        //   );
-        // });
       })
       .catch((error) => {
         console.log(error);
@@ -582,7 +574,7 @@ export default {
     //Open Or View Student Details
     editDetails(student) {
       console.log(student);
-      let studentInfo = student.student;
+      let studentInfo = student;
       studentInfo["school_year"] =
         student.start_school_year + " - " + student.end_school_year;
 

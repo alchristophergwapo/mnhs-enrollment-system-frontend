@@ -126,21 +126,19 @@ export default {
   }),
 
   created() {
-    if (!this.emitted) {
-      // console.log("not from emit event");
-      if (!this.students || !this.sections) {
-        setTimeout(() => {
-          this.initializeData();
-        }, 3000);
-      }
-      this.initializeData();
+    this.initializeData();
+    if (!this.students || !this.sections) {
+      setTimeout(() => {
+        this.initializeData();
+      }, 3000);
     }
   },
 
   methods: {
     initializeData() {
+      let pendingEnrollment = this.$store.getters.allPendingEnrollments;
       this.$store.dispatch("allPendingEnrollments").then((res) => {
-        let pendingEnrollment = res;
+        pendingEnrollment = res;
         console.log(pendingEnrollment);
         for (var index in pendingEnrollment) {
           let element = pendingEnrollment[index];
@@ -162,9 +160,11 @@ export default {
       });
 
       // console.log(this.students);
+      let declinedEnrollments = this.$store.getters.allDeclinedEnrollments;
       this.$store.dispatch("allDeclinedEnrollments").then((response) => {
-        for (var index in response) {
-          let element = response[index];
+        declinedEnrollments = response;
+        for (var index in declinedEnrollments) {
+          let element = declinedEnrollments[index];
           let declinedStudentData = element["student"];
           let declinedEnrollmentData = [];
           declinedEnrollmentData["enrollment_id"] = element["id"];

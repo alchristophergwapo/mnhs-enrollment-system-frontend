@@ -435,7 +435,7 @@ export default {
             this.loading = false;
             this.schedules.push(this.scheduleInputs);
             this.showResponse("", response.data.success, "success");
-            this.this.clearScheduleInputs();
+            this.clearScheduleInputs();
             EventBus.$emit("save");
             this.$refs.scheduleForm.resetValidation();
           }).catch(error=>{

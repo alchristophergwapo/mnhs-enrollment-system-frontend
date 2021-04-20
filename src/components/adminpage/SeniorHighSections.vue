@@ -168,6 +168,7 @@ export default {
     };
   },
   created() {
+    this.allsections = this.$store.getters.allsections;
     this.displayAllsection(this.gradelevel);
 
     EventBus.$on("closeModal", () => {

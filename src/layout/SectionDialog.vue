@@ -113,7 +113,8 @@ export default {
 
     EventBus.$on("allNoneAdvisoryTeacher", (data) => {
       console.log(data);
-      this.sectionData.teacher = data.data.id;
+      this.sectionData.teacher = data.data.teacher_name;
+      this.sectionData.teacher_id = data.data.id;
       console.log(this.sectionData);
     });
 
@@ -140,6 +141,7 @@ export default {
               capacity: this.sectionData.capacity,
               total_students: 0,
               teacher: this.sectionData.teacher,
+              teacher_id: this.sectionData.teacher_id
             })
             .then((response) => {
               if (response.data.message) {

@@ -511,6 +511,8 @@ export default {
 
     //Methods for displaying all teachers
     display() {
+      this.teachers = this.$store.getters.allTeacher;
+      this.filterTeachers = this.teachers;
       this.$store
         .dispatch("allTeacher")
         .then((res) => {
@@ -639,7 +641,9 @@ export default {
                     response.data.teacher +
                     ".",
                 });
-            this.sections.splice(this.sections.indexOf(this.selected_section, 1))
+            this.sections.splice(
+              this.sections.indexOf(this.selected_section, 1)
+            );
           })
           .catch((error) => {
             this.loading = false;

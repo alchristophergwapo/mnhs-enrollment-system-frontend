@@ -192,11 +192,10 @@ export default {
     },
   }),
   created() {
-    setTimeout(() => {
-      this.initializeData();
-      this.initialized = true;
-    }, 3000);
     this.initializeData();
+    this.totalTeachers = this.$store.getters.totalTeachers;
+    this.totalDeclined = this.$store.getters.allDeclinedEnrollments.length;
+    this.totalPending = this.$store.getters.allPendingEnrollments.length;
 
     this.$store.dispatch("allTeacher").then((res) => {
       this.totalTeachers = res.teacher.length;
@@ -222,7 +221,7 @@ export default {
         for (let index = enrollments.length - 1; index >= 0; index--) {
           const element = enrollments[index];
           const school_year = element["start_school_year"];
-          let gender = element["student"]["gender"];
+          let gender = element["gender"];
 
           let exist = this.enrollmentChart.data.labels.some((item) => {
             return item === school_year;

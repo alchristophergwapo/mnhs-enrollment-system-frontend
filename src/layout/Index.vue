@@ -120,14 +120,14 @@
               ]"
               :to="child.to"
             >
-              <v-list-item-content class="nav-def">
-                <v-list-item-title>
-                  {{ child.text }}
-                </v-list-item-title>
-              </v-list-item-content>
-              <v-list-item-action v-if="child.icon">
+              <!-- <v-list-item-content class="nav-def"> -->
+              <v-list-item-title>
+                {{ child.text }}
+              </v-list-item-title>
+              <v-list-item-icon v-if="child.icon">
                 <v-icon>{{ child.icon }}</v-icon>
-              </v-list-item-action>
+              </v-list-item-icon>
+              <!-- </v-list-item-content> -->
             </v-list-item>
           </v-list-group>
         </template>

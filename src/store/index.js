@@ -84,8 +84,8 @@ export default new Vuex.Store({
 
     allTeacher({ commit }) {
       return axios.get(`allTeacher`).then((response) => {
-        commit("setTeachers", response.data);
-        commit("setNumberOfTeachers", response.data.length);
+        commit("setTeachers", response.data.teacher);
+        commit("setNumberOfTeachers", response.data.teacher.length);
         return response.data;
       });
     },
