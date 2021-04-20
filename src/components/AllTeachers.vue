@@ -16,7 +16,7 @@
           </div>
         </v-card>
         <v-card-title>
-          <v-select
+          <!-- <v-select
             v-model="selectedYear"
             :items="schoolYear"
             @change="filterByYear(($event = selectedYear))"
@@ -26,8 +26,15 @@
             dense
             outlined
           ></v-select>
-          <v-spacer></v-spacer>
-
+          <v-spacer></v-spacer> -->
+          <v-text-field
+            v-model="search"
+            append-icon="mdi-magnify"
+            dense
+            label="Search"
+            class="search-input-field"
+            outlined
+          ></v-text-field>
           <v-card-title>
             <v-spacer></v-spacer>
             <div class="add_btn">
@@ -399,9 +406,7 @@ export default {
       headers: [
         {
           text: "Name",
-          align: "start",
-          // sortable: false,
-          value: "name",
+          value: "teacher_name",
         },
         { text: "Details", value: "detatils" },
         { text: "Schedules", value: "schedules" },
@@ -777,7 +782,7 @@ export default {
 </script>
 
 
-<style>
+<style scoped>
 .headline {
   background-color: rgb(57, 151, 206);
 }
@@ -789,5 +794,9 @@ export default {
   color: red;
   margin-top: -7%;
   font-size: 14px;
+}
+
+.search-input-field {
+  margin-top: 29px;
 }
 </style>

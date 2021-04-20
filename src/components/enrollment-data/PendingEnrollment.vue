@@ -1,16 +1,6 @@
 <template>
-  <v-container>
+  <div app>
     <v-card-title>
-      <!-- Sort By&nbsp;&nbsp;
-                  <v-select
-                    :items="grade_level"
-                    v-model="searchDeclined"
-                    @change="filterByGradeLevel($event, 'declined')"
-                    menu-props="auto"
-                    label="Grade Level"
-                    dense
-                    outlined
-                  ></v-select> -->
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
@@ -26,6 +16,8 @@
       :search="search"
       :items-per-page="10"
       class="elevation-1"
+      :loading="isDataLoaded ? false : true"
+      loading-text="Loading... Please wait"
     >
       <template v-slot:item="row">
         <tr>
@@ -129,7 +121,16 @@
             </v-dialog>
           </td>
           <td>
-            <v-row align="center" justify="space-around">
+            <v-speed-dial
+              direction="left"
+              open-on-hover
+              transition="slide-y-transition"
+            >
+              <template v-slot:activator>
+                <v-btn color="blue darken-2" dark>
+                  <span> action </span>
+                </v-btn>
+              </template>
               <v-btn
                 color="primary"
                 @click="
@@ -139,16 +140,20 @@
                     row.index
                   )
                 "
+                icon
+                x-large
               >
-                approve
+                <v-icon>mdi-account-plus</v-icon>
               </v-btn>
               <v-btn
                 color="error"
                 @click="declineEnrollment(row.item.id, row.index)"
+                icon
+                x-large
               >
-                decline
+                <v-icon>mdi-account-minus</v-icon>
               </v-btn>
-            </v-row>
+            </v-speed-dial>
           </td>
         </tr>
       </template>
@@ -185,7 +190,7 @@
         </v-card>
       </v-dialog>
     </v-row>
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -195,6 +200,11 @@ export default {
     students: {
       type: Array,
       required: true,
+    },
+    isDataLoaded: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
     // search: {
     //   type: String,
@@ -377,3 +387,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+@media screen and (max-width: 767.98px) {
+  .container {
+    padding: 0px;
+  }
+}
+</style>

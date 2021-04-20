@@ -101,13 +101,6 @@ new Vue({
 
       this.$store.dispatch("allDeclinedEnrollments");
     },
-
-    // setUserData(data) {
-    //   let storedInfo = localStorage.getItem("user");
-    //   let userData = JSON.parse(storedInfo);
-    //   userData.user = data.user;
-    //   this.$store.commit("setUserData", userData);
-    // },
   },
   render: h => h(App),
 }).$mount('#app')

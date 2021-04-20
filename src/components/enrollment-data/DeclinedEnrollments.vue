@@ -159,6 +159,8 @@
               v-model="section"
               label="Section*"
               outlined
+              :loading="isDataLoaded ? false : true"
+              loading-text="Loading... Please wait"
               required
             ></v-select>
           </v-card-text>
@@ -184,6 +186,11 @@ export default {
     declinedEnrollments: {
       type: Array,
       required: true,
+    },
+    isDataLoaded: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
   },
   data() {

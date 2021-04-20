@@ -10,7 +10,7 @@
       </v-row>
     </v-container>
     <div class="table">
-      <v-container>
+      <!-- <v-container> -->
         <!-- <v-card outlined> -->
         <v-card class="table-header" color="#2e856e">
           <v-card-title class="text-center justify-center">
@@ -20,7 +20,7 @@
           <div class="subtitle-1 font-weight-light text-center justify-center">
             All enrollments as of year {{ year }}
           </div>
-          <v-container>
+          <!-- <v-container> -->
             <v-tabs
               v-model="enrollmentTab"
               fixed-tabs
@@ -39,45 +39,25 @@
                 <v-icon color="error" large>mdi-account-minus</v-icon>
               </v-tab>
             </v-tabs>
-          </v-container>
+          <!-- </v-container> -->
         </v-card>
         <v-tabs-items v-model="enrollmentTab">
           <v-tab-item :value="'tab-1'">
-            <pending-enrollment :students="students" :search="search">
-              <!-- <template v-slot:data-table-header>
-                <v-card-title>
-                  Sort By&nbsp;&nbsp;
-                  <v-select
-                    :items="grade_level"
-                    v-model="gradelevel"
-                    @change="filterByGradeLevel($event, 'pending')"
-                    label="Grade Level"
-                    class="select-data"
-                    outlined
-                  ></v-select>
-                  <v-spacer></v-spacer>
-                  <v-text-field
-                    v-model="search"
-                    @keyup="filterByName(($event = search))"
-                    append-icon="mdi-magnify"
-                    label="Search"
-                    outlined
-                  ></v-text-field>
-                </v-card-title>
-              </template> -->
+            <pending-enrollment :students="students" :search="search" :isDataLoaded="dataLoaded">
             </pending-enrollment>
           </v-tab-item>
           <v-tab-item :value="'tab-2'">
             <declined-enrollments
               :declinedEnrollments="declinedEnrollments"
               :search="searchDeclined"
+              :isDataLoaded="pDataLoaded"
             >
             </declined-enrollments>
           </v-tab-item>
         </v-tabs-items>
         <br />
         <!-- </v-card> -->
-      </v-container>
+      <!-- </v-container> -->
     </div>
   </div>
 </template>
@@ -98,6 +78,8 @@ export default {
     year: new Date().getFullYear(),
     toggle_exclusive: undefined,
     dialog: false,
+    dataLoaded: false,
+    pDataLoaded: false,
     section: null,
     search: "",
     searchDeclined: "",
@@ -138,6 +120,7 @@ export default {
     initializeData() {
       let pendingEnrollment = this.$store.getters.allPendingEnrollments;
       this.$store.dispatch("allPendingEnrollments").then((res) => {
+        this.dataLoaded = true;
         pendingEnrollment = res;
         console.log(pendingEnrollment);
         for (var index in pendingEnrollment) {
@@ -162,6 +145,7 @@ export default {
       // console.log(this.students);
       let declinedEnrollments = this.$store.getters.allDeclinedEnrollments;
       this.$store.dispatch("allDeclinedEnrollments").then((response) => {
+        this.pDataLoaded = true;
         declinedEnrollments = response;
         for (var index in declinedEnrollments) {
           let element = declinedEnrollments[index];
@@ -181,25 +165,6 @@ export default {
         }
       });
     },
-
-    //Methods For Filtering
-    // filterByGradeLevel(grade, tab) {
-    //   if (grade == "All") {
-    //     if (tab == "pending") {
-    //       this.search = "";
-    //     } else {
-    //       this.searchDeclined = "";
-    //     }
-    //   } else {
-    //     if (tab == "pending") {
-    //       this.search = grade;
-    //     } else {
-    //       this.declinedEnrollments = this.filterDeclined.filter(function (val) {
-    //         return (val.grade_level = grade);
-    //       });
-    //     }
-    //   }
-    // },
 
     //Method For Filtering The Name By A GradeLevel Or All GradeLevel
     filterByName(data) {
@@ -314,3 +279,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+@media screen and (max-width: 767.98px) {
+  .container {
+    padding: 0px;
+  }
+}
+</style>
