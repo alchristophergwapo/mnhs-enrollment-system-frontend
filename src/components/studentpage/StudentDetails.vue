@@ -25,7 +25,7 @@
         >
         <v-card-text
           ><strong class="student_details"
-            >Section: {{student.enrollment.student_section }}
+            >Section: {{ student.section.name }}
           </strong></v-card-text
         >
       </v-container>
