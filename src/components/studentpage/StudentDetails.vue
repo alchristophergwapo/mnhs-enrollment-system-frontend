@@ -37,7 +37,7 @@
 export default {
   props: ["student_details"],
   data() {
-    console.log("stud:", this.student_details);
+    console.log("stud:", this.student_details.section.name);
 
     return {
       student: this.student_details,
