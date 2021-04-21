@@ -163,30 +163,27 @@ export default {
       const data = encodeURI(csvContent);
       const link = document.createElement("a");
       link.setAttribute("href", data);
-      link.setAttribute("download", this.selectGrade + ".csv");
+      link.setAttribute("download", "mySchedules" + ".csv");
       link.click();
     },
   },
   computed: {
     csvData() {
-      return this.students.map((item) => ({
-        SchoolYear: item.student.created_at
-          .substring(0, item.student.created_at.indexOf("-"))
-          .concat(
-            "-",
-            parseInt(
-              item.student.created_at.substring(
-                0,
-                item.student.created_at.indexOf("-")
-              )
-            ) + 1
-          ),
-        GradeLevel: item.student.grade_level,
-        Section: item.student_section,
-        StudentName: item.student.firstname + " " + item.student.lastname,
-        Age: item.student.age,
-        Address: item.student.address.replace(/[^a-zA-Z ]/g, " "),
-        //Address:item.student.address.replaceAll(","," ").replaceAll(/\s+/g," ")
+      return this.schedules.map((item) => ({
+        Time: item.Time,
+        Monday:
+          item.Monday.subject_name + " (" + item.Monday.teacher_name + ")",
+        Tuesday:
+          item.Tuesday.subject_name + " (" + item.Tuesday.teacher_name + ")",
+        Wednesday:
+          item.Wednesday.subject_name +
+          " (" +
+          item.Wednesday.teacher_name +
+          ")",
+        Thursday:
+          item.Thursday.subject_name + " (" + item.Thursday.teacher_name + ")",
+        Friday:
+          item.Friday.subject_name + " (" + item.Friday.teacher_name + ")",
       }));
     },
   },

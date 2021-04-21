@@ -15,7 +15,7 @@
           <br />
         </v-card>
         <v-card-title>
-          <v-select
+          <!-- <v-select
             v-model="selectedYear"
             :items="schoolYear"
             @change="filterByYear(($event = selectedYear))"
@@ -24,7 +24,7 @@
             hide-details
             dense
             outlined
-          ></v-select>
+          ></v-select> -->
           <v-spacer></v-spacer>
           <v-select
             v-model="gradelevel"
@@ -487,6 +487,14 @@ export default {
     this.$axios
       .get("allGradeLevelSections")
       .then((response) => {
+        let section = response.data.sections;
+        for (const key in section) {
+          if (section.hasOwnProperty.call(section, key)) {
+            const element = section[key];
+            // console.log(element);
+            this.section.push(element.name);
+          }
+        }
         this.filteredSections = response.data.sections;
       })
       .catch((error) => {
@@ -498,20 +506,20 @@ export default {
   },
   methods: {
     //Filter The Studentr By School Year
-    filterByYear(year) {
-      if (year == "All") {
-        this.students = this.filteredStudents;
-        this.year = new Date().getFullYear();
-      } else {
-        this.students = this.filteredStudents.filter((val) => {
-          return (
-            val.student.created_at.substring(0, val.created_at.indexOf("-")) ==
-              year || val.student.created_at.includes(year)
-          );
-        });
-        this.year = year;
-      }
-    },
+    // filterByYear(year) {
+    //   if (year == "All") {
+    //     this.students = this.filteredStudents;
+    //     this.year = new Date().getFullYear();
+    //   } else {
+    //     this.students = this.filteredStudents.filter((val) => {
+    //       return (
+    //         val.student.created_at.substring(0, val.created_at.indexOf("-")) ==
+    //           year || val.student.created_at.includes(year)
+    //       );
+    //     });
+    //     this.year = year;
+    //   }
+    // },
     //Method For Filtering By Grade Level
     filterByGradeLevel(grade) {
       if (grade == "All") {
@@ -528,11 +536,14 @@ export default {
         this.selectGrade = "Grade-" + grade;
         let arraySection = [];
         this.students = this.filteredStudents.filter((val) => {
-          return val.student.grade_level == grade;
+          return val.grade_level == grade;
         });
         this.filteredSections.filter((val) => {
+          // console.log(val);
           if (val.gradelevel != null) {
+            // console.log(val.gradelevel.);
             if (val.gradelevel.grade_level == grade) {
+              // console.log(val);
               arraySection.push(val.name);
             }
           }
