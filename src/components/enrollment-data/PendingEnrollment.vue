@@ -335,6 +335,7 @@ export default {
           console.log(error);
         });
     },
+    
     filterByName(data) {
       // console.log(this.search);
       this.students.filter((val) => {
