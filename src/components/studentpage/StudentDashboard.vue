@@ -40,15 +40,13 @@
             </v-card>
             <v-tabs-items v-model="tab">
               <v-tab-item :value="'tab-1'">
-                <schedules :sectionId="user.section.id"></schedules>
+                <schedules
+                  :sectionId="user.section.id"
+                ></schedules>
               </v-tab-item>
               <v-tab-item :value="'tab-2'">
                 <student-class-details
-                  :section_name="
-                    user.section.adviser
-                      ? user.section.adviser.teacher_name
-                      : 'No Adviser'
-                  "
+                  :section_name="user.section.adviser ? user.section.adviser.teacher_name : 'No Adviser'"
                   :classmates="students"
                 ></student-class-details>
               </v-tab-item>
@@ -134,6 +132,8 @@ export default {
       let storedInfo = localStorage.getItem("user");
       let userData = JSON.parse(storedInfo);
       this.user = userData.userInfo;
+      console.log("Testing!");
+      console.log(this.user);
       let classmates = userData.classmates;
       for (const key in classmates) {
         if (classmates.hasOwnProperty.call(classmates, key)) {
@@ -146,7 +146,7 @@ export default {
       const section = this.user.enrollment.student_section;
 
       this.$axios.get(`studentSectionDetails/${section}`).then((res) => {
-        console.log(res);
+        // console.log(res);
         this.students = res.data.classmates;
         this.students.sort(this.sortData("lastname"));
       });
@@ -170,7 +170,7 @@ export default {
 
   created() {
     this.initialize();
-    // console.log(this.user);
+    console.log(this.user);
   },
 };
 </script>

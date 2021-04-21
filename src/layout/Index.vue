@@ -169,7 +169,19 @@ export default {
         {
           icon: "mdi-account-group",
           text: "Students",
-          to: "/admin/all_students",
+          model: false,
+          children: [
+            {
+              icon: 'mdi-account',
+              text: 'Enrolled Students',
+              to: "/admin/all_students",
+            },
+            {
+              icon: 'mdi-account-settings',
+              text: 'Password Management',
+              to: '/admin/student-password-management'
+            }
+          ],
         },
         {
           icon: "mdi-account-tie",

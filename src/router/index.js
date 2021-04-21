@@ -57,6 +57,13 @@ const routes = [
                 },
             },
             {
+                path: 'student-password-management',
+                component: () => import('@/components/adminpage/StudentPasswordManagement.vue'),
+                meta: {
+                    title: 'Student Password Management'
+                }
+            },
+            {
                 path: 'all_teachers',
                 component: () => import('@/components/AllTeachers.vue'),
                 meta: {
