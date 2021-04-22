@@ -5,8 +5,8 @@ import "es6-promise/auto";
 
 Vue.use(Vuex);
 
-//axios.defaults.baseURL = 'http://127.0.0.1:8000/api/'
-axios.defaults.baseURL = "https://mnhs-enrollment-system.herokuapp.com/api";
+axios.defaults.baseURL = 'http://127.0.0.1:8000/api/'
+//axios.defaults.baseURL = "https://mnhs-enrollment-system.herokuapp.com/api";
 
 export default new Vuex.Store({
   state: {
