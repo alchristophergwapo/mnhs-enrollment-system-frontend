@@ -336,7 +336,7 @@ export default {
         });
     },
     
-    filterByName(data) {
+    filterByNames(data) {
       // console.log(this.search);
       this.students.filter((val) => {
         if (this.gradelevel == null && data != null) {

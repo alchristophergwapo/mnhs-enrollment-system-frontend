@@ -134,13 +134,13 @@ export default {
       let storedInfo = localStorage.getItem("user");
       let userData = JSON.parse(storedInfo);
       this.user = userData.userInfo;
-      console.log("Testing!");
-      console.log(this.user);
+      //console.log(this.user);
       let classmates = userData.classmates;
       for (const key in classmates) {
         if (classmates.hasOwnProperty.call(classmates, key)) {
           const element = classmates[key];
-          this.students.push(element["student"]);
+          //console.log(element);
+          this.students.push(element["students"]);
           // console.log(classmates["student"]);
         }
       }
@@ -172,7 +172,7 @@ export default {
 
   created() {
     this.initialize();
-    console.log(this.user);
+   // console.log(this.user);
   },
 };
 </script>

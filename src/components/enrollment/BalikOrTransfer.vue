@@ -4,17 +4,18 @@
       For Returning Learners (Balik Aral) and Those Who Shall Transfer/ Move In
     </div>
     <v-col cols="12" xs="6" sm="4" md="4" lg="2">
-      <v-text-field
+      <v-select
         v-model="balikOrTransferInfo.last_grade_completed"
+        :items="['7','8']"
+        @keyup="balikAral(($event = balikOrTransferInfo.last_grade_completed))"
         :rules="[
           (last_grade_completed) =>
             !!last_grade_completed || 'Last Grade Level Completed is required',
         ]"
         label="Last Grade Level Completed"
-        type="number"
         outlined
         required
-      ></v-text-field>
+      ></v-select>
     </v-col>
     <v-col cols="12" xs="6" sm="4" md="4" lg="2">
       <v-text-field
@@ -57,7 +58,7 @@
         v-model="balikOrTransferInfo.last_school_address"
         :rules="[
           (last_school_address) =>
-            !!last_school_address || 'Scholl adress is required',
+            !!last_school_address || 'School adress is required',
         ]"
         label="School Address"
         outlined
@@ -72,7 +73,7 @@ export default {
   data() {
     return {
       balikOrTransferInfo: {
-        last_grade_completed: "9",
+        last_grade_completed: "7",
         last_year_completed: "2017-2018",
         last_school_attended: "Mantalongon National High School",
         last_school_ID: "14135346",
@@ -80,7 +81,11 @@ export default {
       },
     };
   },
-
+  methods:{
+    balikAral(grade) {
+      console.log("grade:" + grade);
+    },
+  },
   computed: {
     getData() {
       return JSON.stringify(this.balikOrTransferInfo);

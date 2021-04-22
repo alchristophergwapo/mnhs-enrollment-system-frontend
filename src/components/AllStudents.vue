@@ -112,18 +112,12 @@
                         name="LRN"
                         :rules="[
                           (LRN) => !!LRN || 'LRN is required',
-                          (LRN) =>
-                            (/^[0-9]+$/.test(LRN) == true &&
-                              String(LRN).length <= 12) ||
-                            'LRN cannot be greater than 12 characters & must contain all numbers only!',
-                          (LRN) =>
-                            (/^[0-9]+$/.test(LRN) == true &&
-                              String(LRN).length == 12) ||
-                            'LRN must be 12 characters & must contain all numbers only!',
-                        ]"
+                          (LRN) =>/^[0-9]+$/.test(LRN) == true || 'Only Number is  allowed!',
+                          (LRN) => String(LRN).length <= 12 || 'LRN cannot be greater than 12 characters',
+                          (LRN) => String(LRN).length == 12 || 'LRN must be 12 characters',
+                          ]"
                         :counter="12"
-                        label="Learners Reference No. (LRN)"
-                        type="number"
+                        label="Learners Reference No. (LRN)"           
                         outlined
                         :readonly="readonly"
                         required
@@ -135,13 +129,10 @@
                         name="average"
                         :rules="[
                           (v) => !!v || 'Average is required',
+                          (v) =>/^[0-9]+$/.test(v) == true || 'Only Number is allowed!',
                           (v) => v <= 100 || 'Maximum average is 100',
-                          (v) =>
-                            /^[0-9]+$/.test(v) == true ||
-                            'Average must be a number!',
                         ]"
                         label="Average"
-                        type="number"
                         outlined
                         :readonly="readonly"
                         required
@@ -201,12 +192,9 @@
                         name="age"
                         :rules="[
                           (v) => !!v || 'Age is required',
-                          (v) =>
-                            /^[0-9]+$/.test(v) == true ||
-                            'Age must be a number!',
+                          (v) =>/^[0-9]+$/.test(v) == true || 'Only Number is allowed!',
                         ]"
-                        label="Age"
-                        type="number"
+                        label="Age"                       
                         outlined
                         :readonly="readonly"
                         required
@@ -273,7 +261,7 @@
                         v-model="studentInfo.IP_community"
                         label="If yes, please specify"
                         outlined
-                        :readonly="readonly"
+                        readonly
                         required
                       ></v-text-field>
                       <v-text-field
@@ -283,10 +271,6 @@
                         :rules="[
                           (IP_Community) =>
                             !!IP_Community || 'This field is required',
-                          (IP_Community) =>
-                            (/^[a-z]/.test(IP_Community) == true &&
-                              /[^a-zA-Z.ñÑ| ]/.test(IP_Community) == false) ||
-                            'This special character is not allowed!',
                         ]"
                         label="If yes, please specify"
                         outlined
@@ -314,9 +298,12 @@
                         name="contact"
                         :rules="[
                           (contact) => !!contact || 'Contact is required',
+                          (contact) =>/^[0-9]+$/.test(contact) == true || 'Only Number is  allowed!',
+                         (contact) =>String(contact).length <= 11 || 'Student Contact Number cannot be greater than 11 digits',
+                         (contact) => String(contact).length == 11 || 'Student Contact Number contact number must be 11 digits',
                         ]"
-                        type="number"
-                        label="Contact Number"
+                        label="Student Contact Number"
+                        :counter="11"
                         outlined
                         :readonly="readonly"
                         required
@@ -384,13 +371,14 @@
                     <v-col cols="12" sm="6" md="6" lg="6">
                       <v-text-field
                         v-model="studentInfo.parent_number"
+                        name="contact"
                         :rules="[
-                          (parent_number) =>
-                            !!parent_number ||
-                            'Parent/Guardian contact number is required.',
+                          (contact) => !!contact || 'Parent/Guardian contact number is required.',
+                          (contact) =>/^[0-9]+$/.test(contact) == true || 'Only Number is  allowed!',
+                          (contact) =>String(contact).length <= 11 || 'Parent/Guardian cannot be greater than 11 digits',
+                          (contact) => String(contact).length == 11 || 'Parent/Guardian contact number must be 11 digits',
                         ]"
-                        label="Contact Number"
-                        type="number"
+                        label="Parent/Guardian Contact Number"                   
                         outlined
                         :readonly="readonly"
                         required
