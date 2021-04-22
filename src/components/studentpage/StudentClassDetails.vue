@@ -22,6 +22,7 @@
         <tr>
           <td>
             {{ row.item.firstname }}
+            {{ row.item.middlename.split("")[0] + "." }}
             {{ row.item.lastname }}
           </td>
           <td>{{ row.item.address }}</td>
