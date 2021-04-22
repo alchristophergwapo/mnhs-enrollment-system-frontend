@@ -304,6 +304,7 @@ export default {
               title: "Ooops....",
               text: error.response.data.message,
             });
+            //this.sendSms(id);
             this.loading = false;
             this.dialog = true;
           });
@@ -317,6 +318,34 @@ export default {
       }
     },
 
+ //Sending a sms notification to a user's cellphone number
+    // sendSms(studentId) {
+    //   this.$axios
+    //     .get("send-sms/" + studentId)
+    //     .then((response) => {
+    //       if (response.data.success == "success") {
+    //         this.$swal.fire({
+    //           icon: "info",
+    //           title: "Success",
+    //           text: "Successfully send a notification.",
+    //         });
+    //       } else {
+    //         this.$swal.fire({
+    //           icon: "error",
+    //           title: "Failed",
+    //           text: "Not successfully send a notification.",
+    //         });
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //       this.$swal.fire({
+    //         icon: "error",
+    //         title: "Failed",
+    //         text: "Not successfully send a notification.",
+    //       });
+    //     });
+    // },
     //Method For Declining The Section
     declineEnrollment(id, index) {
       console.log(index);

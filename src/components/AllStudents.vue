@@ -597,13 +597,17 @@ export default {
               this.$swal.fire({
                 icon: "success",
                 title: "Success",
-                text: "Student details successfully updated!",
+                text: "Student details is successfully updated!",
               });
 
               this.studentDialog = false;
               this.$refs.studentDetails.resetValidation();
             } else {
-              alert("Unsuccessfully Updated!");
+               this.$swal.fire({
+                icon: "error",
+                title: "Failed",
+                text: "Student details is unsuccessfully updated!",
+              });
             }
           })
           .catch((error) => {
