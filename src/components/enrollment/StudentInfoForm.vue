@@ -220,7 +220,7 @@ export default {
       PSA: "",
       LRN: 303000123456,
       average: 80,
-      firstname: "",
+      firstname: "Christopher",
       middlename: "De Guzman",
       lastname: "Alonzo",
       birthdate: null,

@@ -150,6 +150,7 @@ export default {
       this.$axios.get(`studentSectionDetails/${section}`).then((res) => {
         // console.log(res);
         this.students = res.data.classmates;
+        console.log(students);
         this.students.sort(this.sortData("lastname"));
       });
       // console.log(this.students);
