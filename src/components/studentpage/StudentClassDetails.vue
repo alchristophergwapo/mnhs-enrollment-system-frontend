@@ -42,7 +42,7 @@ export default {
         {
           text: "Student Name",
           align: "start",
-          value: "student",
+          value: "firstname" || "lastname",
         },
         { text: "Address", value: "address" },
       ],
