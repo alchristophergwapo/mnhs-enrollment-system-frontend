@@ -1,88 +1,150 @@
 <template>
   <div>
-    <bread-crumb :item="items" page_name="Junior High Sections"></bread-crumb>
+    <bread-crumb :item="items" :page_name="page_name"></bread-crumb>
     <br /><br />
-    <v-tabs
-      v-model="tab"
-      fixed-tabs
-      background-color="#2e856e"
-      color="black"
-      show-arrows
-    >
-      <v-tab
-        v-for="(item, index) in junior_high"
-        :key="index"
-        @click="selected(item.text)"
-        >{{ item.text }}</v-tab
+    <div v-if="admin">
+      <v-tabs
+        v-model="tab"
+        fixed-tabs
+        background-color="#2e856e"
+        color="black"
+        show-arrows
       >
-    </v-tabs>
-    <v-container>
-      <v-tabs-items v-model="tab">
-        <v-tab-item v-for="(item, index) in junior_high" :key="index">
-          <v-card-title>
-            <v-spacer></v-spacer>
-            <v-btn color="secondary" small dark @click="retrieveSubjects()"
-              >subject(s)</v-btn
-            >
-            <v-btn
-              color="primary"
-              small
-              dark
-              @click="open(item.text)"
-              style="margin-left: 10px"
-              class="add-btn"
-            >
-              <v-icon>mdi-plus</v-icon>Add Section
-            </v-btn>
-          </v-card-title>
-          <v-row dense>
-            <v-col
-              v-for="(dta, index) in item.content"
-              :key="index"
-              cols="12"
-              sm="6"
-              md="6"
-              lg="4"
-            >
-              <sections-card
-                :section="dta.name"
-                :capacity="dta.capacity"
-                :total_students="dta.total_students"
-                :teacher="dta.adviser == null ? '' : dta.adviser.teacher_name"
-                :progress_color="'#006a4e'"
-                class="section_card"
+        <v-tab
+          v-for="(item, index) in junior_high"
+          :key="index"
+          @click="selected(item.text)"
+          >{{ item.text }}</v-tab
+        >
+      </v-tabs>
+      <v-container>
+        <v-tabs-items v-model="tab">
+          <v-tab-item v-for="(item, index) in junior_high" :key="index">
+            <v-card-title>
+              <v-spacer></v-spacer>
+              <v-btn color="secondary" small dark @click="retrieveSubjects()"
+                >subject(s)</v-btn
               >
-                <template v-slot:btns>
-                  <v-btn
-                    dark
-                    small
-                    color="green"
-                    @click="viewSchedules(dta.id)"
-                  >
-                    schedules
-                  </v-btn>
-                  <v-btn dark small @click="editSection(dta)" color="#006a4e">
-                    edit section
-                    <v-icon>mdi-pencil</v-icon>
-                  </v-btn>
-                  <!-- 
+              <v-btn
+                color="primary"
+                small
+                dark
+                @click="open(item.text)"
+                style="margin-left: 10px"
+                class="add-btn"
+              >
+                <v-icon>mdi-plus</v-icon>Add Section
+              </v-btn>
+            </v-card-title>
+            <v-row dense>
+              <v-col
+                v-for="(dta, index) in item.content"
+                :key="index"
+                cols="12"
+                sm="6"
+                md="6"
+                lg="4"
+              >
+                <sections-card
+                  :section="dta.name"
+                  :capacity="dta.capacity"
+                  :total_students="dta.total_students"
+                  :teacher="dta.adviser == null ? '' : dta.adviser.teacher_name"
+                  :progress_color="'#006a4e'"
+                  class="section_card"
+                >
+                  <template v-slot:btns>
+                    <v-btn
+                      dark
+                      small
+                      color="green"
+                      @click="viewSchedules(dta.id)"
+                    >
+                      schedules
+                    </v-btn>
+                    <v-btn dark small @click="editSection(dta)" color="#006a4e">
+                      edit section
+                      <v-icon>mdi-pencil</v-icon>
+                    </v-btn>
+                    <!-- 
                                 <v-spacer></v-spacer>
                                  -->
-                </template>
-              </sections-card>
-            </v-col>
-            <v-card-title class="text-center justify-center py-6">
-              <h1
-                class="font-weight-bold display-1 basil--text"
-                v-if="item.content.length == 0"
-              >
-                No {{ item.text }} Sections created yet.
-              </h1>
-            </v-card-title>
-          </v-row>
-        </v-tab-item>
-      </v-tabs-items>
-    </v-container>
+                  </template>
+                </sections-card>
+              </v-col>
+              <v-card-title class="text-center justify-center py-6">
+                <h1
+                  class="font-weight-bold display-1 basil--text"
+                  v-if="item.content.length == 0"
+                >
+                  No {{ item.text }} Sections created yet.
+                </h1>
+              </v-card-title>
+            </v-row>
+          </v-tab-item>
+        </v-tabs-items>
+      </v-container>
+    </div>
+    <div v-else>
+      <div v-for="(item, index) in junior_high" :key="index">
+        <v-card-title>
+          <v-spacer></v-spacer>
+          <v-btn color="secondary" small dark @click="retrieveSubjects()"
+            >subject(s)</v-btn
+          >
+          <v-btn
+            color="primary"
+            small
+            dark
+            @click="open(item.text)"
+            style="margin-left: 10px"
+            class="add-btn"
+          >
+            <v-icon>mdi-plus</v-icon>Add Section
+          </v-btn>
+        </v-card-title>
+        <v-row dense>
+          <v-col
+            v-for="(dta, index) in item.content"
+            :key="index"
+            cols="12"
+            sm="6"
+            md="6"
+            lg="4"
+          >
+            <sections-card
+              :section="dta.name"
+              :capacity="dta.capacity"
+              :total_students="dta.total_students"
+              :teacher="dta.adviser == null ? '' : dta.adviser.teacher_name"
+              :progress_color="'#006a4e'"
+              class="section_card"
+            >
+              <template v-slot:btns>
+                <v-btn dark small color="green" @click="viewSchedules(dta.id)">
+                  schedules
+                </v-btn>
+                <v-btn dark small @click="editSection(dta)" color="#006a4e">
+                  edit section
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+                <!-- 
+                                <v-spacer></v-spacer>
+                                 -->
+              </template>
+            </sections-card>
+          </v-col>
+          <v-card-title class="text-center justify-center py-6">
+            <h1
+              class="font-weight-bold display-1 basil--text"
+              v-if="item.content.length == 0"
+            >
+              No {{ item.text }} Sections created yet.
+            </h1>
+          </v-card-title>
+        </v-row>
+      </div>
+    </div>
     <v-container>
       <v-row justify="center" class="add_btn">
         <v-overlay :value="overlay">
@@ -141,22 +203,16 @@ export default {
       actionDialog: false,
       viewScheds: false,
       edit: false,
+      admin: false,
       tab: null,
       sectionId: null,
+      page_name: null,
       items: [
         { text: "Home", disabled: false, href: "/admin" },
         { text: "Sections", disabled: true },
         { text: "Junior High Sections", disabled: true },
       ],
-      junior_high: [
-        {
-          text: "Grade 7",
-          content: [],
-        },
-        { text: "Grade 8", content: [] },
-        { text: "Grade 9", content: [] },
-        { text: "Grade 10", content: [] },
-      ],
+      junior_high: [],
       Section: {
         id: null,
         section: null,
@@ -175,11 +231,40 @@ export default {
       allsections: [],
       gradelevelSubjects: [],
       schedules: [],
-      gradelevel: "7",
+      gradelevel: null,
       addOrEdit: { name: "Add Grade 7" },
     };
   },
   created() {
+    if (this.$user.user_type == "admin") {
+      this.page_name = "Junior High Sections";
+      this.gradelevel = "7";
+      this.admin = true;
+      this.junior_high = [
+        {
+          text: "Grade 7",
+          content: [],
+        },
+        { text: "Grade 8", content: [] },
+        { text: "Grade 9", content: [] },
+        { text: "Grade 10", content: [] },
+      ];
+    } else {
+      this.admin = false;
+      let adminLevel = null;
+      let temp = this.$user.username.split("_");
+      adminLevel = temp[1];
+      this.gradelevel = adminLevel;
+      this.page_name = "Grade " + adminLevel + " Sections";
+      this.items[2].text = this.page_name;
+
+      this.junior_high = [
+        {
+          text: "Grade " + adminLevel,
+          content: [],
+        },
+      ];
+    }
     this.allsections = this.$store.getters.allsections;
     this.displayAllsection(this.gradelevel);
 

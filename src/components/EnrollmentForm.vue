@@ -57,7 +57,7 @@
           v-if="isTransfereeOrBalikAral"
         >
           <v-container>
-            <balik-or-transfer
+            <balik-or-transfer 
               ref="balikAralorTransferInfoData"
             ></balik-or-transfer>
           </v-container>
@@ -146,7 +146,7 @@ export default {
       seniorHighValid: false,
       isSeniorHigh: false,
       isNotSeniorHigh: true,
-      isTransfereeOrBalikAral: false,
+      isTransfereeOrBalikAral:false,
       isNotTransfereeOrBalikAral: true,
       tracks: ["ACADEMIC TRACK", "TECHNICAL-VOCATIONAL LIVELIHOOD (TLV) TRACK"],
       strands: [
@@ -175,7 +175,6 @@ export default {
     };
   },
   computed: {},
-  mounted: () => {},
   methods: {
     submitEnrollment() {
       if (

@@ -22,7 +22,8 @@
       <template v-slot:item="row">
         <tr>
           <td>{{ row.item.grade_level }}</td>
-          <td>{{ row.item.firstname }} {{ row.item.lastname }}</td>
+          <td>{{ row.item.fullname }}</td>
+          <td>{{ row.item.average }}</td>
           <td>
             <v-dialog transition="dialog-top-transition" max-width="600">
               <template v-slot:activator="{ on, attrs }">
@@ -183,17 +184,6 @@
 
 <script>
 export default {
-  props: {
-    declinedEnrollments: {
-      type: Array,
-      required: true,
-    },
-    isDataLoaded: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-  },
   data() {
     return {
       headers: [
@@ -204,6 +194,7 @@ export default {
           value: "grade_level",
         },
         { text: "Student Name", value: "fullname" },
+        { text: "Average", value: "average" },
         { text: "Details", value: "details" },
         { text: "Action", value: "action" },
       ],
@@ -211,10 +202,39 @@ export default {
       index: null,
       dialog: false,
       loading: false,
+      isDataLoaded: false,
       section: "",
       search: "",
+      declinedEnrollments: [],
       sections: [],
     };
+  },
+  created() {
+    let adminLevel = null;
+    let userData = this.$user;
+    console.log(userData);
+    if (userData.user_type != "admin") {
+      let temp = this.$user.username.split("_");
+      adminLevel = temp[1];
+      console.log(adminLevel);
+    }
+    let declined = this.$store.getters.allDeclinedEnrollments;
+    this.$store
+      .dispatch("allDeclinedEnrollments", adminLevel)
+      .then((response) => {
+        this.isDataLoaded = true;
+        declined = response;
+        let declinedEnrollmentData = [];
+        for (var index in declined) {
+          let element = declined[index];
+          element["fullname"] = element["firstname"].concat(
+            " ",
+            element["lastname"]
+          );
+          declinedEnrollmentData.push(element);
+        }
+        this.declinedEnrollments = declinedEnrollmentData;
+      });
   },
   methods: {
     filterSections(gradelevel, id, index) {

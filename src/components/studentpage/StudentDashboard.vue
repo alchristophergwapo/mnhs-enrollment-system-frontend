@@ -134,13 +134,13 @@ export default {
       let storedInfo = localStorage.getItem("user");
       let userData = JSON.parse(storedInfo);
       this.user = userData.userInfo;
-      console.log("Testing!");
-      console.log(this.user);
+      //console.log(this.user);
       let classmates = userData.classmates;
       for (const key in classmates) {
         if (classmates.hasOwnProperty.call(classmates, key)) {
           const element = classmates[key];
-          this.students.push(element["student"]);
+          //console.log(element);
+          this.students.push(element["students"]);
           // console.log(classmates["student"]);
         }
       }
@@ -150,6 +150,7 @@ export default {
       this.$axios.get(`studentSectionDetails/${section}`).then((res) => {
         // console.log(res);
         this.students = res.data.classmates;
+        console.log(this.students);
         this.students.sort(this.sortData("lastname"));
       });
       // console.log(this.students);
@@ -172,7 +173,7 @@ export default {
 
   created() {
     this.initialize();
-    console.log(this.user);
+   // console.log(this.user);
   },
 };
 </script>

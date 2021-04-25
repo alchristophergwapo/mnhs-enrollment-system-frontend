@@ -16,6 +16,7 @@
         name="LRN"
         :rules="[
           (LRN) => !!LRN || 'LRN is required',
+          (LRN) =>/^[0-9]+$/.test(LRN) == true || 'Only Number is  allowed!',
           (LRN) =>
             String(LRN).length <= 12 ||
             'LRN cannot be greater than 12 characters',
@@ -23,7 +24,6 @@
         ]"
         :counter="12"
         label="Learners Reference No. (LRN)"
-        type="number"
         outlined
         required
       ></v-text-field>
@@ -35,9 +35,9 @@
         name="average"
         :rules="[
           (v) => !!v || 'Average is required',
+          (v) =>/^[0-9]+$/.test(v) == true || 'Only Number is  allowed!',
           (v) => v <= 100 || 'Maximum average is 100',
         ]"
-        type="number"
         label="Average"
         outlined
         required
@@ -86,9 +86,8 @@
       <v-text-field
         v-model="studentInfo.age"
         name="age"
-        :rules="[(v) => !!v || 'Age is required']"
+        :rules="[(v) => !!v || 'Age is required',(v) =>/^[0-9]+$/.test(v) == true || 'Only Number is  allowed!',]"
         label="Age"
-        type="number"
         outlined
         required
       ></v-text-field>
@@ -179,9 +178,14 @@
       <v-text-field
         v-model="studentInfo.contact"
         name="contact"
-        :rules="[(contact) => !!contact || 'Contact is required']"
-        type="number"
+        :rules="[(contact) => !!contact || 'Contact is required',
+         (contact) =>/^[0-9]+$/.test(contact) == true || 'Only Number is  allowed!',
+         (contact) =>String(contact).length <= 11 || 'Parent/Guardian cannot be greater than 11 digits',
+          (contact) => String(contact).length == 11 || 'Parent/Guardian contact number must be 11 digits',
+         ]"
+        type="text"
         label="Contact Number(for receiving enrollment notification)"
+        :counter="11"
         outlined
         required
       ></v-text-field>
@@ -200,7 +204,7 @@
       <v-text-field
         v-model="studentInfo.zipcode"
         name="zipcode"
-        :rules="[(zipcode) => !!zipcode || 'Zipcode is required']"
+        :rules="[(zipcode) => !!zipcode || 'Zipcode is required',(zipcode) =>/^[0-9]+$/.test(zipcode) == true || 'Only Number is  allowed!']" 
         label="Zipcode"
         outlined
         required

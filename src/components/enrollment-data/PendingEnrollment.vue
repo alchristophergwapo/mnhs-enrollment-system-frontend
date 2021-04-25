@@ -7,12 +7,13 @@
         @keyup="filterByName(($event = search))"
         append-icon="mdi-magnify"
         label="Search"
+        dense
         outlined
       ></v-text-field>
     </v-card-title>
     <v-data-table
       :headers="headers"
-      :items="pendingStudents"
+      :items="students"
       :search="search"
       :items-per-page="10"
       class="elevation-1"
@@ -23,6 +24,7 @@
         <tr>
           <td>{{ row.item.grade_level }}</td>
           <td>{{ row.item.firstname }} {{ row.item.lastname }}</td>
+          <td>{{ row.item.average }}</td>
           <td>
             <v-dialog transition="dialog-top-transition" max-width="600">
               <template v-slot:activator="{ on, attrs }">
@@ -197,15 +199,6 @@
 // import { EventBus } from "../../bus/bus.js";
 export default {
   props: {
-    students: {
-      type: Array,
-      required: true,
-    },
-    isDataLoaded: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
     // search: {
     //   type: String,
     //   default: "",
@@ -216,7 +209,9 @@ export default {
     return {
       dialog: false,
       loading: false,
-      imageUrl: "https://mnhs-enrollment-system.herokuapp.com/images/",
+      isDataLoaded: false,
+      // imageUrl: "https://mnhs-enrollment-system.herokuapp.com/images/",
+      imageUrl: "http://localhost:8000/images/",
       item: null,
       id: null,
       index: null,
@@ -229,13 +224,14 @@ export default {
           value: "grade_level",
         },
         { text: "Student Name", value: "fullname" },
+        { text: "Average", value: "average" },
         { text: "Details", value: "details" },
         { text: "Action", value: "action" },
       ],
+      students: [],
+      filterStudents: [],
       sections: [],
       section: null,
-
-      pendingStudents: this.students,
     };
   },
 
@@ -304,6 +300,7 @@ export default {
               title: "Ooops....",
               text: error.response.data.message,
             });
+            //this.sendSms(id);
             this.loading = false;
             this.dialog = true;
           });
@@ -317,6 +314,34 @@ export default {
       }
     },
 
+    //Sending a sms notification to a user's cellphone number
+    // sendSms(studentId) {
+    //   this.$axios
+    //     .get("send-sms/" + studentId)
+    //     .then((response) => {
+    //       if (response.data.success == "success") {
+    //         this.$swal.fire({
+    //           icon: "info",
+    //           title: "Success",
+    //           text: "Successfully send a notification.",
+    //         });
+    //       } else {
+    //         this.$swal.fire({
+    //           icon: "error",
+    //           title: "Failed",
+    //           text: "Not successfully send a notification.",
+    //         });
+    //       }
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //       this.$swal.fire({
+    //         icon: "error",
+    //         title: "Failed",
+    //         text: "Not successfully send a notification.",
+    //       });
+    //     });
+    // },
     //Method For Declining The Section
     declineEnrollment(id, index) {
       console.log(index);
@@ -335,8 +360,8 @@ export default {
           console.log(error);
         });
     },
-    
-    filterByName(data) {
+
+    filterByNames(data) {
       // console.log(this.search);
       this.students.filter((val) => {
         if (this.gradelevel == null && data != null) {
@@ -370,21 +395,37 @@ export default {
   },
 
   created() {
+    let adminLevel = null;
+    let userData = this.$user;
+    console.log(userData);
+    if (userData.user_type != "admin") {
+      let temp = this.$user.username.split("_");
+      adminLevel = temp[1];
+      console.log(adminLevel);
+    }
     this.section = this.sections[0];
-    // EventBus.$on("filterData", (data) => {
-    //   // console.log(data);
-    //   this.emitted = true;
-    //   this.pendingStudents.filter((val) => {
-    //     if (val.firstname == data) {
-    //       console.log("true");
-    //       return val;
-    //     } else {
-    //       console.log("false");
-    //       this.pendingStudents = [];
-    //     }
-    //     // return val.fullname.includes(data);
-    //   });
-    // });
+    let pendingEnrollment = this.$store.getters.allPendingEnrollments;
+    for (const key in pendingEnrollment) {
+      if (pendingEnrollment.hasOwnProperty.call(pendingEnrollment, key)) {
+        const element = pendingEnrollment[key];
+        this.students.push(element);
+      }
+    }
+    this.filterStudents = this.students;
+    this.$store.dispatch("allPendingEnrollments", adminLevel).then((res) => {
+      this.isDataLoaded = true;
+
+      let pending = res;
+
+      for (var index in pending) {
+        let element = pending[index];
+        element["fullname"] = element["firstname"].concat(
+          " ",
+          element["lastname"]
+        );
+        this.students.push(element);
+      }
+    });
   },
 };
 </script>

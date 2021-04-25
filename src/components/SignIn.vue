@@ -102,8 +102,10 @@ export default {
           .then((response) => {
             this.loading = false;
             const user = response.data.user;
+            this.$user = user;
+            console.log(this.$user);
             console.log(response);
-            if (user.user_type == "admin") {
+            if (user.user_type != "student") {
               if (user.updated == 0) {
                 this.$router.push({ path: "/admin/profile" });
               } else {

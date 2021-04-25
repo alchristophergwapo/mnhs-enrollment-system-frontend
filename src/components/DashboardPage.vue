@@ -201,8 +201,8 @@ export default {
       this.totalTeachers = res.teacher.length;
     });
 
-    this.$store.dispatch("allPendingEnrollments").then((res) => {
-      this.totalPending = res.length;
+    this.$axios.get("pendingEnrollments/").then((res) => {
+      this.totalPending = res.data.pendingEnrollment.length;
     });
 
     this.$store.dispatch("allDeclinedEnrollments").then((res) => {

@@ -18,7 +18,8 @@
             v-model="username"
             name="username"
             label="Username"
-            :disabled="true"
+            readonly
+            outlined
           ></v-text-field>
           <v-text-field
             v-model="currentPass"
@@ -29,6 +30,7 @@
             @click:append="showPass = !showPass"
             @keydown="clearErrors"
             :error="hasError('currentpassword')"
+            outlined
           >
           </v-text-field>
           <div>
@@ -45,6 +47,7 @@
             @click:append="showNPass = !showNPass"
             @keydown="clearErrors"
             :error="hasError('new_password')"
+            outlined
           ></v-text-field>
           <div>
             <p v-if="hasError('new_password')" class="invalid-feedback">
@@ -60,6 +63,7 @@
             @click:append="showCPass = !showCPass"
             @keydown="clearErrors"
             :error="hasError('confirm_password')"
+            outlined
           ></v-text-field>
           <div>
             <p v-if="hasError('confirm_password')" class="invalid-feedback">

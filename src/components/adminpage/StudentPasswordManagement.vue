@@ -24,7 +24,7 @@
           <td>{{ row.item.grade_level }}</td>
           <td>{{ row.item.fullname }}</td>
           <td>
-            <v-btn color="primary" :loading="loading">Reset Password</v-btn>
+            <v-btn color="primary" @click="resetPassword(row.item)" :loading="loading">Reset Password</v-btn>
           </td>
         </tr>
       </template>
@@ -68,10 +68,29 @@ export default {
   },
   methods: {
     resetPassword(student) {
-      this.loading = true;
-      this.$axios.post("", student).then((response) => {
-        console.log(response);
-      });
+      console.log(student);
+      //this.loading = true;
+          this.$axios
+          .post(`reset-password`,{LRN:student.LRN})
+          .then((response) => {
+            if(response.data.success){
+                this.$swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Student details is successfully updated!",
+              });
+            }
+            else{
+                this.$swal.fire({
+                icon: "error",
+                title: "Failed",
+                text: "Student details is unsuccessfully updated!",
+              });
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
     },
   },
 };
