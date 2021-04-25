@@ -136,11 +136,7 @@
               <v-btn
                 color="primary"
                 @click="
-                  filterSections(
-                    row.item.grade_level,
-                    row.item.enrollment_id,
-                    row.index
-                  )
+                  filterSections(row.item.grade_level, row.item.id, row.index)
                 "
                 icon
                 x-large
@@ -210,8 +206,8 @@ export default {
       dialog: false,
       loading: false,
       isDataLoaded: false,
-      // imageUrl: "https://mnhs-enrollment-system.herokuapp.com/images/",
-      imageUrl: "http://localhost:8000/images/",
+      imageUrl: "https://mnhs-enrollment-system.herokuapp.com/images/",
+      // imageUrl: "http://localhost:8000/images/",
       item: null,
       id: null,
       index: null,
@@ -283,7 +279,7 @@ export default {
           .post("approveEnrollment/" + id, { student_section: this.section })
           .then((response) => {
             console.log(response);
-            this.pendingStudents.splice(index, 1);
+            this.students.splice(index, 1);
             this.$swal.fire({
               icon: "success",
               title: "Success",
@@ -295,14 +291,22 @@ export default {
           })
           .catch((error) => {
             console.log(error);
-            this.$swal.fire({
-              icon: "error",
-              title: "Ooops....",
-              text: error.response.data.message,
-            });
             //this.sendSms(id);
             this.loading = false;
             this.dialog = true;
+            if (error.response.status != 500) {
+              this.$swal.fire({
+                icon: "error",
+                title: "Ooops....",
+                text: error.response.data.message,
+              });
+            } else {
+              this.$swal.fire({
+                icon: "error",
+                title: "Ooops....",
+                text: error.response.data.error,
+              });
+            }
           });
       } else {
         this.$swal.fire({
@@ -354,7 +358,7 @@ export default {
             title: "Success",
             text: "Enrollment declined.",
           });
-          this.pendingStudents.splice(index, 1);
+          this.students.splice(index, 1);
         })
         .catch((error) => {
           console.log(error);
