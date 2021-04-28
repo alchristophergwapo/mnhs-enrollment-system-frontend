@@ -141,7 +141,6 @@ export default {
           const element = classmates[key];
           //console.log(element);
           this.students.push(element["students"]);
-          // console.log(classmates["student"]);
         }
       }
 

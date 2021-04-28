@@ -14,8 +14,7 @@
       <div class="form-container">
         <v-card-title
           ><span style="width: 100%; text-align: center"
-            >Please fill out the information below and SUBMIT.</span
-          >
+            >Please fill out the information below and SUBMIT.</span>
         </v-card-title>
         <v-form ref="basicInfo" v-model="basicInfoValid" lazy-validation>
           <v-container>
@@ -128,12 +127,9 @@
 <script>
 export default {
   components: {
-    StudentInfoForm: () =>
-      import("@/components/enrollment/StudentInfoForm.vue"),
-    ParentGuardianInfo: () =>
-      import("@/components/enrollment/ParentGuardianInfo.vue"),
-    BalikOrTransfer: () =>
-      import("@/components/enrollment/BalikOrTransfer.vue"),
+    StudentInfoForm: () =>import("@/components/enrollment/StudentInfoForm.vue"),
+    ParentGuardianInfo: () =>import("@/components/enrollment/ParentGuardianInfo.vue"),
+    BalikOrTransfer: () => import("@/components/enrollment/BalikOrTransfer.vue"),
     SeniorHigh: () => import("@/components/enrollment/SeniorHigh.vue"),
   },
   data() {
@@ -159,15 +155,15 @@ export default {
           "TECHNICAL-VOCATIONAL LIVELIHOOD (TLV) TRACK": ["AGRI-FISHERY ARTS"],
         },
       ],
-
+      graded:[7, 8, 9, 10],
       grade_levels: [
         [7, 8, 9, 10],
         [11, 12],
       ],
-
       grade_level: null,
       card_image: null,
       student: null,
+      grades:null,
       parentGuardian: null,
       balikOrTransfer: null,
       seniorHigh: null,
@@ -182,7 +178,7 @@ export default {
         this.$refs.basicInfo.validate()
       ) {
         this.submitting = true;
-        this.student = this.$refs.studentInfoData.getData;
+        this.student=this.$refs.studentInfoData.getData;
         let formdata = new FormData();
         let parent = JSON.parse(this.$refs.parentGuardianInfoData.getData);
         // let noError = false;

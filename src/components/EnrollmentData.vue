@@ -11,52 +11,56 @@
     </v-container>
     <div class="table">
       <!-- <v-container> -->
-        <!-- <v-card outlined> -->
-        <v-card class="table-header" color="#2e856e">
-          <v-card-title class="text-center justify-center">
-            <div class="display-2 font-weight-light">Enrollments</div>
-          </v-card-title>
+      <!-- <v-card outlined> -->
+      <v-card class="table-header" color="#2e856e">
+        <v-card-title class="text-center justify-center">
+          <div class="display-2 font-weight-light">Enrollments</div>
+        </v-card-title>
 
-          <div class="subtitle-1 font-weight-light text-center justify-center">
-            All enrollments as of year {{ year }}
-          </div>
-          <!-- <v-container> -->
-            <v-tabs
-              v-model="enrollmentTab"
-              fixed-tabs
-              background-color="#2e856e"
-              color="white"
-              show-arrows
-              icons-and-text
-            >
-              <v-tab href="#tab-1">
-                Pending
-                <v-icon color="info" large>mdi-account-alert</v-icon>
-              </v-tab>
+        <div class="subtitle-1 font-weight-light text-center justify-center">
+          All enrollments as of year {{ year }}
+        </div>
+        <!-- <v-container> -->
+        <v-tabs
+          v-model="enrollmentTab"
+          fixed-tabs
+          background-color="#2e856e"
+          color="white"
+          show-arrows
+          icons-and-text
+        >
+          <v-tab href="#tab-1">
+            Pending
+            <v-icon color="info" large>mdi-account-alert</v-icon>
+          </v-tab>
 
-              <v-tab href="#tab-2">
-                Declined
-                <v-icon color="error" large>mdi-account-minus</v-icon>
-              </v-tab>
-            </v-tabs>
-          <!-- </v-container> -->
-        </v-card>
-        <v-tabs-items v-model="enrollmentTab">
-          <v-tab-item :value="'tab-1'">
-            <pending-enrollment :students="students" :search="search" :isDataLoaded="dataLoaded">
-            </pending-enrollment>
-          </v-tab-item>
-          <v-tab-item :value="'tab-2'">
-            <declined-enrollments
-              :declinedEnrollments="declinedEnrollments"
-              :search="searchDeclined"
-              :isDataLoaded="pDataLoaded"
-            >
-            </declined-enrollments>
-          </v-tab-item>
-        </v-tabs-items>
-        <br />
-        <!-- </v-card> -->
+          <v-tab href="#tab-2">
+            Declined
+            <v-icon color="error" large>mdi-account-minus</v-icon>
+          </v-tab>
+        </v-tabs>
+        <!-- </v-container> -->
+      </v-card>
+      <v-tabs-items v-model="enrollmentTab">
+        <v-tab-item :value="'tab-1'">
+          <pending-enrollment
+            :students="students"
+            :search="search"
+            :isDataLoaded="dataLoaded"
+          >
+          </pending-enrollment>
+        </v-tab-item>
+        <v-tab-item :value="'tab-2'">
+          <declined-enrollments
+            :declinedEnrollments="declinedEnrollments"
+            :search="searchDeclined"
+            :isDataLoaded="pDataLoaded"
+          >
+          </declined-enrollments>
+        </v-tab-item>
+      </v-tabs-items>
+      <br />
+      <!-- </v-card> -->
       <!-- </v-container> -->
     </div>
   </div>
@@ -108,6 +112,7 @@ export default {
   }),
 
   created() {
+   // console.log(this.declinedEnrollments);
     this.initializeData();
     if (!this.students || !this.sections) {
       setTimeout(() => {
@@ -121,18 +126,15 @@ export default {
       let pendingEnrollment = this.$store.getters.allPendingEnrollments;
       this.$store.dispatch("allPendingEnrollments").then((res) => {
         this.dataLoaded = true;
-        pendingEnrollment = res;
-        console.log(pendingEnrollment);
+        pendingEnrollment=res;
+        //console.log(pendingEnrollment);
         for (var index in pendingEnrollment) {
           let element = pendingEnrollment[index];
           let studentData = element["student"];
           let enrollmentData = [];
           enrollmentData["enrollment_id"] = element["id"];
           enrollmentData["card_image"] = element["card_image"];
-          enrollmentData["fullname"] = studentData["firstname"].concat(
-            " ",
-            studentData["lastname"]
-          );
+          enrollmentData["fullname"] = studentData["firstname"].concat(" ",studentData["lastname"]);
           for (const data in studentData) {
             const element1 = studentData[data];
             enrollmentData[data] = element1;
@@ -150,13 +152,15 @@ export default {
         for (var index in declinedEnrollments) {
           let element = declinedEnrollments[index];
           let declinedStudentData = element["student"];
-          let declinedEnrollmentData = [];
+          let declinedEnrollmentData={};
+          declinedEnrollmentData["index"] =index;
           declinedEnrollmentData["enrollment_id"] = element["id"];
           declinedEnrollmentData["card_image"] = element["card_image"];
+          declinedEnrollmentData['remarks']=element['remark'];
           declinedEnrollmentData["fullname"] = declinedStudentData[
             "firstname"
           ].concat(" ", declinedStudentData["lastname"]);
-          for (const data in declinedStudentData) {
+          for (const data in declinedStudentData){
             const element1 = declinedStudentData[data];
             declinedEnrollmentData[data] = element1;
           }
@@ -166,116 +170,56 @@ export default {
       });
     },
 
-    //Method For Filtering The Name By A GradeLevel Or All GradeLevel
-    filterByName(data) {
-      // console.log(this.search);
-      this.students = this.filterStudents.filter((val) => {
-        if (this.gradelevel == null && data != null) {
-          // console.log("here");
-          return val.fullname
-            .concat(" ", val.grade_level)
-            .toLowerCase()
-            .includes(data.toLowerCase());
-        } else if (this.gradelevel == "All" && data != null) {
-          return val.fullname
-            .concat(" ", val.grade_level)
-            .toLowerCase()
-            .includes(data.toLowerCase());
-        } else {
-          if (val.grade_level == this.gradelevel) {
-            if (data != null) {
-              return val.fullname
-                .concat(" ", val.grade_level)
-                .toLowerCase()
-                .includes(data.toLowerCase());
-            } else {
-              return val.fullname
-                .concat(" ", val.grade_level)
-                .toLowerCase()
-                .includes(val.grade_level.toLowerCase());
-            }
-          }
-        }
-      });
-    },
+    // //Method For Filtering The Name By A GradeLevel Or All GradeLevel
+    // filterByName(data) {
+    //   // console.log(this.search);
+    //   this.students = this.filterStudents.filter((val) => {
+    //     if (this.gradelevel == null && data != null) {
+    //       // console.log("here");
+    //       return val.fullname
+    //         .concat(" ", val.grade_level)
+    //         .toLowerCase()
+    //         .includes(data.toLowerCase());
+    //     } else if (this.gradelevel == "All" && data != null) {
+    //       return val.fullname
+    //         .concat(" ", val.grade_level)
+    //         .toLowerCase()
+    //         .includes(data.toLowerCase());
+    //     } else {
+    //       if (val.grade_level == this.gradelevel) {
+    //         if (data != null) {
+    //           return val.fullname
+    //             .concat(" ", val.grade_level)
+    //             .toLowerCase()
+    //             .includes(data.toLowerCase());
+    //         } else {
+    //           return val.fullname
+    //             .concat(" ", val.grade_level)
+    //             .toLowerCase()
+    //             .includes(val.grade_level.toLowerCase());
+    //         }
+    //       }
+    //     }
+    //   });
+    // },
 
-    //Method For Approving the enrollment
-    approveEnrollment(id, index) {
-      alert("approve:" + id);
-      console.log(this.section);
-      if (this.section) {
-        this.$axios
-          .post("approveEnrollment/" + id, { student_section: this.section })
-          .then((response) => {
-            console.log(response);
-            this.students.splice(index, 1);
-            this.$swal.fire({
-              icon: "success",
-              title: "Success",
-              text: "Enrollment approved.",
-            });
-            this.dialog = false;
-            this.sendSms(id);
-            window.location.reload(true);
-          })
-          .catch((error) => {
-            console.log(error);
-            this.$swal.fire({
-              icon: "error",
-              title: "Ooops....",
-              text: error.response.data.message,
-            });
-            this.dialog = true;
-          });
-      } else {
-        this.$swal.fire({
-          icon: "error",
-          title: "Ooops....",
-          text: "Please select a section.",
-        });
-        this.dialog = true;
-      }
-    },
-    //Sending a sms notification to a user's cellphone number
-    sendSms(studentId) {
-      this.$axios
-        .get("send-sms/" + studentId)
-        .then((response) => {
-          if (response.data.success == "success") {
-            this.$swal.fire({
-              icon: "info",
-              title: "Success",
-              text: "Successfully send a notification.",
-            });
-          } else {
-            this.$swal.fire({
-              icon: "error",
-              title: "Failed",
-              text: "Not successfully send a notification.",
-            });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
     //Method For Declining The Section
-    declineEnrollment(id, index) {
-      this.$axios
-        .post("declineEnrollment/" + id)
-        .then((response) => {
-          console.log(response);
-          this.$swal.fire({
-            icon: "info",
-            title: "Success",
-            text: "Enrollment declined.",
-          });
-          this.students.splice(index, 1);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    },
+    // declineEnrollment(id, index) {
+    //   this.$axios
+    //     .post("declineEnrollment/" + id)
+    //     .then((response) => {
+    //       console.log(response);
+    //       this.$swal.fire({
+    //         icon: "info",
+    //         title: "Success",
+    //         text: "Enrollment declined.",
+    //       });
+    //       this.students.splice(index, 1);
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+    // },
   },
 };
 </script>

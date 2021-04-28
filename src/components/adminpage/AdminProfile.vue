@@ -160,7 +160,6 @@ export default {
               title: "Success",
               text: "Password is successfully changed.",
             });
-
             this.userData.user.updated = 1;
             this.$store.commit("setUserData", this.userData);
             this.$router.push({ path: "/admin" });
@@ -219,6 +218,9 @@ export default {
 </script>
 
 <style>
+.invalid-feedback{
+  margin-top:-25px;
+}
 .profile-card {
   margin: auto;
 }
@@ -230,4 +232,11 @@ export default {
 .subtitle span {
   font-size: 20px;
 }
+
+@media screen and (max-width: 767.98px) {
+   .invalid-feedback{
+       margin-top:-25px;
+    }
+
+} 
 </style>

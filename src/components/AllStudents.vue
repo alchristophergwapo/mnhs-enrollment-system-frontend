@@ -15,18 +15,24 @@
           <br />
         </v-card>
         <v-card-title>
-          <!-- <v-select
+          <v-select
             v-model="selectedYear"
             :items="schoolYear"
             @change="filterByYear(($event = selectedYear))"
             menu-props="auto"
             label="School Year"
             hide-details
-            dense
             outlined
-          ></v-select> -->
+          ></v-select>
           <v-spacer></v-spacer>
-          <v-select
+         <v-text-field
+           class="search"
+           v-model="search"
+            append-icon="mdi-magnify"
+            label="Search"
+            outlined
+       ></v-text-field>
+          <!-- <v-select
             v-model="gradelevel"
             :items="grade_level"
             @change="filterByGradeLevel(($event = gradelevel))"
@@ -46,7 +52,7 @@
             hide-details
             dense
             outlined
-          ></v-select>
+          ></v-select> -->
         </v-card-title>
         <v-data-table
           :headers="headers"
@@ -59,11 +65,8 @@
             <tr>
               <td>{{ row.item.grade_level }}</td>
               <td>{{ row.item.section_name }}</td>
-              <td>
-                {{ row.item.firstname }}
-                {{ row.item.lastname }}
-              </td>
-              <td>{{ row.item.age }}</td>
+              <td>{{ row.item.fullname }}</td>
+              <td>{{ row.item.LRN }}</td>
               <td>{{ row.item.address }}</td>
               <td>
                 <v-btn text @click="editDetails(row.item)">Edit Details</v-btn>
@@ -92,7 +95,7 @@
                 <hr />
                 <v-card-title>
                   <v-spacer></v-spacer>
-                  <v-row>S.Y. {{ studentInfo.school_year }}</v-row>
+                  <v-row>S.Y. {{ studentInfo.school_year}}</v-row>
                 </v-card-title>
                 <br />
                 <v-card-text>
@@ -444,11 +447,11 @@ export default {
       },
     ],
     headers: [
-      { text: "GradeLevel", value: "student.grade_level" },
-      { text: "Section", value: "student_section" },
-      { text: "Student Name", value: "student.firstname" },
-      { text: "Age", value: "student.age" },
-      { text: "Address", value: "student.address" },
+      { text: "GradeLevel", value: "grade_level" },
+      { text: "Section", value: "section_name" },
+      { text: "Student Name", value:'fullname'},
+      { text: "LRN", value: "LRN" },
+      { text: "Address", value: "address" },
       { text: "Edit", value: "Edit" },
     ],
     students: [],
@@ -458,14 +461,21 @@ export default {
     filteredSections: [],
   }),
   created() {
-    this.students = this.$store.getters.allStudents;
-    console.log(this.students);
-    this.filteredStudents = this.$store.getters.allStudents;
     this.$store
       .dispatch("allStudents")
       .then((response) => {
-        this.students = response;
-        this.filteredStudents = response;
+         let studs=response;
+        for (var index in studs) {
+          let element =studs[index];
+          let enrollmentData ={};
+          enrollmentData["fullname"] = element["firstname"].concat(" ",element["lastname"] );
+          for (const data in element) {
+            const element1 =element[data];
+            enrollmentData[data]=element1;
+          }
+           this.students.push(enrollmentData);
+           this.filteredStudents.push(enrollmentData);
+        }
       })
       .catch((error) => {
         console.log(error);
@@ -488,83 +498,89 @@ export default {
       .catch((error) => {
         console.log(error);
       });
-    for (let i = 2021; i <= this.year; i++) {
+    for (let i = 2021; i <= 2023; i++) {
       this.schoolYear.push(i);
     }
   },
   methods: {
     //Filter The Studentr By School Year
-    // filterByYear(year) {
-    //   if (year == "All") {
+    filterByYear(year) {
+      if (year == "All") {
+        this.students = this.filteredStudents;
+        this.year = new Date().getFullYear();
+      } else {
+        this.students = this.filteredStudents.filter((val) => {
+          return (
+            val.created_at.substring(0, val.created_at.indexOf("-")) ==
+              year || val.created_at.includes(year)
+          );
+        });
+        this.year = year;
+      }
+    },
+    
+    //Method For Filtering By Grade Level
+    // filterByGradeLevel(grade) {
+    //   if (grade == "All") {
+    //     this.selectGrade = "Allstudent";
     //     this.students = this.filteredStudents;
-    //     this.year = new Date().getFullYear();
-    //   } else {
-    //     this.students = this.filteredStudents.filter((val) => {
-    //       return (
-    //         val.student.created_at.substring(0, val.created_at.indexOf("-")) ==
-    //           year || val.student.created_at.includes(year)
-    //       );
+    //     let arraySection = [];
+    //     this.filteredSections.filter((val) => {
+    //       arraySection.push(val.name);
     //     });
-    //     this.year = year;
+    //     this.section = arraySection;
+    //     this.selectedSection = null;
+    //     this.adviser = null;
+    //   } else {
+    //     this.selectGrade = "Grade-" + grade;
+    //     let arraySection = [];
+    //     this.students = this.filteredStudents.filter((val) => {
+    //       return val.grade_level == grade;
+    //     });
+    //     this.filteredSections.filter((val) => {
+    //       // console.log(val);
+    //       if (val.gradelevel != null) {
+    //         // console.log(val.gradelevel.);
+    //         if (val.gradelevel.grade_level == grade) {
+    //           // console.log(val);
+    //           arraySection.push(val.name);
+    //         }
+    //       }
+    //     });
+    //     this.section = arraySection;
+    //     this.selectedSection = null;
+    //     this.adviser = null;
     //   }
     // },
-    //Method For Filtering By Grade Level
-    filterByGradeLevel(grade) {
-      if (grade == "All") {
-        this.selectGrade = "Allstudent";
-        this.students = this.filteredStudents;
-        let arraySection = [];
-        this.filteredSections.filter((val) => {
-          arraySection.push(val.name);
-        });
-        this.section = arraySection;
-        this.selectedSection = null;
-        this.adviser = null;
-      } else {
-        this.selectGrade = "Grade-" + grade;
-        let arraySection = [];
-        this.students = this.filteredStudents.filter((val) => {
-          return val.grade_level == grade;
-        });
-        this.filteredSections.filter((val) => {
-          // console.log(val);
-          if (val.gradelevel != null) {
-            // console.log(val.gradelevel.);
-            if (val.gradelevel.grade_level == grade) {
-              // console.log(val);
-              arraySection.push(val.name);
-            }
-          }
-        });
-        this.section = arraySection;
-        this.selectedSection = null;
-        this.adviser = null;
-      }
-    },
 
     //Method For Filtering By Section In Every Grade Level
-    filterBySection(section) {
-      if (this.gradelevel == "All") {
-        this.students = this.filteredStudents.filter((val) => {
-          return val.student_section == section;
-        });
-        this.filteredSections.filter((val) => {
-          if (val.name == section) {
-            this.adviser =
-              val.teacher_id + ",GradeLevel:" + val.gradelevel.grade_level;
-          }
-        });
-      } else {
-        this.students = this.filteredStudents.filter((val) => {
-          return val.student_section == section;
-        });
-        this.filteredSections.filter((val) => {
-          if (val.name == section) {
-            this.adviser = val.teacher_id;
-          }
-        });
-      }
-    },
+
+    // filterBySection(section) {
+    //   if (this.gradelevel == "All") {
+    //     this.students = this.filteredStudents.filter((val) => {
+    //       console.log("Section="+val.student_section);
+    //       return val.section_name == section;
+    //     });
+    //     // this.filteredSections.filter((val) => {
+    //     //     console.log("Name:"+section);
+    //     //   if (val.name == section) {
+    //     //     this.adviser =
+    //     //       val.teacher_id + ",GradeLevel:" + val.gradelevel.grade_level;
+    //     //   }
+    //     // });
+    //   } else {
+    //     this.students = this.filteredStudents.filter((val) => {
+    //       return val.section_name == section;
+    //     });
+    //     // this.filteredSections.filter((val) => {
+    //     //   console.log(val);
+    //     //   console.log("Teacher:"+val.teacher_id);
+    //     //   if (val.name == section) {
+    //     //     this.adviser = val.teacher_id;
+    //     //   }
+    //     // });
+    //   }
+    // },
 
     //Select Community turns to null
     ipCommunity() {
@@ -572,13 +588,9 @@ export default {
     },
     //Open Or View Student Details
     editDetails(student) {
-      console.log(student);
       let studentInfo = student;
-      studentInfo["school_year"] =
-        student.start_school_year + " - " + student.end_school_year;
-
+      studentInfo["school_year"] = student.start_school_year + " - " + student.end_school_year;
       this.studentInfo = studentInfo;
-
       this.studentDialog = true;
     },
     //Close The Student Details Dialog
@@ -591,7 +603,7 @@ export default {
       if (this.$refs.studentDetails.validate()) {
         console.log("id:" + formdata.id);
         this.$axios
-          .post(`updateStudent/` + formdata.id, formdata)
+          .post(`updateStudent/` + formdata.id,formdata)
           .then((response) => {
             if (response.data.updated) {
               this.$swal.fire({
@@ -599,9 +611,9 @@ export default {
                 title: "Success",
                 text: "Student details is successfully updated!",
               });
-
               this.studentDialog = false;
               this.$refs.studentDetails.resetValidation();
+              this.readonly=true;
             } else {
                this.$swal.fire({
                 icon: "error",
@@ -624,6 +636,7 @@ export default {
         ...arrData.map((item) => Object.values(item)),
       ]
         .join("\n")
+
         .replace(/(^\[)|(\]$)/gm, "");
       const data = encodeURI(csvContent);
       const link = document.createElement("a");
@@ -635,37 +648,42 @@ export default {
   computed: {
     csvData() {
       return this.students.map((item) => ({
-        SchoolYear: item.student.created_at
-          .substring(0, item.student.created_at.indexOf("-"))
+        SchoolYear: item.created_at
+          .substring(0, item.created_at.indexOf("-"))
           .concat(
             "-",
             parseInt(
-              item.student.created_at.substring(
+              item.created_at.substring(
                 0,
-                item.student.created_at.indexOf("-")
+                item.created_at.indexOf("-")
               )
             ) + 1
           ),
-        GradeLevel: item.student.grade_level,
+        GradeLevel: item.grade_level,
         Section: item.student_section,
-        StudentName: item.student.firstname + " " + item.student.lastname,
-        Age: item.student.age,
-        Address: item.student.address.replace(/[^a-zA-Z ]/g, " "),
+        StudentName: item.firstname + " " + item.lastname,
+        Age: item.age,
+        Address: item.address.replace(/[^a-zA-Z ]/g, " "),
         //Address:item.student.address.replaceAll(","," ").replaceAll(/\s+/g," ")
       }));
     },
 
     btnText() {
       let text = "update";
-
       if (this.readonly) {
         text = "update";
-      } else {
+      }
+      else {
+
         text = "save";
       }
-
       return text;
     },
   },
 };
 </script>
+<style scoped>
+.search{
+  margin-top:33px;
+}
+</style>
