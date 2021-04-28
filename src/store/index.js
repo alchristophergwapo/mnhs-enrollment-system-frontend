@@ -6,14 +6,10 @@ import "es6-promise/auto";
 Vue.use(Vuex);
 
 axios.defaults.baseURL = "http://127.0.0.1:8000/api/";
-// axios.defaults.baseURL = "https://mnhs-enrollment-system.herokuapp.com/api";
+//axios.defaults.baseURL = "https://mnhs-enrollment-system.herokuapp.com/api";
 
 export default new Vuex.Store({
   state: {
-    users: {
-      username: 7,
-      fullName: "Matt Maribojoc",
-    },
     studentLogInfo: null,
     user: null,
     classmates: null,
@@ -41,7 +37,6 @@ export default new Vuex.Store({
       localStorage.removeItem("user");
       location.reload();
     },
-
     setNumberOfTeachers(state, totalTeachers) {
       state.numberOfTeachers = totalTeachers;
     },
@@ -95,7 +90,7 @@ export default new Vuex.Store({
     },
 
     allStudents({ commit }, gradeLevel) {
-      return axios.get("approvedEnrollments/"+gradeLevel).then((response) => {
+      return axios.get("approvedEnrollments/" + gradeLevel).then((response) => {
         let data = response.data.approvedEnrollment;
         commit("setStudents", data);
         commit("setNumberOfEnrolledStudents", data.length);

@@ -4,7 +4,6 @@
       <v-spacer></v-spacer>
       <v-text-field
         v-model="search"
-        @keyup="filterByName(($event = search))"
         append-icon="mdi-magnify"
         label="Search"
         dense
@@ -145,7 +144,7 @@
               </v-btn>
               <v-btn
                 color="error"
-                @click="declineEnrollment(row.item.id, row.index)"
+                @click="opendeclineModal(row.item.id, row.index)"
                 icon
                 x-large
               >
@@ -188,6 +187,45 @@
         </v-card>
       </v-dialog>
     </v-row>
+    <!-- REASON FOR DECLINING THE ENROLLMENT -->
+    <v-dialog
+      transition="dialog-bottom-transition"
+      max-width="600"
+      v-model="declineModal"
+    >
+      <template>
+        <v-card>
+          <v-card-title>
+            <v-row>
+              <h3>Reason For Declining</h3>
+            </v-row>
+            <v-btn icon link to="/admin">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-divider></v-divider>
+          <v-form ref="form" v-model="valid" lazy-validation>
+            <v-textarea
+              v-model="remarks"
+              outlined
+              full-width
+              single-line
+              placeholder="Write the reason for declining here......."
+              name="remarks"
+              :rules="[
+                (remarks) => !!remarks || 'Reason for declining is required',
+              ]"
+            ></v-textarea>
+            <!-- <v-divider></v-divider> -->
+            <v-card-actions class="justify-end" id="textarea">
+              <v-btn :disabled="!valid" color="blue" @click="declineEnrollment"
+                >done</v-btn
+              >
+            </v-card-actions>
+          </v-form>
+        </v-card>
+      </template>
+    </v-dialog>
   </div>
 </template>
 
@@ -195,6 +233,10 @@
 // import { EventBus } from "../../bus/bus.js";
 export default {
   props: {
+    // students: {
+    //   type: Array,
+    //   required: true,
+    // },
     // search: {
     //   type: String,
     //   default: "",
@@ -203,6 +245,11 @@ export default {
 
   data() {
     return {
+      declineModal: false,
+      declineId: null,
+      declineIndex: null,
+      valid: true,
+      remarks: null,
       dialog: false,
       loading: false,
       isDataLoaded: false,
@@ -213,24 +260,18 @@ export default {
       index: null,
       search: "",
       headers: [
-        {
-          text: "Grade Level",
-          align: "start",
-          sortable: false,
-          value: "grade_level",
-        },
+        { text: "Grade Level", align: "start", value: "grade_level" },
         { text: "Student Name", value: "fullname" },
         { text: "Average", value: "average" },
         { text: "Details", value: "details" },
         { text: "Action", value: "action" },
       ],
       students: [],
-      filterStudents: [],
+      // filterStudents: [],
       sections: [],
       section: null,
     };
   },
-
   methods: {
     openDialog(data) {
       this.item = data;
@@ -287,11 +328,16 @@ export default {
             });
             this.dialog = false;
             this.loading = false;
+            // this.sendSms(id);
             // window.location.reload(true);
           })
           .catch((error) => {
             console.log(error);
-            //this.sendSms(id);
+            this.$swal.fire({
+              icon: "error",
+              title: "Ooops....",
+              text: error.response.data.message,
+            });
             this.loading = false;
             this.dialog = true;
             if (error.response.status != 500) {
@@ -346,56 +392,68 @@ export default {
     //       });
     //     });
     // },
-    //Method For Declining The Section
-    declineEnrollment(id, index) {
-      console.log(index);
-      this.$axios
-        .post("declineEnrollment/" + id)
-        .then((response) => {
-          console.log(response);
-          this.$swal.fire({
-            icon: "info",
-            title: "Success",
-            text: "Enrollment declined.",
-          });
-          this.students.splice(index, 1);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+
+    //Method For Opending the Modal OF REASON FOR DECLINING
+    opendeclineModal(id, index) {
+      this.declineId = id;
+      this.declineIndex = index;
+      this.declineModal = true;
     },
 
-    filterByNames(data) {
-      // console.log(this.search);
-      this.students.filter((val) => {
-        if (this.gradelevel == null && data != null) {
-          // console.log("here");
-          return val.fullname
-            .concat(" ", val.grade_level)
-            .toLowerCase()
-            .includes(data.toLowerCase());
-        } else if (this.gradelevel == "All" && data != null) {
-          return val.fullname
-            .concat(" ", val.grade_level)
-            .toLowerCase()
-            .includes(data.toLowerCase());
-        } else {
-          if (val.grade_level == this.gradelevel) {
-            if (data != null) {
-              return val.fullname
-                .concat(" ", val.grade_level)
-                .toLowerCase()
-                .includes(data.toLowerCase());
-            } else {
-              return val.fullname
-                .concat(" ", val.grade_level)
-                .toLowerCase()
-                .includes(val.grade_level.toLowerCase());
-            }
-          }
-        }
-      });
+    declineEnrollment() {
+      if (this.$refs.form.validate()) {
+        this.$axios
+          .post("declineEnrollment/" + this.declineId, {
+            remarks: this.remarks,
+          })
+          .then((response) => {
+            console.log(response);
+            this.$swal.fire({
+              icon: "info",
+              title: "Success",
+              text: "Enrollment declined.",
+            });
+            this.pendingStudents.splice(this.declineIndex, 1);
+            this.$refs.form.reset();
+            this.declineModal = false;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     },
+
+    //   filterByNames(data) {
+    //     // console.log(this.search);
+    //     this.students.filter((val) => {
+    //       if (this.gradelevel == null && data != null) {
+    //         // console.log("here");
+    //         return val.fullname
+    //           .concat(" ", val.grade_level)
+    //           .toLowerCase()
+    //           .includes(data.toLowerCase());
+    //       } else if (this.gradelevel == "All" && data != null) {
+    //         return val.fullname
+    //           .concat(" ", val.grade_level)
+    //           .toLowerCase()
+    //           .includes(data.toLowerCase());
+    //       } else {
+    //         if (val.grade_level == this.gradelevel) {
+    //           if (data != null) {
+    //             return val.fullname
+    //               .concat(" ", val.grade_level)
+    //               .toLowerCase()
+    //               .includes(data.toLowerCase());
+    //           } else {
+    //             return val.fullname
+    //               .concat(" ", val.grade_level)
+    //               .toLowerCase()
+    //               .includes(val.grade_level.toLowerCase());
+    //           }
+    //         }
+    //       }
+    //     });
+    //   },
   },
 
   created() {
@@ -435,9 +493,16 @@ export default {
 </script>
 
 <style scoped>
+#textarea {
+  margin-top: -4%;
+}
+
 @media screen and (max-width: 767.98px) {
   .container {
     padding: 0px;
+  }
+  #textarea {
+    margin-top: -6%;
   }
 }
 </style>

@@ -34,9 +34,9 @@
         v-model="balikOrTransferInfo.last_school_ID"
         :rules="[
           (last_school_ID) => !!last_school_ID || 'School ID is required',
+          (last_school_ID) =>/^[0-9]+$/.test(last_school_ID) == true || 'Only Number is  allowed!',
         ]"
         label="School ID"
-        type="number"
         outlined
         required
       ></v-text-field>

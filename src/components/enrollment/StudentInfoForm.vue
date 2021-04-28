@@ -13,13 +13,12 @@
     <v-col cols="12" xs="6" sm="4" md="4" lg="4">
       <v-text-field
         v-model="studentInfo.LRN"
+        @keyup="gradeLevel(studentInfo.LRN)"
         name="LRN"
         :rules="[
           (LRN) => !!LRN || 'LRN is required',
           (LRN) =>/^[0-9]+$/.test(LRN) == true || 'Only Number is  allowed!',
-          (LRN) =>
-            String(LRN).length <= 12 ||
-            'LRN cannot be greater than 12 characters',
+          (LRN) =>String(LRN).length <= 12 || 'LRN cannot be greater than 12 characters',
           (LRN) => String(LRN).length == 12 || 'LRN must be 12 characters',
         ]"
         :counter="12"
@@ -178,10 +177,10 @@
       <v-text-field
         v-model="studentInfo.contact"
         name="contact"
-        :rules="[(contact) => !!contact || 'Contact is required',
+        :rules="[(contact) => !! contact || 'Contact is required',
          (contact) =>/^[0-9]+$/.test(contact) == true || 'Only Number is  allowed!',
-         (contact) =>String(contact).length <= 11 || 'Parent/Guardian cannot be greater than 11 digits',
-          (contact) => String(contact).length == 11 || 'Parent/Guardian contact number must be 11 digits',
+         (contact) =>String(contact).length <= 11 || 'Contact number cannot be greater than 11 digits',
+          (contact) => String(contact).length == 11 || 'Contact number must be 11 digits',
          ]"
         type="text"
         label="Contact Number(for receiving enrollment notification)"
@@ -216,7 +215,9 @@
 <script>
 export default {
   data: () => ({
-    studentInfo: {
+     gradelevel:7,
+     year: new Date().getFullYear(),
+     studentInfo:{
       PSA: "",
       LRN: 303000123456,
       average: 80,
@@ -234,12 +235,11 @@ export default {
       zipcode: "6022",
     },
   }),
-
   computed: {
     getData() {
-      // console.log(this.studentInfo);
       return this.studentInfo;
     },
+   
   },
 };
 </script>

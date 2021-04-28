@@ -22,7 +22,7 @@
       <template v-slot:item="row">
         <tr>
           <td>{{ row.item.grade_level }}</td>
-          <td>{{ row.item.fullname }}</td>
+          <td>{{ row.item.fullname}}</td>
           <td>
             <v-btn color="primary" @click="resetPassword(row.item)" :loading="loading">Reset Password</v-btn>
           </td>
@@ -58,7 +58,7 @@ export default {
       if (students.hasOwnProperty.call(students, key)) {
         const element = students[key];
         let student = [];
-        student["fullname"] = `${element.lastname}, ${element.firstname}`;
+        student["fullname"] = `${element.firstname}`;
         student["grade_level"] = element.grade_level;
         student["LRN"] = element.LRN;
         this.students.push(student);
