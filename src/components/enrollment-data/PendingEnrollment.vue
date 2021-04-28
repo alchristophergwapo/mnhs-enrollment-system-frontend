@@ -144,7 +144,7 @@
               </v-btn>
               <v-btn
                 color="error"
-                @click="opendeclineModal(row.item.id, row.index)"
+                @click="opendeclineModal(row.item.id,row.index)"
                 icon
                 x-large
               >
@@ -232,19 +232,15 @@
 <script>
 // import { EventBus } from "../../bus/bus.js";
 export default {
-  props: {
-    students: {
-      type: Array,
-      required: true,
-    },
-    // search: {
-    //   type: String,
-    //   default: "",
-    // },
-  },
+  // props: {
+  //   isDataLoaded: {
+  //     type:Boolean
+  //   },
+  // },
 
   data() {
     return {
+      isDataLoaded:false,
       declineModal: false,
       declineId: null,
       declineIndex: null,
@@ -252,9 +248,8 @@ export default {
       remarks: null,
       dialog: false,
       loading: false,
-      isDataLoaded: false,
       imageUrl: "https://mnhs-enrollment-system.herokuapp.com/images/",
-      // imageUrl: "http://localhost:8000/images/",
+      //imageUrl: "http://localhost:8000/images/",
       item: null,
       id: null,
       index: null,
@@ -266,8 +261,7 @@ export default {
         { text: "Details", value: "details" },
         { text: "Action", value: "action" },
       ],
-      // students: [],
-      // filterStudents: [],
+      students: [],
       sections: [],
       section: null,
     };
@@ -364,37 +358,10 @@ export default {
       }
     },
 
-    //Sending a sms notification to a user's cellphone number
-    // sendSms(studentId) {
-    //   this.$axios
-    //     .get("send-sms/" + studentId)
-    //     .then((response) => {
-    //       if (response.data.success == "success") {
-    //         this.$swal.fire({
-    //           icon: "info",
-    //           title: "Success",
-    //           text: "Successfully send a notification.",
-    //         });
-    //       } else {
-    //         this.$swal.fire({
-    //           icon: "error",
-    //           title: "Failed",
-    //           text: "Not successfully send a notification.",
-    //         });
-    //       }
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //       this.$swal.fire({
-    //         icon: "error",
-    //         title: "Failed",
-    //         text: "Not successfully send a notification.",
-    //       });
-    //     });
-    // },
 
     //Method For Opending the Modal OF REASON FOR DECLINING
     opendeclineModal(id, index) {
+      console.log(id+index);
       this.declineId = id;
       this.declineIndex = index;
       this.declineModal = true;
@@ -413,9 +380,9 @@ export default {
               title: "Success",
               text: "Enrollment declined.",
             });
-            this.pendingStudents.splice(this.declineIndex, 1);
+            this.students.splice(this.declineIndex, 1);
             this.$refs.form.reset();
-            this.declineModal = false;
+            this.declineModal=false;
           })
           .catch((error) => {
             console.log(error);
@@ -423,75 +390,40 @@ export default {
       }
     },
 
-    //   filterByNames(data) {
-    //     // console.log(this.search);
-    //     this.students.filter((val) => {
-    //       if (this.gradelevel == null && data != null) {
-    //         // console.log("here");
-    //         return val.fullname
-    //           .concat(" ", val.grade_level)
-    //           .toLowerCase()
-    //           .includes(data.toLowerCase());
-    //       } else if (this.gradelevel == "All" && data != null) {
-    //         return val.fullname
-    //           .concat(" ", val.grade_level)
-    //           .toLowerCase()
-    //           .includes(data.toLowerCase());
-    //       } else {
-    //         if (val.grade_level == this.gradelevel) {
-    //           if (data != null) {
-    //             return val.fullname
-    //               .concat(" ", val.grade_level)
-    //               .toLowerCase()
-    //               .includes(data.toLowerCase());
-    //           } else {
-    //             return val.fullname
-    //               .concat(" ", val.grade_level)
-    //               .toLowerCase()
-    //               .includes(val.grade_level.toLowerCase());
-    //           }
-    //         }
-    //       }
-    //     });
-    //   },
   },
 
-  // created() {
-  //   let adminLevel = null;
-  //   let userData = this.$user;
-  //   console.log(userData);
-  //   if (userData.user_type != "admin") {
-  //     let temp = this.$user.username.split("_");
-  //     adminLevel = temp[1];
-  //     console.log(adminLevel);
-  //   }
-  //   this.section = this.sections[0];
-  //   let pendingEnrollment = this.$store.getters.allPendingEnrollments;
-  //   for (const key in pendingEnrollment) {
-  //     if (pendingEnrollment.hasOwnProperty.call(pendingEnrollment, key)) {
-  //       const element = pendingEnrollment[key];
-  //       this.students.push(element);
-  //     }
-  //   }
-  //   this.filterStudents = this.students;
-  //   this.$store.dispatch("allPendingEnrollments", adminLevel).then((res) => {
-  //     this.isDataLoaded = true;
-
-  //     let pending = res;
-
-  //     for (var index in pending) {
-  //       let element = pending[index];
-  //       element["fullname"] = element["firstname"].concat(
-  //         " ",
-  //         element["lastname"]
-  //       );
-  //       this.students.push(element);
-  //     }
-  //   });
-  // },
-
   created() {
+    let adminLevel = null;
+    let userData = this.$user;
+    console.log(userData);
+    if (userData.user_type != "admin") {
+      let temp = this.$user.username.split("_");
+      adminLevel = temp[1];
+      console.log(adminLevel);
+    }
     this.section = this.sections[0];
+    let pendingEnrollment = this.$store.getters.allPendingEnrollments;
+    for (const key in pendingEnrollment) {
+      if (pendingEnrollment.hasOwnProperty.call(pendingEnrollment, key)) {
+        const element = pendingEnrollment[key];
+        this.students.push(element);
+      }
+    }
+    this.filterStudents = this.students;
+    this.$store.dispatch("allPendingEnrollments", adminLevel).then((res) => {
+      this.isDataLoaded = true;
+
+      let pending = res;
+
+      for (var index in pending) {
+        let element = pending[index];
+        element["fullname"] = element["firstname"].concat(
+          " ",
+          element["lastname"]
+        );
+        this.students.push(element);
+      }
+    });
   },
 };
 </script>

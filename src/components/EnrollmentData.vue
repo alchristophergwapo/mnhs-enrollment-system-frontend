@@ -44,16 +44,13 @@
       <v-tabs-items v-model="enrollmentTab">
         <v-tab-item :value="'tab-1'">
           <pending-enrollment
-            :students="students"
-            :search="search"
             :isDataLoaded="dataLoaded"
           >
           </pending-enrollment>
         </v-tab-item>
         <v-tab-item :value="'tab-2'">
           <declined-enrollments
-            :declinedEnrollments="declinedEnrollments"
-            :search="searchDeclined"
+            :isDataLoaded="pDataLoaded"
           >
           </declined-enrollments>
         </v-tab-item>
@@ -103,121 +100,69 @@ export default {
     index: null,
     students: [],
     filterStudents: [],
-    declinedEnrollments: [],
-    filterDeclined: [],
     grade_level: ["7", "8", "9", "10", "11", "12", "All"],
     sections: [],
   }),
 
   created() {
    // console.log(this.declinedEnrollments);
-   
-    this.initializeData();
-    if (!this.students || !this.sections) {
-      setTimeout(() => {
-        this.initializeData();
-      }, 3000);
-    }
+    // this.initializeData();
+    // if (!this.students || !this.sections) {
+    //   setTimeout(() => {
+    //     this.initializeData();
+    //   }, 3000);
+    // }
   },
 
   methods: {
-    initializeData() {
-      let pendingEnrollment = this.$store.getters.allPendingEnrollments;
-      console.log(this.pendingEnrollment);
-      this.$store.dispatch("allPendingEnrollments").then((res) => {
-        this.dataLoaded = true;
-        pendingEnrollment=res;
-        //console.log(pendingEnrollment);
-        for (var index in pendingEnrollment) {
-          let element = pendingEnrollment[index];
-          let studentData = element["student"];
-          let enrollmentData = [];
-          enrollmentData["enrollment_id"] = element["id"];
-          enrollmentData["card_image"] = element["card_image"];
-          enrollmentData["fullname"] = studentData["firstname"].concat(" ",studentData["lastname"]);
-          for (const data in studentData) {
-            const element1 = studentData[data];
-            enrollmentData[data] = element1;
-          }
-          this.students.push(enrollmentData);
-          this.filterStudents.push(enrollmentData);
-        }
-      });
-
-      // console.log(this.students);
-      let declinedEnrollments = this.$store.getters.allDeclinedEnrollments;
-      this.$store.dispatch("allDeclinedEnrollments").then((response) => {
-        this.pDataLoaded = true;
-        declinedEnrollments = response;
-        for (var index in declinedEnrollments) {
-          let element = declinedEnrollments[index];
-          let declinedStudentData = element["student"];
-          let declinedEnrollmentData={};
-          declinedEnrollmentData["index"] =index;
-          declinedEnrollmentData["enrollment_id"] = element["id"];
-          declinedEnrollmentData["card_image"] = element["card_image"];
-          declinedEnrollmentData['remarks']=element['remark'];
-          declinedEnrollmentData["fullname"] = declinedStudentData["firstname"].concat(" ", declinedStudentData["lastname"]);
-          for (const data in declinedStudentData){
-            const element1 = declinedStudentData[data];
-            declinedEnrollmentData[data] = element1;
-          }
-          this.declinedEnrollments.push(declinedEnrollmentData);
-          this.filterDeclined.push(declinedEnrollmentData);
-        }
-      });
-    },
-
-    // //Method For Filtering The Name By A GradeLevel Or All GradeLevel
-    // filterByName(data) {
-    //   // console.log(this.search);
-    //   this.students = this.filterStudents.filter((val) => {
-    //     if (this.gradelevel == null && data != null) {
-    //       // console.log("here");
-    //       return val.fullname
-    //         .concat(" ", val.grade_level)
-    //         .toLowerCase()
-    //         .includes(data.toLowerCase());
-    //     } else if (this.gradelevel == "All" && data != null) {
-    //       return val.fullname
-    //         .concat(" ", val.grade_level)
-    //         .toLowerCase()
-    //         .includes(data.toLowerCase());
-    //     } else {
-    //       if (val.grade_level == this.gradelevel) {
-    //         if (data != null) {
-    //           return val.fullname
-    //             .concat(" ", val.grade_level)
-    //             .toLowerCase()
-    //             .includes(data.toLowerCase());
-    //         } else {
-    //           return val.fullname
-    //             .concat(" ", val.grade_level)
-    //             .toLowerCase()
-    //             .includes(val.grade_level.toLowerCase());
-    //         }
+    // initializeData() {
+    //   let pendingEnrollment = this.$store.getters.allPendingEnrollments;
+    //   this.$store.dispatch("allPendingEnrollments").then((res) => {
+    //     this.dataLoaded = true;
+    //     pendingEnrollment=res;
+    //     //console.log(pendingEnrollment);
+    //     for (var index in pendingEnrollment) {
+    //       let element = pendingEnrollment[index];
+    //       let studentData = element["student"];
+    //       let enrollmentData = [];
+    //       enrollmentData["enrollment_id"] = element["id"];
+    //       enrollmentData["card_image"] = element["card_image"];
+    //       enrollmentData["fullname"] = studentData["firstname"].concat(" ",studentData["lastname"]);
+    //       for (const data in studentData) {
+    //         const element1 = studentData[data];
+    //         enrollmentData[data] = element1;
     //       }
+    //       this.students.push(enrollmentData);
+    //       this.filterStudents.push(enrollmentData);
+    //     }
+    //   });
+
+    //   // console.log(this.students);
+    //   let declinedEnrollments = this.$store.getters.allDeclinedEnrollments;
+    //   this.$store.dispatch("allDeclinedEnrollments").then((response) => {
+    //     this.pDataLoaded = true;
+    //     declinedEnrollments = response;
+    //     for (var index in declinedEnrollments) {
+    //       let element = declinedEnrollments[index];
+    //       let declinedStudentData = element["student"];
+    //       let declinedEnrollmentData={};
+    //       declinedEnrollmentData["index"] =index;
+    //       declinedEnrollmentData["enrollment_id"] = element["id"];
+    //       declinedEnrollmentData["card_image"] = element["card_image"];
+    //       declinedEnrollmentData['remarks']=element['remark'];
+    //       declinedEnrollmentData["fullname"] = declinedStudentData[
+    //         "firstname"
+    //       ].concat(" ", declinedStudentData["lastname"]);
+    //       for (const data in declinedStudentData){
+    //         const element1 = declinedStudentData[data];
+    //         declinedEnrollmentData[data] = element1;
+    //       }
+    //       this.declinedEnrollments.push(declinedEnrollmentData);
+    //       this.filterDeclined.push(declinedEnrollmentData);
     //     }
     //   });
     // },
-
-    //Method For Declining The Section
-    // declineEnrollment(id, index) {
-    //   this.$axios
-    //     .post("declineEnrollment/" + id)
-    //     .then((response) => {
-    //       console.log(response);
-    //       this.$swal.fire({
-    //         icon: "info",
-    //         title: "Success",
-    //         text: "Enrollment declined.",
-    //       });
-    //       this.students.splice(index, 1);
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // },
+    
   },
 };
 </script>
