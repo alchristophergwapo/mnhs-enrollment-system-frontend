@@ -10,8 +10,6 @@
       </v-row>
     </v-container>
     <div class="table">
-      <!-- <v-container> -->
-      <!-- <v-card outlined> -->
       <v-card class="table-header" color="#2e856e">
         <v-card-title class="text-center justify-center">
           <div class="display-2 font-weight-light">Enrollments</div>
@@ -20,7 +18,6 @@
         <div class="subtitle-1 font-weight-light text-center justify-center">
           All enrollments as of year {{ year }}
         </div>
-        <!-- <v-container> -->
         <v-tabs
           v-model="enrollmentTab"
           fixed-tabs
@@ -56,13 +53,10 @@
         </v-tab-item>
       </v-tabs-items>
       <br />
-      <!-- </v-card> -->
-      <!-- </v-container> -->
     </div>
   </div>
 </template>
 <script>
-// import { EventBus } from "../bus/bus.js";
 export default {
   components: {
     BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
@@ -107,7 +101,6 @@ export default {
   }),
 
   created() {
-   // console.log(this.declinedEnrollments);
    
     this.initializeData();
     if (!this.students || !this.sections) {
@@ -165,56 +158,6 @@ export default {
       });
     },
 
-    // //Method For Filtering The Name By A GradeLevel Or All GradeLevel
-    // filterByName(data) {
-    //   // console.log(this.search);
-    //   this.students = this.filterStudents.filter((val) => {
-    //     if (this.gradelevel == null && data != null) {
-    //       // console.log("here");
-    //       return val.fullname
-    //         .concat(" ", val.grade_level)
-    //         .toLowerCase()
-    //         .includes(data.toLowerCase());
-    //     } else if (this.gradelevel == "All" && data != null) {
-    //       return val.fullname
-    //         .concat(" ", val.grade_level)
-    //         .toLowerCase()
-    //         .includes(data.toLowerCase());
-    //     } else {
-    //       if (val.grade_level == this.gradelevel) {
-    //         if (data != null) {
-    //           return val.fullname
-    //             .concat(" ", val.grade_level)
-    //             .toLowerCase()
-    //             .includes(data.toLowerCase());
-    //         } else {
-    //           return val.fullname
-    //             .concat(" ", val.grade_level)
-    //             .toLowerCase()
-    //             .includes(val.grade_level.toLowerCase());
-    //         }
-    //       }
-    //     }
-    //   });
-    // },
-
-    //Method For Declining The Section
-    // declineEnrollment(id, index) {
-    //   this.$axios
-    //     .post("declineEnrollment/" + id)
-    //     .then((response) => {
-    //       console.log(response);
-    //       this.$swal.fire({
-    //         icon: "info",
-    //         title: "Success",
-    //         text: "Enrollment declined.",
-    //       });
-    //       this.students.splice(index, 1);
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //     });
-    // },
   },
 };
 </script>
