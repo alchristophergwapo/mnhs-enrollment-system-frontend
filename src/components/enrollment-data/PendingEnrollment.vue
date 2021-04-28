@@ -144,7 +144,7 @@
               </v-btn>
               <v-btn
                 color="error"
-                @click="opendeclineModal(row.item.id, row.index)"
+                @click="opendeclineModal(row.item.id,row.index)"
                 icon
                 x-large
               >
@@ -232,19 +232,10 @@
 <script>
 // import { EventBus } from "../../bus/bus.js";
 export default {
-  props: {
-    // students: {
-    //   type: Array,
-    //   required: true,
-    // },
-    // search: {
-    //   type: String,
-    //   default: "",
-    // },
-  },
 
   data() {
     return {
+      isDataLoaded:false,
       declineModal: false,
       declineId: null,
       declineIndex: null,
@@ -252,9 +243,8 @@ export default {
       remarks: null,
       dialog: false,
       loading: false,
-      isDataLoaded: false,
       imageUrl: "https://mnhs-enrollment-system.herokuapp.com/images/",
-      // imageUrl: "http://localhost:8000/images/",
+      //imageUrl: "http://localhost:8000/images/",
       item: null,
       id: null,
       index: null,
@@ -267,7 +257,6 @@ export default {
         { text: "Action", value: "action" },
       ],
       students: [],
-      // filterStudents: [],
       sections: [],
       section: null,
     };
@@ -364,37 +353,10 @@ export default {
       }
     },
 
-    //Sending a sms notification to a user's cellphone number
-    // sendSms(studentId) {
-    //   this.$axios
-    //     .get("send-sms/" + studentId)
-    //     .then((response) => {
-    //       if (response.data.success == "success") {
-    //         this.$swal.fire({
-    //           icon: "info",
-    //           title: "Success",
-    //           text: "Successfully send a notification.",
-    //         });
-    //       } else {
-    //         this.$swal.fire({
-    //           icon: "error",
-    //           title: "Failed",
-    //           text: "Not successfully send a notification.",
-    //         });
-    //       }
-    //     })
-    //     .catch((error) => {
-    //       console.log(error);
-    //       this.$swal.fire({
-    //         icon: "error",
-    //         title: "Failed",
-    //         text: "Not successfully send a notification.",
-    //       });
-    //     });
-    // },
 
     //Method For Opending the Modal OF REASON FOR DECLINING
     opendeclineModal(id, index) {
+      console.log(id+index);
       this.declineId = id;
       this.declineIndex = index;
       this.declineModal = true;
@@ -413,9 +375,9 @@ export default {
               title: "Success",
               text: "Enrollment declined.",
             });
-            this.pendingStudents.splice(this.declineIndex, 1);
+            this.students.splice(this.declineIndex, 1);
             this.$refs.form.reset();
-            this.declineModal = false;
+            this.declineModal=false;
           })
           .catch((error) => {
             console.log(error);
@@ -423,37 +385,6 @@ export default {
       }
     },
 
-    //   filterByNames(data) {
-    //     // console.log(this.search);
-    //     this.students.filter((val) => {
-    //       if (this.gradelevel == null && data != null) {
-    //         // console.log("here");
-    //         return val.fullname
-    //           .concat(" ", val.grade_level)
-    //           .toLowerCase()
-    //           .includes(data.toLowerCase());
-    //       } else if (this.gradelevel == "All" && data != null) {
-    //         return val.fullname
-    //           .concat(" ", val.grade_level)
-    //           .toLowerCase()
-    //           .includes(data.toLowerCase());
-    //       } else {
-    //         if (val.grade_level == this.gradelevel) {
-    //           if (data != null) {
-    //             return val.fullname
-    //               .concat(" ", val.grade_level)
-    //               .toLowerCase()
-    //               .includes(data.toLowerCase());
-    //           } else {
-    //             return val.fullname
-    //               .concat(" ", val.grade_level)
-    //               .toLowerCase()
-    //               .includes(val.grade_level.toLowerCase());
-    //           }
-    //         }
-    //       }
-    //     });
-    //   },
   },
 
   created() {

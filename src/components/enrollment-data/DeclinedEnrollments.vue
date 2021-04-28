@@ -437,11 +437,6 @@
 </template>
 <script>
 export default {
-  props: {
-    declinedEnrollments:{
-      type: Array
-    },
-  },
   data() {
     return {
       headers: [
@@ -465,42 +460,42 @@ export default {
       isDataLoaded: false,
       section: "",
       search: "",
-      //declinedEnrollment:this.declinedEnrollments,
+      declinedEnrollments: [],
       sections: [],
     };
   },
 
-  // created() {
-  //   let adminLevel = null;
-  //   let userData = this.$user;
-  //   console.log(userData);
-  //   if (userData.user_type != "admin") {
-  //     let temp = this.$user.username.split("_");
-  //     adminLevel = temp[1];
-  //     console.log(adminLevel);
-  //   }
-  //   let declined = this.$store.getters.allDeclinedEnrollments;
-  //   this.$store
-  //     .dispatch("allDeclinedEnrollments", adminLevel)
-  //     .then((response) => {
-  //       this.isDataLoaded = true;
-  //       declined = response;
-  //       let declinedEnrollmentData = [];
-  //       for (var index in declined) {
-  //         let element = declined[index];
-  //         element["fullname"] = element["firstname"].concat(
-  //           " ",
-  //           element["lastname"]
-  //         );
-  //         declinedEnrollmentData.push(element);
-  //       }
-  //       this.declinedEnrollments = declinedEnrollmentData;
-  //     });
-  //},
+  created() {
+    let adminLevel = null;
+    let userData = this.$user;
+    console.log(userData);
+    if (userData.user_type != "admin") {
+      let temp = this.$user.username.split("_");
+      adminLevel = temp[1];
+      console.log(adminLevel);
+    }
+    let declined = this.$store.getters.allDeclinedEnrollments;
+    this.$store
+      .dispatch("allDeclinedEnrollments", adminLevel)
+      .then((response) => {
+        this.isDataLoaded = true;
+        declined = response;
+        let declinedEnrollmentData = [];
+        for (var index in declined) {
+          let element = declined[index];
+          element["index"]=index;
+          element["remarks"]=element['remark'];
+          element["fullname"] = element["firstname"].concat(" ",element["lastname"]);
+          declinedEnrollmentData.push(element);
+        }
+        this.declinedEnrollments = declinedEnrollmentData;
+      });
+  },
   methods: {
     filterSections(gradelevel, id, index) {
-      console.log("Gradelevel:" + gradelevel);
-      console.log("filterSections:" + id + index);
+      console.log("filterSectionsGradelvel:" + gradelevel);
+      console.log("filterSectionsGradeId:" + id);
+      console.log("filterSectionsGradeIndex:" + index);
       this.id = id;
       this.index = index;
       // console.log(index);
@@ -555,6 +550,9 @@ export default {
     },
 
     updateStudent(formdata, gradelevel, id, index) {
+      console.log("updateStudentGradelvel:" + gradelevel);
+      console.log("updateStudentGradeId:" + id);
+      console.log("updateStudentGradeIndex:" + index);
       if (this.$refs.studentDetails.validate()) {
         // console.log("id:" + formdata.id);
         this.$axios
