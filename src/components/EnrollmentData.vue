@@ -54,7 +54,6 @@
           <declined-enrollments
             :declinedEnrollments="declinedEnrollments"
             :search="searchDeclined"
-            :isDataLoaded="pDataLoaded"
           >
           </declined-enrollments>
         </v-tab-item>
@@ -104,12 +103,15 @@ export default {
     index: null,
     students: [],
     filterStudents: [],
+    declinedEnrollments: [],
+    filterDeclined: [],
     grade_level: ["7", "8", "9", "10", "11", "12", "All"],
     sections: [],
   }),
 
   created() {
    // console.log(this.declinedEnrollments);
+   
     this.initializeData();
     if (!this.students || !this.sections) {
       setTimeout(() => {
@@ -121,6 +123,7 @@ export default {
   methods: {
     initializeData() {
       let pendingEnrollment = this.$store.getters.allPendingEnrollments;
+      console.log(this.pendingEnrollment);
       this.$store.dispatch("allPendingEnrollments").then((res) => {
         this.dataLoaded = true;
         pendingEnrollment=res;
@@ -154,9 +157,7 @@ export default {
           declinedEnrollmentData["enrollment_id"] = element["id"];
           declinedEnrollmentData["card_image"] = element["card_image"];
           declinedEnrollmentData['remarks']=element['remark'];
-          declinedEnrollmentData["fullname"] = declinedStudentData[
-            "firstname"
-          ].concat(" ", declinedStudentData["lastname"]);
+          declinedEnrollmentData["fullname"] = declinedStudentData["firstname"].concat(" ", declinedStudentData["lastname"]);
           for (const data in declinedStudentData){
             const element1 = declinedStudentData[data];
             declinedEnrollmentData[data] = element1;

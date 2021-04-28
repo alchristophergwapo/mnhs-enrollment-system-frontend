@@ -360,15 +360,15 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="12" md="12" lg="12">
-               <v-textarea
-               outlined
-              name="remarks"
-              label="Reason For Declining"
-              placeholder="Write the reason for declining here......."
-              v-model="studentInfo.remarks"
-              readonly
-            ></v-textarea>
-                </v-col>    
+                  <v-textarea
+                    outlined
+                    name="remarks"
+                    label="Reason For Declining"
+                    placeholder="Write the reason for declining here......."
+                    v-model="studentInfo.remarks"
+                    readonly
+                  ></v-textarea>
+                </v-col>
               </v-row>
             </v-card-text>
             <v-card-actions>
@@ -379,7 +379,14 @@
                   block
                   color="blue darken-1"
                   @click="
-                    readonly ? (readonly =false) : updateStudent(studentInfo,studentInfo.grade_level,studentInfo.id,studentInfo.index)
+                    readonly
+                      ? (readonly = false)
+                      : updateStudent(
+                          studentInfo,
+                          studentInfo.grade_level,
+                          studentInfo.id,
+                          studentInfo.index
+                        )
                   "
                 >
                   {{ btnTexts }}
@@ -417,7 +424,7 @@
             <v-spacer></v-spacer>
             <v-btn
               color="blue darken-1"
-              @click="approveEnrollment(id,index)"
+              @click="approveEnrollment(id, index)"
               :loading="loading"
             >
               Approve
@@ -430,6 +437,11 @@
 </template>
 <script>
 export default {
+  props: {
+    declinedEnrollments:{
+      type: Array
+    },
+  },
   data() {
     return {
       headers: [
@@ -450,16 +462,45 @@ export default {
       loading: false,
       readonly: true,
       studentInfo: {},
+      isDataLoaded: false,
       section: "",
       search: "",
-      declinedEnrollments: [],
+      //declinedEnrollment:this.declinedEnrollments,
       sections: [],
     };
   },
+
+  // created() {
+  //   let adminLevel = null;
+  //   let userData = this.$user;
+  //   console.log(userData);
+  //   if (userData.user_type != "admin") {
+  //     let temp = this.$user.username.split("_");
+  //     adminLevel = temp[1];
+  //     console.log(adminLevel);
+  //   }
+  //   let declined = this.$store.getters.allDeclinedEnrollments;
+  //   this.$store
+  //     .dispatch("allDeclinedEnrollments", adminLevel)
+  //     .then((response) => {
+  //       this.isDataLoaded = true;
+  //       declined = response;
+  //       let declinedEnrollmentData = [];
+  //       for (var index in declined) {
+  //         let element = declined[index];
+  //         element["fullname"] = element["firstname"].concat(
+  //           " ",
+  //           element["lastname"]
+  //         );
+  //         declinedEnrollmentData.push(element);
+  //       }
+  //       this.declinedEnrollments = declinedEnrollmentData;
+  //     });
+  //},
   methods: {
     filterSections(gradelevel, id, index) {
-      console.log("Gradelevel:"+gradelevel);
-      console.log("filterSections:"+id+index);
+      console.log("Gradelevel:" + gradelevel);
+      console.log("filterSections:" + id + index);
       this.id = id;
       this.index = index;
       // console.log(index);
@@ -497,7 +538,7 @@ export default {
       this.studentInfo.IP_community = null;
     },
     //Method For Updating The Student Account
-    viewDetails(student){
+    viewDetails(student) {
       let studentInfo = student;
       const endyear =
         parseInt(
@@ -513,9 +554,9 @@ export default {
       this.studentDialog = true;
     },
 
-    updateStudent(formdata,gradelevel,id,index) {
+    updateStudent(formdata, gradelevel, id, index) {
       if (this.$refs.studentDetails.validate()) {
-       // console.log("id:" + formdata.id);
+        // console.log("id:" + formdata.id);
         this.$axios
           .post(`updateStudent/` + formdata.id, formdata)
           .then((response) => {
@@ -527,8 +568,8 @@ export default {
               });
               this.studentDialog = false;
               this.$refs.studentDetails.resetValidation();
-              this.filterSections(gradelevel,id,index);
-              this.readonly=true;
+              this.filterSections(gradelevel, id, index);
+              this.readonly = true;
             } else {
               this.$swal.fire({
                 icon: "error",
@@ -541,12 +582,11 @@ export default {
             console.log(error);
           });
       }
-
     },
-    
+
     //Method For Approving the enrollment
-    approveEnrollment(id,index) {
-      console.log("section:"+this.section);
+    approveEnrollment(id, index) {
+      console.log("section:" + this.section);
       this.loading = true;
       if (this.section) {
         this.$axios
@@ -557,7 +597,7 @@ export default {
             this.$swal.fire({
               icon: "success",
               title: "Success",
-              text:response.data.message,
+              text: response.data.message,
             });
             this.dialog = false;
             this.loading = false;
@@ -590,8 +630,7 @@ export default {
 
       if (this.readonly) {
         texts = "update";
-      }
-      else {
+      } else {
         texts = "save";
       }
       return texts;

@@ -216,7 +216,7 @@
                 (remarks) => !!remarks || 'Reason for declining is required',
               ]"
             ></v-textarea>
-              <!-- <v-divider></v-divider> -->
+            <!-- <v-divider></v-divider> -->
             <v-card-actions class="justify-end" id="textarea">
               <v-btn :disabled="!valid" color="blue" @click="declineEnrollment"
                 >done</v-btn
@@ -233,6 +233,10 @@
 // import { EventBus } from "../../bus/bus.js";
 export default {
   props: {
+    students: {
+      type: Array,
+      required: true,
+    },
     // search: {
     //   type: String,
     //   default: "",
@@ -248,8 +252,9 @@ export default {
       remarks: null,
       dialog: false,
       loading: false,
-      //imageUrl: "https://mnhs-enrollment-system.herokuapp.com/images/",
-      imageUrl: "http://localhost:8000/images/",
+      isDataLoaded: false,
+      imageUrl: "https://mnhs-enrollment-system.herokuapp.com/images/",
+      // imageUrl: "http://localhost:8000/images/",
       item: null,
       id: null,
       index: null,
@@ -261,8 +266,8 @@ export default {
         { text: "Details", value: "details" },
         { text: "Action", value: "action" },
       ],
-      students: [],
-      filterStudents: [],
+      // students: [],
+      // filterStudents: [],
       sections: [],
       section: null,
     };
@@ -451,53 +456,57 @@ export default {
     //   },
   },
 
+  // created() {
+  //   let adminLevel = null;
+  //   let userData = this.$user;
+  //   console.log(userData);
+  //   if (userData.user_type != "admin") {
+  //     let temp = this.$user.username.split("_");
+  //     adminLevel = temp[1];
+  //     console.log(adminLevel);
+  //   }
+  //   this.section = this.sections[0];
+  //   let pendingEnrollment = this.$store.getters.allPendingEnrollments;
+  //   for (const key in pendingEnrollment) {
+  //     if (pendingEnrollment.hasOwnProperty.call(pendingEnrollment, key)) {
+  //       const element = pendingEnrollment[key];
+  //       this.students.push(element);
+  //     }
+  //   }
+  //   this.filterStudents = this.students;
+  //   this.$store.dispatch("allPendingEnrollments", adminLevel).then((res) => {
+  //     this.isDataLoaded = true;
+
+  //     let pending = res;
+
+  //     for (var index in pending) {
+  //       let element = pending[index];
+  //       element["fullname"] = element["firstname"].concat(
+  //         " ",
+  //         element["lastname"]
+  //       );
+  //       this.students.push(element);
+  //     }
+  //   });
+  // },
+
   created() {
-    let adminLevel = null;
-    let userData = this.$user;
-    console.log(userData);
-    if (userData.user_type != "admin") {
-      let temp = this.$user.username.split("_");
-      adminLevel = temp[1];
-      console.log(adminLevel);
-    }
     this.section = this.sections[0];
-    let pendingEnrollment = this.$store.getters.allPendingEnrollments;
-    for (const key in pendingEnrollment) {
-      if (pendingEnrollment.hasOwnProperty.call(pendingEnrollment, key)) {
-        const element = pendingEnrollment[key];
-        this.students.push(element);
-      }
-    }
-    this.filterStudents = this.students;
-    this.$store.dispatch("allPendingEnrollments", adminLevel).then((res) => {
-      this.isDataLoaded = true;
-
-      let pending = res;
-
-      for (var index in pending) {
-        let element = pending[index];
-        element["fullname"] = element["firstname"].concat(
-          " ",
-          element["lastname"]
-        );
-        this.students.push(element);
-      }
-    });
   },
 };
 </script>
 
 <style scoped>
-#textarea{
-  margin-top:-4%;
+#textarea {
+  margin-top: -4%;
 }
 
 @media screen and (max-width: 767.98px) {
   .container {
     padding: 0px;
   }
- #textarea{
-   margin-top:-6%;
- }
+  #textarea {
+    margin-top: -6%;
+  }
 }
 </style>
