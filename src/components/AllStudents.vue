@@ -25,13 +25,13 @@
             outlined
           ></v-select>
           <v-spacer></v-spacer>
-         <v-text-field
-           class="search"
-           v-model="search"
+          <v-text-field
+            class="search"
+            v-model="search"
             append-icon="mdi-magnify"
             label="Search"
             outlined
-       ></v-text-field>
+          ></v-text-field>
           <!-- <v-select
             v-model="gradelevel"
             :items="grade_level"
@@ -95,7 +95,7 @@
                 <hr />
                 <v-card-title>
                   <v-spacer></v-spacer>
-                  <v-row>S.Y. {{ studentInfo.school_year}}</v-row>
+                  <v-row>S.Y. {{ studentInfo.school_year }}</v-row>
                 </v-card-title>
                 <br />
                 <v-card-text>
@@ -115,12 +115,18 @@
                         name="LRN"
                         :rules="[
                           (LRN) => !!LRN || 'LRN is required',
-                          (LRN) =>/^[0-9]+$/.test(LRN) == true || 'Only Number is  allowed!',
-                          (LRN) => String(LRN).length <= 12 || 'LRN cannot be greater than 12 characters',
-                          (LRN) => String(LRN).length == 12 || 'LRN must be 12 characters',
-                          ]"
+                          (LRN) =>
+                            /^[0-9]+$/.test(LRN) == true ||
+                            'Only Number is  allowed!',
+                          (LRN) =>
+                            String(LRN).length <= 12 ||
+                            'LRN cannot be greater than 12 characters',
+                          (LRN) =>
+                            String(LRN).length == 12 ||
+                            'LRN must be 12 characters',
+                        ]"
                         :counter="12"
-                        label="Learners Reference No. (LRN)"           
+                        label="Learners Reference No. (LRN)"
                         outlined
                         :readonly="readonly"
                         required
@@ -132,7 +138,9 @@
                         name="average"
                         :rules="[
                           (v) => !!v || 'Average is required',
-                          (v) =>/^[0-9]+$/.test(v) == true || 'Only Number is allowed!',
+                          (v) =>
+                            /^[0-9]+$/.test(v) == true ||
+                            'Only Number is allowed!',
                           (v) => v <= 100 || 'Maximum average is 100',
                         ]"
                         label="Average"
@@ -195,9 +203,11 @@
                         name="age"
                         :rules="[
                           (v) => !!v || 'Age is required',
-                          (v) =>/^[0-9]+$/.test(v) == true || 'Only Number is allowed!',
+                          (v) =>
+                            /^[0-9]+$/.test(v) == true ||
+                            'Only Number is allowed!',
                         ]"
-                        label="Age"                       
+                        label="Age"
                         outlined
                         :readonly="readonly"
                         required
@@ -301,9 +311,15 @@
                         name="contact"
                         :rules="[
                           (contact) => !!contact || 'Contact is required',
-                          (contact) =>/^[0-9]+$/.test(contact) == true || 'Only Number is  allowed!',
-                         (contact) =>String(contact).length <= 11 || 'Student Contact Number cannot be greater than 11 digits',
-                         (contact) => String(contact).length == 11 || 'Student Contact Number contact number must be 11 digits',
+                          (contact) =>
+                            /^[0-9]+$/.test(contact) == true ||
+                            'Only Number is  allowed!',
+                          (contact) =>
+                            String(contact).length <= 11 ||
+                            'Student Contact Number cannot be greater than 11 digits',
+                          (contact) =>
+                            String(contact).length == 11 ||
+                            'Student Contact Number contact number must be 11 digits',
                         ]"
                         label="Student Contact Number"
                         :counter="11"
@@ -376,12 +392,20 @@
                         v-model="studentInfo.parent_number"
                         name="contact"
                         :rules="[
-                          (contact) => !!contact || 'Parent/Guardian contact number is required.',
-                          (contact) =>/^[0-9]+$/.test(contact) == true || 'Only Number is  allowed!',
-                          (contact) =>String(contact).length <= 11 || 'Parent/Guardian cannot be greater than 11 digits',
-                          (contact) => String(contact).length == 11 || 'Parent/Guardian contact number must be 11 digits',
+                          (contact) =>
+                            !!contact ||
+                            'Parent/Guardian contact number is required.',
+                          (contact) =>
+                            /^[0-9]+$/.test(contact) == true ||
+                            'Only Number is  allowed!',
+                          (contact) =>
+                            String(contact).length <= 11 ||
+                            'Parent/Guardian cannot be greater than 11 digits',
+                          (contact) =>
+                            String(contact).length == 11 ||
+                            'Parent/Guardian contact number must be 11 digits',
                         ]"
-                        label="Parent/Guardian Contact Number"                   
+                        label="Parent/Guardian Contact Number"
                         outlined
                         :readonly="readonly"
                         required
@@ -449,7 +473,7 @@ export default {
     headers: [
       { text: "GradeLevel", value: "grade_level" },
       { text: "Section", value: "section_name" },
-      { text: "Student Name", value:'fullname'},
+      { text: "Student Name", value: "fullname" },
       { text: "LRN", value: "LRN" },
       { text: "Address", value: "address" },
       { text: "Edit", value: "Edit" },
@@ -461,27 +485,25 @@ export default {
     filteredSections: [],
   }),
   created() {
-    this.students = this.$store.getters.allStudents;
-    this.filteredStudents = this.$store.getters.allStudents;
     let adminLevel = null;
-      if (this.$user.user_type == "teacher_admin") {
-        let temp = this.$user.username.split("_");
-        adminLevel = temp[1];
-      }
+    if (this.$user.user_type == "teacher_admin") {
+      let temp = this.$user.username.split("_");
+      adminLevel = temp[1];
+    }
     this.$store
       .dispatch("allStudents", adminLevel)
       .then((response) => {
-         let studs=response;
+        let studs = response;
+        console.log(studs);
         for (var index in studs) {
-          let element =studs[index];
-          let enrollmentData ={};
-          enrollmentData["fullname"] = element["firstname"].concat(" ",element["lastname"] );
-          for (const data in element) {
-            const element1 =element[data];
-            enrollmentData[data]=element1;
-          }
-           this.students.push(enrollmentData);
-           this.filteredStudents.push(enrollmentData);
+          let element = studs[index];
+          element["fullname"] = element["firstname"].concat(
+            " ",
+            element["lastname"]
+          );
+
+          this.students.push(element);
+          this.filteredStudents.push(element);
         }
       })
       .catch((error) => {
@@ -518,14 +540,14 @@ export default {
       } else {
         this.students = this.filteredStudents.filter((val) => {
           return (
-            val.created_at.substring(0, val.created_at.indexOf("-")) ==
-              year || val.created_at.includes(year)
+            val.created_at.substring(0, val.created_at.indexOf("-")) == year ||
+            val.created_at.includes(year)
           );
         });
         this.year = year;
       }
     },
-    
+
     //Method For Filtering By Grade Level
     // filterByGradeLevel(grade) {
     //   if (grade == "All") {
@@ -596,7 +618,8 @@ export default {
     //Open Or View Student Details
     editDetails(student) {
       let studentInfo = student;
-      studentInfo["school_year"] = student.start_school_year + " - " + student.end_school_year;
+      studentInfo["school_year"] =
+        student.start_school_year + " - " + student.end_school_year;
       this.studentInfo = studentInfo;
       this.studentDialog = true;
     },
@@ -610,7 +633,7 @@ export default {
       if (this.$refs.studentDetails.validate()) {
         console.log("id:" + formdata.id);
         this.$axios
-          .post(`updateStudent/` + formdata.id,formdata)
+          .post(`updateStudent/` + formdata.id, formdata)
           .then((response) => {
             if (response.data.updated) {
               this.$swal.fire({
@@ -620,9 +643,9 @@ export default {
               });
               this.studentDialog = false;
               this.$refs.studentDetails.resetValidation();
-              this.readonly=true;
+              this.readonly = true;
             } else {
-               this.$swal.fire({
+              this.$swal.fire({
                 icon: "error",
                 title: "Failed",
                 text: "Student details is unsuccessfully updated!",
@@ -660,10 +683,7 @@ export default {
           .concat(
             "-",
             parseInt(
-              item.created_at.substring(
-                0,
-                item.created_at.indexOf("-")
-              )
+              item.created_at.substring(0, item.created_at.indexOf("-"))
             ) + 1
           ),
         GradeLevel: item.grade_level,
@@ -679,9 +699,7 @@ export default {
       let text = "update";
       if (this.readonly) {
         text = "update";
-      }
-      else {
-
+      } else {
         text = "save";
       }
       return text;
@@ -690,7 +708,7 @@ export default {
 };
 </script>
 <style scoped>
-.search{
-  margin-top:33px;
+.search {
+  margin-top: 33px;
 }
 </style>

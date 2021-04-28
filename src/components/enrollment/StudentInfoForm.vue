@@ -13,7 +13,6 @@
     <v-col cols="12" xs="6" sm="4" md="4" lg="4">
       <v-text-field
         v-model="studentInfo.LRN"
-        @keyup="gradeLevel(studentInfo.LRN)"
         name="LRN"
         :rules="[
           (LRN) => !!LRN || 'LRN is required',
@@ -215,7 +214,6 @@
 <script>
 export default {
   data: () => ({
-     gradelevel:7,
      year: new Date().getFullYear(),
      studentInfo:{
       PSA: "",
