@@ -57,7 +57,7 @@
           v-if="isTransfereeOrBalikAral"
         >
           <v-container>
-            <balik-or-transfer 
+            <balik-or-transfer
               ref="balikAralorTransferInfoData"
             ></balik-or-transfer>
           </v-container>
@@ -98,6 +98,7 @@
                       isSeniorHigh == true ? grade_levels[1] : grade_levels[0]
                     "
                     :rules="[(v) => !!v || 'Required']"
+                    :readonly="passEnrolled"
                     label="Select Grade Level"
                     outlined
                     required
@@ -145,8 +146,9 @@ export default {
       transfereeValid: false,
       seniorHighValid: false,
       isSeniorHigh: false,
+      passEnrolled: false,
       isNotSeniorHigh: true,
-      isTransfereeOrBalikAral:false,
+      isTransfereeOrBalikAral: false,
       isNotTransfereeOrBalikAral: true,
       tracks: ["ACADEMIC TRACK", "TECHNICAL-VOCATIONAL LIVELIHOOD (TLV) TRACK"],
       strands: [
@@ -263,8 +265,17 @@ export default {
             this.submitting = false;
             if (error.response.data.currentEnrollment) {
               this.$swal.fire({
-                icon: "error",
-                title: "Error",
+                icon: "info",
+                title: "Ooops....",
+                text: error.response.data.error,
+              });
+            } if(error.response.data.passEnrollment) {
+              this.passEnrolled = true;
+              this.grade_level =
+                error.response.data.passEnrollment.enrollment.grade_level + 1;
+              this.$swal.fire({
+                icon: "info",
+                title: "Ooops....",
                 text: error.response.data.error,
               });
             }

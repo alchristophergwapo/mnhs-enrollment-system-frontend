@@ -129,9 +129,9 @@ export default {
   methods: {
     //Method For Adding A Section In Junior High School Category
     async addSection(grades) {
+      this.loading = true;
       if (this.$refs.sectionForm.validate()) {
         if (this.edit == false) {
-          this.loading = true;
           // console.log(grades.split(" ")[2]);
           console.log(this.sectionData);
           this.$axios
@@ -141,7 +141,7 @@ export default {
               capacity: this.sectionData.capacity,
               total_students: 0,
               teacher: this.sectionData.teacher,
-              teacher_id: this.sectionData.teacher_id
+              teacher_id: this.sectionData.teacher_id,
             })
             .then((response) => {
               if (response.data.message) {
@@ -177,6 +177,8 @@ export default {
             });
         } else {
           //console.log("Teacher:"+this.Section.teacher);
+
+          this.loading = true;
           this.$axios
             .post("updateSection/" + this.sectionData.id, {
               name: this.sectionData.section,
@@ -185,6 +187,7 @@ export default {
             })
             .then((response) => {
               if (response.data.message) {
+                this.loading = false;
                 this.showResponse("Success", response.data.message, "success");
                 EventBus.$emit("displayAllsection", {
                   data1: grades,
@@ -192,6 +195,7 @@ export default {
                 this.clear();
                 this.close();
               } else {
+                this.loading = false;
                 this.$swal
                   .fire({
                     title:
@@ -208,6 +212,7 @@ export default {
                   })
                   .then((result) => {
                     if (result.isConfirmed) {
+                      this.loading = true;
                       this.$axios
                         .post("updateSection/" + "update", {
                           updateId: this.sectionData.id,
@@ -216,7 +221,7 @@ export default {
                           teacher_id: this.sectionData.teacher_id,
                         })
                         .then((response) => {
-                          console.log(response);
+                          this.loading = false;
                           if (response.data.newTeacher) {
                             this.showResponse(
                               "Updated!",
@@ -238,8 +243,8 @@ export default {
                             this.close();
                           }
                         })
-                        .catch((error) => {
-                          console.log(error);
+                        .catch(() => {
+                          this.loading = false;
                           this.clear();
                           this.close();
                         });

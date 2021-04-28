@@ -408,13 +408,13 @@ export default {
       console.log(adminLevel);
     }
     this.section = this.sections[0];
-    let pendingEnrollment = this.$store.getters.allPendingEnrollments;
-    for (const key in pendingEnrollment) {
-      if (pendingEnrollment.hasOwnProperty.call(pendingEnrollment, key)) {
-        const element = pendingEnrollment[key];
-        this.students.push(element);
-      }
-    }
+    // let pendingEnrollment = this.$store.getters.allPendingEnrollments;
+    // for (const key in pendingEnrollment) {
+    //   if (pendingEnrollment.hasOwnProperty.call(pendingEnrollment, key)) {
+    //     const element = pendingEnrollment[key];
+    //     this.students.push(element);
+    //   }
+    // }
     this.filterStudents = this.students;
     this.$store.dispatch("allPendingEnrollments", adminLevel).then((res) => {
       this.isDataLoaded = true;

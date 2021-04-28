@@ -201,21 +201,20 @@ export default {
       this.totalTeachers = res.teacher.length;
     });
 
-    this.$axios.get("pendingEnrollments/").then((res) => {
+    this.$axios.get("pendingEnrollments/"+null).then((res) => {
       this.totalPending = res.data.pendingEnrollment.length;
     });
 
     this.$store.dispatch("allDeclinedEnrollments").then((res) => {
       this.totalDeclined = res.length;
     });
-    console.log(this.enrollmentChart);
   },
   mounted: () => {},
   methods: {
     initializeData() {
       this.enrollmentChart.data.series = [[0], [0]];
 
-      this.$store.dispatch("allStudents").then((res) => {
+      this.$store.dispatch("allStudents", null).then((res) => {
         let enrollments = res;
         this.totalEnrolled = enrollments.length;
         for (let index = enrollments.length - 1; index >= 0; index--) {

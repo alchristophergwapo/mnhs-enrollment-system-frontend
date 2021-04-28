@@ -459,10 +459,14 @@ export default {
   }),
   created() {
     this.students = this.$store.getters.allStudents;
-    console.log(this.students);
     this.filteredStudents = this.$store.getters.allStudents;
+    let adminLevel = null;
+      if (this.$user.user_type == "teacher_admin") {
+        let temp = this.$user.username.split("_");
+        adminLevel = temp[1];
+      }
     this.$store
-      .dispatch("allStudents")
+      .dispatch("allStudents", adminLevel)
       .then((response) => {
         this.students = response;
         this.filteredStudents = response;

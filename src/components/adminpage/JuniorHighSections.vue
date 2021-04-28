@@ -112,7 +112,7 @@
             md="6"
             lg="4"
           >
-            <sections-card
+            <SectionsCard
               :section="dta.name"
               :capacity="dta.capacity"
               :total_students="dta.total_students"
@@ -128,11 +128,8 @@
                   edit section
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
-                <!-- 
-                                <v-spacer></v-spacer>
-                                 -->
               </template>
-            </sections-card>
+            </SectionsCard>
           </v-col>
           <v-card-title class="text-center justify-center py-6">
             <h1
@@ -147,9 +144,6 @@
     </div>
     <v-container>
       <v-row justify="center" class="add_btn">
-        <v-overlay :value="overlay">
-          <v-progress-circular indeterminate size="64"></v-progress-circular>
-        </v-overlay>
         <v-dialog
           v-model="actionDialog"
           persistent
@@ -175,11 +169,10 @@
           hide-overlay
           transition="dialog-bottom-transition"
         >
-          <section-schedules
+          <SectionSchedules
             :gradelevel="Number(addOrEdit.name.split(' ')[2])"
-            :schedules="schedules"
             :section_id="sectionId"
-          ></section-schedules>
+          ></SectionSchedules>
         </v-dialog>
       </v-row>
     </v-container>
@@ -230,7 +223,6 @@ export default {
       },
       allsections: [],
       gradelevelSubjects: [],
-      schedules: [],
       gradelevel: null,
       addOrEdit: { name: "Add Grade 7" },
     };
@@ -292,7 +284,6 @@ export default {
         .get("allSections")
         .then((response) => {
           this.allsections = response.data.sections;
-          console.log(this.allsections);
           this.junior_high.forEach((junior) => {
             if (junior.text.split(" ")[1] == gradelevel) {
               junior.content = this.allsections.filter(function (val) {
@@ -307,41 +298,8 @@ export default {
         });
     },
     viewSchedules(sectionId) {
-      this.overlay = true;
-      this.schedules = [];
       this.sectionId = sectionId;
-      this.$axios.get(`classSchedules/${sectionId}`).then((response) => {
-        this.viewScheds = true;
-        this.overlay = false;
-        const schedulesOnDB = response.data.schedules;
-        // console.log(schedulesOnDB);
-
-        let count = 0;
-        let friday = false;
-        for (const index in schedulesOnDB) {
-          if (schedulesOnDB.hasOwnProperty.call(schedulesOnDB, index)) {
-            const element = schedulesOnDB[index];
-            this.sched.Time = `${element.start_time}-${element.end_time}`;
-
-            this.sched[element.day] = element;
-            if (element.day == "Friday") {
-              friday = true;
-            }
-            count += 1;
-          }
-          if (count == 5 && friday) {
-            this.schedules.push(this.sched);
-            this.sched = {
-              Time: null,
-              Monday: null,
-              Tuesday: null,
-              Wednesday: null,
-              Thursday: null,
-              Friday: null,
-            };
-          }
-        }
-      });
+      this.viewScheds= true;
     },
     selected(item) {
       this.addOrEdit.name = "Add " + item;

@@ -29,7 +29,7 @@
     <v-progress-linear
       :value="(total_students / capacity) * 100"
       height="25"
-      :color="progress_color"
+      :color="total_students === capacity ? 'red darken-3' : progress_color"
     >
       <strong>
         {{ total_students }} Student(s) Enrolled

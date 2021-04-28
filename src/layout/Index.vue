@@ -276,7 +276,6 @@ export default {
       this.$axios
         .get(`mark-all-read/${this.user_details.id}`)
         .then((response) => {
-          console.log(response);
           this.notifications = 0;
           this.setUserData(response.data);
         });
@@ -294,7 +293,6 @@ export default {
     if (this.$user) {
       let temp = this.$user.username.split("");
       adminLevel = temp[temp.length - 1];
-      console.log(adminLevel < 11);
       if (adminLevel < 11) {
         this.juniorHighAdmin = true;
       } else {
@@ -303,10 +301,8 @@ export default {
     } else {
       window.location.reload();
     }
-    console.log(this.juniorHighAdmin);
     let storedInfo = localStorage.getItem("user");
     let userData = JSON.parse(storedInfo);
-    console.log(userData);
     if (userData.user.user_type != "student") {
       this.user_details = userData.user;
     } else {
@@ -321,9 +317,7 @@ export default {
   mounted() {
     if (this.user_details.user_type == "admin") {
       var channel = this.$pusher.subscribe("student-enroll");
-      // console.log(channel);
       channel.bind("new-enrollment", (eventData) => {
-        console.log(eventData);
         this.notifications += 1;
         this.allNotifications.push(eventData.notification);
         let enrollmentData = eventData.student;
@@ -351,7 +345,6 @@ export default {
         );
       });
     }
-    // console.log(this.allNotifications);
   },
   computed: {
     unreadNotification() {

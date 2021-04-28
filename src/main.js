@@ -22,9 +22,9 @@ Vue.config.productionTip = false;
 Vue.prototype.$axios = Axios;
 var user = null;
 
-Axios.get("/auth/init").then((response) => {
-  console.log(response);
-});
+// Axios.get("/auth/init").then((response) => {
+//   console.log(response);
+// });
 window.Vue = Vue;
 Vue.use(require("vue-chartist"), {
   messageNoData: "You have not enough data",
@@ -90,21 +90,15 @@ new Vue({
         }
       }
 
-      let adminLevel = null;
-      if (user.user_type == "teacher_admin") {
-        let temp = user.username.split("_");
-        adminLevel = temp[1];
-      }
-
       this.$store.dispatch("allSections");
 
       this.$store.dispatch("allTeacher");
 
-      this.$store.dispatch("allStudents");
+      this.$store.dispatch("allStudents", null);
 
-      this.$store.dispatch("allPendingEnrollments", adminLevel);
+      this.$store.dispatch("allPendingEnrollments", null);
 
-      this.$store.dispatch("allDeclinedEnrollments", adminLevel);
+      this.$store.dispatch("allDeclinedEnrollments", null);
     },
   },
   render: (h) => h(App),
