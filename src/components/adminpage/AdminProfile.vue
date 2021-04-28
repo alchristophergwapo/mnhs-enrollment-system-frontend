@@ -116,7 +116,7 @@ export default {
   props: {},
   data() {
     return {
-      username: "admin",
+      username: null,
       currentPass: null,
       newpassword: null,
       confirmPass: null,
@@ -132,7 +132,7 @@ export default {
     //Get Admin Profile
     const userInfo = localStorage.getItem("user");
     this.userData = JSON.parse(userInfo);
-    if (this.userData.user.user_type == "admin") {
+    if (this.userData.user.user_type != "student") {
       this.username = this.userData.user.username;
     }
   },

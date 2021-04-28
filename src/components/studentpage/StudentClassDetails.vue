@@ -50,6 +50,5 @@ export default {
       section: this.section_name,
     };
   },
- 
 };
 </script>

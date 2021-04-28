@@ -20,7 +20,8 @@
       <template v-slot:item="row">
         <tr>
           <td>{{ row.item.grade_level }}</td>
-          <td>{{ row.item.firstname }} {{ row.item.lastname }}</td>
+          <td>{{ row.item.fullname }}</td>
+          <td>{{ row.item.average }}</td>
           <td>
             <v-btn text @click="viewDetails(row.item)">View Details</v-btn>
           </td>
@@ -429,17 +430,6 @@
 </template>
 <script>
 export default {
-  props: {
-    declinedEnrollments: {
-      type: Array,
-      required: true,
-    },
-    isDataLoaded: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-  },
   data() {
     return {
       headers: [
@@ -450,6 +440,7 @@ export default {
           value: "grade_level",
         },
         { text: "Student Name", value: "fullname" },
+        { text: "Average", value: "average" },
         { text: "Details", value: "details" },
       ],
       id: null,
@@ -461,10 +452,10 @@ export default {
       studentInfo: {},
       section: "",
       search: "",
+      declinedEnrollments: [],
       sections: [],
     };
   },
-
   methods: {
     filterSections(gradelevel, id, index) {
       console.log("Gradelevel:"+gradelevel);

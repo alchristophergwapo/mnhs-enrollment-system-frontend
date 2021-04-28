@@ -11,7 +11,7 @@
 
       <v-spacer></v-spacer>
 
-      <div class="notif" v-if="user_details.user_type == 'admin'">
+      <div class="notif" v-if="user_details.user_type != 'student'">
         <v-btn
           @click="markAsRead()"
           color="accent"
@@ -61,6 +61,8 @@
       app
       :permanent="sidebarMenu"
       :mini-variant.sync="mini"
+      :expand-on-hover="mini"
+      width="280"
     >
       <v-list-item class="px-2" style="background: #006a4e">
         <v-list-item-avatar size="50">
@@ -75,14 +77,14 @@
       <v-list>
         <template v-for="item in items">
           <v-list-item
-            v-if="!item.children"
+            v-if="!item.admin"
             :key="item.text"
             @click="currentSelection = item.text"
             class="nav-link"
             :to="item.to"
             exact
           >
-            <v-list-item-action>
+            <v-list-item-action class="nav-icon">
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-action>
             <v-list-item-content class="nav-def">
@@ -92,14 +94,16 @@
             </v-list-item-content>
           </v-list-item>
           <v-list-group
-            v-if="item.children"
+            v-if="item.children && item.admin"
             :key="item.text"
             v-model="item.model"
-            :prepend-icon="item.icon"
-            class="nav-link"
+            class="nav-link menu-link"
           >
             <template v-slot:activator>
               <v-list-item class="activator-text">
+                <v-list-item-action class="nav-icon">
+                  <v-icon>{{ item.icon }}</v-icon>
+                </v-list-item-action>
                 <v-list-item-content>
                   <v-list-item-title>
                     {{ item.text }}
@@ -107,28 +111,59 @@
                 </v-list-item-content>
               </v-list-item> </template
             ><br />
-            <v-list-item
-              v-for="(child, i) in item.children"
-              :key="i"
-              @click="
-                item.model = false;
-                currentSelection = child.text;
-              "
-              :class="[
-                currentSelection == child.text ? 'grey' : '',
-                'nav-link',
-              ]"
-              :to="child.to"
-            >
-              <!-- <v-list-item-content class="nav-def"> -->
-              <v-list-item-title>
-                {{ child.text }}
-              </v-list-item-title>
-              <v-list-item-icon v-if="child.icon">
-                <v-icon>{{ child.icon }}</v-icon>
-              </v-list-item-icon>
-              <!-- </v-list-item-content> -->
-            </v-list-item>
+
+            <div v-for="(child, i) in item.children" :key="i">
+              <v-list-item
+                v-if="!child.subChildren"
+                @click="
+                  item.model = false;
+                  currentSelection = child.text;
+                "
+                :class="[
+                  currentSelection == child.text ? 'grey' : '',
+                  'nav-link',
+                ]"
+                :to="child.to"
+              >
+                <v-list-item-content>
+                  <v-list-item-title>
+                    {{ child.text }}
+                  </v-list-item-title>
+                  <v-list-item-icon v-if="child.icon" class="child-icon">
+                    <v-icon>{{ child.icon }}</v-icon>
+                  </v-list-item-icon>
+                </v-list-item-content>
+              </v-list-item>
+              <v-list-group v-else v-model="child.model" no-action sub-group>
+                <template v-slot:activator>
+                  <v-list-item-content>
+                    <v-list-item-title>{{ child.text }}</v-list-item-title>
+                  </v-list-item-content>
+                  <v-list-item-icon>
+                    <v-icon>{{ child.icon }}</v-icon>
+                  </v-list-item-icon>
+                </template>
+
+                <v-list-item
+                  v-for="(subChild, i) in child.subChildren"
+                  :key="i"
+                  @click="
+                    item.model = false;
+                    currentSelection = subChild.text;
+                  "
+                  :class="[
+                    currentSelection == subChild.text ? 'grey' : '',
+                    'sub-child-link',
+                  ]"
+                  :to="subChild.to"
+                >
+                  <v-list-item-title v-text="subChild.text"></v-list-item-title>
+                  <v-list-item-icon>
+                    <v-icon v-text="subChild.icon"></v-icon>
+                  </v-list-item-icon>
+                </v-list-item>
+              </v-list-group>
+            </div>
           </v-list-group>
         </template>
       </v-list>
@@ -157,6 +192,7 @@ export default {
       sidebarMenu: true,
       toggleMini: false,
       subMenu: false,
+      juniorHighAdmin: true,
       currentSelection: "",
       notifications: 0,
       items: [
@@ -169,19 +205,7 @@ export default {
         {
           icon: "mdi-account-group",
           text: "Students",
-          model: false,
-          children: [
-            {
-              icon: 'mdi-account',
-              text: 'Enrolled Students',
-              to: "/admin/all_students",
-            },
-            {
-              icon: 'mdi-account-settings',
-              text: 'Password Management',
-              to: '/admin/student-password-management'
-            }
-          ],
+          to: "/admin/all_students",
         },
         {
           icon: "mdi-account-tie",
@@ -190,10 +214,12 @@ export default {
         },
         {
           icon: "mdi-google-classroom",
-          append_icon: "mdi-chevron-down",
-          "icon-alt": "mdi-chevron-up",
           text: "Sections",
           model: false,
+          admin: this.$user ? this.$user.user_type == "admin" : true,
+          to: this.juniorHighAdmin
+            ? "/admin/sections/senior_high"
+            : "/admin/sections/junior_high",
           children: [
             {
               text: "Junior High",
@@ -204,6 +230,37 @@ export default {
               text: "Senior High",
               to: "/admin/sections/senior_high",
               icon: "mdi-home-outline",
+            },
+          ],
+        },
+        {
+          icon: "mdi-account-cog",
+          text: "Account Management",
+          model: false,
+          admin: this.$user ? this.$user.user_type == "admin" : true,
+          to: "/admin/student-password-management",
+          children: [
+            {
+              text: "Student",
+              model: false,
+              subChildren: [
+                {
+                  icon: "mdi-account-key",
+                  text: "Password Reset",
+                  to: "/admin/student-password-management",
+                },
+              ],
+            },
+            {
+              text: "Admin",
+              model: false,
+              subChildren: [
+                {
+                  icon: "mdi-account-plus",
+                  text: "Add Admin",
+                  to: "/admin/add-new-admin",
+                },
+              ],
             },
           ],
         },
@@ -233,19 +290,32 @@ export default {
     },
   },
   created() {
+    let adminLevel = null;
+    if (this.$user) {
+      let temp = this.$user.username.split("");
+      adminLevel = temp[temp.length - 1];
+      console.log(adminLevel < 11);
+      if (adminLevel < 11) {
+        this.juniorHighAdmin = true;
+      } else {
+        this.juniorHighAdmin = false;
+      }
+    } else {
+      window.location.reload();
+    }
+    console.log(this.juniorHighAdmin);
     let storedInfo = localStorage.getItem("user");
     let userData = JSON.parse(storedInfo);
-    if (userData.user.user_type == "admin") {
+    console.log(userData);
+    if (userData.user.user_type != "student") {
       this.user_details = userData.user;
     } else {
       this.user_details = userData.userInfo;
     }
 
     this.$axios.get(`unreadNotif/${this.user_details.id}`).then((res) => {
-      console.log(res);
       this.notifications = res.data.notifications.length;
       this.allNotifications = res.data.notifications;
-      console.log(this.notifications);
     });
   },
   mounted() {
@@ -279,13 +349,6 @@ export default {
           notification.options,
           notification.events
         );
-        // this.$notification.show(
-        //   "New Enrollment",
-        //   {
-        //     body: `${enrollmentData.firstname} ${enrollmentData.lastname} submitted an enrollment.`,
-        //   },
-        //   {}
-        // );
       });
     }
     // console.log(this.allNotifications);
@@ -308,6 +371,14 @@ export default {
 </script>
 
 <style>
+.v-list .v-list-group__header.v-list-item--active {
+  color: blue;
+  background-color: white;
+}
+
+.v-list .v-list-group__header.v-list-item--active .v-list-item__content {
+  color: blue;
+}
 .v-list .v-list-item--active {
   color: white;
   background-color: #5ca08e;
@@ -333,18 +404,38 @@ export default {
   padding-top: 5px;
 }
 
+.nav-icon {
+  margin-left: -10px !important;
+}
+
+.child-icon {
+  position: absolute;
+  right: 3px;
+  margin: auto;
+}
+
+.v-list-group--sub-group .v-list-group__header__prepend-icon {
+  margin-left: -15px;
+}
+
+.v-list-group--sub-group .sub-child-link {
+  margin-left: -50px;
+}
+
+.nav-link .v-list-item__icon {
+  margin-left: -10px !important;
+}
+.menu-link .v-list-group__header__append-icon {
+  position: absolute;
+  right: 0;
+}
+
 .activator-text {
   margin-left: -15px;
 }
 
 .v-list .v-list-item--active .v-list-item__content {
   color: blue;
-}
-
-.nav-def {
-  position: absolute;
-  left: 70px;
-  /* color: white; */
 }
 
 img.icon {
@@ -354,5 +445,12 @@ img.icon {
 
 .label {
   margin-right: 20px;
+}
+
+@media screen and (max-width: 986.98px) {
+  .nav-link {
+    margin: 0 3px 0 3px;
+    margin-bottom: 10px;
+  }
 }
 </style>

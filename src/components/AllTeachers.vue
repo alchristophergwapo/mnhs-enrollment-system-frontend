@@ -45,6 +45,7 @@
                     v-bind="attrs"
                     v-on="on"
                     @click="showTeacher"
+                    :disabled="notAdmin"
                   >
                     <v-icon>mdi-plus</v-icon>Add Teacher
                   </v-btn>
@@ -352,10 +353,16 @@
 
               <td>{{ row.item.section_id }}</td>
               <td>
-                <v-icon @click="editTeacher(row.item)" color="primary"
+                <v-icon
+                  @click="editTeacher(row.item)"
+                  color="primary"
+                  :disabled="notAdmin"
                   >mdi-pencil</v-icon
                 >
-                <v-icon @click="removeTeacher(row.item.id)" color="error"
+                <v-icon
+                  @click="removeTeacher(row.item.id)"
+                  color="error"
+                  :disabled="notAdmin"
                   >mdi-delete</v-icon
                 >
               </td>
@@ -382,6 +389,7 @@ export default {
       loading: false,
       statusdialog: false,
       booleanStatus: false,
+      notAdmin: this.$user.user_type != "admin",
       status: null,
       Id: null,
       Teacher: null,

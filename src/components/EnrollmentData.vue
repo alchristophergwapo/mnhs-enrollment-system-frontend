@@ -106,9 +106,6 @@ export default {
     filterStudents: [],
     grade_level: ["7", "8", "9", "10", "11", "12", "All"],
     sections: [],
-    declinedEnrollments: [],
-    filterDeclined: [],
-    emitted: false,
   }),
 
   created() {

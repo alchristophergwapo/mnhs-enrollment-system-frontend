@@ -6,12 +6,13 @@
         v-model="search"
         append-icon="mdi-magnify"
         label="Search"
+        dense
         outlined
       ></v-text-field>
     </v-card-title>
     <v-data-table
       :headers="headers"
-      :items="pendingStudents"
+      :items="students"
       :search="search"
       :items-per-page="10"
       class="elevation-1"
@@ -134,11 +135,7 @@
               <v-btn
                 color="primary"
                 @click="
-                  filterSections(
-                    row.item.grade_level,
-                    row.item.enrollment_id,
-                    row.index
-                  )
+                  filterSections(row.item.grade_level, row.item.id, row.index)
                 "
                 icon
                 x-large
@@ -236,15 +233,6 @@
 // import { EventBus } from "../../bus/bus.js";
 export default {
   props: {
-    students: {
-      type: Array,
-      required: true,
-    },
-    isDataLoaded: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
     // search: {
     //   type: String,
     //   default: "",
@@ -273,10 +261,10 @@ export default {
         { text: "Details", value: "details" },
         { text: "Action", value: "action" },
       ],
+      students: [],
+      filterStudents: [],
       sections: [],
       section: null,
-
-      pendingStudents: this.students,
     };
   },
   methods: {
@@ -327,7 +315,7 @@ export default {
           .post("approveEnrollment/" + id, { student_section: this.section })
           .then((response) => {
             console.log(response);
-            this.pendingStudents.splice(index, 1);
+            this.students.splice(index, 1);
             this.$swal.fire({
               icon: "success",
               title: "Success",
@@ -347,6 +335,19 @@ export default {
             });
             this.loading = false;
             this.dialog = true;
+            if (error.response.status != 500) {
+              this.$swal.fire({
+                icon: "error",
+                title: "Ooops....",
+                text: error.response.data.message,
+              });
+            } else {
+              this.$swal.fire({
+                icon: "error",
+                title: "Ooops....",
+                text: error.response.data.error,
+              });
+            }
           });
       } else {
         this.$swal.fire({
@@ -451,21 +452,37 @@ export default {
   },
 
   created() {
+    let adminLevel = null;
+    let userData = this.$user;
+    console.log(userData);
+    if (userData.user_type != "admin") {
+      let temp = this.$user.username.split("_");
+      adminLevel = temp[1];
+      console.log(adminLevel);
+    }
     this.section = this.sections[0];
-    // EventBus.$on("filterData", (data) => {
-    //   // console.log(data);
-    //   this.emitted = true;
-    //   this.pendingStudents.filter((val) => {
-    //     if (val.firstname == data) {
-    //       console.log("true");
-    //       return val;
-    //     } else {
-    //       console.log("false");
-    //       this.pendingStudents = [];
-    //     }
-    //     // return val.fullname.includes(data);
-    //   });
-    // });
+    let pendingEnrollment = this.$store.getters.allPendingEnrollments;
+    for (const key in pendingEnrollment) {
+      if (pendingEnrollment.hasOwnProperty.call(pendingEnrollment, key)) {
+        const element = pendingEnrollment[key];
+        this.students.push(element);
+      }
+    }
+    this.filterStudents = this.students;
+    this.$store.dispatch("allPendingEnrollments", adminLevel).then((res) => {
+      this.isDataLoaded = true;
+
+      let pending = res;
+
+      for (var index in pending) {
+        let element = pending[index];
+        element["fullname"] = element["firstname"].concat(
+          " ",
+          element["lastname"]
+        );
+        this.students.push(element);
+      }
+    });
   },
 };
 </script>
