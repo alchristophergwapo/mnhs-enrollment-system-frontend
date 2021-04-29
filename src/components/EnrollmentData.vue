@@ -40,15 +40,10 @@
       </v-card>
       <v-tabs-items v-model="enrollmentTab">
         <v-tab-item :value="'tab-1'">
-          <pending-enrollment
-            :isDataLoaded="dataLoaded"
-          >
-          </pending-enrollment>
+          <pending-enrollment :isDataLoaded="dataLoaded"> </pending-enrollment>
         </v-tab-item>
         <v-tab-item :value="'tab-2'">
-          <declined-enrollments
-            :isDataLoaded="pDataLoaded"
-          >
+          <declined-enrollments :isDataLoaded="pDataLoaded">
           </declined-enrollments>
         </v-tab-item>
       </v-tabs-items>
@@ -57,6 +52,7 @@
   </div>
 </template>
 <script>
+import { EventBus } from "../bus/bus";
 export default {
   components: {
     BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
@@ -98,65 +94,12 @@ export default {
     sections: [],
   }),
 
-  created() {
-   // console.log(this.declinedEnrollments);
-    // this.initializeData();
-    // if (!this.students || !this.sections) {
-    //   setTimeout(() => {
-    //     this.initializeData();
-    //   }, 3000);
-    // }
-  },
-
-  methods: {
-    // initializeData() {
-    //   let pendingEnrollment = this.$store.getters.allPendingEnrollments;
-    //   this.$store.dispatch("allPendingEnrollments").then((res) => {
-    //     this.dataLoaded = true;
-    //     pendingEnrollment=res;
-    //     //console.log(pendingEnrollment);
-    //     for (var index in pendingEnrollment) {
-    //       let element = pendingEnrollment[index];
-    //       let studentData = element["student"];
-    //       let enrollmentData = [];
-    //       enrollmentData["enrollment_id"] = element["id"];
-    //       enrollmentData["card_image"] = element["card_image"];
-    //       enrollmentData["fullname"] = studentData["firstname"].concat(" ",studentData["lastname"]);
-    //       for (const data in studentData) {
-    //         const element1 = studentData[data];
-    //         enrollmentData[data] = element1;
-    //       }
-    //       this.students.push(enrollmentData);
-    //       this.filterStudents.push(enrollmentData);
-    //     }
-    //   });
-
-    //   // console.log(this.students);
-    //   let declinedEnrollments = this.$store.getters.allDeclinedEnrollments;
-    //   this.$store.dispatch("allDeclinedEnrollments").then((response) => {
-    //     this.pDataLoaded = true;
-    //     declinedEnrollments = response;
-    //     for (var index in declinedEnrollments) {
-    //       let element = declinedEnrollments[index];
-    //       let declinedStudentData = element["student"];
-    //       let declinedEnrollmentData={};
-    //       declinedEnrollmentData["index"] =index;
-    //       declinedEnrollmentData["enrollment_id"] = element["id"];
-    //       declinedEnrollmentData["card_image"] = element["card_image"];
-    //       declinedEnrollmentData['remarks']=element['remark'];
-    //       declinedEnrollmentData["fullname"] = declinedStudentData[
-    //         "firstname"
-    //       ].concat(" ", declinedStudentData["lastname"]);
-    //       for (const data in declinedStudentData){
-    //         const element1 = declinedStudentData[data];
-    //         declinedEnrollmentData[data] = element1;
-    //       }
-    //       this.declinedEnrollments.push(declinedEnrollmentData);
-    //       this.filterDeclined.push(declinedEnrollmentData);
-    //     }
-    //   });
-    // },
-    
+  beforeMount() {
+    EventBus.$on("redirectToDeclinedTab", () => {
+      console.log(this.enrollmentTab);
+      this.enrollmentTab = "tab-2";
+      console.log(this.enrollmentTab);
+    });
   },
 };
 </script>

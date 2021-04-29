@@ -2,21 +2,24 @@
   <div class="admin-profile">
     <v-container>
       <v-card
-        class="profile-card pa-4"
+        class="profile-card"
         width="100%"
         max-width="500px"
         outlined
         elevation="24"
       >
-        <v-card-title>
-          <v-row>
-            <v-icon>mdi-account</v-icon>
-            <h3>ADMIN PROFILE</h3>
-          </v-row>
-          <v-btn icon link to="/admin">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-card-title>
+        <div class="icon-container" :style="'background: #006a4e'">
+          <v-icon style="color: white" large>mdi-account</v-icon>
+        </div>
+        <template>
+          <div class="ml-auto text-right">
+            <div class="body-3 grey--text font-weight-light" />
+            <h3 id="card-header-title">ADMIN PROFILE</h3>
+            <v-btn icon link to="/admin" class="close-icon">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </div>
+        </template>
         <v-divider></v-divider>
         <v-card-title>
           <v-spacer></v-spacer>
@@ -32,7 +35,7 @@
         <br />
         <v-container>
           <v-form>
-              <label for="username">Username</label>
+            <label for="username">Username</label>
             <v-text-field
               v-model="username"
               name="username"
@@ -97,7 +100,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            class="mr-4"
+            class="submit-btn"
             color="green"
             :loading="loading"
             :disabled="hasAnyErors"
@@ -217,12 +220,52 @@ export default {
 };
 </script>
 
-<style>
-.invalid-feedback{
-  margin-top:-25px;
+<style scoped>
+.admin-profile {
+  margin-top: 50px;
+}
+
+.icon-container {
+  max-height: 90px;
+  height: 90px;
+  width: 90px;
+  margin-left: 10px;
+  /* border-radius: 9999px; */
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  font-size: 24px;
+  justify-content: center;
+  letter-spacing: normal;
+  line-height: 1;
+  position: relative;
+  top: -25px;
+  text-indent: 0;
+}
+
+#card-header-title {
+  width: 100%;
+  position: absolute;
+  top: 10px;
+  margin: auto;
+}
+
+.close-icon {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.invalid-feedback {
+  margin-top: -25px;
 }
 .profile-card {
   margin: auto;
+  box-shadow: 0px 11px 15px -7px rgb(0 0 0 / 20%),
+    0px 24px 38px 3px rgb(0 0 0 / 14%), 0px 9px 46px 8px rgb(0 0 0 / 12%) !important;
 }
 
 .subtitle {
@@ -233,10 +276,16 @@ export default {
   font-size: 20px;
 }
 
-@media screen and (max-width: 767.98px) {
-   .invalid-feedback{
-       margin-top:-25px;
-    }
+.theme--light.v-btn.v-btn--has-bg {
+  background-color: #006a4e;
+  color: white;
+  letter-spacing: 0.5rem;
+  width: 150px;
+}
 
-} 
+@media screen and (max-width: 767.98px) {
+  .invalid-feedback {
+    margin-top: -25px;
+  }
+}
 </style>

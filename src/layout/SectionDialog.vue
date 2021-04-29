@@ -258,7 +258,7 @@ export default {
               if (error.response.status == 422) {
                 this.setErrors(error.response.data.errors);
               } else {
-                console.log(error);
+                this.showResponse("error", "Ooops...", "An error encountered!");
               }
             });
         }
@@ -274,6 +274,7 @@ export default {
     },
 
     close() {
+      EventBus.$emit("save");
       EventBus.$emit("closeModal", "close-modal");
     },
     clear() {
@@ -282,6 +283,7 @@ export default {
       this.sectionData.capacity = null;
       this.sectionData.teacher = null;
       this.$refs.sectionForm.resetValidation();
+      EventBus.$emit("save");
     },
     //Methods For All Errors In Junior High School
     setErrors(error) {

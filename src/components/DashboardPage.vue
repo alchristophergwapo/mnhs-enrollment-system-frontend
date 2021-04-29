@@ -96,7 +96,12 @@
             :value="totalDeclined"
           >
             <template v-slot:actions>
-              <v-btn id="btn" block link elevation="24">
+              <v-btn
+                id="btn"
+                block
+                @click="redirectToDeclinedPage()"
+                elevation="24"
+              >
                 see all
                 <v-icon dark right>mdi-arrow-right</v-icon>
               </v-btn>
@@ -130,6 +135,7 @@
   </div>
 </template>
 <script>
+import { EventBus } from "../bus/bus";
 // import Vue from "vue";
 // const lineSmooth = Vue.chartist.Interpolation.cardinal({
 //   tension: 0,
@@ -201,7 +207,7 @@ export default {
       this.totalTeachers = res.teacher.length;
     });
 
-    this.$axios.get("pendingEnrollments/"+null).then((res) => {
+    this.$axios.get("pendingEnrollments/" + null).then((res) => {
       this.totalPending = res.data.pendingEnrollment.length;
     });
 
@@ -211,6 +217,10 @@ export default {
   },
   mounted: () => {},
   methods: {
+    redirectToDeclinedPage() {
+      EventBus.$emit("redirectToDeclinedTab");
+      this.$router.push({ path: "/admin/enrollment" });
+    },
     initializeData() {
       this.enrollmentChart.data.series = [[0], [0]];
 

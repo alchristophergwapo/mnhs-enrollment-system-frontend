@@ -147,7 +147,7 @@
               <hr />
               <v-container>
                 <v-row>
-                  <v-col sm="2">
+                  <v-col sm="3">
                     <label for="startTime">Start Time</label>
                     <v-text-field
                       v-model="scheduleInputs.startTime"
@@ -157,7 +157,7 @@
                     ></v-text-field>
                   </v-col>
 
-                  <v-col sm="2">
+                  <v-col sm="3">
                     <label for="endTime">End Time</label>
                     <v-text-field
                       v-model="scheduleInputs.endTime"
@@ -166,7 +166,7 @@
                       outlined
                     ></v-text-field>
                   </v-col>
-                  <v-col sm="4">
+                  <v-col sm="6">
                     <autocomplete
                       :prepend_icon="
                         scheduleInputs.Monday.subject_id
@@ -176,18 +176,19 @@
                       request="gradelevelSubject"
                       :gradelevel="gradelevel"
                       :edit="editSchedule ? true : false"
-                      :modelValue="
-                        editSchedule && scheduleInputs.Monday
-                          ? scheduleInputs.Monday.subject_name
-                          : ''
-                      "
                       day="Monday"
                       property="subject_name"
                     >
-                      <template v-slot:label>Monday</template>
+                      <template v-slot:label
+                        >Monday<strong
+                          v-if="scheduleInputs.Monday.subject_name"
+                        >
+                          ({{ scheduleInputs.Monday.subject_name }})</strong
+                        ></template
+                      >
                     </autocomplete>
                   </v-col>
-                  <v-col sm="4">
+                  <v-col sm="6">
                     <autocomplete
                       :prepend_icon="
                         scheduleInputs.Tuesday.subject_id
@@ -197,18 +198,19 @@
                       request="gradelevelSubject"
                       :gradelevel="gradelevel"
                       :edit="editSchedule ? true : false"
-                      :modelValue="
-                        editSchedule && scheduleInputs.Tuesday
-                          ? scheduleInputs.Tuesday.subject_name
-                          : ''
-                      "
                       day="Tuesday"
                       property="subject_name"
                     >
-                      <template v-slot:label>Tuesday</template>
+                      <template v-slot:label
+                        >Tuesday<strong
+                          v-if="scheduleInputs.Tuesday.subject_name"
+                        >
+                          ({{ scheduleInputs.Tuesday.subject_name }})</strong
+                        ></template
+                      >
                     </autocomplete>
                   </v-col>
-                  <v-col sm="4">
+                  <v-col sm="6">
                     <autocomplete
                       :prepend_icon="
                         scheduleInputs.Wednesday.subject_id
@@ -218,18 +220,19 @@
                       request="gradelevelSubject"
                       :gradelevel="gradelevel"
                       :edit="editSchedule ? true : false"
-                      :modelValue="
-                        editSchedule && scheduleInputs.Wednesday
-                          ? scheduleInputs.Wednesday.subject_name
-                          : ''
-                      "
                       day="Wednesday"
                       property="subject_name"
                     >
-                      <template v-slot:label>Wednesday</template>
+                      <template v-slot:label
+                        >Wednesday<strong
+                          v-if="scheduleInputs.Wednesday.subject_name"
+                        >
+                          ({{ scheduleInputs.Wednesday.subject_name }})</strong
+                        ></template
+                      >
                     </autocomplete>
                   </v-col>
-                  <v-col sm="4">
+                  <v-col sm="6">
                     <autocomplete
                       :prepend_icon="
                         scheduleInputs.Thursday.subject_id
@@ -239,18 +242,19 @@
                       request="gradelevelSubject"
                       :gradelevel="gradelevel"
                       :edit="editSchedule ? true : false"
-                      :modelValue="
-                        editSchedule && scheduleInputs.Thursday
-                          ? scheduleInputs.Thursday.subject_name
-                          : ''
-                      "
                       day="Thursday"
                       property="subject_name"
                     >
-                      <template v-slot:label>Thursday</template>
+                      <template v-slot:label
+                        >Thursday<strong
+                          v-if="scheduleInputs.Thursday.subject_name"
+                        >
+                          ({{ scheduleInputs.Thursday.subject_name }})</strong
+                        ></template
+                      >
                     </autocomplete>
                   </v-col>
-                  <v-col sm="4">
+                  <v-col sm="6">
                     <autocomplete
                       :prepend_icon="
                         scheduleInputs.Friday.subject_id
@@ -260,15 +264,16 @@
                       request="gradelevelSubject"
                       :gradelevel="gradelevel"
                       :edit="editSchedule ? true : false"
-                      :modelValue="
-                        editSchedule && scheduleInputs.Friday
-                          ? scheduleInputs.Friday.subject_name
-                          : ''
-                      "
                       day="Friday"
                       property="subject_name"
                     >
-                      <template v-slot:label>Friday</template>
+                      <template v-slot:label
+                        >Friday<strong
+                          v-if="scheduleInputs.Friday.subject_name"
+                        >
+                          ({{ scheduleInputs.Friday.subject_name }})</strong
+                        ></template
+                      >
                     </autocomplete>
                   </v-col>
                   <br />
@@ -535,31 +540,42 @@ export default {
     addSchedule() {
       this.loading = true;
       let schedInput = this.scheduleInputs;
+      let schedCount = 0;
       for (const key in schedInput) {
         if (schedInput.hasOwnProperty.call(schedInput, key)) {
           const element = schedInput[key];
           if (key != "startTime" && key != "endTime") {
             this.schedulesToAdd.push(element);
           }
+          element.subject_id ? (schedCount += 1) : (schedCount += 0);
         }
       }
-      this.$axios
-        .post("addSchedules", this.schedulesToAdd)
-        .then((response) => {
-          this.loading = false;
-          this.schedules.push(this.schedulesToAdd);
-          this.showResponse("", response.data.success, "success");
-          EventBus.$emit("save");
-          this.retrieveSchedules();
-          this.$refs.scheduleForm.resetValidation();
-        })
-        .catch((error) => {
-          this.loading = false;
-          if (error.response.data.error) {
-            this.showResponse("", error.response.data.error, "error");
-          }
-        })
-        .finally((this.loading = false));
+      if (schedCount > 0) {
+        this.$axios
+          .post("addSchedules", this.schedulesToAdd)
+          .then((response) => {
+            this.loading = false;
+            this.schedules.push(this.schedulesToAdd);
+            this.showResponse("", response.data.success, "success");
+            EventBus.$emit("save");
+            this.retrieveSchedules();
+            this.$refs.scheduleForm.resetValidation();
+          })
+          .catch((error) => {
+            this.loading = false;
+            if (error.response.data.error) {
+              this.showResponse("", error.response.data.error, "error");
+            }
+          })
+          .finally((this.loading = false));
+      } else {
+        this.showResponse(
+          "Ooops...",
+          "Please add at least one schedule.",
+          "info"
+        );
+        this.loading = false;
+      }
     },
 
     showResponse(title, message, icon) {
@@ -576,6 +592,7 @@ export default {
       this.editSchedule = true;
       this.scheduleDialog = true;
       this.scheduleInputs = item;
+      console.log("Inputs => ", this.scheduleInputs);
       this.scheduleInputs.startTime = item.Monday.start_time;
       var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
       let newEndTime = this.addTimes(item.Monday.start_time, span);
@@ -584,13 +601,17 @@ export default {
     },
 
     closeDialog() {
-      const length = this.schedules.length
+      const length = this.schedules.length;
       // console.log(this.schedules[length - 1]);
-      this.scheduleInputs.startTime = this.schedules[length - 1].Monday.end_time;
+      this.scheduleInputs.startTime = this.schedules[
+        length - 1
+      ].Monday.end_time;
       var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
-      let newEndTime = this.addTimes(this.schedules[length - 1].Monday.end_time, span);
+      let newEndTime = this.addTimes(
+        this.schedules[length - 1].Monday.end_time,
+        span
+      );
       this.scheduleInputs.endTime = newEndTime;
-      EventBus.$emit("save");
       this.scheduleDialog = false;
     },
 
@@ -604,18 +625,34 @@ export default {
         Thursday: this.scheduleInputs.Thursday,
         Friday: this.scheduleInputs.Friday,
       };
-      console.log(edited);
-      this.$axios
-        .post("editSchedules", edited)
-        .then((response) => {
-          this.scheduleDialog = false;
-          this.retrieveSchedules();
-          this.showResponse("Success", response.data.success, "success");
-        })
-        .catch((error) => {
-          console.log(error.response);
-          this.showResponse("Success", error.response.data.error, "success");
-        });
+      let forEditCount = 0;
+      for (const key in edited) {
+        if (edited.hasOwnProperty.call(edited, key)) {
+          const element = edited[key];
+          element.subject_id ? (forEditCount += 1) : (forEditCount += 0);
+        }
+      }
+      if (forEditCount > 0) {
+        this.$axios
+          .post("editSchedules", edited)
+          .then((response) => {
+            this.scheduleDialog = false;
+            EventBus.$emit("save");
+            this.retrieveSchedules();
+            this.showResponse("Success", response.data.success, "success");
+          })
+          .catch((error) => {
+            console.log(error.response);
+            this.showResponse("Success", error.response.data.error, "success");
+          });
+      } else {
+        this.showResponse(
+          "Ooops...",
+          "It seems you emptied it all. It cannot be empty.",
+          "info"
+        );
+        this.loading = false;
+      }
     },
 
     changeSpanOfClassess(hour, minutes) {

@@ -49,26 +49,22 @@
             <label for="email">Teacher Email</label>
             <v-text-field
               v-model="teacher_email"
-              :append-icon="editEmail ? 'mdi-pencil' : 'mdi-check'"
               placeholder="Enter email"
               name="email"
-              @click:append="editEmail = !editEmail"
               @keydown="clearErrors"
               :error="hasError('user_email')"
-              :readonly="edit"
+              :readonly="true"
               dense
               outlined
             ></v-text-field>
             <label for="username">Default Username</label>
             <v-text-field
               v-model="username"
-              :append-icon="edit ? 'mdi-pencil' : 'mdi-check'"
               placeholder="Enter Username"
               name="username"
-              @click:append="edit = !edit"
               @keydown="clearErrors"
               :error="hasError('username')"
-              :readonly="edit"
+              :readonly="true"
               dense
               outlined
             ></v-text-field>
@@ -133,8 +129,6 @@ export default {
       username: null,
       password: "Password",
       loading: false,
-      edit: true,
-      editEmail: false,
       showPass: false,
       newAdminValid: false,
       errors: {},

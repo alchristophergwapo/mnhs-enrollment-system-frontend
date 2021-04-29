@@ -55,7 +55,6 @@
         </v-menu>
       </v-card-title>
     </v-app-bar>
-    <!-- src="../assets/images/mnhs_bg.jpg" -->
     <v-navigation-drawer
       v-model="sidebarMenu"
       app
@@ -104,11 +103,9 @@
                 <v-list-item-action class="nav-icon">
                   <v-icon>{{ item.icon }}</v-icon>
                 </v-list-item-action>
-                <v-list-item-content>
-                  <v-list-item-title>
-                    {{ item.text }}
-                  </v-list-item-title>
-                </v-list-item-content>
+                <v-list-item-title>
+                  {{ item.text }}
+                </v-list-item-title>
               </v-list-item> </template
             ><br />
 
@@ -125,20 +122,18 @@
                 ]"
                 :to="child.to"
               >
-                <v-list-item-content>
-                  <v-list-item-title>
-                    {{ child.text }}
-                  </v-list-item-title>
-                  <v-list-item-icon v-if="child.icon" class="child-icon">
-                    <v-icon>{{ child.icon }}</v-icon>
-                  </v-list-item-icon>
-                </v-list-item-content>
+                <!-- <v-list-item-content> -->
+                <v-list-item-title>
+                  {{ child.text }}
+                </v-list-item-title>
+                <v-list-item-icon v-if="child.icon" class="child-icon">
+                  <v-icon>{{ child.icon }}</v-icon>
+                </v-list-item-icon>
+                <!-- </v-list-item-content> -->
               </v-list-item>
               <v-list-group v-else v-model="child.model" no-action sub-group>
                 <template v-slot:activator>
-                  <v-list-item-content>
-                    <v-list-item-title>{{ child.text }}</v-list-item-title>
-                  </v-list-item-content>
+                  <v-list-item-title>{{ child.text }}</v-list-item-title>
                   <v-list-item-icon>
                     <v-icon>{{ child.icon }}</v-icon>
                   </v-list-item-icon>
@@ -168,8 +163,6 @@
         </template>
       </v-list>
     </v-navigation-drawer>
-    <!-- <side-bar></side-bar>
-    <app-bar :user_details="user"></app-bar> -->
     <v-main>
       <div class="main-view">
         <router-view></router-view>
@@ -181,10 +174,6 @@
 <script>
 export default {
   name: "HomeLayout",
-  components: {
-    // SideBar: () => import("@/layout/SideBar.vue"),
-    // AppBar: () => import("@/layout/AppBar.vue"),
-  },
   data() {
     return {
       drawer: true,
@@ -401,12 +390,6 @@ export default {
   margin-left: -10px !important;
 }
 
-.child-icon {
-  position: absolute;
-  right: 3px;
-  margin: auto;
-}
-
 .v-list-group--sub-group .v-list-group__header__prepend-icon {
   margin-left: -15px;
 }
@@ -415,9 +398,6 @@ export default {
   margin-left: -50px;
 }
 
-.nav-link .v-list-item__icon {
-  margin-left: -10px !important;
-}
 .menu-link .v-list-group__header__append-icon {
   position: absolute;
   right: 0;

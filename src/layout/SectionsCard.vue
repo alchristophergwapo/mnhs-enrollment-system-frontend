@@ -8,7 +8,6 @@
       </h3>
     </div>
 
-    <!-- </v-card> -->
     <template> </template>
     <v-card-text>
       <div>
