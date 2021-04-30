@@ -16,17 +16,6 @@
           </div>
         </v-card>
         <v-card-title>
-          <!-- <v-select
-            v-model="selectedYear"
-            :items="schoolYear"
-            @change="filterByYear(($event = selectedYear))"
-            menu-props="auto"
-            label="School Year"
-            hide-details
-            dense
-            outlined
-          ></v-select>
-          <v-spacer></v-spacer> -->
           <v-text-field
             v-model="search"
             append-icon="mdi-magnify"
@@ -74,7 +63,7 @@
                           v-if="hasError('teacher_name')"
                           class="invalid-feedback"
                         >
-                          {{ getError("name") }}
+                          {{ getError("teacher_name") }}
                         </p>
                         <v-text-field
                           @keydown="clearError"
@@ -530,7 +519,6 @@ export default {
         .dispatch("allTeacher")
         .then((res) => {
           this.teachers = res.teacher;
-          console.log(this.teachers);
           this.filterTeachers = this.teachers;
           this.teachers = this.filterTeachers.filter((val) => {
             return (
@@ -654,17 +642,19 @@ export default {
                     response.data.teacher +
                     ".",
                 });
-            this.sections.splice(
-              this.sections.indexOf(this.selected_section, 1)
-            );
+            // this.sections.splice(
+            //   this.sections.indexOf(this.selected_section, 1)
+            // );
           })
           .catch((error) => {
-            this.loading = false;
             if (error.response.status == 422) {
+              // console.log(error.response.data.errors);
               this.setErrors(error.response.data.errors);
             } else {
               console.log(error);
             }
+            console.log(error.response);
+            this.loading = false;
           });
       } else {
         //For Updating The  Teachers
@@ -752,13 +742,14 @@ export default {
             }
           })
           .catch((error) => {
-            this.loading = false;
-            console.log(error);
             if (error.response.status == 422) {
+              console.log(error.response.data);
               this.setErrors(error.response.data.errors);
             } else {
               console.log(error);
             }
+            this.loading = false;
+            console.log(error);
           });
       }
     },
