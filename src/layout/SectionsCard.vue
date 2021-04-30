@@ -20,7 +20,7 @@
       Adviser: <span v-if="teacher">{{ teacher }}</span
       ><span v-else>None</span>
     </v-card-text>
-    <v-card-actions>
+    <v-card-actions class="card-actions-container">
       <!-- <div class="ml-auto text-right"> -->
       <slot name="btns"></slot>
       <!-- </div> -->
@@ -87,5 +87,9 @@ export default {
   top: -20px;
   text-indent: 0;
   vertical-align: middle;
+}
+
+.card-actions-container {
+  width: 100%;
 }
 </style>

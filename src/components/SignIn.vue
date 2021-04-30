@@ -12,7 +12,12 @@
         <h3>MNHS Enrollment System</h3>
         <br />
         <v-card-text>
-          <v-form ref="regAdminForm" v-model="valid" lazy-validation>
+          <v-form
+            v-on:submit.prevent=""
+            ref="regAdminForm"
+            v-model="valid"
+            lazy-validation
+          >
             <v-row>
               <v-col cols="12">
                 <div class="font-weight-bold">
@@ -21,6 +26,7 @@
                 <v-text-field
                   v-model="username"
                   :rules="[(value) => !!value || 'Username is required!']"
+                  @keyup="enterBtnTriggered"
                   maxlength="20"
                   outlined
                   required
@@ -40,6 +46,7 @@
                   :type="show ? 'text' : 'password'"
                   name="input-10-1"
                   outlined
+                  @keyup="enterBtnTriggered"
                   @click:append="show = !show"
                 ></v-text-field>
               </v-col>
@@ -86,6 +93,10 @@ export default {
   methods: {
     resetValidation() {
       this.$refs.form.resetValidation();
+    },
+
+    enterBtnTriggered(e) {
+      if (e.keyCode === 13) this.signIn();
     },
 
     signIn() {

@@ -54,21 +54,30 @@
                   class="section_card"
                 >
                   <template v-slot:btns>
-                    <v-btn
-                      dark
-                      small
-                      color="green"
-                      @click="viewSchedules(dta.id)"
-                    >
-                      schedules
-                    </v-btn>
-                    <v-btn dark small @click="editSection(dta)" color="#006a4e">
-                      edit section
-                      <v-icon>mdi-pencil</v-icon>
-                    </v-btn>
-                    <!-- 
-                                <v-spacer></v-spacer>
-                                 -->
+                    <div class="action-btns">
+                      <v-btn
+                        dark
+                        small
+                        color="green"
+                        @click="viewSchedules(dta.id)"
+                      >
+                        <span v-if="$vuetify.breakpoint.mdAndUp"
+                          >schedules</span
+                        >
+                        <v-icon v-else>mdi-table-clock</v-icon>
+                      </v-btn>
+                      <v-btn
+                        dark
+                        small
+                        @click="editSection(dta)"
+                        color="#006a4e"
+                      >
+                        <span v-if="$vuetify.breakpoint.mdAndUp"
+                          >edit section</span
+                        >
+                        <v-icon v-else>mdi-pencil</v-icon>
+                      </v-btn>
+                    </div>
                   </template>
                 </sections-card>
               </v-col>
@@ -299,7 +308,7 @@ export default {
     },
     viewSchedules(sectionId) {
       this.sectionId = sectionId;
-      this.viewScheds= true;
+      this.viewScheds = true;
     },
     selected(item) {
       this.addOrEdit.name = "Add " + item;
@@ -359,3 +368,24 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.action-btns {
+  width: 100%;
+  display: flex;
+
+  .v-btn {
+    margin: 0 3px 0 3px;
+  }
+}
+
+@media (max-width: 768px) {
+  .action-btns {
+    display: inline;
+
+    .v-btn {
+      float: right;
+    }
+  }
+}
+</style>

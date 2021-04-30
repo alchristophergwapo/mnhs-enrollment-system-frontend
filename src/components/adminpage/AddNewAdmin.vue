@@ -145,35 +145,79 @@ export default {
     async submit() {
       if (this.$refs.newAdmin.validate()) {
         this.loading = true;
+        let data = {
+          username: this.username,
+          password: this.password,
+          user_type: "teacher_admin",
+          user_fullname: this.assigned_teacher,
+          user_email: this.teacher_email,
+        };
         this.$axios
-          .post(`addNewAdmin`, {
-            username: this.username,
-            password: this.password,
-            user_type: "teacher_admin",
-            user_fullname: this.assigned_teacher,
-            user_email: this.teacher_email,
-          })
+          .post(`addNewAdmin`, data)
           .then((response) => {
             this.loading = false;
-            this.$swal.fire({
-              icon: "success",
-              title: "Success",
-              text: response.data.success,
-            });
+            this.showResponse("Success", response.data.success, "success");
+            this.clearInputs();
           })
           .catch((error) => {
             this.loading = false;
-            if (error.response.status == 422) {
+            let existingAdmin = null;
+            if (error.response.status == 422)
               this.setErrors(error.response.data.errors);
-            } else {
-              this.$swal.fire({
-                icon: "error",
-                title: "Oooops....",
-                text: error.response.data.error,
-              });
-            }
+            if (error.response.status == 400)
+              (existingAdmin = error.response.data.teacher_admin),
+                console.log(existingAdmin),
+                this.$swal
+                  .fire({
+                    title: "Ooops...",
+                    text: error.response.data.error,
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Update",
+                  })
+                  .then((result) => {
+                    if (result.isConfirmed)
+                      this.$axios
+                        .post(`updateTeacherAdmin/${existingAdmin.id}`, data)
+                        .then((response) => {
+                          this.clearInputs();
+                          this.showResponse(
+                            "Success",
+                            response.data.success,
+                            "success"
+                          );
+                        })
+                        .catch(() => {
+                          this.showResponse(
+                            "Ooops...",
+                            "An error encountered!",
+                            "info"
+                          );
+                        });
+                  });
+            else
+              this.showResponse("Ooops...", error.response.data.error, "error");
           });
       }
+    },
+
+    showResponse(title, message, icon) {
+      this.$swal.fire({
+        icon: icon,
+        title: title,
+        text: message,
+      });
+    },
+
+    clearInputs() {
+      this.assigned_gr_level = null;
+      this.assigned_teacher = null;
+      this.teacher_email = null;
+      this.username = null;
+      EventBus.$emit("save");
+      this.$refs.newAdmin.resetValidation();
     },
 
     setUsername() {

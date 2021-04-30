@@ -547,7 +547,9 @@ export default {
           if (key != "startTime" && key != "endTime") {
             this.schedulesToAdd.push(element);
           }
-          element.subject_id ? (schedCount += 1) : (schedCount += 0);
+          element != null && element.subject_id
+            ? (schedCount += 1)
+            : (schedCount += 0);
         }
       }
       if (schedCount > 0) {
@@ -603,14 +605,17 @@ export default {
     closeDialog() {
       const length = this.schedules.length;
       // console.log(this.schedules[length - 1]);
-      this.scheduleInputs.startTime = this.schedules[
-        length - 1
-      ].Monday.end_time;
+      let schedToBase = this.schedules[length - 1];
+      for (const key in schedToBase) {
+        if (schedToBase.hasOwnProperty.call(schedToBase, key)) {
+          const element = schedToBase[key];
+          if (element != null)
+            (this.scheduleInputs.startTime = element.end_time),
+              (schedToBase = []);
+        }
+      }
       var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
-      let newEndTime = this.addTimes(
-        this.schedules[length - 1].Monday.end_time,
-        span
-      );
+      let newEndTime = this.addTimes(this.scheduleInputs.startTime, span);
       this.scheduleInputs.endTime = newEndTime;
       this.scheduleDialog = false;
     },

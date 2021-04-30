@@ -35,15 +35,20 @@
         <br />
         <v-container>
           <v-form>
-            <label for="username">Username</label>
+            <div class="field-label">
+              <label for="username">Username</label>
+            </div>
             <v-text-field
               v-model="username"
               name="username"
               placeholder="Username"
               :readonly="true"
+              dense
               outlined
             ></v-text-field>
-            <label for="currentpassword">Current Password</label>
+            <div class="field-label">
+              <label for="currentpassword">Current Password</label>
+            </div>
             <v-text-field
               v-model="currentPass"
               :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
@@ -53,14 +58,17 @@
               @click:append="showPass = !showPass"
               @keydown="clearErrors"
               :error="hasError('currentpassword')"
+              dense
               outlined
             ></v-text-field>
-            <div>
+            <div class="error-message">
               <p v-if="hasError('currentpassword')" class="invalid-feedback">
                 {{ getError("currentpassword") }}
               </p>
             </div>
-            <label for="new_password">New Password</label>
+            <div class="field-label">
+              <label for="new_password">New Password</label>
+            </div>
             <v-text-field
               v-model="newpassword"
               :append-icon="showNPass ? 'mdi-eye' : 'mdi-eye-off'"
@@ -70,14 +78,17 @@
               @click:append="showNPass = !showNPass"
               @keydown="clearErrors"
               :error="hasError('new_password')"
+              dense
               outlined
             ></v-text-field>
-            <div>
+            <div class="error-message">
               <p v-if="hasError('new_password')" class="invalid-feedback">
                 {{ getError("new_password") }}
               </p>
             </div>
-            <label for="confirm_password">Confirm Password</label>
+            <div class="field-label">
+              <label for="confirm_password">Confirm Password</label>
+            </div>
             <v-text-field
               v-model="confirmPass"
               :append-icon="showCPass ? 'mdi-eye' : 'mdi-eye-off'"
@@ -87,9 +98,10 @@
               @click:append="showCPass = !showCPass"
               @keydown="clearErrors"
               :error="hasError('confirm_password')"
+              dense
               outlined
             ></v-text-field>
-            <div>
+            <div class="error-message">
               <p v-if="hasError('confirm_password')" class="invalid-feedback">
                 {{ getError("confirm_password") }}
               </p>
@@ -225,6 +237,15 @@ export default {
   margin-top: 50px;
 }
 
+.field-label,
+.error-message {
+  padding: 0 0 0 10px;
+}
+
+.v-input {
+  margin: 10px 0 3px 0;
+}
+
 .icon-container {
   max-height: 90px;
   height: 90px;
@@ -260,7 +281,7 @@ export default {
 }
 
 .invalid-feedback {
-  margin-top: -25px;
+  margin-top: -15px;
 }
 .profile-card {
   margin: auto;
