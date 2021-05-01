@@ -134,7 +134,7 @@ export default {
       errors: {},
     };
   },
-  mounted: function () {
+  created: function () {
     EventBus.$on("allTeacher", (data) => {
       this.assigned_teacher = data.data.teacher_name;
       this.teacher_email = data.data.email;
@@ -164,7 +164,10 @@ export default {
             let existingAdmin = null;
             if (error.response.status == 422)
               this.setErrors(error.response.data.errors);
-            if (error.response.status == 400)
+            if (
+              error.response.status == 400 &&
+              error.response.data.teacher_admin_exist
+            )
               (existingAdmin = error.response.data.teacher_admin),
                 console.log(existingAdmin),
                 this.$swal
@@ -197,6 +200,12 @@ export default {
                           );
                         });
                   });
+            if (error.response.data.teacher_isAssigned)
+              this.showResponse(
+                "Ooops...",
+                error.response.data.teacher_isAssigned,
+                "info"
+              );
             else
               this.showResponse("Ooops...", error.response.data.error, "error");
           });

@@ -436,6 +436,7 @@
   </v-container>
 </template>
 <script>
+import { EventBus } from "../../bus/bus";
 export default {
   data() {
     return {
@@ -466,32 +467,42 @@ export default {
   },
 
   created() {
-    let adminLevel = null;
-    let userData = this.$user;
-    console.log(userData);
-    if (userData.user_type != "admin") {
-      let temp = this.$user.username.split("_");
-      adminLevel = temp[1];
-      console.log(adminLevel);
-    }
-    let declined = this.$store.getters.allDeclinedEnrollments;
-    this.$store
-      .dispatch("allDeclinedEnrollments", adminLevel)
-      .then((response) => {
-        this.isDataLoaded = true;
-        declined = response;
-        let declinedEnrollmentData = [];
-        for (var index in declined) {
-          let element = declined[index];
-          element["index"]=index;
-          element["remarks"]=element['remark'];
-          element["fullname"] = element["firstname"].concat(" ",element["lastname"]);
-          declinedEnrollmentData.push(element);
-        }
-        this.declinedEnrollments = declinedEnrollmentData;
-      });
+    this.retrieveData();
+    EventBus.$on("refresh", () => {
+      this.retrieveData();
+    });
   },
   methods: {
+    retrieveData() {
+      let adminLevel = null;
+      let userData = this.$user;
+      console.log(userData);
+      if (userData.user_type != "admin") {
+        let temp = this.$user.username.split("_");
+        adminLevel = temp[1];
+        console.log(adminLevel);
+      }
+      let declined = this.$store.getters.allDeclinedEnrollments;
+      this.$store
+        .dispatch("allDeclinedEnrollments", adminLevel)
+        .then((response) => {
+          this.isDataLoaded = true;
+          declined = response;
+          let declinedEnrollmentData = [];
+          for (var index in declined) {
+            let element = declined[index];
+            element["index"] = index;
+            element["remarks"] = element["remark"];
+            element["fullname"] = element["firstname"].concat(
+              " ",
+              element["lastname"]
+            );
+            declinedEnrollmentData.push(element);
+          }
+          this.declinedEnrollments = declinedEnrollmentData;
+        });
+    },
+
     filterSections(gradelevel, id, index) {
       console.log("filterSectionsGradelvel:" + gradelevel);
       console.log("filterSectionsGradeId:" + id);

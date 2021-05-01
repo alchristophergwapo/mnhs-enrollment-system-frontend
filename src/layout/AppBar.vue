@@ -17,17 +17,6 @@
           <v-icon medium color="white">mdi-bell</v-icon>
         </v-badge>
       </v-btn>
-      <!-- </template> -->
-      <!-- <v-list>
-          <v-list-item v-for="(item, index) in allNotifications" :key="index">
-            <v-list-item-title
-              >{{ item.data.enrollment.firstname }}
-              {{ item.data.enrollment.lastname }} submitted a new
-              enrollment.</v-list-item-title
-            >
-          </v-list-item>
-        </v-list> -->
-      <!-- </v-menu> -->
     </div>
     <div v-if="$route.name != 'AdminProfile'">
       <v-card-title>
@@ -132,7 +121,9 @@ export default {
   },
   mounted() {
     if (this.user_details.user_type == "admin") {
-      window.Echo.private("App.Models.User."+this.user_details.id).notification((eventData) => {
+      window.Echo.private(
+        "App.Models.User." + this.user_details.id
+      ).notification((eventData) => {
         console.log(eventData);
         this.allNotifications.push(eventData.notification);
         this.notifications = this.unreadNotification.length;

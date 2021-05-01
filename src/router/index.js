@@ -88,11 +88,25 @@ const routes = [
         },
       },
       {
-        path: "add-new-admin",
-        component: () => import("@/components/adminpage/AddNewAdmin.vue"),
-        meta: {
-          title: "Add New Admin",
-        },
+        path: "teacher-admin",
+        component: () => import("@/layout/EmptyRouteView.vue"),
+        children: [
+          {
+            path: "add",
+            component: () => import("@/components/adminpage/AddNewAdmin.vue"),
+            meta: {
+              title: "Add New Admin",
+            },
+          },
+          {
+            path: "reset-pass",
+            component: () =>
+              import("@/components/adminpage/TAdminResetPass.vue"),
+            meta: {
+              title: "Add New Admin",
+            },
+          },
+        ],
       },
       {
         path: "notifications",

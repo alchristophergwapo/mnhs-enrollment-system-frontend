@@ -144,7 +144,7 @@
               </v-btn>
               <v-btn
                 color="error"
-                @click="opendeclineModal(row.item.id,row.index)"
+                @click="opendeclineModal(row.item.id, row.index)"
                 icon
                 x-large
               >
@@ -199,7 +199,7 @@
             <v-row>
               <h3>Reason For Declining</h3>
             </v-row>
-            <v-btn icon link to="/admin">
+            <v-btn icon @click="closeDeclineModal()">
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
@@ -232,10 +232,9 @@
 <script>
 // import { EventBus } from "../../bus/bus.js";
 export default {
-
   data() {
     return {
-      isDataLoaded:false,
+      isDataLoaded: false,
       declineModal: false,
       declineId: null,
       declineIndex: null,
@@ -261,7 +260,36 @@ export default {
       section: null,
     };
   },
+  created() {
+    this.retrieveData();
+  },
   methods: {
+    retrieveData() {
+      let adminLevel = null;
+      let userData = this.$user;
+      console.log(userData);
+      if (userData.user_type != "admin") {
+        let temp = this.$user.username.split("_");
+        adminLevel = temp[1];
+        console.log(adminLevel);
+      }
+      this.section = this.sections[0];
+      this.filterStudents = this.students;
+      this.$store.dispatch("allPendingEnrollments", adminLevel).then((res) => {
+        this.isDataLoaded = true;
+
+        let pending = res;
+
+        for (var index in pending) {
+          let element = pending[index];
+          element["fullname"] = element["firstname"].concat(
+            " ",
+            element["lastname"]
+          );
+          this.students.push(element);
+        }
+      });
+    },
     openDialog(data) {
       this.item = data;
       this.dialog = true;
@@ -353,13 +381,18 @@ export default {
       }
     },
 
-
     //Method For Opending the Modal OF REASON FOR DECLINING
     opendeclineModal(id, index) {
-      console.log(id+index);
+      console.log(index);
       this.declineId = id;
       this.declineIndex = index;
       this.declineModal = true;
+    },
+
+    closeDeclineModal() {
+      this.declineModal = false;
+      this.remarks = null;
+      this.$refs.form.resetValidation();
     },
 
     declineEnrollment() {
@@ -375,50 +408,15 @@ export default {
               title: "Success",
               text: "Enrollment declined.",
             });
-            this.students.splice(this.declineIndex, 1);
+            this.retrieveData();
             this.$refs.form.reset();
-            this.declineModal=false;
+            this.declineModal = false;
           })
           .catch((error) => {
             console.log(error);
           });
       }
     },
-
-  },
-
-  created() {
-    let adminLevel = null;
-    let userData = this.$user;
-    console.log(userData);
-    if (userData.user_type != "admin") {
-      let temp = this.$user.username.split("_");
-      adminLevel = temp[1];
-      console.log(adminLevel);
-    }
-    this.section = this.sections[0];
-    // let pendingEnrollment = this.$store.getters.allPendingEnrollments;
-    // for (const key in pendingEnrollment) {
-    //   if (pendingEnrollment.hasOwnProperty.call(pendingEnrollment, key)) {
-    //     const element = pendingEnrollment[key];
-    //     this.students.push(element);
-    //   }
-    // }
-    this.filterStudents = this.students;
-    this.$store.dispatch("allPendingEnrollments", adminLevel).then((res) => {
-      this.isDataLoaded = true;
-
-      let pending = res;
-
-      for (var index in pending) {
-        let element = pending[index];
-        element["fullname"] = element["firstname"].concat(
-          " ",
-          element["lastname"]
-        );
-        this.students.push(element);
-      }
-    });
   },
 };
 </script>

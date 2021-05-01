@@ -31,7 +31,7 @@
             <v-icon color="info" large>mdi-account-alert</v-icon>
           </v-tab>
 
-          <v-tab href="#tab-2">
+          <v-tab href="#tab-2" @click="triggerRefreshDeclinedData()">
             Declined
             <v-icon color="error" large>mdi-account-minus</v-icon>
           </v-tab>
@@ -93,6 +93,12 @@ export default {
     grade_level: ["7", "8", "9", "10", "11", "12", "All"],
     sections: [],
   }),
+
+  methods: {
+    triggerRefreshDeclinedData() {
+      EventBus.$emit("refresh");
+    },
+  },
 
   beforeMount() {
     EventBus.$on("redirectToDeclinedTab", () => {

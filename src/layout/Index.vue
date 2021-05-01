@@ -247,7 +247,12 @@ export default {
                 {
                   icon: "mdi-account-plus",
                   text: "Add Admin",
-                  to: "/admin/add-new-admin",
+                  to: "/admin/teacher-admin/add",
+                },
+                {
+                  icon: "mdi-account-key",
+                  text: "Reset Password",
+                  to: "/admin/teacher-admin/reset-pass",
                 },
               ],
             },
