@@ -6,8 +6,8 @@
     <v-col cols="12" xs="6" sm="4" md="4" lg="2">
       <v-select
         v-model="balikOrTransferInfo.last_grade_completed"
-        :items="['7','8']"
-        @keyup="balikAral(($event = balikOrTransferInfo.last_grade_completed))"
+        :items="grade_level_options"
+        @change="balikAral(($event = balikOrTransferInfo.last_grade_completed))"
         :rules="[
           (last_grade_completed) =>
             !!last_grade_completed || 'Last Grade Level Completed is required',
@@ -34,7 +34,9 @@
         v-model="balikOrTransferInfo.last_school_ID"
         :rules="[
           (last_school_ID) => !!last_school_ID || 'School ID is required',
-          (last_school_ID) =>/^[0-9]+$/.test(last_school_ID) == true || 'Only Number is  allowed!',
+          (last_school_ID) =>
+            /^[0-9]+$/.test(last_school_ID) == true ||
+            'Only Number is  allowed!',
         ]"
         label="School ID"
         outlined
@@ -69,11 +71,20 @@
 </template>
 
 <script>
+import { EventBus } from "../../bus/bus";
 export default {
+  props: {
+    gLevel: {
+      type: Number,
+    },
+    grade_level_options: {
+      type: Array,
+    },
+  },
   data() {
     return {
       balikOrTransferInfo: {
-        last_grade_completed: "7",
+        last_grade_completed: null,
         last_year_completed: "2017-2018",
         last_school_attended: "Mantalongon National High School",
         last_school_ID: "14135346",
@@ -81,9 +92,10 @@ export default {
       },
     };
   },
-  methods:{
+
+  methods: {
     balikAral(grade) {
-      console.log("grade:" + grade);
+      EventBus.$emit("previousGradeLevel", grade);
     },
   },
   computed: {

@@ -169,11 +169,11 @@ export default {
               error.response.data.teacher_admin_exist
             )
               (existingAdmin = error.response.data.teacher_admin),
-                console.log(existingAdmin),
+                console.log(error.response.data),
                 this.$swal
                   .fire({
                     title: "Ooops...",
-                    text: error.response.data.error,
+                    text: error.response.data.teacher_admin_exist,
                     icon: "warning",
                     showCancelButton: true,
                     confirmButtonColor: "#3085d6",
@@ -206,7 +206,7 @@ export default {
                 error.response.data.teacher_isAssigned,
                 "info"
               );
-            else
+            if (error.response.status == 500)
               this.showResponse("Ooops...", error.response.data.error, "error");
           });
       }

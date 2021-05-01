@@ -1,22 +1,29 @@
 <template>
   <v-app>
     <div class="enrollment">
-      <v-toolbar dark color="primary">
+      <v-toolbar dark color="primary" class="toolbar-content">
         <v-avatar>
           <v-img :src="require('../assets/images/logo.jpg')"></v-img>
         </v-avatar>
-        <v-toolbar-title class="toolbar-title"
-          >Welcome to Mantalongon, Dalaguete NHS</v-toolbar-title
-        >
+        <v-toolbar-title class="toolbar-title">
+          <h4>Mantalongon National High School</h4>
+          <span>Mantalongon, Dalaguete Cebu</span>
+        </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn text link to="/sign-in">Login</v-btn>
       </v-toolbar>
       <div class="form-container">
         <v-card-title
           ><span style="width: 100%; text-align: center"
-            >Please fill out the information below and SUBMIT.</span>
+            >Please fill out the information below and SUBMIT.</span
+          >
         </v-card-title>
-        <v-form ref="basicInfo" v-model="basicInfoValid" lazy-validation>
+        <v-form
+          v-on:submit.prevent=""
+          ref="basicInfo"
+          v-model="basicInfoValid"
+          lazy-validation
+        >
           <v-container>
             <student-info-form ref="studentInfoData"></student-info-form>
             <parent-guardian-info
@@ -40,8 +47,7 @@
                   <v-checkbox
                     class="checkbox-input"
                     v-model="isTransfereeOrBalikAral"
-                    label="Applying as Transferee or Balik Aral?"
-                    value="true"
+                    label="Applying as Transferee or Balik Aral? (If you are a continuing student, please disregard.)"
                   ></v-checkbox>
                 </v-container>
               </v-col>
@@ -58,6 +64,8 @@
           <v-container>
             <balik-or-transfer
               ref="balikAralorTransferInfoData"
+              :gLevel="grade_level"
+              :grade_level_options="options"
             ></balik-or-transfer>
           </v-container>
         </v-form>
@@ -86,6 +94,7 @@
                     label="Card Picture"
                     :rules="[(value) => !!value || 'Required.']"
                     accept="image/*"
+                    v-on:keyup="enterKeyTriggered()"
                     outlined
                     prepend-icon="mdi-camera"
                   ></v-file-input>
@@ -96,9 +105,13 @@
                     :items="
                       isSeniorHigh == true ? grade_levels[1] : grade_levels[0]
                     "
+                    @change="selectGradeLevel($event)"
+                    @click:clear="clearSelected()"
                     :rules="[(v) => !!v || 'Required']"
-                    :readonly="passEnrolled"
+                    :readonly="passEnrolled || isNew"
                     label="Select Grade Level"
+                    :clearable="clearable"
+                    v-on:keyup="enterKeyTriggered()"
                     outlined
                     required
                   ></v-select>
@@ -111,6 +124,7 @@
                   dark
                   color="primary"
                   @click="submitEnrollment"
+                  :disabled="submitDisable"
                   :loading="submitting"
                 >
                   Submit
@@ -126,11 +140,15 @@
 </template>
 
 <script>
+import { EventBus } from "../bus/bus";
 export default {
   components: {
-    StudentInfoForm: () =>import("@/components/enrollment/StudentInfoForm.vue"),
-    ParentGuardianInfo: () =>import("@/components/enrollment/ParentGuardianInfo.vue"),
-    BalikOrTransfer: () => import("@/components/enrollment/BalikOrTransfer.vue"),
+    StudentInfoForm: () =>
+      import("@/components/enrollment/StudentInfoForm.vue"),
+    ParentGuardianInfo: () =>
+      import("@/components/enrollment/ParentGuardianInfo.vue"),
+    BalikOrTransfer: () =>
+      import("@/components/enrollment/BalikOrTransfer.vue"),
     SeniorHigh: () => import("@/components/enrollment/SeniorHigh.vue"),
   },
   data() {
@@ -145,7 +163,10 @@ export default {
       passEnrolled: false,
       isNotSeniorHigh: true,
       isTransfereeOrBalikAral: false,
+      isNew: false,
       isNotTransfereeOrBalikAral: true,
+      submitDisable: false,
+      clearable: true,
       tracks: ["ACADEMIC TRACK", "TECHNICAL-VOCATIONAL LIVELIHOOD (TLV) TRACK"],
       strands: [
         {
@@ -157,34 +178,56 @@ export default {
           "TECHNICAL-VOCATIONAL LIVELIHOOD (TLV) TRACK": ["AGRI-FISHERY ARTS"],
         },
       ],
-      graded:[7, 8, 9, 10],
       grade_levels: [
         [7, 8, 9, 10],
         [11, 12],
       ],
+      options: [6, 7, 8, 9, 10, 11, 12],
       grade_level: null,
       card_image: null,
       student: null,
-      grades:null,
+      grades: null,
       parentGuardian: null,
       balikOrTransfer: null,
       seniorHigh: null,
       enrollmentDate: Date.now(),
     };
   },
-  computed: {},
+  created: function () {
+    if (this.isTransfereeOrBalikAral)
+      console.log(this.$refs.balikAralorTransferInfoData), (this.isNew = true);
+
+    EventBus.$on("previousGradeLevel", (prevGradeLevel) => {
+      this.grade_level = prevGradeLevel + 1;
+      this.isNew = true;
+      this.clearable = false;
+    });
+  },
   methods: {
+    enterKeyTriggered(e) {
+      e.preventDefault();
+      if (e.keyCode === 13) alert("here"), this.submitEnrollment();
+    },
+    selectGradeLevel(event) {
+      if (event == 7 && !this.isTransfereeOrBalikAral)
+        (this.isNew = true),
+          (this.options = []),
+          ((this.options = [event - 1]), (this.isTransfereeOrBalikAral = true));
+    },
+    clearSelected() {
+      this.options = [6, 7, 8, 9, 10, 11, 12];
+      if (this.isNew)
+        (this.isNew = false), (this.isTransfereeOrBalikAral = false);
+    },
     submitEnrollment() {
       if (
         this.$refs.submitEnrollment.validate() &&
         this.$refs.basicInfo.validate()
       ) {
         this.submitting = true;
-        this.student=this.$refs.studentInfoData.getData;
+        this.student = this.$refs.studentInfoData.getData;
         let formdata = new FormData();
         let parent = JSON.parse(this.$refs.parentGuardianInfoData.getData);
-        // let noError = false;
-        // console.log(parent);
         for (const key in parent) {
           if (parent[key]) {
             const element = parent[key];
@@ -265,7 +308,8 @@ export default {
                 title: "Ooops....",
                 text: error.response.data.error,
               });
-            } if(error.response.data.passEnrollment) {
+            }
+            if (error.response.data.passEnrollment) {
               this.passEnrolled = true;
               this.grade_level =
                 error.response.data.passEnrollment.enrollment.grade_level + 1;
@@ -282,3 +326,26 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+.toolbar-content {
+  height: 80px !important;
+  padding: 8px;
+
+  .toolbar-title {
+    margin-left: 20px;
+    text-align: center;
+
+    h4 {
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.1rem;
+    }
+
+    span {
+      font-size: 15px;
+      letter-spacing: 0.1rem;
+    }
+  }
+}
+</style>

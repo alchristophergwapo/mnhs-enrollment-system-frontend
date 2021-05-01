@@ -26,7 +26,7 @@
                 <v-text-field
                   v-model="username"
                   :rules="[(value) => !!value || 'Username is required!']"
-                  @keyup="enterBtnTriggered"
+                  @keyup="enterKeyTriggered"
                   maxlength="20"
                   outlined
                   required
@@ -46,7 +46,7 @@
                   :type="show ? 'text' : 'password'"
                   name="input-10-1"
                   outlined
-                  @keyup="enterBtnTriggered"
+                  @keyup="enterKeyTriggered"
                   @click:append="show = !show"
                 ></v-text-field>
               </v-col>
@@ -95,7 +95,7 @@ export default {
       this.$refs.form.resetValidation();
     },
 
-    enterBtnTriggered(e) {
+    enterKeyTriggered(e) {
       if (e.keyCode === 13) this.signIn();
     },
 

@@ -421,10 +421,10 @@ h3 {
 }
 
 /* Enrollment Form ***************************************************************************************************************************************/
-.enrollment {
-  /* height: 269vh; */
+/* .enrollment {
+  height: 269vh;
   background: #eee;
-}
+} */
 
 .v-messages__message {
   color: red;

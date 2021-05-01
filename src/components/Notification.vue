@@ -93,7 +93,9 @@
                     >{{ item.data.enrollment.firstname }}
                     {{ item.data.enrollment.lastname }} submitted a new
                     enrollment application for
-                    {{ item.data.enrollment.grade_level }}.</v-card-text
+                    {{
+                      item.data.enrollment.enrollment.grade_level
+                    }}.</v-card-text
                   >
                 </v-list-item-title>
               </v-list-item-content>
@@ -148,6 +150,19 @@ export default {
       notification: null,
       date: new Date(),
     };
+  },
+  created() {
+    this.overlay = true;
+    let storedInfo = localStorage.getItem("user");
+    let userData = JSON.parse(storedInfo);
+    // this.notifications = userData.user.notifications;
+    this.$axios
+      .get(`/allNotifications/${userData.user.id}`)
+      .then((response) => {
+        this.overlay = false;
+        this.notifications = response.data.notifications;
+        console.log(this.notifications);
+      });
   },
   methods: {
     filterSections(gradelevel, id) {
@@ -287,19 +302,6 @@ export default {
     deleteNotif() {
       this.notifications.splice(this.indexToDel, 1);
     },
-  },
-  created() {
-    this.overlay = true;
-    let storedInfo = localStorage.getItem("user");
-    let userData = JSON.parse(storedInfo);
-    console.log(userData);
-    // this.notifications = userData.user.notifications;
-    this.$axios
-      .get(`/allNotifications/${userData.user.id}`)
-      .then((response) => {
-        this.overlay = false;
-        this.notifications = response.data.notifications;
-      });
   },
 };
 </script>
