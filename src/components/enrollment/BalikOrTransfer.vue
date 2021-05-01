@@ -35,8 +35,11 @@
         :rules="[
           (last_school_ID) => !!last_school_ID || 'School ID is required',
           (last_school_ID) =>/^[0-9]+$/.test(last_school_ID) == true || 'Only Number is  allowed!',
+          (last_school_ID) =>String(last_school_ID).length <= 6 || 'School ID cannot be greater than 6 digits',
+          (last_school_ID) => String(last_school_ID).length == 6 || 'School ID must be 6 digits'
         ]"
         label="School ID"
+         :counter="6"
         outlined
         required
       ></v-text-field>
@@ -76,7 +79,7 @@ export default {
         last_grade_completed: "7",
         last_year_completed: "2017-2018",
         last_school_attended: "Mantalongon National High School",
-        last_school_ID: "14135346",
+        last_school_ID: "303000",
         last_school_address: "Mantalongon, Dalaguete, Cebu",
       },
     };
