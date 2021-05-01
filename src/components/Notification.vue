@@ -149,6 +149,9 @@ export default {
       date: new Date(),
     };
   },
+  mounted(){
+    console.log(this.notifications);
+  },
   methods: {
     filterSections(gradelevel, id) {
       this.id = id;
