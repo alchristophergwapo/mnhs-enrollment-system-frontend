@@ -527,7 +527,7 @@ export default {
       .catch((error) => {
         console.log(error);
       });
-    for (let i = 2021; i <= 2023; i++) {
+    for (let i = 2021; i <= new Date().getFullYear(); i++) {
       this.schoolYear.push(i);
     }
   },

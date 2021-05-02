@@ -20,7 +20,7 @@
         >
         <v-card-text
           ><strong class="student_details"
-            >Grade: {{ student.grade_level }}
+            >Grade: {{ student.enrollment.grade_level }}
           </strong></v-card-text
         >
         <v-card-text
