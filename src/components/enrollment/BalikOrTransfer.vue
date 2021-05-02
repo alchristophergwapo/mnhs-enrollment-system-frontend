@@ -6,7 +6,7 @@
     <v-col cols="12" xs="6" sm="4" md="4" lg="2">
       <v-select
         v-model="balikOrTransferInfo.last_grade_completed"
-        :items="['7','8']"
+        :items="lastgrade"
         @keyup="balikAral(($event = balikOrTransferInfo.last_grade_completed))"
         :rules="[
           (last_grade_completed) =>
@@ -81,6 +81,7 @@ export default {
         last_school_attended: "Mantalongon National High School",
         last_school_ID: "303000",
         last_school_address: "Mantalongon, Dalaguete, Cebu",
+        lastgrade:[]
       },
     };
   },

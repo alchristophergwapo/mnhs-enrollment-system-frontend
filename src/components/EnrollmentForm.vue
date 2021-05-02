@@ -58,6 +58,7 @@
           <v-container>
             <balik-or-transfer
               ref="balikAralorTransferInfoData"
+              :lastgrade="grade_levels[0]"
             ></balik-or-transfer>
           </v-container>
         </v-form>
@@ -157,7 +158,7 @@ export default {
           "TECHNICAL-VOCATIONAL LIVELIHOOD (TLV) TRACK": ["AGRI-FISHERY ARTS"],
         },
       ],
-      graded:[7, 8, 9, 10],
+      //graded:[7, 8, 9, 10],
       grade_levels: [
         [7, 8, 9, 10],
         [11, 12],
@@ -207,6 +208,7 @@ export default {
         } else formdata.append("isBalikOrTransfer", false);
 
         if (this.isSeniorHigh) {
+          alert("testing!");
           let seniorHigh = JSON.parse(this.$refs.seniorHighData.getData);
           if (this.$refs.seniorHigh.validate()) {
             for (const key in seniorHigh) {

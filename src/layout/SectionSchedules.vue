@@ -152,6 +152,7 @@
                     <v-text-field
                       v-model="scheduleInputs.startTime"
                       name="startTime"
+                      readonly
                       dense
                       outlined
                     ></v-text-field>
