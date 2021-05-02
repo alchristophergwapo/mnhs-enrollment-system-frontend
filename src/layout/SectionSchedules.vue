@@ -152,6 +152,7 @@
                     <v-text-field
                       v-model="scheduleInputs.startTime"
                       name="startTime"
+                      :readonly="schedules.length > 0 ? true : false"
                       dense
                       outlined
                     ></v-text-field>
@@ -415,6 +416,9 @@ export default {
     };
   },
   created() {
+    // if (this.schedules.length == 0) {
+    //   this.retrieveSchedules();
+    // }
     this.retrieveSchedules();
     EventBus.$on("gradelevelSubject", (data) => {
       let startTime = this.scheduleInputs.startTime;
@@ -468,6 +472,13 @@ export default {
             teacher_name: data.data.teacher_name,
           });
       // console.log(this.scheduleInputs[data.day]);
+    });
+
+    EventBus.$on("clearData", (data) => {
+      this.scheduleInputs[data.day].subject_id = null;
+      this.scheduleInputs[data.day].subject_name = null;
+      this.scheduleInputs[data.day].teacher_id = null;
+      this.scheduleInputs[data.day].teacher_name = null;
     });
   },
   methods: {
@@ -565,9 +576,14 @@ export default {
           })
           .catch((error) => {
             this.loading = false;
-            if (error.response.data.error) {
-              this.showResponse("", error.response.data.error, "error");
-            }
+            if (error.response.data.error && error.response.status == 500)
+              this.showResponse("Ooops...", error.response.data.error, "error");
+            if (error.response.status == 400)
+              this.showResponse(
+                "Ooops...",
+                error.response.data.has_sched,
+                "error"
+              );
           })
           .finally((this.loading = false));
       } else {
@@ -603,6 +619,7 @@ export default {
     },
 
     closeDialog() {
+      this.clearData();
       const length = this.schedules.length;
       // console.log(this.schedules[length - 1]);
       let schedToBase = this.schedules[length - 1];
@@ -642,6 +659,8 @@ export default {
           .post("editSchedules", edited)
           .then((response) => {
             this.scheduleDialog = false;
+            this.editSchedule = false;
+            this.clearData();
             EventBus.$emit("save");
             this.retrieveSchedules();
             this.showResponse("Success", response.data.success, "success");
@@ -658,6 +677,63 @@ export default {
         );
         this.loading = false;
       }
+    },
+
+    clearData() {
+      this.scheduleInputs = {
+        startTime: null,
+        endTime: null,
+        Monday: {
+          day: "Monday",
+          start_time: null,
+          end_time: null,
+          subject_name: null,
+          teacher_name: null,
+          teacher_id: null,
+          subject_id: null,
+          section_id: this.section_id,
+        },
+        Tuesday: {
+          day: "Tuesday",
+          start_time: null,
+          end_time: null,
+          subject_name: null,
+          teacher_name: null,
+          teacher_id: null,
+          subject_id: null,
+          section_id: this.section_id,
+        },
+        Wednesday: {
+          day: "Wednesday",
+          start_time: null,
+          end_time: null,
+          subject_name: null,
+          teacher_name: null,
+          teacher_id: null,
+          subject_id: null,
+          section_id: this.section_id,
+        },
+        Thursday: {
+          day: "Thursday",
+          start_time: null,
+          end_time: null,
+          subject_name: null,
+          teacher_name: null,
+          teacher_id: null,
+          subject_id: null,
+          section_id: this.section_id,
+        },
+        Friday: {
+          day: "Friday",
+          start_time: null,
+          end_time: null,
+          subject_name: null,
+          teacher_name: null,
+          teacher_id: null,
+          subject_id: null,
+          section_id: this.section_id,
+        },
+      };
     },
 
     changeSpanOfClassess(hour, minutes) {
@@ -730,6 +806,7 @@ export default {
       return ("0" + hours).slice(-2) + ":" + ("0" + minutes).slice(-2) + ":00";
     },
     close() {
+      this.schedules = [];
       EventBus.$emit("closeSectionScheduleModal");
     },
   },

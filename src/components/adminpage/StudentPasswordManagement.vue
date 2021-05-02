@@ -22,10 +22,15 @@
       <template v-slot:item="row">
         <tr>
           <td>{{ row.item.grade_level }}</td>
-          <td>{{ row.item.fullname}}</td>
-          <td>{{ row.item.LRN}}</td>
+          <td>{{ row.item.fullname }}</td>
+          <td>{{ row.item.LRN }}</td>
           <td>
-            <v-btn color="primary" @click="resetPassword(row.item)" :loading="loading">Reset Password</v-btn>
+            <v-btn
+              color="primary"
+              @click="resetPassword(row.item)"
+              :loading="loading"
+              >Reset Password</v-btn
+            >
           </td>
         </tr>
       </template>
@@ -55,12 +60,24 @@ export default {
     };
   },
   created() {
-    let students = this.$store.getters.allStudents;
+    let adminLevel = null;
+    let userData = this.$user;
+    console.log(userData);
+    if (userData.user_type != "admin") {
+      let temp = this.$user.username.split("_");
+      adminLevel = temp[1];
+      console.log(adminLevel);
+    }
+    let students = [];
+    this.$store.dispatch("allStudents", adminLevel).then((res) => {
+      this.students = res;
+    });
     for (const key in students) {
       if (students.hasOwnProperty.call(students, key)) {
         const element = students[key];
         let student = [];
-        student["fullname"] = `${element.firstname}`+" "+`${element.lastname}`;
+        student["fullname"] =
+          `${element.firstname}` + " " + `${element.lastname}`;
         student["grade_level"] = element.grade_level;
         student["LRN"] = element.LRN;
         this.students.push(student);
@@ -72,27 +89,26 @@ export default {
     resetPassword(student) {
       console.log(student);
       //this.loading = true;
-          this.$axios
-          .post(`reset-password`,{LRN:student.LRN})
-          .then((response) => {
-            if(response.data.success){
-                this.$swal.fire({
-                icon: "success",
-                title: "Success",
-                text: "Student details is successfully updated!",
-              });
-            }
-            else{
-                this.$swal.fire({
-                icon: "error",
-                title: "Failed",
-                text: "Student details is unsuccessfully updated!",
-              });
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+      this.$axios
+        .post(`reset-password`, { LRN: student.LRN })
+        .then((response) => {
+          if (response.data.success) {
+            this.$swal.fire({
+              icon: "success",
+              title: "Success",
+              text: "Student details is successfully updated!",
+            });
+          } else {
+            this.$swal.fire({
+              icon: "error",
+              title: "Failed",
+              text: "Student details is unsuccessfully updated!",
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };

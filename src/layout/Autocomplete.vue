@@ -8,13 +8,13 @@
       :filter="searchData"
       :loading="isLoading"
       :item-text="[property]"
+      :item-value="[...property]"
       :placeholder="'Search/Select ' + property.split('_')[0] + '...'"
       :prepend-inner-icon="model ? prepend_icon : 'mdi-help'"
-      auto-select-first
+      @change="selectItem"
+      @click:clear="clearData"
       dense
       clearable
-      hide-details
-      hide-selected
       outlined
     >
       <template v-slot:no-data>
@@ -29,14 +29,10 @@
         <v-list-item-avatar
           color="indigo"
           class="headline font-weight-light white--text"
-          @click="selectItem(item)"
         >
           {{ item[property].charAt(0) }}
         </v-list-item-avatar>
-        <v-list-item-content
-          @click="selectItem(item)"
-          @mousedown="selectItem(item)"
-        >
+        <v-list-item-content>
           <v-list-item-title v-text="item[property]"></v-list-item-title>
         </v-list-item-content>
       </template>
@@ -82,19 +78,11 @@ export default {
       model: this.modelValue,
       isLoading: false,
       items: [],
-      schedules: {
-        Monday: null,
-        Tuesday: null,
-        Wednesday: null,
-        Thursday: null,
-        Friday: null,
-      },
       selectedItem: null,
     };
   },
   created() {
     this.items = [];
-    console.log(this.modelValue);
     let resRef = this.property.split("_")[0];
     let request = this.request;
     if (request != "allNoneAdvisoryTeacher" && request != "allTeacher") {
@@ -103,7 +91,6 @@ export default {
     this.$axios
       .get(request)
       .then((res) => {
-        // console.log(res);
         this.items = res.data[resRef];
       })
       .catch((error) => {
@@ -126,13 +113,13 @@ export default {
   },
   methods: {
     selectItem(item) {
-      // this.selectedItem = item;
-      // this.schedules[this.day] =
-      //   item[this.property] + " (" + item.teacher_name + ")";
+      const data = this.items.filter((val) => {
+        return val[this.property] == item;
+      });
       if (this.edit) {
-        EventBus.$emit(`edit${this.request}`, { data: item, day: this.day });
+        EventBus.$emit(`edit${this.request}`, { data: data[0], day: this.day });
       } else {
-        EventBus.$emit(`${this.request}`, { data: item, day: this.day });
+        EventBus.$emit(`${this.request}`, { data: data[0], day: this.day });
       }
     },
     searchData(item, queryText) {
@@ -141,6 +128,9 @@ export default {
       const searchText = queryText.toLowerCase();
 
       return textOne.indexOf(searchText) > -1;
+    },
+    clearData() {
+      EventBus.$emit("clearData", { day: this.day });
     },
   },
 };

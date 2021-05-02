@@ -359,6 +359,7 @@
 
 .login-btn .v-btn__content {
   color: white;
+  letter-spacing: 0.1rem;
 }
 
 .l-container {

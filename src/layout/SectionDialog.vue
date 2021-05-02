@@ -113,9 +113,8 @@ export default {
 
     EventBus.$on("allNoneAdvisoryTeacher", (data) => {
       console.log(data);
-      this.sectionData.teacher = data.data.teacher_name;
-      this.sectionData.teacher_id = data.data.id;
-      console.log(this.sectionData);
+      this.sectionData.teacher = data.data ? data.data.teacher_name : "";
+      this.sectionData.teacher_id = data.data ? data.data.id : "";
     });
 
     EventBus.$on("editallNoneAdvisoryTeacher", (data) => {
@@ -124,13 +123,18 @@ export default {
       this.sectionData.teacher_id = data.data.id;
       console.log(this.sectionData);
     });
+
+    EventBus.$on("clearData", () => {
+      this.Section.teacher = null;
+      this.Section.teacher_id = null;
+    });
   },
   mounted() {},
   methods: {
     //Method For Adding A Section In Junior High School Category
     async addSection(grades) {
-      this.loading = true;
       if (this.$refs.sectionForm.validate()) {
+        this.loading = true;
         if (this.edit == false) {
           // console.log(grades.split(" ")[2]);
           console.log(this.sectionData);

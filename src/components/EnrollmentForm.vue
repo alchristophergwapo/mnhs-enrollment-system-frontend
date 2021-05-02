@@ -198,6 +198,9 @@ export default {
       console.log(this.$refs.balikAralorTransferInfoData), (this.isNew = true);
 
     EventBus.$on("previousGradeLevel", (prevGradeLevel) => {
+      if (prevGradeLevel >= 10) {
+        this.isSeniorHigh = true;
+      }
       this.grade_level = prevGradeLevel + 1;
       this.isNew = true;
       this.clearable = false;

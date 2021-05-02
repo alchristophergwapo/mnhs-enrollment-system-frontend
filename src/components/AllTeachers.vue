@@ -491,14 +491,25 @@ export default {
         Friday: null,
       };
       this.$axios.get(`getTeacherSchedule/${id}`).then((res) => {
-        const schedules = res.data.schedules;
-        console.log(schedules);
+        // this.schedules = res.data.schedules;
+        const schedulesRes = res.data.schedules;
+        console.log(schedulesRes);
         let count = 0;
-        for (let index = 0; index < schedules.length; index++) {
-          const element = schedules[index];
+        let next = false;
+        for (let index = 0; index < schedulesRes.length; index++) {
+          const element = schedulesRes[index];
+          // console.log(element);
+
+          count += 1;
           if (this.sched[element.day] == null)
-            (this.sched[element.day] = element), (count += 1);
-          if (count == 5 || count == schedules.length)
+            this.sched[element.day] = element;
+          if (this.sched[element.day]) next = true;
+          if (
+            count == 5 ||
+            count == schedulesRes.length ||
+            index == schedulesRes.length - 1 ||
+            next
+          )
             this.schedules.push(this.sched),
               (this.sched = {
                 Monday: null,
@@ -506,7 +517,8 @@ export default {
                 Wednesday: null,
                 Thursday: null,
                 Friday: null,
-              });
+              }),
+              (count = 0);
         }
       });
     },

@@ -136,8 +136,12 @@ export default {
   },
   created: function () {
     EventBus.$on("allTeacher", (data) => {
-      this.assigned_teacher = data.data.teacher_name;
-      this.teacher_email = data.data.email;
+      this.assigned_teacher = data.data ? data.data.teacher_name : "";
+      this.teacher_email = data.data ? data.data.email : "";
+    });
+
+    EventBus.$on("clearData", () => {
+      this.assigned_teacher = null;
     });
   },
 
