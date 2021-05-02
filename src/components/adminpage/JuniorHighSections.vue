@@ -309,6 +309,7 @@ export default {
     viewSchedules(sectionId) {
       this.sectionId = sectionId;
       this.viewScheds = true;
+      EventBus.$emit("retrieveScheds", { sectionId: sectionId });
     },
     selected(item) {
       this.addOrEdit.name = "Add " + item;

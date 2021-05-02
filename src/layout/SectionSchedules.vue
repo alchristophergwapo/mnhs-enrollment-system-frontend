@@ -415,6 +415,12 @@ export default {
       mode: "ADD",
     };
   },
+  beforeCreate() {
+    EventBus.$on("retrieveScheds", (data) => {
+      console.log(data);
+      alert(data);
+    });
+  },
   created() {
     // if (this.schedules.length == 0) {
     //   this.retrieveSchedules();
@@ -483,12 +489,12 @@ export default {
   },
   methods: {
     retrieveSchedules() {
-      this.overlay = true;
+      console.log(this.section_id);
       this.schedules = [];
       this.$axios.get(`classSchedules/${this.section_id}`).then((response) => {
+        this.overlay = true;
         const schedRes = response.data.sectionSchedules;
         console.log(schedRes);
-        this.viewScheds = true;
         this.overlay = false;
 
         let count = 0;
@@ -806,7 +812,6 @@ export default {
       return ("0" + hours).slice(-2) + ":" + ("0" + minutes).slice(-2) + ":00";
     },
     close() {
-      this.schedules = [];
       EventBus.$emit("closeSectionScheduleModal");
     },
   },
