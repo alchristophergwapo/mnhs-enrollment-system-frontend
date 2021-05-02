@@ -105,9 +105,8 @@ export default {
         password: this.password,
       };
 
-      this.loading = true;
-
       if (this.$refs.regAdminForm.validate()) {
+        this.loading = true;
         this.$store
           .dispatch("login", data)
           .then((response) => {
@@ -141,7 +140,7 @@ export default {
     showError(message) {
       this.$swal.fire({
         icon: "error",
-        title: "Oooops....",
+        title: "Ooops....",
         text: message,
       });
     },

@@ -64,7 +64,7 @@
       width="280"
     >
       <v-list-item class="px-2" style="background: #006a4e">
-        <v-list-item-avatar size="50">
+        <v-list-item-avatar size="auto">
           <v-img src="../assets/images/mnhs-logo.png"></v-img>
         </v-list-item-avatar>
         <v-list-item-title
@@ -100,7 +100,7 @@
           >
             <template v-slot:activator>
               <v-list-item class="activator-text">
-                <v-list-item-action class="nav-icon">
+                <v-list-item-action class="nav-icon nav-icon-parent">
                   <v-icon>{{ item.icon }}</v-icon>
                 </v-list-item-action>
                 <v-list-item-title>
@@ -357,7 +357,7 @@ export default {
 };
 </script>
 
-<style>
+<style lang="scss">
 .v-list .v-list-group__header.v-list-item--active {
   color: blue;
   background-color: white;
@@ -425,10 +425,30 @@ img.icon {
   margin-right: 20px;
 }
 
+.v-avatar .v-image {
+  width: 50px;
+}
+
 @media screen and (max-width: 986.98px) {
+  .v-avatar .v-image {
+    width: 40px;
+  }
+  .v-navigation-drawer--mini-variant
+    .v-list-item
+    .nav-icon-parent
+    > *:first-child {
+    margin-left: -14px;
+  }
   .nav-link {
     margin: 0 3px 0 3px;
     margin-bottom: 10px;
+
+    .nav-icon {
+      margin-left: -5px !important;
+    }
   }
+}
+
+@media (max-width: 768px) {
 }
 </style>
