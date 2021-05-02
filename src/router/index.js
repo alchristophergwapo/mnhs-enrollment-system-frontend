@@ -117,14 +117,6 @@ const routes = [
       },
     ],
   },
-  // {
-  //     path: '/admin/profile',
-  //     name: 'AdminProfile',
-  //     component: () => import('@/components/AdminProfileSettings.vue'),
-  //     meta: {
-  //         title: 'Admin Profile Settings'
-  //     },
-  // },
   {
     path: "/admin/profile",
     name: "AdminProfile",
@@ -149,6 +141,12 @@ const routes = [
     meta: {
       title: "Student Update Password",
     },
+  },
+  {
+    path: "*",
+    name: "PageNotFound",
+    component: () =>
+      import(/* webpackChunkName: "PageNotFound" */ "@/components/404.vue"),
   },
 ];
 
