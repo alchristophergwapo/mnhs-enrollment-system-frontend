@@ -202,7 +202,10 @@
       <v-text-field
         v-model="studentInfo.zipcode"
         name="zipcode"
-        :rules="[(zipcode) => !!zipcode || 'Zipcode is required',(zipcode) =>/^[0-9]+$/.test(zipcode) == true || 'Only Number is  allowed!']" 
+        :rules="[(zipcode) => !!zipcode || 'Zipcode is required',(zipcode) =>/^[0-9]+$/.test(zipcode) == true || 'Only Number is  allowed!',
+        (zipcode) =>String(zipcode).length <= 4 || 'Zipcode cannot be greater than 4 digits',
+        (zipcode) => String(zipcode).length == 4 || 'Zipcode must be 4 digits']" 
+        :counter="4"
         label="Zipcode"
         outlined
         required
