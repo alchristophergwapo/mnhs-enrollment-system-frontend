@@ -166,23 +166,27 @@
           >
           </section-dialog>
         </v-dialog>
-        <v-dialog v-model="addSubject" persistent max-width="800px">
-          <add-subject-dialog
-            :gradeLevel="addOrEdit.name.split(' ')[2]"
-            :subjectsInGradeLevel="gradelevelSubjects"
-          ></add-subject-dialog>
-        </v-dialog>
-        <v-dialog
-          v-model="viewScheds"
-          fullscreen
-          hide-overlay
-          transition="dialog-bottom-transition"
-        >
-          <SectionSchedules
-            :gradelevel="Number(addOrEdit.name.split(' ')[2])"
-            :section_id="sectionId"
-          ></SectionSchedules>
-        </v-dialog>
+        <div v-if="viewSubject == 'true'">
+          <v-dialog v-model="addSubject" persistent max-width="800px">
+            <add-subject-dialog
+              :gradeLevel="addOrEdit.name.split(' ')[2]"
+              :subjectsInGradeLevel="gradelevelSubjects"
+            ></add-subject-dialog>
+          </v-dialog>
+        </div>
+        <div v-if="viewScheds == 'true'">
+          <v-dialog
+            fullscreen
+            v-model="openSched"
+            hide-overlay
+            transition="dialog-bottom-transition"
+          >
+            <SectionSchedules
+              :gradelevel="Number(addOrEdit.name.split(' ')[2])"
+              :section_id="sectionId"
+            ></SectionSchedules>
+          </v-dialog>
+        </div>
       </v-row>
     </v-container>
   </div>
@@ -201,9 +205,11 @@ export default {
   data() {
     return {
       overlay: false,
+      viewSubject: "false",
       addSubject: false,
       actionDialog: false,
-      viewScheds: false,
+      viewScheds: "false",
+      openSched: false,
       edit: false,
       admin: false,
       tab: null,
@@ -236,6 +242,7 @@ export default {
       addOrEdit: { name: "Add Grade 7" },
     };
   },
+
   created() {
     if (this.$user.user_type == "admin") {
       this.page_name = "Junior High Sections";
@@ -280,6 +287,7 @@ export default {
 
     EventBus.$on("closeSubjectModal", (data) => {
       this.addSubject = data;
+      this.viewSubject = false;
     });
 
     EventBus.$on("closeSectionScheduleModal", () => {
@@ -307,12 +315,15 @@ export default {
         });
     },
     viewSchedules(sectionId) {
+      this.viewScheds = "true";
+      this.openSched = true;
       this.sectionId = sectionId;
       this.viewScheds = true;
       EventBus.$emit("retrieveScheds", { sectionId: sectionId });
     },
     selected(item) {
       this.addOrEdit.name = "Add " + item;
+      this.viewScheds = "false";
       this.junior_high.forEach((junior) => {
         if (junior.text.split(" ")[1] == item.split(" ")[1]) {
           junior.content = this.allsections.filter(function (val) {
@@ -330,6 +341,7 @@ export default {
         .then((response) => {
           console.log(response);
           this.gradelevelSubjects = response.data.subject;
+          this.viewSubject = "true";
           this.addSubject = true;
           this.overlay = false;
         });
