@@ -326,7 +326,12 @@ export default {
                 title: "Ooops....",
                 text: error.response.data.error,
               });
-            }
+            } else
+              this.$swal.fire({
+                icon: "info",
+                title: "Ooops....",
+                text: "An error encountered! Please check your input datas.",
+              });
           });
         // }
       }

@@ -165,45 +165,18 @@ export default {
           })
           .catch((error) => {
             this.loading = false;
-            let existingAdmin = null;
             if (error.response.status == 422)
               this.setErrors(error.response.data.errors);
             if (
               error.response.status == 400 &&
               error.response.data.teacher_admin_exist
             )
-              (existingAdmin = error.response.data.teacher_admin),
-                console.log(error.response.data),
-                this.$swal
-                  .fire({
-                    title: "Ooops...",
-                    text: error.response.data.teacher_admin_exist,
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "Update",
-                  })
-                  .then((result) => {
-                    if (result.isConfirmed)
-                      this.$axios
-                        .post(`updateTeacherAdmin/${existingAdmin.id}`, data)
-                        .then((response) => {
-                          this.clearInputs();
-                          this.showResponse(
-                            "Success",
-                            response.data.success,
-                            "success"
-                          );
-                        })
-                        .catch(() => {
-                          this.showResponse(
-                            "Ooops...",
-                            "An error encountered!",
-                            "info"
-                          );
-                        });
-                  });
+              console.log(error.response.data),
+                this.$swal.fire({
+                  title: "Ooops...",
+                  text: error.response.data.teacher_admin_exist,
+                  icon: "warning",
+                });
             if (error.response.data.teacher_isAssigned)
               this.showResponse(
                 "Ooops...",
