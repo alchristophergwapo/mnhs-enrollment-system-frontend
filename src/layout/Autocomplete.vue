@@ -100,6 +100,7 @@ export default {
     if (request != "allNoneAdvisoryTeacher" && request != "allTeacher") {
       request += `/${this.gradelevel}`;
     }
+    console.log("GRADELEVEL:"+this.gradelevel);
     this.$axios
       .get(request)
       .then((res) => {
@@ -139,7 +140,6 @@ export default {
       // console.log(itemText);
       const textOne = item[this.property].toLowerCase();
       const searchText = queryText.toLowerCase();
-
       return textOne.indexOf(searchText) > -1;
     },
   },

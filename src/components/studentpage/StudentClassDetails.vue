@@ -21,8 +21,8 @@
       <template v-slot:item="row">
         <tr>
           <td>
-            {{ row.item.firstname }}
-            {{ row.item.middlename.split("")[0] + "." }}
+            {{ row.item.firstname.split(" ")[0]}}
+            {{  row.item.middlename}}
             {{ row.item.lastname }}
           </td>
           <td>{{ row.item.address }}</td>
@@ -42,11 +42,11 @@ export default {
         {
           text: "Student Name",
           align: "start",
-          value: "middlename",
+          value: "firstname",
         },
         { text: "Address", value: "address" },
       ],
-      students: this.classmates,
+      students:this.classmates,
       section: this.section_name,
     };
   },

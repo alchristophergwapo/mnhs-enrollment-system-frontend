@@ -95,6 +95,7 @@ export default {
         last_school_attended: "Mantalongon National High School",
         last_school_ID: "303000",
         last_school_address: "Mantalongon, Dalaguete, Cebu",
+        lastgrade: [],
       },
     };
   },

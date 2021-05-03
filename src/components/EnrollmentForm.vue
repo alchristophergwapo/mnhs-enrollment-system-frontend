@@ -35,7 +35,7 @@
                   <v-checkbox
                     class="checkbox-input"
                     v-model="isSeniorHigh"
-                    @click="isNotSeniorHigh = !isNotSeniorHigh"
+                    @click="applyForSeniorHigh()"
                     label="Applying for Senior High?"
                     type="checkbox"
                   >
@@ -182,7 +182,7 @@ export default {
         [7, 8, 9, 10],
         [11, 12],
       ],
-      options: [6, 7, 8, 9, 10, 11, 12],
+      options: [6, 7, 8, 9, 10, 11],
       grade_level: null,
       card_image: null,
       student: null,
@@ -204,9 +204,15 @@ export default {
     });
   },
   methods: {
+    applyForSeniorHigh() {
+      this.isNotSeniorHigh = !this.isNotSeniorHigh;
+      if (this.isSeniorHigh) this.options = [10, 11];
+      else this.options = [6, 7, 8, 9, 10, 11];
+    },
     enterKeyTriggered(e) {
       e.preventDefault();
       if (e.keyCode === 13) alert("here"), this.submitEnrollment();
+      else this.options;
     },
     selectGradeLevel(event) {
       if (event == 7 && !this.isTransfereeOrBalikAral)
@@ -250,6 +256,7 @@ export default {
         } else formdata.append("isBalikOrTransfer", false);
 
         if (this.isSeniorHigh) {
+          alert("testing!");
           let seniorHigh = JSON.parse(this.$refs.seniorHighData.getData);
           if (this.$refs.seniorHigh.validate()) {
             for (const key in seniorHigh) {

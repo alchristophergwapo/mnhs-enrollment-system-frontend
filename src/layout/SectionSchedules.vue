@@ -153,6 +153,7 @@
                       v-model="scheduleInputs.startTime"
                       name="startTime"
                       dense
+                      :readonly="readonly"
                       outlined
                     ></v-text-field>
                   </v-col>
@@ -326,6 +327,7 @@ export default {
   },
   data() {
     return {
+      readonly:false,
       headers: [
         { text: "Monday", value: "Monday", sortable: false },
         { text: "Tuesday", value: "Tuesday", sortable: false },
@@ -533,6 +535,7 @@ export default {
       // console.log(index);
       if (this.editSchedule) {
         this.saveEditSchedChanges(index);
+        this.readonly=false;
       } else {
         this.addSchedule();
       }
@@ -593,6 +596,7 @@ export default {
       this.mode = "EDIT";
       this.editSchedule = true;
       this.scheduleDialog = true;
+      this.readonly=true;
       this.scheduleInputs = item;
       console.log("Inputs => ", this.scheduleInputs);
       this.scheduleInputs.startTime = item.Monday.start_time;
@@ -603,9 +607,10 @@ export default {
     },
 
     closeDialog() {
+      //alert("ReadOnly:"+this.readonly);
       const length = this.schedules.length;
-      // console.log(this.schedules[length - 1]);
       let schedToBase = this.schedules[length - 1];
+      console.log(schedToBase);
       for (const key in schedToBase) {
         if (schedToBase.hasOwnProperty.call(schedToBase, key)) {
           const element = schedToBase[key];
@@ -617,6 +622,7 @@ export default {
       var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
       let newEndTime = this.addTimes(this.scheduleInputs.startTime, span);
       this.scheduleInputs.endTime = newEndTime;
+      this.readonly=false;
       this.scheduleDialog = false;
     },
 
@@ -729,6 +735,7 @@ export default {
 
       return ("0" + hours).slice(-2) + ":" + ("0" + minutes).slice(-2) + ":00";
     },
+
     close() {
       EventBus.$emit("closeSectionScheduleModal");
     },
