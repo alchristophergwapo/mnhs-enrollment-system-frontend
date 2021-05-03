@@ -91,10 +91,10 @@ export default {
     return {
       balikOrTransferInfo: {
         last_grade_completed: null,
-        last_year_completed: "2017-2018",
-        last_school_attended: "Mantalongon National High School",
-        last_school_ID: "303000",
-        last_school_address: "Mantalongon, Dalaguete, Cebu",
+        last_year_completed: null,
+        last_school_attended: null,
+        last_school_ID: null,
+        last_school_address: null,
       },
     };
   },

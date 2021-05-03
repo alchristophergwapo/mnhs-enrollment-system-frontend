@@ -32,9 +32,15 @@
         :rules="[
           (parent_number) =>
             !!parent_number || 'Parent/Guardian contact number is required.',
-         (parent_number) =>/^[0-9]+$/.test(parent_number) == true || 'Only Number is  allowed!',
-          (parent_number) =>String(parent_number).length <= 11 || 'Parent/Guardian cannot be greater than 11 digits',
-          (parent_number) => String(parent_number).length == 11 || 'Parent/Guardian contact number must be 11 digits',
+          (parent_number) =>
+            /^[0-9]+$/.test(parent_number) == true ||
+            'Only Number is  allowed!',
+          (parent_number) =>
+            String(parent_number).length <= 11 ||
+            'Parent/Guardian cannot be greater than 11 digits',
+          (parent_number) =>
+            String(parent_number).length == 11 ||
+            'Parent/Guardian contact number must be 11 digits',
         ]"
         label="Parent/Guardian Contact Number"
         :counter="11"
@@ -50,10 +56,10 @@ export default {
   data() {
     return {
       parentGuardianInfo: {
-        father: "",
-        mother: "Ma. Vilma De Guzman",
-        guardian: "Corazon Alonzo",
-        parent_number: "09101981042",
+        father: null,
+        mother: null,
+        guardian: null,
+        parent_number: null,
       },
     };
   },

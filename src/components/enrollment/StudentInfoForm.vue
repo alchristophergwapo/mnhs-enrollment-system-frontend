@@ -16,8 +16,10 @@
         name="LRN"
         :rules="[
           (LRN) => !!LRN || 'LRN is required',
-          (LRN) =>/^[0-9]+$/.test(LRN) == true || 'Only Number is  allowed!',
-          (LRN) =>String(LRN).length <= 12 || 'LRN cannot be greater than 12 characters',
+          (LRN) => /^[0-9]+$/.test(LRN) == true || 'Only Number is  allowed!',
+          (LRN) =>
+            String(LRN).length <= 12 ||
+            'LRN cannot be greater than 12 characters',
           (LRN) => String(LRN).length == 12 || 'LRN must be 12 characters',
         ]"
         :counter="12"
@@ -33,7 +35,7 @@
         name="average"
         :rules="[
           (v) => !!v || 'Average is required',
-          (v) =>/^[0-9]+$/.test(v) == true || 'Only Number is  allowed!',
+          (v) => /^[0-9]+$/.test(v) == true || 'Only Number is  allowed!',
           (v) => v <= 100 || 'Maximum average is 100',
         ]"
         label="Average"
@@ -84,7 +86,10 @@
       <v-text-field
         v-model="studentInfo.age"
         name="age"
-        :rules="[(v) => !!v || 'Age is required',(v) =>/^[0-9]+$/.test(v) == true || 'Only Number is  allowed!',]"
+        :rules="[
+          (v) => !!v || 'Age is required',
+          (v) => /^[0-9]+$/.test(v) == true || 'Only Number is  allowed!',
+        ]"
         label="Age"
         outlined
         required
@@ -176,11 +181,16 @@
       <v-text-field
         v-model="studentInfo.contact"
         name="contact"
-        :rules="[(contact) => !! contact || 'Contact is required',
-         (contact) =>/^[0-9]+$/.test(contact) == true || 'Only Number is  allowed!',
-         (contact) =>String(contact).length <= 11 || 'Contact number cannot be greater than 11 digits',
-          (contact) => String(contact).length == 11 || 'Contact number must be 11 digits',
-         ]"
+        :rules="[
+          (contact) => !!contact || 'Contact is required',
+          (contact) =>
+            /^[0-9]+$/.test(contact) == true || 'Only Number is  allowed!',
+          (contact) =>
+            String(contact).length <= 11 ||
+            'Contact number cannot be greater than 11 digits',
+          (contact) =>
+            String(contact).length == 11 || 'Contact number must be 11 digits',
+        ]"
         type="text"
         label="Contact Number(for receiving enrollment notification)"
         :counter="11"
@@ -202,9 +212,16 @@
       <v-text-field
         v-model="studentInfo.zipcode"
         name="zipcode"
-        :rules="[(zipcode) => !!zipcode || 'Zipcode is required',(zipcode) =>/^[0-9]+$/.test(zipcode) == true || 'Only Number is  allowed!',
-        (zipcode) =>String(zipcode).length <= 4 || 'Zipcode cannot be greater than 4 digits',
-        (zipcode) => String(zipcode).length == 4 || 'Zipcode must be 4 digits']" 
+        :rules="[
+          (zipcode) => !!zipcode || 'Zipcode is required',
+          (zipcode) =>
+            /^[0-9]+$/.test(zipcode) == true || 'Only Number is  allowed!',
+          (zipcode) =>
+            String(zipcode).length <= 4 ||
+            'Zipcode cannot be greater than 4 digits',
+          (zipcode) =>
+            String(zipcode).length == 4 || 'Zipcode must be 4 digits',
+        ]"
         :counter="4"
         label="Zipcode"
         outlined
@@ -217,30 +234,29 @@
 <script>
 export default {
   data: () => ({
-     year: new Date().getFullYear(),
-     studentInfo:{
-      PSA: "",
-      LRN: 303000123456,
-      average: 80,
-      firstname: "Christopher",
-      middlename: "De Guzman",
-      lastname: "Alonzo",
+    year: new Date().getFullYear(),
+    studentInfo: {
+      PSA: null,
+      LRN: null,
+      average: null,
+      firstname: null,
+      middlename: null,
+      lastname: null,
       birthdate: null,
-      age: 23,
-      gender: "Male",
-      IP: "No",
-      IP_community: "",
-      mother_tongue: "Bisaya",
-      contact: "09458562899",
-      address: "Salug, Dalaguete, Cebu",
-      zipcode: "6022",
+      age: null,
+      gender: null,
+      IP: null,
+      IP_community: null,
+      mother_tongue: null,
+      contact: null,
+      address: null,
+      zipcode: null,
     },
   }),
   computed: {
     getData() {
       return this.studentInfo;
     },
-   
   },
 };
 </script>
