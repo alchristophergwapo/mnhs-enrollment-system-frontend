@@ -58,7 +58,7 @@
           <v-container>
             <balik-or-transfer
               ref="balikAralorTransferInfoData"
-              :lastgrade="grade_levels[0]"
+              :lastgrade="lastgrade"
             ></balik-or-transfer>
           </v-container>
         </v-form>
@@ -158,7 +158,7 @@ export default {
           "TECHNICAL-VOCATIONAL LIVELIHOOD (TLV) TRACK": ["AGRI-FISHERY ARTS"],
         },
       ],
-      //graded:[7, 8, 9, 10],
+      lastgrade:[],
       grade_levels: [
         [7, 8, 9, 10],
         [11, 12],
@@ -175,6 +175,7 @@ export default {
   },
   computed: {},
   methods: {
+
     submitEnrollment() {
       if (
         this.$refs.submitEnrollment.validate() &&

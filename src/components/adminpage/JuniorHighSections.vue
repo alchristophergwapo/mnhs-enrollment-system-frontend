@@ -172,9 +172,10 @@
             :subjectsInGradeLevel="gradelevelSubjects"
           ></add-subject-dialog>
         </v-dialog>
+      <div v-if="viewScheds=='true'">
         <v-dialog
-          v-model="viewScheds"
           fullscreen
+          v-model="openSched"
           hide-overlay
           transition="dialog-bottom-transition"
         >
@@ -183,6 +184,7 @@
             :section_id="sectionId"
           ></SectionSchedules>
         </v-dialog>
+      </div>
       </v-row>
     </v-container>
   </div>
@@ -203,7 +205,8 @@ export default {
       overlay: false,
       addSubject: false,
       actionDialog: false,
-      viewScheds: false,
+      viewScheds:'false',
+      openSched:false,
       edit: false,
       admin: false,
       tab: null,
@@ -236,6 +239,7 @@ export default {
       addOrEdit: { name: "Add Grade 7" },
     };
   },
+  
   created() {
     if (this.$user.user_type == "admin") {
       this.page_name = "Junior High Sections";
@@ -307,11 +311,13 @@ export default {
         });
     },
     viewSchedules(sectionId) {
+      this.viewScheds ='true';
+      this.openSched=true;
       this.sectionId = sectionId;
-      this.viewScheds = true;
     },
     selected(item) {
       this.addOrEdit.name = "Add " + item;
+      this.viewScheds='false';
       this.junior_high.forEach((junior) => {
         if (junior.text.split(" ")[1] == item.split(" ")[1]) {
           junior.content = this.allsections.filter(function (val) {
