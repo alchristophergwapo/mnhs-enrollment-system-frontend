@@ -6,6 +6,7 @@
     <v-col cols="12" xs="6" sm="4" md="4" lg="2">
       <v-select
         v-model="balikOrTransferInfo.last_grade_completed"
+        :items="lastgrade"
         @keyup="balikAral(($event = balikOrTransferInfo.last_grade_completed))"
         :rules="[
           (last_grade_completed) =>

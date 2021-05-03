@@ -27,7 +27,7 @@
                 <v-container>
                   <v-checkbox
                     class="checkbox-input"
-                    v-model="isSeniorHigh"
+                    v-model="isSeniorHigh"           
                     @click="isNotSeniorHigh = !isNotSeniorHigh"
                     label="Applying for Senior High?"
                     type="checkbox"
@@ -175,7 +175,6 @@ export default {
   },
   computed: {},
   methods: {
-
     submitEnrollment() {
       if (
         this.$refs.submitEnrollment.validate() &&
