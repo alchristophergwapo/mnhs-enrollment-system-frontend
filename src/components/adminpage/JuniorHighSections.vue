@@ -174,7 +174,7 @@
             ></add-subject-dialog>
           </v-dialog>
         </div>
-        <div v-if="viewScheds == 'true'">
+        <div v-if="viewScheds">
           <v-dialog
             fullscreen
             v-model="openSched"
@@ -206,9 +206,9 @@ export default {
     return {
       overlay: false,
       viewSubject: "false",
+      viewScheds: false,
       addSubject: false,
       actionDialog: false,
-      viewScheds: "false",
       openSched: false,
       edit: false,
       admin: false,
@@ -291,6 +291,7 @@ export default {
     });
 
     EventBus.$on("closeSectionScheduleModal", () => {
+      this.openSched = false;
       this.viewScheds = false;
     });
   },
@@ -315,15 +316,13 @@ export default {
         });
     },
     viewSchedules(sectionId) {
-      this.viewScheds = "true";
+      this.viewScheds = true;
       this.openSched = true;
       this.sectionId = sectionId;
-      this.viewScheds = true;
-      EventBus.$emit("retrieveScheds", { sectionId: sectionId });
     },
     selected(item) {
       this.addOrEdit.name = "Add " + item;
-      this.viewScheds = "false";
+      this.viewScheds = false;
       this.junior_high.forEach((junior) => {
         if (junior.text.split(" ")[1] == item.split(" ")[1]) {
           junior.content = this.allsections.filter(function (val) {
@@ -366,7 +365,6 @@ export default {
 
     //Method For Editing The Section
     async editSection(data) {
-      console.log(data);
       this.addOrEdit.name = "Edit Grade " + data.gradelevel.grade_level;
       this.edit = true;
       this.actionDialog = true;

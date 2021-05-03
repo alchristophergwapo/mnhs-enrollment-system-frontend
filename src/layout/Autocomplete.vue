@@ -82,25 +82,10 @@ export default {
     };
   },
   created() {
-    this.items = [];
-    let resRef = this.property.split("_")[0];
-    let request = this.request;
-    if (request != "allNoneAdvisoryTeacher" && request != "allTeacher") {
-      request += `/${this.gradelevel}`;
-    }
-    console.log("GRADELEVEL:"+this.gradelevel);
-    this.$axios
-      .get(request)
-      .then((res) => {
-        this.items = res.data[resRef];
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      .finally(() => {
-        this.isLoading = false;
-      });
-
+    this.retrieveData();
+    EventBus.$on("reloadData", () => {
+      this.retrieveData();
+    });
     EventBus.$on("save", () => {
       this.model = null;
     });
@@ -113,6 +98,25 @@ export default {
     });
   },
   methods: {
+    retrieveData() {
+      this.items = [];
+      let resRef = this.property.split("_")[0];
+      let request = this.request;
+      if (request != "allNoneAdvisoryTeacher" && request != "allTeacher") {
+        request += `/${this.gradelevel}`;
+      }
+      this.$axios
+        .get(request)
+        .then((res) => {
+          this.items = res.data[resRef];
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .finally(() => {
+          this.isLoading = false;
+        });
+    },
     selectItem(item) {
       const data = this.items.filter((val) => {
         return val[this.property] == item;

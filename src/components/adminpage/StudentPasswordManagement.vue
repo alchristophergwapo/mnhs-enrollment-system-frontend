@@ -68,21 +68,21 @@ export default {
       adminLevel = temp[1];
       console.log(adminLevel);
     }
-    let students = [];
     this.$store.dispatch("allStudents", adminLevel).then((res) => {
-      this.students = res;
-    });
-    for (const key in students) {
-      if (students.hasOwnProperty.call(students, key)) {
-        const element = students[key];
-        let student = [];
-        student["fullname"] =
-          `${element.firstname}` + " " + `${element.lastname}`;
-        student["grade_level"] = element.grade_level;
-        student["LRN"] = element.LRN;
-        this.students.push(student);
+      let students = res;
+      for (const key in students) {
+        if (students.hasOwnProperty.call(students, key)) {
+          const element = students[key];
+          let student = [];
+          student["fullname"] =
+            `${element.firstname}` + " " + `${element.lastname}`;
+          student["grade_level"] = element.grade_level;
+          student["LRN"] = element.LRN;
+          this.students.push(student);
+        }
       }
-    }
+    });
+
     console.log(this.students);
   },
   methods: {

@@ -54,11 +54,12 @@ new Vue({
   vuetify,
   router,
   store,
+  beforeCreate() {
+    this.initialize();
+  },
   created() {
     this.initialize();
-    // this.$store.dispatch('logout')
     EventBus.$on("sectionUpdated", () => {
-      // console.log(data);
       this.$swal.fire({
         icon: "success",
         title: "Success",

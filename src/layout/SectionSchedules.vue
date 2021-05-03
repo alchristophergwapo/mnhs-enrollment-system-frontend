@@ -416,16 +416,8 @@ export default {
       mode: "ADD",
     };
   },
-  beforeCreate() {
-    EventBus.$on("retrieveScheds", (data) => {
-      console.log(data);
-      alert(data);
-    });
-  },
   created() {
-    // if (this.schedules.length == 0) {
-    //   this.retrieveSchedules();
-    // }
+    console.log(this.section_id);
     this.retrieveSchedules();
     EventBus.$on("gradelevelSubject", (data) => {
       let startTime = this.scheduleInputs.startTime;
@@ -559,6 +551,7 @@ export default {
     addSchedule() {
       this.loading = true;
       let schedInput = this.scheduleInputs;
+      console.log(schedInput);
       let schedCount = 0;
       for (const key in schedInput) {
         if (schedInput.hasOwnProperty.call(schedInput, key)) {
@@ -578,6 +571,7 @@ export default {
             this.loading = false;
             this.schedules.push(this.schedulesToAdd);
             this.showResponse("", response.data.success, "success");
+            this.clearData();
             EventBus.$emit("save");
             this.retrieveSchedules();
             this.$refs.scheduleForm.resetValidation();

@@ -29,6 +29,7 @@
             label="Current Password"
             @click:append="showPass = !showPass"
             @keydown="clearErrors"
+            @keyup="enterKeyTriggered"
             :error="hasError('currentpassword')"
             outlined
           >
@@ -46,6 +47,7 @@
             name="new_password"
             @click:append="showNPass = !showNPass"
             @keydown="clearErrors"
+            @keyup="enterKeyTriggered"
             :error="hasError('new_password')"
             outlined
           ></v-text-field>
@@ -62,6 +64,7 @@
             name="confirm_password"
             @click:append="showCPass = !showCPass"
             @keydown="clearErrors"
+            @keyup="enterKeyTriggered"
             :error="hasError('confirm_password')"
             outlined
           ></v-text-field>
@@ -118,6 +121,9 @@ export default {
     }
   },
   methods: {
+    enterKeyTriggered(e) {
+      if (e.keyCode === 13) this.submit();
+    },
     submit() {
       if (this.$refs.update.validate()) {
         this.loading = true;
@@ -194,18 +200,15 @@ export default {
 };
 </script>
 <style scoped>
-
 .invalid-feedback {
-  margin-top:-20px;
-  margin-bottom:20px;
+  margin-top: -20px;
+  margin-bottom: 20px;
 }
 
 @media screen and (max-width: 767.98px) {
   .invalid-feedback {
-     margin-top:-19px;
-    margin-bottom:19px;
+    margin-top: -19px;
+    margin-bottom: 19px;
   }
-  
 }
-
 </style>

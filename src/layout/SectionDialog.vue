@@ -155,6 +155,7 @@ export default {
                   data1: grades,
                 });
                 this.showResponse("Success", response.data.message, "success");
+                EventBus.$emit("reloadData");
                 this.loading = false;
                 this.close();
               }
@@ -262,7 +263,8 @@ export default {
               if (error.response.status == 422) {
                 this.setErrors(error.response.data.errors);
               } else {
-                this.showResponse("error", "Ooops...", "An error encountered!");
+                console.log(error);
+                this.showResponse("Ooops...", "An error encountered!", "error");
               }
             });
         }
@@ -278,6 +280,7 @@ export default {
     },
 
     close() {
+      this.$refs.sectionForm.resetValidation();
       EventBus.$emit("save");
       EventBus.$emit("closeModal", "close-modal");
     },

@@ -215,7 +215,6 @@ export default {
       this.totalDeclined = res.length;
     });
   },
-  mounted: () => {},
   methods: {
     redirectToDeclinedPage() {
       EventBus.$emit("redirectToDeclinedTab");
