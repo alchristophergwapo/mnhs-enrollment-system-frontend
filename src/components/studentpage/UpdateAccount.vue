@@ -193,3 +193,19 @@ export default {
   },
 };
 </script>
+<style scoped>
+
+.invalid-feedback {
+  margin-top:-20px;
+  margin-bottom:20px;
+}
+
+@media screen and (max-width: 767.98px) {
+  .invalid-feedback {
+     margin-top:-19px;
+    margin-bottom:19px;
+  }
+  
+}
+
+</style>

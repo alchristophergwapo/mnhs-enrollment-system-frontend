@@ -166,12 +166,14 @@
           >
           </section-dialog>
         </v-dialog>
+        <div v-if="viewSubject=='true'">
         <v-dialog v-model="addSubject" persistent max-width="800px">
           <add-subject-dialog
             :gradeLevel="addOrEdit.name.split(' ')[2]"
             :subjectsInGradeLevel="gradelevelSubjects"
           ></add-subject-dialog>
         </v-dialog>
+        </div>
       <div v-if="viewScheds=='true'">
         <v-dialog
           fullscreen
@@ -203,6 +205,7 @@ export default {
   data() {
     return {
       overlay: false,
+      viewSubject:'false',
       addSubject: false,
       actionDialog: false,
       viewScheds:'false',
@@ -284,6 +287,7 @@ export default {
 
     EventBus.$on("closeSubjectModal", (data) => {
       this.addSubject = data;
+      this.viewSubject=false;
     });
 
     EventBus.$on("closeSectionScheduleModal", () => {
@@ -335,6 +339,7 @@ export default {
         .then((response) => {
           console.log(response);
           this.gradelevelSubjects = response.data.subject;
+          this.viewSubject='true';
           this.addSubject = true;
           this.overlay = false;
         });
