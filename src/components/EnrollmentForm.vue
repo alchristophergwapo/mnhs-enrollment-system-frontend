@@ -235,6 +235,7 @@ export default {
         this.$refs.submitEnrollment.validate() &&
         this.$refs.basicInfo.validate()
       ) {
+        let error = false;
         this.submitting = true;
         this.student = this.$refs.studentInfoData.getData;
         let formdata = new FormData();
@@ -247,31 +248,37 @@ export default {
         }
 
         if (this.isTransfereeOrBalikAral) {
-          let balikOrTransfer = JSON.parse(
-            this.$refs.balikAralorTransferInfoData.getData
-          );
-          for (const key in balikOrTransfer) {
-            if (balikOrTransfer[key]) {
-              const element = balikOrTransfer[key];
-              this.student[key] = element;
-            }
-          }
-
-          formdata.append("isBalikOrTransfer", true);
-        } else formdata.append("isBalikOrTransfer", false);
-
-        if (this.isSeniorHigh) {
-          let seniorHigh = JSON.parse(this.$refs.seniorHighData.getData);
-          if (this.$refs.seniorHigh.validate()) {
-            for (const key in seniorHigh) {
-              if (seniorHigh[key]) {
-                const element = seniorHigh[key];
+          if (this.$refs.balikAralorTransferInfoData.validate()) {
+            error = false;
+            let balikOrTransfer = JSON.parse(
+              this.$refs.balikAralorTransferInfoData.getData
+            );
+            for (const key in balikOrTransfer) {
+              if (balikOrTransfer[key]) {
+                const element = balikOrTransfer[key];
                 this.student[key] = element;
               }
             }
 
-            formdata.append("isSeniorHigh", true);
-          }
+            formdata.append("isBalikOrTransfer", true);
+          } else error = true;
+        } else formdata.append("isBalikOrTransfer", false);
+
+        if (this.isSeniorHigh) {
+          if (this.$refs.seniorHigh.validate()) {
+            error = false;
+            let seniorHigh = JSON.parse(this.$refs.seniorHighData.getData);
+            if (this.$refs.seniorHigh.validate()) {
+              for (const key in seniorHigh) {
+                if (seniorHigh[key]) {
+                  const element = seniorHigh[key];
+                  this.student[key] = element;
+                }
+              }
+
+              formdata.append("isSeniorHigh", true);
+            }
+          } else error = true;
         } else formdata.append("isSeniorHigh", false);
 
         for (const key in this.student) {
@@ -292,52 +299,52 @@ export default {
         for (let [key, value] of formdata.entries()) {
           console.log(key, value);
         }
-        // if (noError) {
-        this.$axios
-          .post(`addStudent`, formdata)
-          .then((response) => {
-            console.log(response);
-            this.$swal.fire({
-              title: "Success",
-              text: response.data.success,
-              icon: "success",
-            });
-            this.submitting = false;
-            const userInfo = localStorage.getItem("user");
-            if (userInfo) {
-              this.$router.push({ path: "/admin" });
-            } else {
-              this.$router.push({ path: "/" });
-            }
-          })
-          .catch((error) => {
-            console.log(error.response);
-            this.submitting = false;
-            if (error.response.data.currentEnrollment) {
+        if (error == false) {
+          this.$axios
+            .post(`addStudent`, formdata)
+            .then((response) => {
+              console.log(response);
               this.$swal.fire({
-                icon: "info",
-                title: "Ooops....",
-                text: error.response.data.error,
+                title: "Success",
+                text: response.data.success,
+                icon: "success",
               });
-            }
-            if (error.response.data.passEnrollment)
-              (this.passEnrolled = true),
-                (this.grade_level =
-                  error.response.data.passEnrollment.enrollment.grade_level +
-                  1),
+              this.submitting = false;
+              const userInfo = localStorage.getItem("user");
+              if (userInfo) {
+                this.$router.push({ path: "/admin" });
+              } else {
+                this.$router.push({ path: "/" });
+              }
+            })
+            .catch((error) => {
+              console.log(error.response);
+              this.submitting = false;
+              if (error.response.data.currentEnrollment) {
                 this.$swal.fire({
                   icon: "info",
                   title: "Ooops....",
                   text: error.response.data.error,
                 });
-            if (error.response.status == 500)
-              this.$swal.fire({
-                icon: "info",
-                title: "Ooops....",
-                text: "An error encountered! Please check your input datas.",
-              });
-          });
-        // }
+              }
+              if (error.response.data.passEnrollment)
+                (this.passEnrolled = true),
+                  (this.grade_level =
+                    error.response.data.passEnrollment.enrollment.grade_level +
+                    1),
+                  this.$swal.fire({
+                    icon: "info",
+                    title: "Ooops....",
+                    text: error.response.data.error,
+                  });
+              if (error.response.status == 500)
+                this.$swal.fire({
+                  icon: "info",
+                  title: "Ooops....",
+                  text: "An error encountered! Please check your input datas.",
+                });
+            });
+        }
       }
     },
   },

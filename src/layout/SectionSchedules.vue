@@ -578,6 +578,7 @@ export default {
           })
           .catch((error) => {
             this.loading = false;
+            this.schedulesToAdd = [];
             if (error.response.data.error && error.response.status == 500)
               this.showResponse("Ooops...", error.response.data.error, "error");
             if (error.response.status == 400)

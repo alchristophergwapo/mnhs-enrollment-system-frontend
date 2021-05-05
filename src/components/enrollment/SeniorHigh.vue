@@ -11,6 +11,7 @@
         label="First Semester"
         value="First Semester"
         type="checkbox"
+        :required="semester ? false : true"
       ></v-checkbox>
     </v-col>
     <v-col cols="12" xs="6" sm="4" md="4" lg="2">
@@ -20,6 +21,7 @@
         label="Second Semester"
         value="Second Semester"
         type="checkbox"
+        :required="semester ? false : true"
       ></v-checkbox>
     </v-col>
     <v-col cols="12" xs="6" sm="6" md="6" lg="3">
