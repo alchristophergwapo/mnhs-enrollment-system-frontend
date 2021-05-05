@@ -171,12 +171,11 @@ export default {
               error.response.status == 400 &&
               error.response.data.teacher_admin_exist
             )
-              console.log(error.response.data),
-                this.$swal.fire({
-                  title: "Ooops...",
-                  text: error.response.data.teacher_admin_exist,
-                  icon: "warning",
-                });
+              this.$swal.fire({
+                title: "Ooops...",
+                text: error.response.data.teacher_admin_exist,
+                icon: "warning",
+              });
             if (error.response.data.teacher_isAssigned)
               this.showResponse(
                 "Ooops...",

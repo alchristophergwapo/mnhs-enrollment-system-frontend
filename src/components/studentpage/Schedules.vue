@@ -147,7 +147,6 @@ export default {
           };
         }
       }
-      //   console.log(this.schedules);
     });
   },
   methods: {

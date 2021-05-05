@@ -10,7 +10,7 @@
           <span>Mantalongon, Dalaguete Cebu</span>
         </v-toolbar-title>
         <v-spacer></v-spacer>
-        <v-btn text link to="/sign-in">Login</v-btn>
+        <v-btn text link to="/sign-in" v-if="!user">Login</v-btn>
       </v-toolbar>
       <div class="form-container">
         <v-card-title
@@ -190,15 +190,18 @@ export default {
       parentGuardian: null,
       balikOrTransfer: null,
       seniorHigh: null,
+      user: null,
       enrollmentDate: Date.now(),
     };
   },
   created: function () {
+    this.user = localStorage.getItem("user");
     if (this.isTransfereeOrBalikAral)
       console.log(this.$refs.balikAralorTransferInfoData), (this.isNew = true);
 
     EventBus.$on("previousGradeLevel", (prevGradeLevel) => {
       if (prevGradeLevel > 9) this.isSeniorHigh = true;
+      else this.isSeniorHigh = false;
       this.grade_level = prevGradeLevel + 1;
       this.isNew = true;
       this.clearable = false;
@@ -257,7 +260,6 @@ export default {
         } else formdata.append("isBalikOrTransfer", false);
 
         if (this.isSeniorHigh) {
-          alert("testing!");
           let seniorHigh = JSON.parse(this.$refs.seniorHighData.getData);
           if (this.$refs.seniorHigh.validate()) {
             for (const key in seniorHigh) {
@@ -317,16 +319,17 @@ export default {
                 text: error.response.data.error,
               });
             }
-            if (error.response.data.passEnrollment) {
-              this.passEnrolled = true;
-              this.grade_level =
-                error.response.data.passEnrollment.enrollment.grade_level + 1;
-              this.$swal.fire({
-                icon: "info",
-                title: "Ooops....",
-                text: error.response.data.error,
-              });
-            } else
+            if (error.response.data.passEnrollment)
+              (this.passEnrolled = true),
+                (this.grade_level =
+                  error.response.data.passEnrollment.enrollment.grade_level +
+                  1),
+                this.$swal.fire({
+                  icon: "info",
+                  title: "Ooops....",
+                  text: error.response.data.error,
+                });
+            if (error.response.status == 500)
               this.$swal.fire({
                 icon: "info",
                 title: "Ooops....",
@@ -344,6 +347,8 @@ export default {
 .toolbar-content {
   height: 80px !important;
   padding: 8px;
+  position: fixed;
+  width: 100%;
 
   .toolbar-title {
     margin-left: 20px;
@@ -359,6 +364,10 @@ export default {
       font-size: 15px;
       letter-spacing: 0.1rem;
     }
+  }
+
+  .form-container {
+    padding-top: 64px !important;
   }
 }
 </style>

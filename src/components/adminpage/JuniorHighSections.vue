@@ -281,7 +281,6 @@ export default {
     });
 
     EventBus.$on("displayAllsection", (data) => {
-      console.log(data);
       this.displayAllsection(data.data1.split(" ")[2]);
     });
 
@@ -307,12 +306,15 @@ export default {
               junior.content = this.allsections.filter(function (val) {
                 return val.gradelevel.grade_level == gradelevel;
               });
-              // console.log(junior.content);
             }
           });
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+          this.$swal.filter({
+            icon: "error",
+            title: "Ooops...",
+            text: "An error encountered!",
+          });
         });
     },
     viewSchedules(sectionId) {
@@ -332,13 +334,10 @@ export default {
       });
     },
     retrieveSubjects() {
-      // this.subjects = [];
-      // console.log(this.subjects);
       this.overlay = true;
       this.$axios
         .get(`gradelevelSubject/${Number(this.addOrEdit.name.split(" ")[2])}`)
         .then((response) => {
-          console.log(response);
           this.gradelevelSubjects = response.data.subject;
           this.viewSubject = "true";
           this.addSubject = true;
@@ -347,7 +346,6 @@ export default {
     },
     //Method For Opening Dialog
     open(grade) {
-      console.log(grade);
       this.addOrEdit.name = "Add " + grade;
       this.actionDialog = true;
       this.edit = false;

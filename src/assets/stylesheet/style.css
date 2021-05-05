@@ -434,6 +434,7 @@ h3 {
 .form-container {
   margin-right: 20px;
   margin-bottom: 20px;
+  padding-top: 100px !important;
 }
 
 #stepper-container {

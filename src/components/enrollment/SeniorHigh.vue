@@ -66,14 +66,7 @@ export default {
       return JSON.stringify(this.senior_high);
     },
   },
-  methods: {
-    // checkStrands() {
-    //   if (this.senior_high.track != "") {
-    //     console.log(this.strands);
-    //     this.strands = this.strands[0][this.senior_high.track];
-    //   }
-    // },
-  },
+  methods: {},
 };
 </script>
 

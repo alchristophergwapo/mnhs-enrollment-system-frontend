@@ -154,7 +154,6 @@ export default {
             }
           })
           .catch((error) => {
-            console.log(error.response);
             this.loading = false;
             if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);

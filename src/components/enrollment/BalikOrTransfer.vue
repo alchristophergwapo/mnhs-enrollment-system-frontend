@@ -13,6 +13,7 @@
             !!last_grade_completed || 'Last Grade Level Completed is required',
         ]"
         label="Last Grade Level Completed"
+        type="number"
         outlined
         required
       ></v-select>
@@ -55,6 +56,9 @@
         :rules="[
           (last_school_attended) =>
             !!last_school_attended || 'School name is required',
+          (last_school_attended) =>
+            last_school_attended.length >= 8 ||
+            'School name must be at least 8 characters.',
         ]"
         label="School Name"
         outlined
@@ -67,6 +71,10 @@
         :rules="[
           (last_school_address) =>
             !!last_school_address || 'School adress is required',
+
+          (last_school_address) =>
+            last_school_address.length >= 4 ||
+            'School address must be at least 4 characters.',
         ]"
         label="School Address"
         outlined

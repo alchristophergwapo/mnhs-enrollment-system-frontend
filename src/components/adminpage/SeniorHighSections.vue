@@ -176,8 +176,7 @@ export default {
     });
 
     EventBus.$on("displayAllsection", (data) => {
-      console.log(data);
-      this.displayAllsection(data.data1.split(' ')[2]);
+      this.displayAllsection(data.data1.split(" ")[2]);
     });
 
     EventBus.$on("closeSubjectModal", (data) => {
@@ -195,18 +194,20 @@ export default {
         .get("allSections")
         .then((response) => {
           this.allsections = response.data.sections;
-          console.log(this.allsections);
           this.senior_high.forEach((senior) => {
             if (senior.text.split(" ")[1] == gradelevel) {
               senior.content = this.allsections.filter(function (val) {
                 return val.gradelevel.grade_level == gradelevel;
               });
-              //   console.log(junior.content);
             }
           });
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+          this.$swal.filter({
+            icon: "error",
+            title: "Ooops...",
+            text: "An error encountered!",
+          });
         });
     },
     viewSchedules(sectionId) {
@@ -217,7 +218,6 @@ export default {
         this.viewScheds = true;
         this.overlay = false;
         const schedulesOnDB = response.data.schedules;
-        console.log(schedulesOnDB);
 
         let count = 0;
         let friday = false;
@@ -258,7 +258,6 @@ export default {
     },
     retrieveSubjects() {
       this.subjects = [];
-      console.log(this.subjects);
       this.overlay = true;
       this.$axios
         .get(`gradelevelSubject/${Number(this.addOrEdit.name.split(" ")[2])}`)
@@ -270,7 +269,6 @@ export default {
     },
     //Method For Opening Dialog
     open(grade) {
-      console.log(grade);
       this.addOrEdit.name = "Add " + grade;
       this.actionDialog = true;
       this.edit = false;
@@ -288,7 +286,6 @@ export default {
 
     //Method For Editing The Section
     async editSection(data) {
-      console.log(data);
       this.addOrEdit.name = "Edit Grade " + data.gradelevel.grade_level;
       this.edit = true;
       this.actionDialog = true;

@@ -39,8 +39,6 @@ Vue.use(VueMoment, {
   moment,
 });
 
-import { EventBus } from "./bus/bus.js";
-
 import Pusher from "pusher-js";
 
 // window.Pusher.logToConsole = true;
@@ -54,20 +52,9 @@ new Vue({
   vuetify,
   router,
   store,
-  beforeCreate() {
-    this.initialize();
-  },
   created() {
     this.initialize();
-    EventBus.$on("sectionUpdated", () => {
-      this.$swal.fire({
-        icon: "success",
-        title: "Success",
-        text: "Sections successfully updated.",
-      });
-    });
   },
-  mounted: function() {},
   methods: {
     initialize() {
       const userInfo = localStorage.getItem("user");

@@ -476,11 +476,9 @@ export default {
     retrieveData() {
       let adminLevel = null;
       let userData = this.$user;
-      console.log(userData);
       if (userData.user_type != "admin") {
         let temp = this.$user.username.split("_");
         adminLevel = temp[1];
-        console.log(adminLevel);
       }
       let declined = this.$store.getters.allDeclinedEnrollments;
       this.$store
@@ -504,17 +502,12 @@ export default {
     },
 
     filterSections(gradelevel, id, index) {
-      console.log("filterSectionsGradelvel:" + gradelevel);
-      console.log("filterSectionsGradeId:" + id);
-      console.log("filterSectionsGradeIndex:" + index);
       this.id = id;
       this.index = index;
-      // console.log(index);
       this.dialog = true;
       this.sections = [];
       this.$store.dispatch("allSections").then((res) => {
         let sections = res;
-        // console.log(grade_level);
         for (const key in sections) {
           if (sections.hasOwnProperty.call(sections, key)) {
             const element = sections[key];
@@ -523,11 +516,8 @@ export default {
               let section = element["name"];
               if (grade_levelData.hasOwnProperty.call(grade_levelData, glKey)) {
                 const element1 = grade_levelData[glKey];
-                //console.log(glKey);
                 if (glKey == "grade_level") {
-                  //console.log("here");
                   if (element1 == gradelevel) {
-                    //console.log("here");
                     this.sections.push(section);
                   }
                 }
@@ -535,7 +525,6 @@ export default {
             }
           }
         }
-        // console.log(this.sections);
       });
     },
 
@@ -561,11 +550,7 @@ export default {
     },
 
     updateStudent(formdata, gradelevel, id, index) {
-      console.log("updateStudentGradelvel:" + gradelevel);
-      console.log("updateStudentGradeId:" + id);
-      console.log("updateStudentGradeIndex:" + index);
       if (this.$refs.studentDetails.validate()) {
-        // console.log("id:" + formdata.id);
         this.$axios
           .post(`updateStudent/` + formdata.id, formdata)
           .then((response) => {
@@ -587,21 +572,23 @@ export default {
               });
             }
           })
-          .catch((error) => {
-            console.log(error);
+          .catch(() => {
+            this.$swal.filter({
+              icon: "error",
+              title: "Ooops...",
+              text: "An error encountered!",
+            });
           });
       }
     },
 
     //Method For Approving the enrollment
     approveEnrollment(id, index) {
-      console.log("section:" + this.section);
       this.loading = true;
       if (this.section) {
         this.$axios
           .post("approveEnrollment/" + id, { student_section: this.section })
           .then((response) => {
-            console.log(response);
             this.declinedEnrollments.splice(index, 1);
             this.$swal.fire({
               icon: "success",
@@ -612,12 +599,11 @@ export default {
             this.loading = false;
             // window.location.reload(true);
           })
-          .catch((error) => {
-            console.log(error);
+          .catch(() => {
             this.$swal.fire({
               icon: "error",
               title: "Ooops....",
-              text: error,
+              text: "An error encountered!",
             });
             this.loading = false;
             this.dialog = true;

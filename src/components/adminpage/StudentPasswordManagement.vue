@@ -62,11 +62,9 @@ export default {
   created() {
     let adminLevel = null;
     let userData = this.$user;
-    console.log(userData);
     if (userData.user_type != "admin") {
       let temp = this.$user.username.split("_");
       adminLevel = temp[1];
-      console.log(adminLevel);
     }
     this.$store.dispatch("allStudents", adminLevel).then((res) => {
       let students = res;
@@ -82,12 +80,9 @@ export default {
         }
       }
     });
-
-    console.log(this.students);
   },
   methods: {
     resetPassword(student) {
-      console.log(student);
       //this.loading = true;
       this.$axios
         .post(`reset-password`, { LRN: student.LRN })
@@ -106,8 +101,12 @@ export default {
             });
           }
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+          this.$swal.fire({
+            icon: "error",
+            title: "Ooops...",
+            text: "An error encountered!. Please try again.",
+          });
         });
     },
   },
