@@ -248,7 +248,7 @@ export default {
         }
 
         if (this.isTransfereeOrBalikAral) {
-          if (this.$refs.balikAralorTransferInfoData.validate()) {
+          if (this.$refs.balikAralorTransferInfo.validate()) {
             error = false;
             let balikOrTransfer = JSON.parse(
               this.$refs.balikAralorTransferInfoData.getData
