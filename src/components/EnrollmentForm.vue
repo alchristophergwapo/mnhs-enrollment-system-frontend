@@ -47,6 +47,7 @@
                   <v-checkbox
                     class="checkbox-input"
                     v-model="isTransfereeOrBalikAral"
+                    @click="isNew = false"
                     label="Applying as Transferee or Balik Aral? (If you are a continuing student, please disregard.)"
                   ></v-checkbox>
                 </v-container>

@@ -12,23 +12,48 @@
           <td>{{ row.item.Time }}</td>
           <td>
             {{ row.item.Monday.subject_name }}<br />
-            <strong>{{ row.item.Monday.teacher_name }}</strong>
+            <strong
+              >{{ row.item.Monday.teacher_name }} <br />
+              <span v-if="row.item.Monday.teacher_name">{{
+                row.item.Monday.time
+              }}</span>
+            </strong>
           </td>
           <td>
             {{ row.item.Tuesday.subject_name }}<br />
-            <strong>{{ row.item.Tuesday.teacher_name }}</strong>
+            <strong
+              >{{ row.item.Tuesday.teacher_name }} <br />
+              <span v-if="row.item.Tuesday.teacher_name">{{
+                row.item.Tuesday.time
+              }}</span>
+            </strong>
           </td>
           <td>
             {{ row.item.Wednesday.subject_name }}<br />
-            <strong>{{ row.item.Wednesday.teacher_name }}</strong>
+            <strong
+              >{{ row.item.Wednesday.teacher_name }} <br />
+              <span v-if="row.item.Wednesday.teacher_name">{{
+                row.item.Wednesday.time
+              }}</span>
+            </strong>
           </td>
           <td>
             {{ row.item.Thursday.subject_name }}<br />
-            <strong>{{ row.item.Thursday.teacher_name }}</strong>
+            <strong
+              >{{ row.item.Thursday.teacher_name }} <br />
+              <span v-if="row.item.Thursday.teacher_name">{{
+                row.item.Thursday.time
+              }}</span>
+            </strong>
           </td>
           <td>
             {{ row.item.Friday.subject_name }}<br />
-            <strong>{{ row.item.Friday.teacher_name }}</strong>
+            <strong
+              >{{ row.item.Friday.teacher_name }} <br />
+              <span v-if="row.item.Friday.teacher_name">{{
+                row.item.Friday.time
+              }}</span>
+            </strong>
           </td>
         </tr>
       </template>
@@ -62,66 +87,74 @@ export default {
   },
   created() {
     this.$axios.get(`classSchedules/` + this.sectionId).then((res) => {
-      const schedules = res.data.schedules;
+      const schedules = res.data.sectionSchedules;
 
+      // console.log(schedules);
       let sched = {
-        Time: null,
         Monday: {
           subject_name: null,
           teacher_name: null,
+          time: null,
         },
         Tuesday: {
           subject_name: null,
           teacher_name: null,
+          time: null,
         },
         Wednesday: {
           subject_name: null,
           teacher_name: null,
+          time: null,
         },
         Thursday: {
           subject_name: null,
           teacher_name: null,
+          time: null,
         },
         Friday: {
           subject_name: null,
           teacher_name: null,
+          time: null,
         },
       };
       let count = 0;
-      let friday = false;
+      let next = false;
       for (const index in schedules) {
         if (schedules.hasOwnProperty.call(schedules, index)) {
           const element = schedules[index];
-          sched.Time = `${element.start_time}-${element.end_time}`;
-          if (element.day == "Monday") {
-            sched.Monday.subject_name = element.subject_name;
-            sched.Monday.teacher_name = element.teacher_name;
-            count += 1;
-          }
-          if (element.day == "Tuesday") {
-            sched.Tuesday.subject_name = element.subject_name;
-            sched.Tuesday.teacher_name = element.teacher_name;
-            count += 1;
-          }
-          if (element.day == "Wednesday") {
-            sched.Wednesday.subject_name = element.subject_name;
-            sched.Wednesday.teacher_name = element.teacher_name;
-            count += 1;
-          }
-          if (element.day == "Thursday") {
-            sched.Thursday.subject_name = element.subject_name;
-            sched.Thursday.teacher_name = element.teacher_name;
-            count += 1;
-          }
-          if (element.day == "Friday") {
-            sched.Friday.subject_name = element.subject_name;
-            sched.Friday.teacher_name = element.teacher_name;
-            friday = true;
-            count += 1;
-          }
+          console.log(element.day);
+          if (sched[element.day].subject_name == null)
+            (sched[element.day].subject_name = element.subject_name),
+              (sched[element.day].teacher_name = element.teacher_name),
+              (sched[element.day].time =
+                element.start_time + " - " + element.end_time),
+              console.log(sched[element.day]),
+              (count += 1);
+          else (next = true), (count = 0);
+          // if (element.day == "Tuesday") {
+          //   sched.Tuesday.subject_name = element.subject_name;
+          //   sched.Tuesday.teacher_name = element.teacher_name;
+          //   count += 1;
+          // }
+          // if (element.day == "Wednesday") {
+          //   sched.Wednesday.subject_name = element.subject_name;
+          //   sched.Wednesday.teacher_name = element.teacher_name;
+          //   count += 1;
+          // }
+          // if (element.day == "Thursday") {
+          //   sched.Thursday.subject_name = element.subject_name;
+          //   sched.Thursday.teacher_name = element.teacher_name;
+          //   count += 1;
+          // }
+          // if (element.day == "Friday") {
+          //   sched.Friday.subject_name = element.subject_name;
+          //   sched.Friday.teacher_name = element.teacher_name;
+          //   count += 1;
+          // }
         }
-        if (count == 5 && friday) {
+        if (count == 5 || next) {
           this.schedules.push(sched);
+          count = 0;
           sched = {
             Time: null,
             Monday: {
@@ -147,6 +180,7 @@ export default {
           };
         }
       }
+      // console.log(this.schedules);
     });
   },
   methods: {
