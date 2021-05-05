@@ -120,7 +120,7 @@
     </v-col>
     <v-col cols="12" xs="6" sm="4" md="4" lg="4">
       <p>
-        Belonging to any Indegenous People (IP) Community/Indegenous Cultural
+        Belonging to any Indigenous People (IP) Community/Indigenous Cultural
         Community?
       </p>
     </v-col>

@@ -131,26 +131,6 @@ export default {
               console.log(sched[element.day]),
               (count += 1);
           else (next = true), (count = 0);
-          // if (element.day == "Tuesday") {
-          //   sched.Tuesday.subject_name = element.subject_name;
-          //   sched.Tuesday.teacher_name = element.teacher_name;
-          //   count += 1;
-          // }
-          // if (element.day == "Wednesday") {
-          //   sched.Wednesday.subject_name = element.subject_name;
-          //   sched.Wednesday.teacher_name = element.teacher_name;
-          //   count += 1;
-          // }
-          // if (element.day == "Thursday") {
-          //   sched.Thursday.subject_name = element.subject_name;
-          //   sched.Thursday.teacher_name = element.teacher_name;
-          //   count += 1;
-          // }
-          // if (element.day == "Friday") {
-          //   sched.Friday.subject_name = element.subject_name;
-          //   sched.Friday.teacher_name = element.teacher_name;
-          //   count += 1;
-          // }
         }
         if (count == 5 || next) {
           this.schedules.push(sched);

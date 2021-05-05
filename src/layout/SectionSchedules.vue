@@ -684,6 +684,7 @@ export default {
     },
 
     clearData() {
+      this.schedulesToAdd = [];
       this.scheduleInputs = {
         startTime: null,
         endTime: null,
