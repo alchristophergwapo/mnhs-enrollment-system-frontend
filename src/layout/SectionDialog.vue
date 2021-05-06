@@ -190,7 +190,7 @@ export default {
               if (response.data.message) {
                 this.loading = false;
                 this.showResponse("Success", response.data.message, "success");
-                EventBus.$emit("displayAllsection", {
+                EventBus.$emit("displayAllsection", { 
                   data1: grades,
                 });
                 this.clear();
@@ -273,7 +273,12 @@ export default {
         icon: icon,
         title: title,
         text: message,
-      });
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          this.$refs.sectionForm.resetValidation()
+       }
+       });
     },
 
     close() {

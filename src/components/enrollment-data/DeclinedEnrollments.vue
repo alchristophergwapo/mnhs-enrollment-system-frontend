@@ -365,7 +365,7 @@
                     name="remarks"
                     label="Reason For Declining"
                     placeholder="Write the reason for declining here......."
-                    v-model="studentInfo.remarks"
+                    v-model="studentInfo.remark"
                     readonly
                   ></v-textarea>
                 </v-col>
@@ -492,7 +492,6 @@ export default {
           for (var index in declined) {
             let element = declined[index];
             element["index"] = index;
-            element["remarks"] = element["remark"];
             element["fullname"] = element["firstname"].concat(
               " ",
               element["lastname"]
@@ -500,6 +499,7 @@ export default {
             declinedEnrollmentData.push(element);
           }
           this.declinedEnrollments = declinedEnrollmentData;
+          console.log(this.declinedEnrollments);
         });
     },
 
