@@ -424,7 +424,7 @@
             <v-spacer></v-spacer>
             <v-btn
               color="blue darken-1"
-              @click="approveEnrollment(id, index)"
+              @click="approveEnrollment(id)"
               :loading="loading"
             >
               Approve
@@ -560,6 +560,8 @@ export default {
                 title: "Success",
                 text: "Student details is successfully updated!",
               });
+              this.declinedEnrollments = [];
+              this.retrieveData();
               this.studentDialog = false;
               this.$refs.studentDetails.resetValidation();
               this.filterSections(gradelevel, id, index);
@@ -583,21 +585,21 @@ export default {
     },
 
     //Method For Approving the enrollment
-    approveEnrollment(id, index) {
+    approveEnrollment(id) {
       this.loading = true;
       if (this.section) {
         this.$axios
           .post("approveEnrollment/" + id, { student_section: this.section })
           .then((response) => {
-            this.declinedEnrollments.splice(index, 1);
             this.$swal.fire({
               icon: "success",
               title: "Success",
               text: response.data.message,
             });
+            this.declinedEnrollments = [];
+            this.retrieveData();
             this.dialog = false;
             this.loading = false;
-            // window.location.reload(true);
           })
           .catch(() => {
             this.$swal.fire({

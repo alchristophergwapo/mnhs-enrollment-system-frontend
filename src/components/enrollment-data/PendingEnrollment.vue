@@ -122,35 +122,31 @@
             </v-dialog>
           </td>
           <td>
-            <v-speed-dial
-              direction="left"
-              open-on-hover
-              transition="slide-y-transition"
-            >
-              <template v-slot:activator>
-                <v-btn color="blue darken-2" dark>
-                  <span> action </span>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  v-bind="attrs"
+                  v-on="on"
+                  color="primary"
+                  @click="
+                    filterSections(row.item.grade_level, row.item.id, row.index)
+                  "
+                  icon
+                  x-large
+                >
+                  <v-icon>mdi-account-plus</v-icon>
                 </v-btn>
               </template>
-              <v-btn
-                color="primary"
-                @click="
-                  filterSections(row.item.grade_level, row.item.id, row.index)
-                "
-                icon
-                x-large
-              >
-                <v-icon>mdi-account-plus</v-icon>
-              </v-btn>
-              <v-btn
-                color="error"
-                @click="opendeclineModal(row.item.id, row.index)"
-                icon
-                x-large
-              >
-                <v-icon>mdi-account-minus</v-icon>
-              </v-btn>
-            </v-speed-dial>
+              <span>Approve Enrollment</span>
+            </v-tooltip>
+            <v-btn
+              color="error"
+              @click="opendeclineModal(row.item.id, row.index)"
+              icon
+              x-large
+            >
+              <v-icon>mdi-account-minus</v-icon>
+            </v-btn>
           </td>
         </tr>
       </template>
@@ -178,7 +174,7 @@
             <v-spacer></v-spacer>
             <v-btn
               color="blue darken-1"
-              @click="approveEnrollment(id, index)"
+              @click="approveEnrollment(id)"
               :loading="loading"
             >
               Done
@@ -321,18 +317,19 @@ export default {
     },
 
     //Method For Approving the enrollment
-    approveEnrollment(id, index) {
+    approveEnrollment(id) {
       this.loading = true;
       if (this.section) {
         this.$axios
           .post("approveEnrollment/" + id, { student_section: this.section })
           .then(() => {
-            this.students.splice(index, 1);
             this.$swal.fire({
               icon: "success",
               title: "Success",
               text: "Enrollment approved.",
             });
+            this.students = [];
+            this.retrieveData();
             this.dialog = false;
             this.loading = false;
           })
@@ -393,6 +390,7 @@ export default {
               title: "Success",
               text: "Enrollment declined.",
             });
+            this.students = [];
             this.retrieveData();
             this.$refs.form.reset();
             this.declineModal = false;

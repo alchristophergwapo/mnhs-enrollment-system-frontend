@@ -5,6 +5,12 @@
       <v-text-field
         v-model="parentGuardianInfo.father"
         label="Father's Name"
+        :rules="[
+          (v) =>
+            /^[a-zA-Z\s-]+$/.test(v) == true ||
+            v == '' ||
+            'Only letters are  allowed, except for - !',
+        ]"
         outlined
         required
       ></v-text-field>
@@ -13,6 +19,12 @@
       <v-text-field
         v-model="parentGuardianInfo.mother"
         label="Mother's Maiden Name"
+        :rules="[
+          (v) =>
+            /^[a-zA-Z\s-\s]+$/.test(v) == true ||
+            v == '' ||
+            'Only letters are  allowed, except for - !',
+        ]"
         outlined
         required
       ></v-text-field>
@@ -20,7 +32,12 @@
     <v-col cols="12" xs="6" sm="6" md="6" lg="3">
       <v-text-field
         v-model="parentGuardianInfo.guardian"
-        :rules="[(guardian) => !!guardian || 'Guardian name is required']"
+        :rules="[
+          (v) => !!v || 'Guardian name is required',
+          (v) =>
+            /^[a-zA-Z\s-]+$/.test(v) == true ||
+            'Only letters are  allowed, except for - !',
+        ]"
         label="Guardian's Name"
         outlined
         required

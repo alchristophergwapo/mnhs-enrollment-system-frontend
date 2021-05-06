@@ -2,7 +2,7 @@
   <v-app>
     <div class="enrollment">
       <v-toolbar dark color="primary" class="toolbar-content">
-        <v-avatar>
+        <v-avatar @click="$router.push({ path: '/' })">
           <v-img :src="require('../assets/images/logo.jpg')"></v-img>
         </v-avatar>
         <v-toolbar-title class="toolbar-title">
@@ -197,8 +197,7 @@ export default {
   },
   created: function () {
     this.user = localStorage.getItem("user");
-    if (this.isTransfereeOrBalikAral)
-      console.log(this.$refs.balikAralorTransferInfoData), (this.isNew = true);
+    if (this.isTransfereeOrBalikAral) this.isNew = true;
 
     EventBus.$on("previousGradeLevel", (prevGradeLevel) => {
       if (prevGradeLevel > 9) this.isSeniorHigh = true;
@@ -356,6 +355,7 @@ export default {
   height: 80px !important;
   padding: 8px;
   position: fixed;
+  z-index: 999;
   width: 100%;
 
   .toolbar-title {

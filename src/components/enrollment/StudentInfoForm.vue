@@ -47,7 +47,14 @@
       <v-text-field
         v-model="studentInfo.firstname"
         name="firstname"
-        :rules="[(v) => !!v || 'Firstname is required']"
+        :rules="[
+          (v) => !!v || 'Firstname is required',
+          (v) =>
+            (v && v.length >= 3) ||
+            'Firstname cannot be lesser than 3 characters.',
+          (v) =>
+            /^[a-zA-Z\s]+$/.test(v) == true || 'Only letters are  allowed!',
+        ]"
         label="Firstname"
         outlined
         required
@@ -56,6 +63,12 @@
     <v-col cols="12" xs="6" sm="4" md="4" lg="4">
       <v-text-field
         v-model="studentInfo.middlename"
+        :rules="[
+          (v) =>
+            /^[a-zA-Z\s-]+$/.test(v) == true ||
+            v == '' ||
+            'Only letters are  allowed, except for - !',
+        ]"
         name="middlename"
         label="Middlename"
         outlined
@@ -65,7 +78,15 @@
       <v-text-field
         v-model="studentInfo.lastname"
         name="lastname"
-        :rules="[(v) => !!v || 'Lastname is required']"
+        :rules="[
+          (v) => !!v || 'Lastname is required',
+          (v) =>
+            (v && v.length >= 3) ||
+            'Firtname cannot be lesser than 3 characters.',
+          (v) =>
+            /^[a-zA-Z\s-]+$/.test(v) == true ||
+            'Only letters are  allowed, except for - !',
+        ]"
         label="Lastname"
         outlined
         required
@@ -76,11 +97,39 @@
         v-model="studentInfo.birthdate"
         name="birthdate"
         :rules="[(v) => !!v || 'Birthdate is required']"
+        @click="modal = !modal"
         label="Date of Birth"
-        type="date"
+        prepend-inner-icon="mdi-calendar"
+        readonly
         outlined
-        required
       ></v-text-field>
+      <v-dialog
+        ref="dialog"
+        v-model="modal"
+        :return-value.sync="studentInfo.birthdate"
+        persistent
+        width="290px"
+      >
+        <v-date-picker
+          v-model="studentInfo.birthdate"
+          :min="min_date"
+          :max="max_date"
+          scrollable
+        >
+          <v-spacer></v-spacer>
+          <v-btn text color="primary" @click="modal = false"> Cancel </v-btn>
+          <v-btn
+            text
+            color="primary"
+            @click="
+              $refs.dialog.save(studentInfo.birthdate),
+                getAge(studentInfo.birthdate)
+            "
+          >
+            OK
+          </v-btn>
+        </v-date-picker>
+      </v-dialog>
     </v-col>
     <v-col cols="12" xs="6" sm="4" md="4" lg="4">
       <v-text-field
@@ -89,8 +138,11 @@
         :rules="[
           (v) => !!v || 'Age is required',
           (v) => /^[0-9]+$/.test(v) == true || 'Only Number is  allowed!',
+          (v) => v >= 10 || 'You are too young to enroll for high school.',
+          (v) => v <= 50 || 'Please confirm your age.',
         ]"
         label="Age"
+        readonly
         outlined
         required
       ></v-text-field>
@@ -146,16 +198,6 @@
     </v-col>
     <v-col cols="12" xs="6" sm="4" md="4" lg="4">
       <v-text-field
-        v-if="studentInfo.IP === 'No'"
-        v-model="studentInfo.IP_community"
-        name="IP_Community"
-        readonly
-        label="Community"
-        placeholder="If yes, please specify"
-        outlined
-        required
-      ></v-text-field>
-      <v-text-field
         v-if="studentInfo.IP === 'Yes'"
         v-model="studentInfo.IP_community"
         name="IP_Community"
@@ -173,6 +215,7 @@
           (mother_tongue) => !!mother_tongue || 'Mother tongue is required',
         ]"
         label="Mother Tongue"
+        placeholder="e.g Cebuano, Tagalog, Waray"
         outlined
         required
       ></v-text-field>
@@ -192,7 +235,7 @@
             String(contact).length == 11 || 'Contact number must be 11 digits',
         ]"
         type="text"
-        label="Contact Number(for receiving enrollment notification)"
+        label="Contact Number"
         :counter="11"
         outlined
         required
@@ -235,6 +278,9 @@
 export default {
   data: () => ({
     year: new Date().getFullYear(),
+    max_date: null,
+    min_date: null,
+    modal: false,
     studentInfo: {
       PSA: null,
       LRN: null,
@@ -253,9 +299,28 @@ export default {
       zipcode: null,
     },
   }),
+  created() {
+    let todayDate = new Date();
+    this.max_date = this.$moment(
+      new Date(`${todayDate.getFullYear() - 8}-12-31`)
+    ).format("YYYY-MM-DD");
+    this.min_date = this.$moment(
+      new Date(`${todayDate.getFullYear() - 50}-12-31`)
+    ).format("YYYY-MM-DD");
+  },
   computed: {
     getData() {
       return this.studentInfo;
+    },
+  },
+  methods: {
+    getAge(bday) {
+      var today = new Date();
+      var birthDate = new Date(bday);
+      var age = today.getFullYear() - birthDate.getFullYear();
+      var m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+      this.studentInfo.age = age;
     },
   },
 };

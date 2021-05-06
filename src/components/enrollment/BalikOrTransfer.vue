@@ -22,8 +22,9 @@
       <v-text-field
         v-model="balikOrTransferInfo.last_year_completed"
         :rules="[
-          (last_year_completed) =>
-            !!last_year_completed || 'Last School Year Completed is required',
+          (v) => !!v || 'Last School Year Completed is required',
+          (v) => /^[0-9]+$/.test(v) == true || 'Only numbers are allowed.',
+          (v) => v < year,
         ]"
         label="Last School Year Completed"
         outlined
@@ -39,10 +40,11 @@
             /^[0-9]+$/.test(last_school_ID) == true ||
             'Only Number is  allowed!',
           (last_school_ID) =>
-            String(last_school_ID).length <= 6 ||
+            (last_school_ID && String(last_school_ID).length <= 6) ||
             'School ID cannot be greater than 6 digits',
           (last_school_ID) =>
-            String(last_school_ID).length == 6 || 'School ID must be 6 digits',
+            (last_school_ID && String(last_school_ID).length == 6) ||
+            'School ID must be 6 digits',
         ]"
         label="School ID"
         :counter="6"
@@ -57,8 +59,9 @@
           (last_school_attended) =>
             !!last_school_attended || 'School name is required',
           (last_school_attended) =>
-            last_school_attended.length >= 8 ||
+            (last_school_attended && last_school_attended.length >= 8) ||
             'School name must be at least 8 characters.',
+          (v) => /^[a-zA-z/s]+$/.test(v) == true || 'Only letters are allowed.',
         ]"
         label="School Name"
         outlined
@@ -73,8 +76,11 @@
             !!last_school_address || 'School adress is required',
 
           (last_school_address) =>
-            last_school_address.length >= 4 ||
+            (last_school_address && last_school_address.length >= 4) ||
             'School address must be at least 4 characters.',
+          (v) =>
+            /^[a-zA-z0-9/s-]+$/.test(v) == true ||
+            'Only letters and numbers are allowed excepts -.',
         ]"
         label="School Address"
         outlined
@@ -104,9 +110,14 @@ export default {
         last_school_ID: null,
         last_school_address: null,
       },
+      year: null,
     };
   },
-
+  created() {
+    let date = new Date();
+    console.log(date);
+    this.year = date.getFullYear();
+  },
   methods: {
     balikAral(grade) {
       EventBus.$emit("previousGradeLevel", grade);
