@@ -139,14 +139,21 @@
               </template>
               <span>Approve Enrollment</span>
             </v-tooltip>
-            <v-btn
-              color="error"
-              @click="opendeclineModal(row.item.id, row.index)"
-              icon
-              x-large
-            >
-              <v-icon>mdi-account-minus</v-icon>
-            </v-btn>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  v-bind="attrs"
+                  v-on="on"
+                  color="error"
+                  @click="opendeclineModal(row.item.id, row.index)"
+                  icon
+                  x-large
+                >
+                  <v-icon>mdi-account-minus</v-icon>
+                </v-btn>
+              </template>
+              <span>Decline Enrollment</span>
+            </v-tooltip>
           </td>
         </tr>
       </template>

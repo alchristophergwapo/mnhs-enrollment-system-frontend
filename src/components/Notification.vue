@@ -23,7 +23,12 @@
             <v-spacer></v-spacer>
             <v-btn
               color="error"
-              @click="declineEnrollment(notification.enrollment.id)"
+              @click="
+                opendeclineModal(
+                  notification.enrollment,
+                  notification.enrollment.id
+                )
+              "
               :loading="declining"
               >decline</v-btn
             >
@@ -31,7 +36,7 @@
               color="primary"
               @click="
                 filterSections(
-                  notification.grade_level,
+                  notification.enrollment.grade_level,
                   notification.enrollment.id
                 )
               "
@@ -85,14 +90,14 @@
             <v-list-item
               @click="markAsOpened(item.data.enrollment, item.id, item.index)"
             >
-              <v-icon>mdi-plus</v-icon>
+              <v-icon>mdi-information-variant</v-icon>
 
               <v-list-item-content>
                 <v-list-item-title>
                   <v-card-text
                     >{{ item.data.enrollment.firstname }}
                     {{ item.data.enrollment.lastname }} submitted a new
-                    enrollment application for
+                    enrollment application for grade &nbsp;
                     {{
                       item.data.enrollment.enrollment.grade_level
                     }}.</v-card-text
@@ -166,33 +171,30 @@ export default {
   },
   methods: {
     filterSections(gradelevel, id) {
+      console.log(gradelevel);
       this.id = id;
-      let sections = this.$store.getters.allSections;
-      // console.log(index);
       this.dialog = true;
       this.sections = [];
-      // console.log(grade_level);
-      for (const key in sections) {
-        if (sections.hasOwnProperty.call(sections, key)) {
-          const element = sections[key];
-          const grade_levelData = element["gradelevel"];
-          for (const glKey in grade_levelData) {
-            let section = element["name"];
-            if (grade_levelData.hasOwnProperty.call(grade_levelData, glKey)) {
-              const element1 = grade_levelData[glKey];
-              // console.log(glKey);
-              if (glKey == "grade_level") {
-                // console.log("here");
-                if (element1 == gradelevel) {
-                  // console.log("here");
-                  this.sections.push(section);
+      this.$store.dispatch("allSections").then((res) => {
+        let sections = res;
+        for (const key in sections) {
+          if (sections.hasOwnProperty.call(sections, key)) {
+            const element = sections[key];
+            const grade_levelData = element["gradelevel"];
+            for (const glKey in grade_levelData) {
+              let section = element["name"];
+              if (grade_levelData.hasOwnProperty.call(grade_levelData, glKey)) {
+                const element1 = grade_levelData[glKey];
+                if (glKey == "grade_level") {
+                  if (element1 == gradelevel) {
+                    this.sections.push(section);
+                  }
                 }
               }
             }
           }
         }
-      }
-      // console.log(this.sections);
+      });
     },
 
     checkIfExist(data) {
@@ -258,6 +260,18 @@ export default {
       }
     },
 
+    opendeclineModal(id, index) {
+      this.declineId = id;
+      this.declineIndex = index;
+      this.declineModal = true;
+    },
+
+    closeDeclineModal() {
+      this.declineModal = false;
+      this.remarks = null;
+      this.$refs.form.resetValidation();
+    },
+
     declineEnrollment(id) {
       this.$axios
         .post("declineEnrollment/" + id)
@@ -276,6 +290,7 @@ export default {
 
     markAsOpened(notif, id, index) {
       this.notification = notif;
+      console.log(notif);
       this.openDialog = true;
       this.indexToDel = index;
       this.$axios

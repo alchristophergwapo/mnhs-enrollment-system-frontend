@@ -235,7 +235,6 @@ export default {
         this.$refs.basicInfo.validate()
       ) {
         let error = false;
-        this.submitting = true;
         this.student = this.$refs.studentInfoData.getData;
         let formdata = new FormData();
         let parent = JSON.parse(this.$refs.parentGuardianInfoData.getData);
@@ -299,6 +298,7 @@ export default {
           console.log(key, value);
         }
         if (error == false) {
+          this.submitting = true;
           this.$axios
             .post(`addStudent`, formdata)
             .then((response) => {

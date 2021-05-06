@@ -61,7 +61,7 @@
           (last_school_attended) =>
             (last_school_attended && last_school_attended.length >= 8) ||
             'School name must be at least 8 characters.',
-          (v) => /^[a-zA-z/s]+$/.test(v) == true || 'Only letters are allowed.',
+          (v) => /^[a-zA-Z\s]+$/.test(v) == true || 'Only letters are allowed.',
         ]"
         label="School Name"
         outlined
@@ -79,7 +79,7 @@
             (last_school_address && last_school_address.length >= 4) ||
             'School address must be at least 4 characters.',
           (v) =>
-            /^[a-zA-z0-9/s-]+$/.test(v) == true ||
+            /^[a-zA-Z0-9\s-]+$/.test(v) == true ||
             'Only letters and numbers are allowed excepts -.',
         ]"
         label="School Address"
