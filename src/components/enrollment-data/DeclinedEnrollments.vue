@@ -32,6 +32,7 @@
     <v-dialog
       v-model="studentDialog"
       transition="dialog-top-transition"
+      persistent
       max-width="800"
     >
       <template v-slot:default="dialog">
@@ -116,8 +117,7 @@
                 <v-col cols="12" xs="6" sm="4" md="4" lg="4">
                   <v-text-field
                     v-model="studentInfo.middlename"
-                    name="middlename"
-                    :rules="[(v) => !!v || 'Middlename is required']"
+                    name="middlename"               
                     label="Middlename"
                     outlined
                     :readonly="readonly"
@@ -369,6 +369,197 @@
                     readonly
                   ></v-textarea>
                 </v-col>
+                <!----------------------------------THIS IS FOR SENIOR HIGH STUDENT DATA INFORMATION------------------------------------------->
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="6"
+                      md="6"
+                      lg="6"
+                      v-if="studentInfo.semester != null"
+                    >
+                      <v-select
+                        v-model="studentInfo.semester"
+                        name="semester"
+                        :rules="[
+                          (semester) => !!semester || 'Semester is required.',
+                        ]"
+                        label="Select a semester"
+                        :items="['First Semester', 'Second Semester']"
+                        type="checkbox"
+                        required
+                        outlined
+                        :readonly="readonly"
+                      ></v-select>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="6"
+                      md="6"
+                      lg="3"
+                      v-if="studentInfo.track != null"
+                    >
+                      <v-select
+                        name="track"
+                        v-model="studentInfo.track"
+                        :rules="[(track) => !!track || 'Track is required.']"
+                        :items="tracks"
+                        label="Track"
+                        outlined
+                        required
+                        :readonly="readonly"
+                      ></v-select>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="6"
+                      md="6"
+                      lg="3"
+                      v-if="studentInfo.strand != null"
+                    >
+                      <v-select
+                        name="strand"
+                        v-model="studentInfo.strand"
+                        :items="strands[0][studentInfo.track]"
+                        :rules="[(strand) => !!strand || 'Strand is required.']"
+                        label="Strand"
+                        outlined
+                        required
+                        :readonly="readonly"
+                      ></v-select>
+                    </v-col>
+                    <!-------------------------------THIS------------IS---------FOR------BALIK----ARAL--- STUDENT----SIDE --------------- -->
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="6"
+                      md="6"
+                      lg="6"
+                      v-if="studentInfo.last_grade_completed != null"
+                    >
+                      <v-select
+                        v-model="studentInfo.last_grade_completed"
+                        :items="selectLevel"
+                        @change="
+                          lastGradeLevel(
+                            ($event = studentInfo),
+                            ($event = studentInfo.index)
+                          )
+                        "
+                        :rules="[
+                          (last_grade_completed) =>
+                            !!last_grade_completed ||
+                            'Last Grade Level Completed is required',
+                        ]"
+                        label="Last Grade Level Completed"
+                        :readonly="readonly"
+                        outlined
+                        required
+                      ></v-select>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="6"
+                      md="6"
+                      lg="6"
+                      v-if="studentInfo.last_year_completed != null"
+                    >
+                      <v-text-field
+                        v-model="studentInfo.last_year_completed"
+                        :rules="[
+                          (last_year_completed) =>
+                            !!last_year_completed ||
+                            'Last School Year Completed is required',
+                        ]"
+                        label="Last School Year Completed"
+                        :readonly="readonly"
+                        outlined
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="6"
+                      md="6"
+                      lg="6"
+                      v-if="studentInfo.last_school_ID != null"
+                    >
+                      <v-text-field
+                        v-model="studentInfo.last_school_ID"
+                        :rules="[
+                          (last_school_ID) =>
+                            !!last_school_ID || 'School ID is required',
+                          (last_school_ID) =>
+                            /^[0-9]+$/.test(last_school_ID) == true ||
+                            'Only Number is  allowed!',
+                          (last_school_ID) =>
+                            String(last_school_ID).length <= 6 ||
+                            'School ID cannot be greater than 6 digits',
+                          (last_school_ID) =>
+                            String(last_school_ID).length == 6 ||
+                            'School ID must be 6 digits',
+                        ]"
+                        label="School ID"
+                        :counter="6"
+                        :readonly="readonly"
+                        outlined
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="6"
+                      md="6"
+                      v-if="studentInfo.last_school_attended != null"
+                    >
+                      <v-text-field
+                        v-model="studentInfo.last_school_attended"
+                        :rules="[
+                          (last_school_attended) =>
+                            !!last_school_attended || 'School name is required',
+                        ]"
+                        label="School Name"
+                        :readonly="readonly"
+                        outlined
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="6"
+                      md="6"
+                      v-if="studentInfo.last_school_address != null"
+                    >
+                      <v-text-field
+                        v-model="studentInfo.last_school_address"
+                        :rules="[
+                          (last_school_address) =>
+                            !!last_school_address ||
+                            'School adress is required',
+                        ]"
+                        label="School Address"
+                        :readonly="readonly"
+                        outlined
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-select
+                        v-model="studentInfo.grade_level"
+                        :rules="[(v) => !!v || 'Required']"
+                        :items="GradeLevel"
+                        label="Grade Level"
+                        :readonly="statusLevel"                        
+                        outlined
+                        required
+                      ></v-select>
+                    </v-col>
               </v-row>
             </v-card-text>
             <v-card-actions>
@@ -380,7 +571,7 @@
                   color="blue darken-1"
                   @click="
                     readonly
-                      ? (readonly = false)
+                      ?((readonly = false), (statusLevel = false))
                       : updateStudent(
                           studentInfo,
                           studentInfo.grade_level,
@@ -400,7 +591,7 @@
     </v-dialog>
     <!-- THIS IS FOR APPROVING  AND THEN SELECTING A CERTAIN SECTION -->
     <v-row justify="center">
-      <v-dialog v-model="dialog" max-width="500px">
+      <v-dialog v-model="dialog" max-width="500px" persistent>
         <v-card>
           <v-card-title>
             <span class="headline">Select Student Sections</span>
@@ -440,6 +631,17 @@ import { EventBus } from "../../bus/bus";
 export default {
   data() {
     return {
+       tracks: ["ACADEMIC TRACK", "TECHNICAL-VOCATIONAL LIVELIHOOD (TLV) TRACK"],
+    strands: [
+      {
+        "ACADEMIC TRACK": [
+          "ACCOUNTANCY, BUSINESS AND MANAGEMENT (ABM) STRAND",
+          "HUMANITIES AND SOCIAL SCIENCES STRAND (HUMSS)",
+          "SCIENCE, TECHNOLOGY, ENGINEERING AND MATHEMATICS (STEM) STRAND",
+        ],
+        "TECHNICAL-VOCATIONAL LIVELIHOOD (TLV) TRACK": ["AGRI-FISHERY ARTS"],
+      },
+    ],
       headers: [
         {
           text: "Grade Level",
@@ -457,12 +659,15 @@ export default {
       dialog: false,
       loading: false,
       readonly: true,
+      statusLevel: true,
       studentInfo: {},
       isDataLoaded: false,
       section: "",
       search: "",
       declinedEnrollments: [],
       sections: [],
+      selectLevel: [],
+      GradeLevel: [],
     };
   },
 
@@ -543,9 +748,17 @@ export default {
     ipCommunity() {
       this.studentInfo.IP_community = null;
     },
+    //Change GradeLevel
+    lastGradeLevel(grade) {
+      this.statusLevel = true;
+      this.studentInfo.grade_level = grade.last_grade_completed + 1;
+    },
     //Method For Updating The Student Account
     viewDetails(student) {
-      let studentInfo = student;
+      if (student.track != null && student.last_school_attended == null) {
+        this.selectLevel = [10, 11];
+        this.GradeLevel = [11, 12];
+        let studentInfo = student;
       const endyear =
         parseInt(
           student.created_at.substring(0, student.created_at.indexOf("-"))
@@ -558,18 +771,69 @@ export default {
         endyear.toString();
       this.studentInfo = studentInfo;
       this.studentDialog = true;
+      } else if (
+        student.track != null &&
+        student.last_school_attended != null
+      ) {
+        this.selectLevel = [10, 11];
+        this.GradeLevel = [11, 12];
+       let studentInfo = student;
+      const endyear =
+        parseInt(
+          student.created_at.substring(0, student.created_at.indexOf("-"))
+        ) + 1;
+      studentInfo["school_year"] =
+        student.created_at
+          .substring(0, student.created_at.indexOf("-"))
+          .toString() +
+        "-" +
+        endyear.toString();
+      this.studentInfo = studentInfo;
+      this.studentDialog = true;
+      } else if (
+        student.track == null &&
+        student.last_school_attended != null
+      ) {
+        this.selectLevel = [6, 7, 8, 9];
+        this.GradeLevel = [7, 8, 9, 10];
+        let studentInfo = student;
+      const endyear =
+        parseInt(
+          student.created_at.substring(0, student.created_at.indexOf("-"))
+        ) + 1;
+      studentInfo["school_year"] =
+        student.created_at
+          .substring(0, student.created_at.indexOf("-"))
+          .toString() +
+        "-" +
+        endyear.toString();
+      this.studentInfo = studentInfo;
+      this.studentDialog = true;
+      } else {
+        this.GradeLevel = [7, 8, 9, 10];
+           let studentInfo = student;
+      const endyear =
+        parseInt(
+          student.created_at.substring(0, student.created_at.indexOf("-"))
+        ) + 1;
+      studentInfo["school_year"] =
+        student.created_at
+          .substring(0, student.created_at.indexOf("-"))
+          .toString() +
+        "-" +
+        endyear.toString();
+      this.studentInfo = studentInfo;
+      this.studentDialog = true;
+      }
     },
 
     updateStudent(formdata, gradelevel, id, index) {
-      console.log("updateStudentGradelvel:" + gradelevel);
-      console.log("updateStudentGradeId:" + id);
-      console.log("updateStudentGradeIndex:" + index);
+      console.log("updateStudentGradeID:"+formdata.student_id);
       if (this.$refs.studentDetails.validate()) {
-        // console.log("id:" + formdata.id);
         this.$axios
-          .post(`updateStudent/` + formdata.id, formdata)
+          .post(`updatedeclineEnrollment/` + formdata.student_id, formdata)
           .then((response) => {
-            if (response.data.updated) {
+            if (response.data.updated){
               this.$swal.fire({
                 icon: "success",
                 title: "Success",
@@ -579,6 +843,7 @@ export default {
               this.$refs.studentDetails.resetValidation();
               this.filterSections(gradelevel, id, index);
               this.readonly = true;
+               this.statusLevel = true;
             } else {
               this.$swal.fire({
                 icon: "error",
@@ -595,9 +860,9 @@ export default {
 
     //Method For Approving the enrollment
     approveEnrollment(id, index) {
-      console.log("section:" + this.section);
-      this.loading = true;
+      console.log("EnrollemntId:"+id);
       if (this.section) {
+        this.loading = true;
         this.$axios
           .post("approveEnrollment/" + id, { student_section: this.section })
           .then((response) => {
@@ -629,7 +894,8 @@ export default {
           text: "Please select a section.",
         });
         this.dialog = true;
-      }
+    }
+
     },
   },
 
