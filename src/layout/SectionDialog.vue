@@ -177,7 +177,8 @@ export default {
             });
         } else {
           //console.log("Teacher:"+this.Section.teacher);
-
+          // console.log("TeacherID:"+ this.sectionData.teacher_id);
+          // console.log("SecitionId:"+this.sectionData.id);
           this.loading = true;
           this.$axios
             .post("updateSection/" + this.sectionData.id, {
@@ -189,12 +190,13 @@ export default {
               if (response.data.message) {
                 this.loading = false;
                 this.showResponse("Success", response.data.message, "success");
-                EventBus.$emit("displayAllsection", {
+                EventBus.$emit("displayAllsection", { 
                   data1: grades,
                 });
                 this.clear();
                 this.close();
-              } else {
+              }
+              else{
                 this.loading = false;
                 this.$swal
                   .fire({
@@ -257,9 +259,10 @@ export default {
               this.loading = false;
               if (error.response.status == 422) {
                 this.setErrors(error.response.data.errors);
-              } else {
-                this.showResponse("error", "Ooops...", "An error encountered!");
-              }
+              } 
+              // else {
+              //   this.showResponse("error", "Ooops...", "An error encountered!");
+              // }
             });
         }
       }
@@ -270,7 +273,12 @@ export default {
         icon: icon,
         title: title,
         text: message,
-      });
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          this.$refs.sectionForm.resetValidation()
+       }
+       });
     },
 
     close() {

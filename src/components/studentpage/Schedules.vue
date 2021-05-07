@@ -61,9 +61,8 @@ export default {
     };
   },
   created() {
-    this.$axios.get(`classSchedules/` + this.sectionId).then((res) => {
-      const schedules = res.data.schedules;
-
+    this.$axios.get(`classSchedules/${this.sectionId}`).then((res) => {
+     const schedules=res.data.sectionSchedules;
       let sched = {
         Time: null,
         Monday: {
@@ -90,6 +89,7 @@ export default {
       let count = 0;
       let friday = false;
       for (const index in schedules) {
+        console.log(index);
         if (schedules.hasOwnProperty.call(schedules, index)) {
           const element = schedules[index];
           sched.Time = `${element.start_time}-${element.end_time}`;
@@ -147,8 +147,9 @@ export default {
           };
         }
       }
-      //   console.log(this.schedules);
-    });
+        console.log(this.schedules);
+   });
+
   },
   methods: {
     //Dowloadcsv

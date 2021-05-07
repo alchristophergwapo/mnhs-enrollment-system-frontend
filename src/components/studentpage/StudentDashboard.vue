@@ -134,9 +134,8 @@ export default {
       let storedInfo = localStorage.getItem("user");
       let userData = JSON.parse(storedInfo);
       this.user = userData.userInfo;
-     // console.log(this.user);
+       //console.log("SectionId:"+this.user.section.id);
       let classmates = userData.classmates;
-      //console.log(this.classmates);
       for (const key in classmates) {
         if (classmates.hasOwnProperty.call(classmates, key)) {
           const element = classmates[key];
