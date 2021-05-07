@@ -112,6 +112,7 @@
       >
         <v-date-picker
           v-model="studentInfo.birthdate"
+          year-icon="mdi-calendar-blank"
           :min="min_date"
           :max="max_date"
           scrollable
@@ -320,7 +321,9 @@ export default {
       var age = today.getFullYear() - birthDate.getFullYear();
       var m = today.getMonth() - birthDate.getMonth();
       if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
-      this.studentInfo.age = age;
+      if (bday) {
+        this.studentInfo.age = age;
+      }
     },
   },
 };

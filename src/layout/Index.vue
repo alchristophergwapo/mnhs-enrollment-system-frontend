@@ -5,9 +5,19 @@
         @click="sidebarMenu = !sidebarMenu"
         color="white"
       ></v-app-bar-nav-icon>
-      <v-toolbar-title class="header-title" v-if="!mini"
+      <!-- <v-toolbar-title class="header-title" v-if="!mini"
         >Welcome to Mantalongon, Dalaguete NHS</v-toolbar-title
+      > -->
+      <v-toolbar-title
+        class="toolbar-title"
+        style="
+          font-size: 16px;
+          text-transform: uppercase;
+          letter-spacing: 0.2rem;
+        "
       >
+        <h4>Mantalongon National High School</h4>
+      </v-toolbar-title>
 
       <v-spacer></v-spacer>
 

@@ -23,12 +23,7 @@
             <v-spacer></v-spacer>
             <v-btn
               color="error"
-              @click="
-                opendeclineModal(
-                  notification.enrollment,
-                  notification.enrollment.id
-                )
-              "
+              @click="opendeclineModal(notification.enrollment.id)"
               :loading="declining"
               >decline</v-btn
             >
@@ -117,6 +112,45 @@
     <v-overlay :value="overlay">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
+    <!-- REASON FOR DECLINING THE ENROLLMENT -->
+    <v-dialog
+      transition="dialog-bottom-transition"
+      max-width="600"
+      v-model="declineModal"
+    >
+      <template>
+        <v-card>
+          <v-card-title>
+            <v-row>
+              <h3>Reason For Declining</h3>
+            </v-row>
+            <v-btn icon @click="closeDeclineModal()">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-divider></v-divider>
+          <v-form ref="form" v-model="valid" lazy-validation>
+            <v-textarea
+              v-model="remarks"
+              outlined
+              full-width
+              single-line
+              placeholder="Write the reason for declining here......."
+              name="remarks"
+              :rules="[
+                (remarks) => !!remarks || 'Reason for declining is required',
+              ]"
+            ></v-textarea>
+            <!-- <v-divider></v-divider> -->
+            <v-card-actions class="justify-end" id="textarea">
+              <v-btn :disabled="!valid" color="blue" @click="declineEnrollment"
+                >done</v-btn
+              >
+            </v-card-actions>
+          </v-form>
+        </v-card>
+      </template>
+    </v-dialog>
   </div>
 </template>
 
@@ -149,6 +183,8 @@ export default {
       approving: false,
       declining: false,
       overlay: false,
+      declineModal: false,
+      declineId: null,
       section: null,
       id: null,
       indexToDel: null,
@@ -260,9 +296,8 @@ export default {
       }
     },
 
-    opendeclineModal(id, index) {
+    opendeclineModal(id) {
       this.declineId = id;
-      this.declineIndex = index;
       this.declineModal = true;
     },
 

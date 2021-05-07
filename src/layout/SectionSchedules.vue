@@ -26,42 +26,6 @@
       <v-form ref="scheduleForm" v-model="scheduleValid" lazy-validation>
         <!-- schedule table -->
         <div>
-          <v-container>
-            <v-row>
-              <v-col cols="4">
-                <div>Span of each schedule of classes</div>
-              </v-col>
-              <v-col cols="2">
-                <v-text-field
-                  v-model="spanOfClasses.hour"
-                  label="Hour(s)"
-                  type="number"
-                  @change="
-                    changeSpanOfClassess(
-                      spanOfClasses.hour,
-                      spanOfClasses.minutes
-                    )
-                  "
-                  outlined
-                ></v-text-field>
-              </v-col>
-              <v-col cols="2">
-                <v-text-field
-                  v-model="spanOfClasses.minutes"
-                  label="Minutes"
-                  type="number"
-                  @change="
-                    changeSpanOfClassess(
-                      spanOfClasses.hour,
-                      spanOfClasses.minutes
-                    )
-                  "
-                  outlined
-                ></v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-
           <v-data-table
             :headers="headers"
             :items="schedules"
@@ -147,25 +111,123 @@
               <hr />
               <v-container>
                 <v-row>
-                  <v-col sm="3">
-                    <label for="startTime">Start Time</label>
+                  <v-col cols="6">
+                    <div>Span of each schedule of classes</div>
+                  </v-col>
+                  <v-col cols="3">
                     <v-text-field
-                      v-model="scheduleInputs.startTime"
-                      name="startTime"
-                      :readonly="schedules.length > 0 ? true : false"
+                      v-model="spanOfClasses.hour"
+                      label="Hour(s)"
+                      type="number"
+                      @change="
+                        changeSpanOfClassess(
+                          spanOfClasses.hour,
+                          spanOfClasses.minutes
+                        )
+                      "
                       dense
                       outlined
                     ></v-text-field>
                   </v-col>
-
-                  <v-col sm="3">
-                    <label for="endTime">End Time</label>
+                  <v-col cols="3">
                     <v-text-field
-                      v-model="scheduleInputs.endTime"
-                      name="endTime"
+                      v-model="spanOfClasses.minutes"
+                      label="Minutes"
+                      type="number"
+                      @change="
+                        changeSpanOfClassess(
+                          spanOfClasses.hour,
+                          spanOfClasses.minutes
+                        )
+                      "
                       dense
                       outlined
                     ></v-text-field>
+                  </v-col>
+                  <v-col sm="3">
+                    <label for="startTime">Start Time</label>
+                    <v-dialog
+                      ref="dialog"
+                      v-model="modal"
+                      :return-value.sync="scheduleInputs.startTime"
+                      persistent
+                      width="290px"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="scheduleInputs.startTime"
+                          name="startTime"
+                          prepend-inner-icon="mdi-clock-time-four-outline"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                          dense
+                          outlined
+                        ></v-text-field>
+                      </template>
+                      <v-time-picker
+                        v-if="modal"
+                        v-model="scheduleInputs.startTime"
+                        :min="minOnMax"
+                        @click:hour="inputStartTime($event)"
+                        @click:minute="inputStartTime($event)"
+                        full-width
+                      >
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="modal = false">
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.dialog.save(scheduleInputs.startTime)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-time-picker>
+                    </v-dialog>
+                  </v-col>
+
+                  <v-col sm="3">
+                    <label for="endTime">End Time</label>
+                    <v-dialog
+                      ref="dialog2"
+                      v-model="modal2"
+                      :return-value.sync="scheduleInputs.endTime"
+                      persistent
+                      width="290px"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="scheduleInputs.endTime"
+                          name="endTime"
+                          dense
+                          outlined
+                          prepend-inner-icon="mdi-clock-time-four-outline"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-time-picker
+                        v-if="modal2"
+                        v-model="scheduleInputs.endTime"
+                        :min="minTime"
+                        full-width
+                      >
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="modal2 = false">
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.dialog2.save(scheduleInputs.endTime)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-time-picker>
+                    </v-dialog>
                   </v-col>
                   <v-col sm="6">
                     <autocomplete
@@ -297,9 +359,7 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn @click="(scheduleDialog = true), (mode = 'ADD')" color="primary"
-          >add</v-btn
-        >
+        <v-btn @click="openDialog()" color="primary">add</v-btn>
       </v-card-actions>
     </v-container>
 
@@ -328,6 +388,12 @@ export default {
   data() {
     return {
       readonly: false,
+      modal: false,
+      modal2: false,
+      maxTime: null,
+      maxOnMin: null,
+      minTime: null,
+      minOnMax: null,
       headers: [
         { text: "Monday", value: "Monday", sortable: false },
         { text: "Tuesday", value: "Tuesday", sortable: false },
@@ -535,7 +601,10 @@ export default {
           this.scheduleInputs.endTime = newEndTime;
         } else {
           this.scheduleInputs.startTime = "08:00:00";
-          this.scheduleInputs.endTime = "09:00:00";
+          this.scheduleInputs.endTime = this.addTimes(
+            this.scheduleInputs.startTime,
+            span
+          );
         }
       });
     },
@@ -548,6 +617,11 @@ export default {
         this.addSchedule();
       }
     },
+
+    /**
+     * Method for adding schedule
+     * returns void
+     */
     addSchedule() {
       this.loading = true;
       let schedInput = this.scheduleInputs;
@@ -580,7 +654,11 @@ export default {
             this.loading = false;
             this.schedulesToAdd = [];
             if (error.response.data.error && error.response.status == 500)
-              this.showResponse("Ooops...", error.response.data.error, "error");
+              this.showResponse(
+                "Ooops...",
+                "An error encountered! If this is a mistake, please retry. If error persist, please reload the page.",
+                "error"
+              );
             if (error.response.status == 400)
               this.showResponse(
                 "Ooops...",
@@ -620,6 +698,35 @@ export default {
       let newEndTime = this.addTimes(item.Monday.start_time, span);
       this.scheduleInputs.endTime = newEndTime;
       this.scheduleInputs["index"] = index;
+    },
+
+    openDialog() {
+      var time = this.schedules[this.schedules.length - 1].Monday.end_time;
+      var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
+      if (this.schedules.length > 0) {
+        this.minTime = this.addTimes(time, span);
+        this.maxTime = this.addTimes(time, "0:45");
+        this.maxOnMin = this.addTimes(this.scheduleInputs.startTime, span);
+        this.minOnMax = time;
+      } else {
+        this.minTime = this.addTimes(this.scheduleInputs.startTime, span);
+        this.maxOnMin = this.addTimes(this.scheduleInputs.startTime, span);
+        this.minOnMax = time;
+      }
+      this.scheduleDialog = true;
+      this.mode = "ADD";
+    },
+
+    inputStartTime(time) {
+      let isTimeComplete = false;
+      for (let i = 0; i < time.length; i++) {
+        if (time[i] === ":") (isTimeComplete = true), (i = time.length - 1);
+      }
+      console.log(isTimeComplete);
+      var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
+      if (isTimeComplete)
+        this.scheduleInputs.endTime = this.addTimes(time, span);
+      else this.scheduleInputs.endTime = this.addTimes(`${time}:00`, span);
     },
 
     closeDialog() {
@@ -745,11 +852,7 @@ export default {
     changeSpanOfClassess(hour, minutes) {
       // console.log(hour, minutes);
       var time = null;
-      if (this.schedules.length > 0) {
-        time = this.schedules[this.schedules.length - 1].Friday.end_time;
-      } else {
-        time = this.scheduleInputs.startTime;
-      }
+      time = this.scheduleInputs.startTime;
       var span = hour + ":" + minutes;
       let newEndTime = this.addTimes(time, span);
       this.scheduleInputs.startTime = time;
@@ -809,7 +912,7 @@ export default {
         minutes -= 60 * hour;
       }
 
-      return ("0" + hours).slice(-2) + ":" + ("0" + minutes).slice(-2) + ":00";
+      return ("0" + hours).slice(-2) + ":" + ("0" + minutes).slice(-2);
     },
 
     close() {

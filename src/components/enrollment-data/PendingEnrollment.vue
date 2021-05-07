@@ -268,6 +268,7 @@ export default {
   },
   methods: {
     retrieveData() {
+      this.students = [];
       let adminLevel = null;
       let userData = this.$user;
       if (userData.user_type != "admin") {
@@ -335,7 +336,6 @@ export default {
               title: "Success",
               text: "Enrollment approved.",
             });
-            this.students = [];
             this.retrieveData();
             this.dialog = false;
             this.loading = false;
@@ -397,7 +397,6 @@ export default {
               title: "Success",
               text: "Enrollment declined.",
             });
-            this.students = [];
             this.retrieveData();
             this.$refs.form.reset();
             this.declineModal = false;
