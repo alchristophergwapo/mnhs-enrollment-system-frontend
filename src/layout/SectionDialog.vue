@@ -266,11 +266,17 @@ export default {
     },
 
     showResponse(title, message, icon) {
-      this.$swal.fire({
-        icon: icon,
-        title: title,
-        text: message,
-      });
+      this.$swal
+        .fire({
+          icon: icon,
+          title: title,
+          text: message,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.$refs.sectionForm.resetValidation();
+          }
+        });
     },
 
     close() {

@@ -25,7 +25,7 @@
           <td>{{ row.item.firstname }} {{ row.item.lastname }}</td>
           <td>{{ row.item.average }}</td>
           <td>
-            <v-dialog transition="dialog-top-transition" max-width="600">
+            <v-dialog transition="dialog-top-transition" max-width="715">
               <template v-slot:activator="{ on, attrs }">
                 <v-btn text v-bind="attrs" v-on="on">View Details</v-btn>
               </template>
@@ -73,6 +73,9 @@
                         Belonging to any Indigenous Peoples (IP)<br />Community
                         /Indigenous Cultural Community ?
                         <strong>&nbsp;&nbsp;{{ row.item.IP }}</strong>
+                        <strong v-if="row.item.IP == 'Yes'"
+                          >&nbsp;&nbsp;({{ row.item.IP_community }})</strong
+                        >
                       </v-col>
                       <v-col cols="12" sm="6" md="6">
                         Mother Tongue:&nbsp;&nbsp;<strong>{{
@@ -110,8 +113,82 @@
                         }}</strong>
                       </v-col>
                       <v-col cols="12" sm="6" md="6">
-                        Contact Number:&nbsp;&nbsp;<strong>{{
+                        Parents/Guardian Contact Number:&nbsp;&nbsp;<strong>{{
                           row.item.parent_number
+                        }}</strong>
+                      </v-col>
+                      <!-- Senior High -->
+
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        md="6"
+                        v-if="row.item.semester != null"
+                      >
+                        Semester:&nbsp;&nbsp;<strong>{{
+                          row.item.semester
+                        }}</strong>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        md="6"
+                        v-if="row.item.track != null"
+                      >
+                        Track:&nbsp;&nbsp;<strong>{{ row.item.track }}</strong>
+                      </v-col>
+                      <v-col cols="12" v-if="row.item.strand != null">
+                        Strand:&nbsp;&nbsp;<strong>{{
+                          row.item.strand
+                        }}</strong>
+                      </v-col>
+                      <!-- Transferees or Balik Aral-->
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        md="6"
+                        v-if="row.item.last_grade_completed"
+                      >
+                        Last_grade_completed:&nbsp;&nbsp;<strong>{{
+                          row.item.last_grade_completed
+                        }}</strong>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        md="6"
+                        v-if="row.item.last_year_completed != null"
+                      >
+                        Last_year_completed:&nbsp;&nbsp;<strong>{{
+                          row.item.last_year_completed
+                        }}</strong>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        md="6"
+                        v-if="row.item.Last_school_attended != null"
+                      >
+                        Last_school_attended:&nbsp;&nbsp;<strong>{{
+                          row.item.last_school_attended
+                        }}</strong>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        sm="6"
+                        md="6"
+                        v-if="row.item.last_school_ID != null"
+                      >
+                        Last_school_ID :&nbsp;&nbsp;<strong>{{
+                          row.item.last_school_ID
+                        }}</strong>
+                      </v-col>
+                      <v-col
+                        cols="12"
+                        v-if="row.item.last_school_address != null"
+                      >
+                        Last_school_address:&nbsp;&nbsp;<strong>{{
+                          row.item.last_school_address
                         }}</strong>
                       </v-col>
                       <v-img :src="imageUrl + row.item.card_image"></v-img>
@@ -245,8 +322,8 @@ export default {
       remarks: null,
       dialog: false,
       loading: false,
-      // imageUrl: "https://mnhs-enrollment-system.herokuapp.com/images/",
-      imageUrl: "http://localhost:8000/images/",
+      imageUrl: "https://mnhs-enrollment-system.herokuapp.com/images/",
+      // imageUrl: "http://localhost:8000/images/",
       item: null,
       id: null,
       index: null,
@@ -290,6 +367,7 @@ export default {
           );
           this.students.push(element);
         }
+        console.log(this.students);
       });
     },
     openDialog(data) {

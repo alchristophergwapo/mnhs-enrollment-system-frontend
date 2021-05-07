@@ -352,6 +352,7 @@ export default {
     },
     //Close The Modal IN Junior High School When Cancel is click
     close() {
+      this.Section.id = null;
       this.Section.section = null;
       this.Section.capacity = null;
       this.Section.teacher = null;

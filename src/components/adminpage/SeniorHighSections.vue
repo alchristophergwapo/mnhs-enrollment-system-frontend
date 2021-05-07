@@ -94,14 +94,17 @@
           >
           </section-dialog>
         </v-dialog>
+        <div v-if="viewSubject=='true'">
         <v-dialog v-model="addSubject" persistent max-width="800px">
           <add-subject-dialog
             :gradeLevel="addOrEdit.name.split(' ')[2]"
             :subjectsInGradeLevel="subjects"
           ></add-subject-dialog>
         </v-dialog>
+      </div>
+        <div v-if="viewScheds=='true'">
         <v-dialog
-          v-model="viewScheds"
+          v-model="openSched"
           fullscreen
           hide-overlay
           transition="dialog-bottom-transition"
@@ -112,6 +115,7 @@
             :section_id="sectionId"
           ></section-schedules>
         </v-dialog>
+        </div>
       </v-row>
     </v-container>
   </div>
@@ -130,9 +134,11 @@ export default {
   data() {
     return {
       overlay: false,
+      viewSubject:'false',
       addSubject: false,
       actionDialog: false,
-      viewScheds: false,
+      viewScheds:'false',
+      openSched:false,
       edit: false,
       tab: null,
       sectionId: null,
@@ -181,10 +187,11 @@ export default {
 
     EventBus.$on("closeSubjectModal", (data) => {
       this.addSubject = data;
+      this.viewSubject=false;
     });
 
     EventBus.$on("closeSectionScheduleModal", () => {
-      this.viewScheds = false;
+      this.viewScheds=false;
     });
   },
   methods: {
@@ -212,6 +219,8 @@ export default {
     },
     viewSchedules(sectionId) {
       this.overlay = true;
+      this.viewScheds ='true';
+      this.openSched=true;
       this.schedules = [];
       this.sectionId = sectionId;
       this.$axios.get(`classSchedules/${sectionId}`).then((response) => {
@@ -263,6 +272,7 @@ export default {
         .get(`gradelevelSubject/${Number(this.addOrEdit.name.split(" ")[2])}`)
         .then((response) => {
           this.subjects = response.data.subject;
+          this.viewSubject='true';
           this.addSubject = true;
           this.overlay = false;
         });

@@ -94,7 +94,6 @@ export default {
     this.$axios.get(`classSchedules/` + this.sectionId).then((res) => {
       const schedules = res.data.sectionSchedules;
 
-      // console.log(schedules);
       let sched = {
         Monday: {
           subject_name: null,
@@ -127,13 +126,11 @@ export default {
       for (const index in schedules) {
         if (schedules.hasOwnProperty.call(schedules, index)) {
           const element = schedules[index];
-          console.log(element.day);
           if (sched[element.day].subject_name == null)
             (sched[element.day].subject_name = element.subject_name),
               (sched[element.day].teacher_name = element.teacher_name),
               (sched[element.day].time =
                 element.start_time + " - " + element.end_time),
-              console.log(sched[element.day]),
               (count += 1);
           else (next = true), (count = 0);
         }
@@ -166,7 +163,6 @@ export default {
         }
       }
       this.isDataNotLoaded = false;
-      // console.log(this.schedules);
     });
   },
   methods: {
