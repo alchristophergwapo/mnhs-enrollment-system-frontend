@@ -214,6 +214,9 @@
         name="mother_tongue"
         :rules="[
           (mother_tongue) => !!mother_tongue || 'Mother tongue is required',
+          (mother_tongue) =>
+            /^[a-zA-Z\s]+$/.test(mother_tongue) == true ||
+            'Only letters are allowed.',
         ]"
         label="Mother Tongue"
         placeholder="e.g Cebuano, Tagalog, Waray"
@@ -246,7 +249,15 @@
       <v-text-field
         v-model="studentInfo.address"
         name="address"
-        :rules="[(address) => !!address || 'Address is required']"
+        :rules="[
+          (address) => !!address || 'Address is required',
+          (address) =>
+            (address && address.length >= 4) ||
+            'Address must be at least 4 characters.',
+          (address) =>
+            /^[a-zA-Z0-9\s-,]+$/.test(address) == true ||
+            'Only letters and numbers are allowed excepts - and , .',
+        ]"
         label="Address"
         outlined
         required

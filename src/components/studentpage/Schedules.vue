@@ -4,6 +4,7 @@
       :headers="headers"
       :items="schedules"
       item-key="Time"
+      :loading="isDataNotLoaded"
       hide-default-footer
       class="elevation-1"
     >
@@ -59,7 +60,9 @@
       </template>
     </v-data-table>
     <v-container>
-      <v-btn @click="csvExport(csvData)" dark color="teal">Download File</v-btn>
+      <v-btn @click="csvExport(csvData)" dark color="teal"
+        >Download Schedules</v-btn
+      >
     </v-container>
   </div>
 </template>
@@ -83,9 +86,11 @@ export default {
         { text: "Friday", value: "Friday", sortable: false },
       ],
       schedules: [],
+      isDataNotLoaded: false,
     };
   },
   created() {
+    this.isDataNotLoaded = false;
     this.$axios.get(`classSchedules/` + this.sectionId).then((res) => {
       const schedules = res.data.sectionSchedules;
 
@@ -160,12 +165,14 @@ export default {
           };
         }
       }
+      this.isDataNotLoaded = false;
       // console.log(this.schedules);
     });
   },
   methods: {
     //Dowloadcsv
-    csvExport(arrData) {
+    csvExport() {
+      let arrData = this.schedules;
       let csvContent = "data:text/csv;charset=utf-8,";
       csvContent += [
         Object.keys(arrData[0]),

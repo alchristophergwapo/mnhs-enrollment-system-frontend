@@ -184,6 +184,7 @@ export default {
       declining: false,
       overlay: false,
       declineModal: false,
+      valid: true,
       declineId: null,
       section: null,
       id: null,

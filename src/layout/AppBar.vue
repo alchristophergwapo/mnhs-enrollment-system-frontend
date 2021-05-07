@@ -1,8 +1,12 @@
 <template>
-  <v-app-bar app color="primary" dark elevation="0">
-    <v-toolbar-title class="header-title"
-      >Welcome to Mantalongon, Dalaguete NHS</v-toolbar-title
-    >
+  <v-app-bar app color="primary" dark elevation="0" class="toolbar-content">
+    <v-avatar @click="$router.push({ path: '/' })">
+      <v-img :src="require('../assets/images/logo.jpg')"></v-img>
+    </v-avatar>
+    <v-toolbar-title class="toolbar-title">
+      <h4>Mantalongon National High School</h4>
+      <span>Mantalongon, Dalaguete Cebu</span>
+    </v-toolbar-title>
 
     <v-spacer></v-spacer>
 
@@ -141,3 +145,33 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+.toolbar-content {
+  height: 80px !important;
+  padding: 8px;
+  position: fixed;
+  z-index: 999;
+  width: 100%;
+
+  .toolbar-title {
+    margin-left: 20px;
+    text-align: center;
+
+    h4 {
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.08rem;
+    }
+
+    span {
+      font-size: 15px;
+      letter-spacing: 0.1rem;
+    }
+  }
+
+  .form-container {
+    padding-top: 64px !important;
+  }
+}
+</style>

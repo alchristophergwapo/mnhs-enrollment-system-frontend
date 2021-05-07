@@ -148,7 +148,10 @@
 
 .ct-labels span {
   color: black;
-  font-size: 0.975rem;
+  padding-left: 6px;
+  padding-right: 0;
+  margin-right: 0;
+  font-size: 0.9rem;
   font-weight: 100;
 }
 

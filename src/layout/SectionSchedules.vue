@@ -23,93 +23,94 @@
     </v-toolbar>
     <br /><br />
     <v-container>
-      <v-form ref="scheduleForm" v-model="scheduleValid" lazy-validation>
-        <!-- schedule table -->
-        <div>
-          <v-data-table
-            :headers="headers"
-            :items="schedules"
-            item-key="Time"
-            hide-default-footer
-            class="elevation-1"
-          >
-            <template v-slot:item="row">
-              <tr class="table-row">
-                <td>
-                  <span v-if="row.item.Monday">
-                    {{ row.item.Monday.subject_name }} <br />
-                    <strong>{{ row.item.Monday.teacher_name }}</strong> <br />
-                    <p v-if="row.item.Monday.subject_name">
-                      {{ row.item.Monday.start_time }} -
-                      {{ row.item.Monday.end_time }}
-                    </p>
-                  </span>
-                </td>
-                <td>
-                  <span v-if="row.item.Tuesday">
-                    {{ row.item.Tuesday.subject_name }} <br />
-                    <strong>{{ row.item.Tuesday.teacher_name }}</strong> <br />
-                    <p v-if="row.item.Tuesday.subject_name">
-                      {{ row.item.Tuesday.start_time }} -
-                      {{ row.item.Tuesday.end_time }}
-                    </p>
-                  </span>
-                </td>
-                <td>
-                  <span v-if="row.item.Wednesday">
-                    {{ row.item.Wednesday.subject_name }} <br />
-                    <strong>{{ row.item.Wednesday.teacher_name }}</strong>
-                    <br />
-                    <p v-if="row.item.Wednesday.subject_name">
-                      {{ row.item.Wednesday.start_time }} -
-                      {{ row.item.Wednesday.end_time }}
-                    </p>
-                  </span>
-                </td>
-                <td>
-                  <span v-if="row.item.Thursday">
-                    {{ row.item.Thursday.subject_name }} <br />
-                    <strong>{{ row.item.Thursday.teacher_name }}</strong> <br />
-                    <p v-if="row.item.Thursday.subject_name">
-                      {{ row.item.Thursday.start_time }} -
-                      {{ row.item.Thursday.end_time }}
-                    </p>
-                  </span>
-                </td>
-                <td>
-                  <span v-if="row.item.Friday">
-                    {{ row.item.Friday.subject_name }} <br />
-                    <strong>{{ row.item.Friday.teacher_name }}</strong> <br />
-                    <p v-if="row.item.Friday.subject_name">
-                      {{ row.item.Friday.start_time }} -
-                      {{ row.item.Friday.end_time }}
-                    </p>
-                  </span>
-                </td>
-                <td>
-                  <v-icon
-                    color="primary"
-                    @click="editSched(row.item, row.index)"
-                  >
-                    mdi-pencil
-                  </v-icon>
-                </td>
-              </tr>
-            </template>
-          </v-data-table>
-          <v-dialog v-model="scheduleDialog" width="800px">
-            <v-card>
-              <v-card-title>
-                <v-row>
-                  <v-icon>mdi-pencil</v-icon>
-                  <h3>{{ mode }} SCHEDULE</h3>
-                </v-row>
-                <v-btn icon @click="closeDialog()">
-                  <v-icon>mdi-close</v-icon>
-                </v-btn>
-              </v-card-title>
-              <hr />
-              <v-container>
+      <!-- schedule table -->
+      <div>
+        <v-data-table
+          :headers="headers"
+          :items="schedules"
+          item-key="Time"
+          hide-default-footer
+          class="elevation-1"
+        >
+          <template v-slot:item="row">
+            <tr class="table-row">
+              <td>
+                <span v-if="row.item.Monday">
+                  {{ row.item.Monday.subject_name }} <br />
+                  <strong>{{ row.item.Monday.teacher_name }}</strong> <br />
+                  <p v-if="row.item.Monday.subject_name">
+                    {{ row.item.Monday.start_time }} -
+                    {{ row.item.Monday.end_time }}
+                  </p>
+                </span>
+              </td>
+              <td>
+                <span v-if="row.item.Tuesday">
+                  {{ row.item.Tuesday.subject_name }} <br />
+                  <strong>{{ row.item.Tuesday.teacher_name }}</strong> <br />
+                  <p v-if="row.item.Tuesday.subject_name">
+                    {{ row.item.Tuesday.start_time }} -
+                    {{ row.item.Tuesday.end_time }}
+                  </p>
+                </span>
+              </td>
+              <td>
+                <span v-if="row.item.Wednesday">
+                  {{ row.item.Wednesday.subject_name }} <br />
+                  <strong>{{ row.item.Wednesday.teacher_name }}</strong>
+                  <br />
+                  <p v-if="row.item.Wednesday.subject_name">
+                    {{ row.item.Wednesday.start_time }} -
+                    {{ row.item.Wednesday.end_time }}
+                  </p>
+                </span>
+              </td>
+              <td>
+                <span v-if="row.item.Thursday">
+                  {{ row.item.Thursday.subject_name }} <br />
+                  <strong>{{ row.item.Thursday.teacher_name }}</strong> <br />
+                  <p v-if="row.item.Thursday.subject_name">
+                    {{ row.item.Thursday.start_time }} -
+                    {{ row.item.Thursday.end_time }}
+                  </p>
+                </span>
+              </td>
+              <td>
+                <span v-if="row.item.Friday">
+                  {{ row.item.Friday.subject_name }} <br />
+                  <strong>{{ row.item.Friday.teacher_name }}</strong> <br />
+                  <p v-if="row.item.Friday.subject_name">
+                    {{ row.item.Friday.start_time }} -
+                    {{ row.item.Friday.end_time }}
+                  </p>
+                </span>
+              </td>
+              <td>
+                <v-icon color="primary" @click="editSched(row.item, row.index)">
+                  mdi-pencil
+                </v-icon>
+              </td>
+            </tr>
+          </template>
+        </v-data-table>
+        <v-dialog v-model="scheduleDialog" width="800px">
+          <v-card>
+            <v-card-title>
+              <v-row>
+                <v-icon>mdi-pencil</v-icon>
+                <h3>{{ mode }} SCHEDULE</h3>
+              </v-row>
+              <v-btn icon @click="closeDialog()">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </v-card-title>
+            <hr />
+            <v-container>
+              <v-form
+                ref="scheduleInputForm"
+                v-model="scheduleValid"
+                lazy-validation
+              >
                 <v-row>
                   <v-col cols="6">
                     <div>Span of each schedule of classes</div>
@@ -117,14 +118,18 @@
                   <v-col cols="3">
                     <v-text-field
                       v-model="spanOfClasses.hour"
+                      :rules="[
+                        (v) => !!v || 'Time cannot be empty. Put 0 instead.',
+                        (v) =>
+                          (v >= 0 && v <= 4) ||
+                          'Time should not be greater than 4 and lesser than 0',
+                        (v) =>
+                          spanOfClasses.minutes >= 15 ||
+                          'Hour(s) cannot be 0 when minutes is lesser than 15.',
+                      ]"
                       label="Hour(s)"
                       type="number"
-                      @change="
-                        changeSpanOfClassess(
-                          spanOfClasses.hour,
-                          spanOfClasses.minutes
-                        )
-                      "
+                      @keyup="changeSpanOfClassess($event, (isMinute = false))"
                       dense
                       outlined
                     ></v-text-field>
@@ -132,14 +137,16 @@
                   <v-col cols="3">
                     <v-text-field
                       v-model="spanOfClasses.minutes"
+                      :rules="[
+                        (v) => v >= 0 || 'Minutes cannot be lesser than 0.',
+                        (v) =>
+                          spanOfClasses.hour > 0 ||
+                          v >= 15 ||
+                          'If hour is equal to 0, minutes cannot be lesser than to 15.',
+                      ]"
                       label="Minutes"
                       type="number"
-                      @change="
-                        changeSpanOfClassess(
-                          spanOfClasses.hour,
-                          spanOfClasses.minutes
-                        )
-                      "
+                      @keyup="changeSpanOfClassess($event, (isMinute = true))"
                       dense
                       outlined
                     ></v-text-field>
@@ -341,21 +348,21 @@
                   </v-col>
                   <br />
                 </v-row>
-              </v-container>
-              <hr />
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="success"
-                  @click="saveSchedule(scheduleInputs.index)"
-                  :loading="loading"
-                  >save</v-btn
-                >
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </div>
-      </v-form>
+              </v-form>
+            </v-container>
+            <hr />
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="success"
+                @click="saveSchedule(scheduleInputs.index)"
+                :loading="loading"
+                >save</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </div>
 
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -623,7 +630,6 @@ export default {
      * returns void
      */
     addSchedule() {
-      this.loading = true;
       let schedInput = this.scheduleInputs;
       console.log(schedInput);
       let schedCount = 0;
@@ -638,42 +644,45 @@ export default {
             : (schedCount += 0);
         }
       }
-      if (schedCount > 0) {
-        this.$axios
-          .post("addSchedules", this.schedulesToAdd)
-          .then((response) => {
-            this.loading = false;
-            this.schedules.push(this.schedulesToAdd);
-            this.showResponse("", response.data.success, "success");
-            this.clearData();
-            EventBus.$emit("save");
-            this.retrieveSchedules();
-            this.$refs.scheduleForm.resetValidation();
-          })
-          .catch((error) => {
-            this.loading = false;
-            this.schedulesToAdd = [];
-            if (error.response.data.error && error.response.status == 500)
-              this.showResponse(
-                "Ooops...",
-                "An error encountered! If this is a mistake, please retry. If error persist, please reload the page.",
-                "error"
-              );
-            if (error.response.status == 400)
-              this.showResponse(
-                "Ooops...",
-                error.response.data.has_sched,
-                "error"
-              );
-          })
-          .finally((this.loading = false));
-      } else {
-        this.showResponse(
-          "Ooops...",
-          "Please add at least one schedule.",
-          "info"
-        );
-        this.loading = false;
+      if (this.$refs.scheduleInputForm.validate()) {
+        this.loading = true;
+        if (schedCount > 0) {
+          this.$axios
+            .post("addSchedules", this.schedulesToAdd)
+            .then((response) => {
+              this.loading = false;
+              this.schedules.push(this.schedulesToAdd);
+              this.showResponse("", response.data.success, "success");
+              this.clearData();
+              EventBus.$emit("save");
+              this.retrieveSchedules();
+              this.$refs.scheduleForm.resetValidation();
+            })
+            .catch((error) => {
+              this.loading = false;
+              this.schedulesToAdd = [];
+              if (error.response.data.error && error.response.status == 500)
+                this.showResponse(
+                  "Ooops...",
+                  "An error encountered! If this is a mistake, please retry. If error persist, please reload the page.",
+                  "error"
+                );
+              if (error.response.status == 400)
+                this.showResponse(
+                  "Ooops...",
+                  error.response.data.has_sched,
+                  "error"
+                );
+            })
+            .finally((this.loading = false));
+        } else {
+          this.showResponse(
+            "Ooops...",
+            "Please add at least one schedule.",
+            "info"
+          );
+          this.loading = false;
+        }
       }
     },
 
@@ -849,8 +858,18 @@ export default {
       };
     },
 
-    changeSpanOfClassess(hour, minutes) {
-      // console.log(hour, minutes);
+    changeSpanOfClassess(e, isMinute) {
+      let hour = this.spanOfClasses.hour;
+      let minutes = this.spanOfClasses.minutes;
+
+      if (e.keyCode === 8 && isMinute) this.spanOfClasses.hour = 0;
+      else {
+        if (hour > 0 || minutes >= 15)
+          this.$refs.scheduleInputForm.resetValidation();
+        if (minutes >= 60)
+          (this.spanOfClasses.hour += Math.floor(minutes / 60)),
+            (this.spanOfClasses.minutes = minutes % 60);
+      }
       var time = null;
       time = this.scheduleInputs.startTime;
       var span = hour + ":" + minutes;

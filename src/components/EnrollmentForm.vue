@@ -11,6 +11,16 @@
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn text link to="/sign-in" v-if="!user">Login</v-btn>
+        <v-btn
+          icon
+          @click="
+            !user
+              ? $router.push({ path: '/' })
+              : $router.push({ path: '/admin' })
+          "
+        >
+          <v-icon color="red">mdi-close</v-icon>
+        </v-btn>
       </v-toolbar>
       <div class="form-container">
         <v-card-title

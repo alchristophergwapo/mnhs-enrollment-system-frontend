@@ -44,12 +44,11 @@
               </v-tab-item>
               <v-tab-item :value="'tab-2'">
                 <student-class-details
-                  :section_name="
+                  :teacher_name="
                     user.section.adviser
                       ? user.section.adviser.teacher_name
                       : 'No Adviser'
                   "
-                  :classmates="students"
                 ></student-class-details>
               </v-tab-item>
             </v-tabs-items>
@@ -118,7 +117,6 @@ export default {
   data() {
     return {
       user: [],
-      students: [],
       panel: [],
       tab: null,
     };
@@ -143,17 +141,12 @@ export default {
       }
 
       const section = this.user.enrollment.student_section;
-
+      this.isDataLoaded = false;
       this.$axios.get(`studentSectionDetails/${section}`).then((res) => {
+        this.isDataLoaded = true;
         this.students = res.data.classmates;
         this.students.sort(this.sortData("lastname"));
       });
-    },
-
-    sortData(property) {
-      return function (data1, data2) {
-        return data1[property].localeCompare(data2[property]);
-      };
     },
 
     onResize() {

@@ -9,20 +9,21 @@
         hide-details
       ></v-text-field>
       <v-spacer></v-spacer>
-      <span>Adviser: {{ section }}</span>
+      <span>Adviser: {{ teacher_name }}</span>
     </v-card-title>
     <v-data-table
       :headers="headers"
       :items="students"
       :search="search"
       :items-per-page="5"
+      :loading="isDataLoaded"
       class="elevation-1"
     >
       <template v-slot:item="row">
         <tr>
           <td>
-            {{ row.item.firstname.split(" ")[0]}}
-            {{  row.item.middlename}}
+            {{ row.item.firstname.split(" ")[0] }}
+            {{ row.item.middlename }}
             {{ row.item.lastname }}
           </td>
           <td>{{ row.item.address }}</td>
@@ -34,7 +35,7 @@
 
 <script>
 export default {
-  props: ["classmates", "section_name"],
+  props: ["teacher_name"],
   data() {
     return {
       search: "",
@@ -46,9 +47,33 @@ export default {
         },
         { text: "Address", value: "address" },
       ],
-      students:this.classmates,
-      section: this.section_name,
+      isDataLoaded: true,
+      students: [],
     };
+  },
+  created() {
+    this.initialize();
+  },
+  methods: {
+    initialize() {
+      let storedInfo = localStorage.getItem("user");
+      let userData = JSON.parse(storedInfo);
+      let user = userData.userInfo;
+
+      const section = user.enrollment.student_section;
+      this.isDataLoaded = true;
+      this.$axios.get(`studentSectionDetails/${section}`).then((res) => {
+        console.log("Response =>", res);
+        this.isDataLoaded = false;
+        this.students = res.data.classmates;
+        this.students.sort(this.sortData("lastname"));
+      });
+    },
+    sortData(property) {
+      return function (data1, data2) {
+        return data1[property].localeCompare(data2[property]);
+      };
+    },
   },
 };
 </script>

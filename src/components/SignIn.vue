@@ -2,6 +2,9 @@
   <v-app id="sign-in">
     <v-container class="signin-container">
       <v-card class="card1" elevation="10" max-width="500px">
+        <v-btn icon link to="/">
+          <v-icon x-large>mdi-arrow-left</v-icon>
+        </v-btn>
         <center>
           <img
             :src="require('../assets/images/enroll.png')"

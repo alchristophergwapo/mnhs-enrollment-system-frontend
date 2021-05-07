@@ -126,6 +126,7 @@
           :items="teachers"
           :search="search"
           :items-per-page="10"
+          :loading="teachersIsNotLoaded"
           class="elevation-1"
         >
           <template v-slot:item="row">
@@ -192,152 +193,9 @@
                 </v-dialog>
               </td>
               <td>
-                <v-dialog max-width="1000px">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn
-                      small
-                      text
-                      v-bind="attrs"
-                      v-on="on"
-                      @click="getTeacherSchedule(row.item.id)"
-                      >View Schedules</v-btn
-                    >
-                  </template>
-                  <template v-slot:default="dialog">
-                    <v-card>
-                      <v-card-title>
-                        <v-spacer></v-spacer>
-                        <v-btn icon @click="dialog.value = false">
-                          <v-icon>mdi-close</v-icon>
-                        </v-btn>
-                      </v-card-title>
-                      <br />
-                      <v-data-table
-                        :headers="schedules_headers"
-                        :items="schedules"
-                        hide-default-footer
-                        class="elevation-1"
-                      >
-                        <template v-slot:item="row">
-                          <tr>
-                            <td>
-                              <div v-if="row.item.Monday">
-                                <span
-                                  >Time:
-                                  <strong
-                                    >{{ row.item.Monday.start_time }}-{{
-                                      row.item.Monday.end_time
-                                    }}</strong
-                                  > </span
-                                ><br />
-                                <span
-                                  >Subject:
-                                  <strong>{{
-                                    row.item.Monday.subject_name
-                                  }}</strong> </span
-                                ><br />
-                                <span
-                                  >Section:
-                                  <strong>{{ row.item.Monday.name }}</strong>
-                                </span>
-                              </div>
-                            </td>
-                            <td>
-                              <div v-if="row.item.Tuesday">
-                                <span
-                                  >Time:
-                                  <strong
-                                    >{{ row.item.Tuesday.start_time }}-{{
-                                      row.item.Tuesday.end_time
-                                    }}</strong
-                                  > </span
-                                ><br />
-                                <span
-                                  >Subject:
-                                  <strong>{{
-                                    row.item.Tuesday.subject_name
-                                  }}</strong> </span
-                                ><br />
-                                <span
-                                  >Section:
-                                  <strong>{{ row.item.Tuesday.name }}</strong>
-                                </span>
-                              </div>
-                            </td>
-                            <td>
-                              <div v-if="row.item.Wednesday">
-                                <span
-                                  >Time:
-                                  <strong
-                                    >{{ row.item.Wednesday.start_time }}-{{
-                                      row.item.Wednesday.end_time
-                                    }}</strong
-                                  > </span
-                                ><br />
-                                <span
-                                  >Subject:
-                                  <strong>{{
-                                    row.item.Wednesday.subject_name
-                                  }}</strong> </span
-                                ><br />
-                                <span
-                                  >Section:
-                                  <strong>{{ row.item.Wednesday.name }}</strong>
-                                </span>
-                              </div>
-                            </td>
-                            <td>
-                              <div v-if="row.item.Thursday">
-                                <span
-                                  >Time:
-                                  <strong
-                                    >{{ row.item.Thursday.start_time }}-{{
-                                      row.item.Thursday.end_time
-                                    }}</strong
-                                  > </span
-                                ><br />
-                                <span>
-                                  Subject:
-                                  <strong>{{
-                                    row.item.Thursday.subject_name
-                                  }}</strong> </span
-                                ><br />
-                                <span
-                                  >Section:
-                                  <strong>{{ row.item.Thursday.name }}</strong>
-                                </span>
-                              </div>
-                            </td>
-                            <td>
-                              <div v-if="row.item.Friday">
-                                <span
-                                  >Time:
-                                  <strong
-                                    >{{ row.item.Friday.start_time }}-{{
-                                      row.item.Friday.end_time
-                                    }}</strong
-                                  > </span
-                                ><br />
-                                <span
-                                  >Subject:
-                                  <strong>{{
-                                    row.item.Friday.subject_name
-                                  }}</strong> </span
-                                ><br />
-                                <span
-                                  >Section:
-                                  <strong>{{ row.item.Friday.name }}</strong>
-                                </span>
-                              </div>
-                            </td>
-                          </tr>
-                        </template>
-                      </v-data-table>
-                      <br />
-                    </v-card>
-                    <v-spacer></v-spacer>
-                  </template>
-                </v-dialog>
+                <v-btn small text @click="getTeacherSchedule(row.item.id)"
+                  >View Schedules</v-btn
+                >
               </td>
 
               <td>{{ row.item.section_id }}</td>
@@ -358,6 +216,141 @@
             </tr>
           </template>
         </v-data-table>
+
+        <!-- Schedule dialog -->
+        <v-dialog max-width="1000px" v-model="teacherSchedDialog">
+          <v-card>
+            <v-card-title>
+              <v-spacer></v-spacer>
+              <v-btn icon @click="teacherSchedDialog = false">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </v-card-title>
+            <br />
+            <v-data-table
+              :headers="schedules_headers"
+              :items="schedules"
+              hide-default-footer
+              class="elevation-1"
+            >
+              <template v-slot:item="row">
+                <tr>
+                  <td>
+                    <div v-if="row.item.Monday">
+                      <span
+                        >Time:
+                        <strong
+                          >{{ row.item.Monday.start_time }}-{{
+                            row.item.Monday.end_time
+                          }}</strong
+                        > </span
+                      ><br />
+                      <span
+                        >Subject:
+                        <strong>{{
+                          row.item.Monday.subject_name
+                        }}</strong> </span
+                      ><br />
+                      <span
+                        >Section:
+                        <strong>{{ row.item.Monday.name }}</strong>
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <div v-if="row.item.Tuesday">
+                      <span
+                        >Time:
+                        <strong
+                          >{{ row.item.Tuesday.start_time }}-{{
+                            row.item.Tuesday.end_time
+                          }}</strong
+                        > </span
+                      ><br />
+                      <span
+                        >Subject:
+                        <strong>{{
+                          row.item.Tuesday.subject_name
+                        }}</strong> </span
+                      ><br />
+                      <span
+                        >Section:
+                        <strong>{{ row.item.Tuesday.name }}</strong>
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <div v-if="row.item.Wednesday">
+                      <span
+                        >Time:
+                        <strong
+                          >{{ row.item.Wednesday.start_time }}-{{
+                            row.item.Wednesday.end_time
+                          }}</strong
+                        > </span
+                      ><br />
+                      <span
+                        >Subject:
+                        <strong>{{
+                          row.item.Wednesday.subject_name
+                        }}</strong> </span
+                      ><br />
+                      <span
+                        >Section:
+                        <strong>{{ row.item.Wednesday.name }}</strong>
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <div v-if="row.item.Thursday">
+                      <span
+                        >Time:
+                        <strong
+                          >{{ row.item.Thursday.start_time }}-{{
+                            row.item.Thursday.end_time
+                          }}</strong
+                        > </span
+                      ><br />
+                      <span>
+                        Subject:
+                        <strong>{{
+                          row.item.Thursday.subject_name
+                        }}</strong> </span
+                      ><br />
+                      <span
+                        >Section:
+                        <strong>{{ row.item.Thursday.name }}</strong>
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <div v-if="row.item.Friday">
+                      <span
+                        >Time:
+                        <strong
+                          >{{ row.item.Friday.start_time }}-{{
+                            row.item.Friday.end_time
+                          }}</strong
+                        > </span
+                      ><br />
+                      <span
+                        >Subject:
+                        <strong>{{
+                          row.item.Friday.subject_name
+                        }}</strong> </span
+                      ><br />
+                      <span
+                        >Section:
+                        <strong>{{ row.item.Friday.name }}</strong>
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              </template>
+            </v-data-table>
+            <br />
+          </v-card>
+        </v-dialog>
       </v-container>
     </div>
   </div>
@@ -387,6 +380,8 @@ export default {
       selected_section: null,
       sections: [],
       dialog: false,
+      teacherSchedDialog: false,
+      teachersIsNotLoaded: false,
       tab: null,
       items: [
         {
@@ -482,6 +477,7 @@ export default {
     },
     //Method for displaying schedules
     getTeacherSchedule(id) {
+      this.teacherSchedDialog = true;
       this.schedules = [];
       this.sched = {
         Monday: null,
@@ -525,8 +521,7 @@ export default {
 
     //Methods for displaying all teachers
     display() {
-      this.teachers = this.$store.getters.allTeacher;
-      this.filterTeachers = this.teachers;
+      this.teachersIsNotLoaded = true;
       this.$store
         .dispatch("allTeacher")
         .then((res) => {
@@ -538,6 +533,8 @@ export default {
                 this.year || val.created_at.includes(this.year)
             );
           });
+
+          this.teachersIsNotLoaded = false;
         })
         .catch((error) => {
           console.log(error);
@@ -546,26 +543,40 @@ export default {
 
     //Methods for Deleting A Teacher In Delete Button
     async removeTeacher(dataid) {
-      this.$axios
-        .get("delTeacher/" + dataid)
-        .then((response) => {
-          if (response.data.message) {
-            this.$swal.fire({
-              icon: "success",
-              title: "Success",
-              text: "Successfully deleted.",
-            });
-            this.display();
-          } else {
-            this.$swal.fire({
-              icon: "error",
-              title: "Error",
-              text: "Not Successfully deleted.",
-            });
-          }
+      this.$swal
+        .fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Confirm",
         })
-        .catch((error) => {
-          console.log(error);
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.$axios
+              .get("delTeacher/" + dataid)
+              .then((response) => {
+                if (response.data.message) {
+                  this.$swal.fire({
+                    icon: "success",
+                    title: "Success",
+                    text: "Successfully deleted.",
+                  });
+                  this.display();
+                } else {
+                  this.$swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Not Successfully deleted.",
+                  });
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
         });
     },
 
