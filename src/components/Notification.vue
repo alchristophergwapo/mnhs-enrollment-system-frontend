@@ -203,12 +203,10 @@ export default {
       .then((response) => {
         this.overlay = false;
         this.notifications = response.data.notifications;
-        console.log(this.notifications);
       });
   },
   methods: {
     filterSections(gradelevel, id) {
-      console.log(gradelevel);
       this.id = id;
       this.dialog = true;
       this.sections = [];
@@ -235,7 +233,6 @@ export default {
     },
 
     checkIfExist(data) {
-      console.log("data: ", data);
       let exist = false;
       let students = this.$store.getters.allStudents;
       for (const index in students) {
@@ -243,7 +240,6 @@ export default {
           const element = students[index];
           if (element.id == data.id) {
             exist = true;
-            console.log("Exist: ", element);
           } else {
             exist = false;
           }
@@ -251,7 +247,6 @@ export default {
       }
       if (!exist) {
         students.push(data);
-        console.log("Not exist: ", data);
       }
 
       this.$store.commit("setStudents", students);
@@ -259,7 +254,6 @@ export default {
       // EventBus.$emit("newApprovedStudent", students);
     },
     approveEnrollment(id) {
-      console.log(this.section);
       this.loading = true;
       if (this.section) {
         this.$axios
@@ -277,12 +271,11 @@ export default {
             this.loading = false;
             // window.location.reload(true);
           })
-          .catch((error) => {
-            console.log(error);
+          .catch(() => {
             this.$swal.fire({
-              icon: "error",
-              title: "Ooops....",
-              text: error.response.data.message,
+              icon: "alert",
+              title: "Ooops!",
+              text: "An error encountered!",
             });
             this.dialog = true;
             this.openDialog = true;
@@ -319,31 +312,34 @@ export default {
             text: response.data.success,
           });
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+          this.$swal.fire({
+            icon: "alert",
+            title: "Ooops!",
+            text: "An error encountered!",
+          });
         });
     },
 
     markAsOpened(notif, id, index) {
       this.notification = notif;
-      console.log(notif);
       this.openDialog = true;
       this.indexToDel = index;
       this.$axios
         .get("mark-as-opened/" + id)
         .then((response) => {
-          console.log(typeof response.data.notification.data);
           this.notification.opened_at = this.date;
           this.notification.data = JSON.parse(response.data.notification.data);
           let index = this.notifications.indexOf(notif);
           this.notifications[index] = response.data.notification;
-          console.log(this.notification);
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+          this.$swal.fire({
+            icon: "alert",
+            title: "Ooops!",
+            text: "An error encountered!",
+          });
         });
-
-      // console.log(this.notification);
     },
 
     closeDialog() {

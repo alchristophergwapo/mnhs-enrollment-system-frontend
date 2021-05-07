@@ -331,15 +331,9 @@ export default {
             body: `${enrollmentData.firstname} ${enrollmentData.lastname} submitted an enrollment.`,
           },
           events: {
-            onerror: function () {
-              console.log("Custom error event was called");
-            },
-            onclick: function () {
-              console.log("Custom click event was called");
-            },
-            onclose: function () {
-              console.log("Custom close event was called");
-            },
+            onerror: function () {},
+            onclick: function () {},
+            onclose: function () {},
           },
         };
         this.$notification.show(

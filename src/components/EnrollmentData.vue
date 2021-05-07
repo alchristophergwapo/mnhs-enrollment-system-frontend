@@ -99,14 +99,6 @@ export default {
       EventBus.$emit("refresh");
     },
   },
-
-  beforeMount() {
-    EventBus.$on("redirectToDeclinedTab", () => {
-      console.log(this.enrollmentTab);
-      this.enrollmentTab = "tab-2";
-      console.log(this.enrollmentTab);
-    });
-  },
 };
 </script>
 

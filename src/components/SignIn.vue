@@ -116,8 +116,6 @@ export default {
             this.loading = false;
             const user = response.data.user;
             this.$user = user;
-            console.log(this.$user);
-            console.log(response);
             if (user.user_type != "student") {
               if (user.updated == 0) {
                 this.$router.push({ path: "/admin/profile" });
@@ -132,9 +130,8 @@ export default {
               }
             }
           })
-          .catch((error) => {
-            // console.log(error.response);
-            this.showError(error.response.data.error);
+          .catch(() => {
+            this.showError("An error encountered!");
             this.loading = false;
           });
       }

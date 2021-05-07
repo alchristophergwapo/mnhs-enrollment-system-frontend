@@ -114,7 +114,6 @@ export default {
   },
   created() {
     let date = new Date();
-    console.log(date);
     this.year = date.getFullYear();
   },
   methods: {

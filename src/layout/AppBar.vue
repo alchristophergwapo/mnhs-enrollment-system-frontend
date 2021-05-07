@@ -79,7 +79,6 @@ export default {
       this.$axios
         .get(`mark-all-read/${this.user_details.id}`)
         .then((response) => {
-          console.log(response);
           this.notifications = 0;
           this.setUserData(response.data);
         });
@@ -104,13 +103,11 @@ export default {
     } else {
       this.user_details = userData.userInfo;
     }
-    console.log(userData);
     let notificationsFromStorage = userData.user.notifications;
     if (notificationsFromStorage) {
       this.allNotifications = notificationsFromStorage;
       this.notifications = this.unreadNotification.length;
     }
-    // console.log(this.allNotifications);
   },
   computed: {
     unreadNotification() {
@@ -128,7 +125,6 @@ export default {
       window.Echo.private(
         "App.Models.User." + this.user_details.id
       ).notification((eventData) => {
-        console.log(eventData);
         this.allNotifications.push(eventData.notification);
         this.notifications = this.unreadNotification.length;
         this.setUserData(eventData);

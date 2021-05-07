@@ -177,19 +177,15 @@ export default {
   },
   watch: {},
   created() {
-    console.log(this.subjects);
     EventBus.$on("allTeacher", (data) => {
-      console.log(data);
       this.teacher = data.data.teacher_name;
       this.teacher_id = data.data.id;
     });
 
     EventBus.$on("editallTeacher", (data) => {
-      console.log(data.data);
       this.editSubjectDetails.teacher_name = data.data.teacher_name;
       this.editSubjectDetails.teacher_id = data.data.id;
       this.editSubjectDetails.icon = "mdi-check-underline";
-      console.log(this.editSubjectDetails);
     });
   },
   methods: {
@@ -208,13 +204,11 @@ export default {
             this.showResponse("success", "Success", response.data.success);
 
             this.subjects.push(subject);
-            // console.log(this.subjects);
             this.clear();
             EventBus.$emit("save");
             this.clear();
           })
           .catch((error) => {
-            console.log(error.response);
             if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);
             } else {
@@ -228,7 +222,6 @@ export default {
     },
 
     openEditSub(itemData, index) {
-      console.log(itemData);
       this.editSubjectDetails.grade_level_id = itemData.grade_level_id;
       this.editSubjectDetails.subject_name = itemData.subject_name;
       this.editSubjectDetails.teacher_name = itemData.teacher_name;
@@ -248,7 +241,6 @@ export default {
       this.subjects[
         this.editSubjectDetails.index
       ].teacher_name = this.editSubjectDetails.teacher_name;
-      console.log(this.editSubjectDetails);
       this.$axios
         .post(`updateSubject`, this.editSubjectDetails)
         .then((response) => {
@@ -320,9 +312,6 @@ export default {
     },
     getError(fieldName) {
       return this.errors[fieldName][0];
-    },
-    filter(data) {
-      console.log(data);
     },
   },
   computed: {

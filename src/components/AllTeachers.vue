@@ -467,13 +467,15 @@ export default {
               const element = sections[key];
               this.sections.push(element);
             }
-            //console.log(this.sections);
           }
         })
-        .catch((error) => {
-          console.log(error.response);
+        .catch(() => {
+          this.$swal.fire({
+            icon: "alert",
+            title: "Ooops!",
+            text: "An error encountered!",
+          });
         });
-      console.log(this.sections);
     },
     //Method for displaying schedules
     getTeacherSchedule(id) {
@@ -489,12 +491,10 @@ export default {
       this.$axios.get(`getTeacherSchedule/${id}`).then((res) => {
         // this.schedules = res.data.schedules;
         const schedulesRes = res.data.schedules;
-        console.log(schedulesRes);
         let count = 0;
         let next = false;
         for (let index = 0; index < schedulesRes.length; index++) {
           const element = schedulesRes[index];
-          // console.log(element);
 
           count += 1;
           if (this.sched[element.day] == null)
@@ -536,8 +536,12 @@ export default {
 
           this.teachersIsNotLoaded = false;
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+          this.$swal.fire({
+            icon: "alert",
+            title: "Ooops!",
+            text: "An error encountered!",
+          });
         });
     },
 
@@ -573,15 +577,18 @@ export default {
                   });
                 }
               })
-              .catch((error) => {
-                console.log(error);
+              .catch(() => {
+                this.$swal.fire({
+                  icon: "alert",
+                  title: "Ooops!",
+                  text: "An error encountered!",
+                });
               });
           }
         });
     },
 
     editTeacher(teacher) {
-      console.log(teacher);
       this.status = "Update Teacher";
       this.statusdialog = true;
       this.booleanStatus = true;
@@ -628,7 +635,6 @@ export default {
 
     //Method for Adding A Teacher in save button
     async addTeacher() {
-      console.log("section:" + this.selected_section);
       if (this.booleanStatus == false) {
         this.loading = true;
         this.$axios
@@ -665,18 +671,17 @@ export default {
                     response.data.teacher +
                     ".",
                 });
-            // this.sections.splice(
-            //   this.sections.indexOf(this.selected_section, 1)
-            // );
           })
           .catch((error) => {
             if (error.response.status == 422) {
-              // console.log(error.response.data.errors);
               this.setErrors(error.response.data.errors);
             } else {
-              console.log(error);
+              this.$swal.fire({
+                icon: "alert",
+                title: "Ooops!",
+                text: "An error encountered!",
+              });
             }
-            console.log(error.response);
             this.loading = false;
           });
       } else {
@@ -756,9 +761,13 @@ export default {
                           this.display();
                         }
                       })
-                      .catch((error) => {
+                      .catch(() => {
                         this.loading = false;
-                        console.log(error);
+                        this.$swal.fire({
+                          icon: "alert",
+                          title: "Ooops!",
+                          text: "An error encountered!",
+                        });
                       });
                   }
                 });
@@ -766,13 +775,15 @@ export default {
           })
           .catch((error) => {
             if (error.response.status == 422) {
-              console.log(error.response.data);
               this.setErrors(error.response.data.errors);
             } else {
-              console.log(error);
+              this.$swal.fire({
+                icon: "alert",
+                title: "Ooops!",
+                text: "An error encountered!",
+              });
             }
             this.loading = false;
-            console.log(error);
           });
       }
     },

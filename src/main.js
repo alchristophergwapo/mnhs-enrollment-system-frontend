@@ -22,9 +22,6 @@ Vue.config.productionTip = false;
 Vue.prototype.$axios = Axios;
 var user = null;
 
-// Axios.get("/auth/init").then((response) => {
-//   console.log(response);
-// });
 window.Vue = Vue;
 Vue.use(require("vue-chartist"), {
   messageNoData: "You have not enough data",
@@ -40,8 +37,6 @@ Vue.use(VueMoment, {
 });
 
 import Pusher from "pusher-js";
-
-// window.Pusher.logToConsole = true;
 
 Vue.prototype.$pusher = new Pusher("2041a966486dd958514c", {
   cluster: "mt1",

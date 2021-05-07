@@ -490,7 +490,6 @@ export default {
     };
   },
   created() {
-    console.log(this.section_id);
     this.retrieveSchedules();
     EventBus.$on("gradelevelSubject", (data) => {
       let startTime = this.scheduleInputs.startTime;
@@ -543,7 +542,6 @@ export default {
             teacher_id: data.data.teacher_id,
             teacher_name: data.data.teacher_name,
           });
-      // console.log(this.scheduleInputs[data.day]);
     });
 
     EventBus.$on("clearData", (data) => {
@@ -555,12 +553,10 @@ export default {
   },
   methods: {
     retrieveSchedules() {
-      console.log(this.section_id);
       this.schedules = [];
       this.$axios.get(`classSchedules/${this.section_id}`).then((response) => {
         this.overlay = true;
         const schedRes = response.data.sectionSchedules;
-        console.log(schedRes);
         this.overlay = false;
 
         let count = 0;
@@ -568,18 +564,14 @@ export default {
         for (const index in schedRes) {
           if (schedRes.hasOwnProperty.call(schedRes, index)) {
             const element = schedRes[index];
-            // this.sched.Time = `${element.start_time}-${element.end_time}`;
-            // console.log(element);
             if (!this.sched[element.day] || index != schedRes.length - 1) {
               count += 1;
               this.sched[element.day] = element;
             }
             if (index == schedRes.length - 1) {
-              // console.log("here");
               next = true;
             }
           }
-          // console.log(this.sched);
           if (count >= 5 || next) {
             this.schedules.push(this.sched);
             this.sched = {
@@ -594,14 +586,8 @@ export default {
             count = 0;
           }
         }
-        console.log(this.schedules);
-        console.log(this.schedules.length);
         if (this.schedules.length > 0) {
-          console.log(
-            this.schedules[this.schedules.length - 1].Monday.end_time
-          );
           var time = this.schedules[this.schedules.length - 1].Monday.end_time;
-          // console.log(time);
           var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
           let newEndTime = this.addTimes(time, span);
           this.scheduleInputs.startTime = time;
@@ -616,7 +602,6 @@ export default {
       });
     },
     saveSchedule(index) {
-      // console.log(index);
       if (this.editSchedule) {
         this.saveEditSchedChanges(index);
         this.readonly = false;
@@ -631,7 +616,6 @@ export default {
      */
     addSchedule() {
       let schedInput = this.scheduleInputs;
-      console.log(schedInput);
       let schedCount = 0;
       for (const key in schedInput) {
         if (schedInput.hasOwnProperty.call(schedInput, key)) {
@@ -695,13 +679,11 @@ export default {
     },
 
     editSched(item, index) {
-      console.log(item);
       this.mode = "EDIT";
       this.editSchedule = true;
       this.scheduleDialog = true;
       this.readonly = true;
       this.scheduleInputs = item;
-      console.log("Inputs => ", this.scheduleInputs);
       this.scheduleInputs.startTime = item.Monday.start_time;
       var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
       let newEndTime = this.addTimes(item.Monday.start_time, span);
@@ -731,7 +713,6 @@ export default {
       for (let i = 0; i < time.length; i++) {
         if (time[i] === ":") (isTimeComplete = true), (i = time.length - 1);
       }
-      console.log(isTimeComplete);
       var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
       if (isTimeComplete)
         this.scheduleInputs.endTime = this.addTimes(time, span);
@@ -742,7 +723,6 @@ export default {
       this.clearData();
       const length = this.schedules.length;
       let schedToBase = this.schedules[length - 1];
-      console.log(schedToBase);
       for (const key in schedToBase) {
         if (schedToBase.hasOwnProperty.call(schedToBase, key)) {
           const element = schedToBase[key];
@@ -759,7 +739,6 @@ export default {
     },
 
     saveEditSchedChanges(index) {
-      // console.log(index);
       this.schedules[index] = this.scheduleInputs;
       const edited = {
         Monday: this.scheduleInputs.Monday,
@@ -786,9 +765,8 @@ export default {
             this.retrieveSchedules();
             this.showResponse("Success", response.data.success, "success");
           })
-          .catch((error) => {
-            console.log(error.response);
-            this.showResponse("Success", error.response.data.error, "success");
+          .catch(() => {
+            this.showResponse("Success", "An error encountered!", "success");
           });
       } else {
         this.showResponse(
@@ -900,7 +878,6 @@ export default {
           }
         }
       }
-      console.log(this.scheduleInputs);
     },
     addTimes(time, timeSpan) {
       var times = [0, 0];

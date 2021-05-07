@@ -173,7 +173,6 @@ export default {
       if (userData.user_type == "admin") {
         this.$router.push({ path: "/admin" });
       }
-      console.log(userInfo);
     }
   },
 };

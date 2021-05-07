@@ -62,89 +62,77 @@
                   ></v-checkbox>
                 </v-container>
               </v-col>
+              <!-- <v-form
+                ref="balikAralorTransferInfo"
+                v-model="transfereeValid"
+                lazy-validation
+              > -->
+              <v-container v-if="isTransfereeOrBalikAral">
+                <balik-or-transfer
+                  ref="balikAralorTransferInfoData"
+                  :gLevel="grade_level"
+                  :grade_level_options="options"
+                ></balik-or-transfer>
+              </v-container>
+              <!-- </v-form> -->
+              <!-- <v-form
+                ref="seniorHigh"
+                v-model="seniorHighValid"
+                lazy-validation
+              > -->
+              <v-container v-if="isSeniorHigh">
+                <senior-high
+                  ref="seniorHighData"
+                  v-bind:track="tracks"
+                  v-bind:strand="strands"
+                ></senior-high>
+              </v-container>
+              <!-- </v-form> -->
+              <v-col cols="12" sm="6" md="6">
+                <v-file-input
+                  v-model="card_image"
+                  label="Card Picture"
+                  :rules="[(value) => !!value || 'Required.']"
+                  accept="image/*"
+                  v-on:keyup="enterKeyTriggered()"
+                  outlined
+                  prepend-icon="mdi-camera"
+                ></v-file-input>
+              </v-col>
+              <v-col cols="12" sm="6" md="6">
+                <v-select
+                  v-model="grade_level"
+                  :items="
+                    isSeniorHigh == true ? grade_levels[1] : grade_levels[0]
+                  "
+                  @change="selectGradeLevel($event)"
+                  @click:clear="clearSelected()"
+                  :rules="[(v) => !!v || 'Required']"
+                  :readonly="passEnrolled || isNew"
+                  label="Select Grade Level"
+                  :clearable="clearable"
+                  v-on:keyup="enterKeyTriggered()"
+                  outlined
+                  required
+                ></v-select>
+              </v-col>
             </v-row>
-          </v-container>
-        </v-form>
 
-        <v-form
-          ref="balikAralorTransferInfo"
-          v-model="transfereeValid"
-          lazy-validation
-          v-if="isTransfereeOrBalikAral"
-        >
-          <v-container>
-            <balik-or-transfer
-              ref="balikAralorTransferInfoData"
-              :gLevel="grade_level"
-              :grade_level_options="options"
-            ></balik-or-transfer>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                large
+                dark
+                color="primary"
+                @click="submitEnrollment"
+                :disabled="submitDisable"
+                :loading="submitting"
+              >
+                Submit
+              </v-btn>
+            </v-card-actions>
           </v-container>
         </v-form>
-        <v-form
-          v-if="isSeniorHigh"
-          ref="seniorHigh"
-          v-model="seniorHighValid"
-          lazy-validation
-        >
-          <v-container>
-            <senior-high
-              ref="seniorHighData"
-              v-bind:track="tracks"
-              v-bind:strand="strands"
-            ></senior-high>
-          </v-container>
-        </v-form>
-        <div class="text-center">
-          <!-- review enrollment -->
-          <v-form ref="submitEnrollment" lazy-validation>
-            <v-container>
-              <v-row>
-                <v-col cols="12" sm="6" md="6">
-                  <v-file-input
-                    v-model="card_image"
-                    label="Card Picture"
-                    :rules="[(value) => !!value || 'Required.']"
-                    accept="image/*"
-                    v-on:keyup="enterKeyTriggered()"
-                    outlined
-                    prepend-icon="mdi-camera"
-                  ></v-file-input>
-                </v-col>
-                <v-col cols="12" sm="6" md="6">
-                  <v-select
-                    v-model="grade_level"
-                    :items="
-                      isSeniorHigh == true ? grade_levels[1] : grade_levels[0]
-                    "
-                    @change="selectGradeLevel($event)"
-                    @click:clear="clearSelected()"
-                    :rules="[(v) => !!v || 'Required']"
-                    :readonly="passEnrolled || isNew"
-                    label="Select Grade Level"
-                    :clearable="clearable"
-                    v-on:keyup="enterKeyTriggered()"
-                    outlined
-                    required
-                  ></v-select>
-                </v-col>
-              </v-row>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                  large
-                  dark
-                  color="primary"
-                  @click="submitEnrollment"
-                  :disabled="submitDisable"
-                  :loading="submitting"
-                >
-                  Submit
-                </v-btn>
-              </v-card-actions>
-            </v-container>
-          </v-form>
-        </div>
-        <br />
       </div>
     </div>
   </v-app>
@@ -225,7 +213,7 @@ export default {
     },
     enterKeyTriggered(e) {
       e.preventDefault();
-      if (e.keyCode === 13) alert("here"), this.submitEnrollment();
+      if (e.keyCode === 13) this.submitEnrollment();
       else this.options;
     },
     selectGradeLevel(event) {
@@ -240,10 +228,7 @@ export default {
         (this.isNew = false), (this.isTransfereeOrBalikAral = false);
     },
     submitEnrollment() {
-      if (
-        this.$refs.submitEnrollment.validate() &&
-        this.$refs.basicInfo.validate()
-      ) {
+      if (this.$refs.basicInfo.validate()) {
         let error = false;
         this.student = this.$refs.studentInfoData.getData;
         let formdata = new FormData();
@@ -256,20 +241,20 @@ export default {
         }
 
         if (this.isTransfereeOrBalikAral) {
-          if (this.$refs.balikAralorTransferInfo.validate()) {
-            error = false;
-            let balikOrTransfer = JSON.parse(
-              this.$refs.balikAralorTransferInfoData.getData
-            );
-            for (const key in balikOrTransfer) {
-              if (balikOrTransfer[key]) {
-                const element = balikOrTransfer[key];
-                this.student[key] = element;
-              }
+          // if (this.$refs.balikAralorTransferInfo.validate()) {
+          // error = false;
+          let balikOrTransfer = JSON.parse(
+            this.$refs.balikAralorTransferInfoData.getData
+          );
+          for (const key in balikOrTransfer) {
+            if (balikOrTransfer[key]) {
+              const element = balikOrTransfer[key];
+              this.student[key] = element;
             }
+          }
 
-            formdata.append("isBalikOrTransfer", true);
-          } else error = true;
+          formdata.append("isBalikOrTransfer", true);
+          // } else error = true;
         } else formdata.append("isBalikOrTransfer", false);
 
         if (this.isSeniorHigh) {
@@ -304,15 +289,11 @@ export default {
           Date.now() + "_" + this.card_image.name
         );
 
-        for (let [key, value] of formdata.entries()) {
-          console.log(key, value);
-        }
         if (error == false) {
           this.submitting = true;
           this.$axios
             .post(`addStudent`, formdata)
             .then((response) => {
-              console.log(response);
               this.$swal.fire({
                 title: "Success",
                 text: response.data.success,
@@ -327,7 +308,6 @@ export default {
               }
             })
             .catch((error) => {
-              console.log(error.response);
               this.submitting = false;
               if (error.response.data.currentEnrollment) {
                 this.$swal.fire({

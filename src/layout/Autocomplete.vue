@@ -110,8 +110,12 @@ export default {
         .then((res) => {
           this.items = res.data[resRef];
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+          this.$swal.fire({
+            icon: "alert",
+            title: "Ooops!",
+            text: "An error encountered!",
+          });
         })
         .finally(() => {
           this.isLoading = false;
@@ -128,7 +132,6 @@ export default {
       }
     },
     searchData(item, queryText) {
-      // console.log(itemText);
       const textOne = item[this.property].toLowerCase();
       const searchText = queryText.toLowerCase();
       return textOne.indexOf(searchText) > -1;

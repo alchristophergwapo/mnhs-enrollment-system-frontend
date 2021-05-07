@@ -109,19 +109,14 @@ export default {
   },
   watch: {},
   created() {
-    console.log(this.Section);
-
     EventBus.$on("allNoneAdvisoryTeacher", (data) => {
-      console.log(data);
       this.sectionData.teacher = data.data ? data.data.teacher_name : "";
       this.sectionData.teacher_id = data.data ? data.data.id : "";
     });
 
     EventBus.$on("editallNoneAdvisoryTeacher", (data) => {
-      // console.log(data);
       this.sectionData.teacher = data.data.teacher_name;
       this.sectionData.teacher_id = data.data.id;
-      console.log(this.sectionData);
     });
 
     EventBus.$on("clearData", () => {
@@ -136,8 +131,6 @@ export default {
       if (this.$refs.sectionForm.validate()) {
         this.loading = true;
         if (this.edit == false) {
-          // console.log(grades.split(" ")[2]);
-          console.log(this.sectionData);
           this.$axios
             .post("addSection", {
               grade: grades.split(" ")[2],
@@ -177,12 +170,14 @@ export default {
               if (error.response.status == 422) {
                 this.setErrors(error.response.data.errors);
               } else {
-                console.log(error);
+                this.$swal.fire({
+                  icon: "alert",
+                  title: "Ooops!",
+                  text: "An error encountered!",
+                });
               }
             });
         } else {
-          //console.log("Teacher:"+this.Section.teacher);
-
           this.loading = true;
           this.$axios
             .post("updateSection/" + this.sectionData.id, {
@@ -263,7 +258,6 @@ export default {
               if (error.response.status == 422) {
                 this.setErrors(error.response.data.errors);
               } else {
-                console.log(error);
                 this.showResponse("Ooops...", "An error encountered!", "error");
               }
             });
@@ -304,9 +298,6 @@ export default {
     },
     getError(fieldName) {
       return this.errors[fieldName][0];
-    },
-    filter(data) {
-      console.log(data);
     },
   },
   computed: {

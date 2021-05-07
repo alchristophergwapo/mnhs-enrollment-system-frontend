@@ -50,9 +50,7 @@ export default {
       errors: {},
     };
   },
-  created() {
-    console.log(this.schedules, this.section_id);
-  },
+  created() {},
   methods: {},
   computed: {
     hasAnyErors() {

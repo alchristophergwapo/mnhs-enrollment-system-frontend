@@ -503,7 +503,6 @@ export default {
       .dispatch("allStudents", adminLevel)
       .then((response) => {
         let studs = response;
-        console.log(studs);
         for (var index in studs) {
           let element = studs[index];
           element["fullname"] = element["firstname"].concat(
@@ -515,8 +514,12 @@ export default {
           this.filteredStudents.push(element);
         }
       })
-      .catch((error) => {
-        console.log(error);
+      .catch(() => {
+        this.$swal.fire({
+          icon: "alert",
+          title: "Ooops!",
+          text: "An error encountered!",
+        });
       });
   },
   mounted() {
@@ -532,8 +535,12 @@ export default {
         }
         this.filteredSections = response.data.sections;
       })
-      .catch((error) => {
-        console.log(error);
+      .catch(() => {
+        this.$swal.fire({
+          icon: "alert",
+          title: "Ooops!",
+          text: "An error encountered!",
+        });
       });
     for (let i = 2021; i <= new Date().getFullYear(); i++) {
       this.schoolYear.push(i);
@@ -591,7 +598,6 @@ export default {
         });
       } else {
         this.students = this.filteredStudents.filter((val) => {
-          console.log(val);
           return (
             val.section_name == section && val.start_school_year === this.year
           );
@@ -619,7 +625,6 @@ export default {
     //UPDATE A STUDENT DETAILS
     updateStudent(formdata) {
       if (this.$refs.studentDetails.validate()) {
-        console.log("id:" + formdata.id);
         this.$axios
           .post(`updateStudent/` + formdata.id, formdata)
           .then((response) => {
@@ -640,8 +645,12 @@ export default {
               });
             }
           })
-          .catch((error) => {
-            console.log(error);
+          .catch(() => {
+            this.$swal.fire({
+              icon: "alert",
+              title: "Ooops!",
+              text: "An error encountered!",
+            });
           });
       }
     },
