@@ -17,6 +17,7 @@
         <v-card-title>
           <v-select
             v-model="selectedYear"
+            class="a"
             :items="schoolYear"
             @change="filterByYear(($event = selectedYear))"
             menu-props="auto"
@@ -25,6 +26,17 @@
             outlined
           ></v-select>
           <v-spacer></v-spacer>
+           <v-select
+            class="b"
+            v-model="gradeLevel"
+            :items="['All',7,8,9,10,11,12]"
+            @change="filterByGrade(($event=gradeLevel))"
+            menu-props="auto"
+            label="School Year"
+            hide-details
+            outlined
+          ></v-select>
+             <v-spacer></v-spacer>
           <v-text-field
             class="search"
             v-model="search"
@@ -679,6 +691,7 @@ export default {
     selectedSection: null,
     adviser: null,
     selectedYear: null,
+    gradeLevel:null,
     schoolYear: ["All"],
     items: [
       {
@@ -774,6 +787,16 @@ export default {
       }
     },
 
+//Filter the student by GradeLevel
+filterByGrade(grade){
+  console.log("GradeLevel:"+grade);
+     if(grade=='All'){
+     this.students=this.filteredStudents;
+   }
+   else{
+    this.students=this.filteredStudents.filter(val=>{return val.grade_level == grade;});
+   }
+},
     //Select Community turns to null
     ipCommunity() {
       this.studentInfo.IP_community = null;
@@ -1013,4 +1036,19 @@ export default {
 .search {
   margin-top: 33px;
 }
+
+ @media screen and (max-width: 767.98px) {
+  .a{
+     width: 100%;
+  }
+  .b{
+  margin-top:10px;
+   width: 100%;
+  }
+  .search{
+   margin-top:12px;
+   width: 100%;
+  }
+ }
+ 
 </style>
