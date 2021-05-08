@@ -131,7 +131,7 @@ export default {
             }
           })
           .catch(() => {
-            this.showError("An error encountered!");
+            this.showError("Invalid Credentials!");
             this.loading = false;
           });
       }

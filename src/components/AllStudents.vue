@@ -29,6 +29,7 @@
             </v-col>
             <v-col sm="3">
               <v-select
+                v-if="isAdmin"
                 v-model="gradelevel"
                 :items="grade_level"
                 prepend-inner-icon="mdi-filter-outline"
@@ -741,12 +742,14 @@ export default {
     sections: [],
     backupSection: null,
     backupGrade: null,
+    isAdmin: true,
   }),
   created() {
     let adminLevel = null;
     if (this.$user.user_type == "teacher_admin") {
       let temp = this.$user.username.split("_");
       adminLevel = temp[1];
+      this.isAdmin = false;
     }
     this.$store
       .dispatch("allStudents", adminLevel)
