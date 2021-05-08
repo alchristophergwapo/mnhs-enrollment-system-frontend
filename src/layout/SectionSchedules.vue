@@ -123,9 +123,6 @@
                         (v) =>
                           (v >= 0 && v <= 4) ||
                           'Time should not be greater than 4 and lesser than 0',
-                        (v) =>
-                          (v > 0 && spanOfClasses.minutes >= 15) ||
-                          'Hour(s) cannot be 0 when minutes is lesser than 15.',
                       ]"
                       label="Hour(s)"
                       type="number"
