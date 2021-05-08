@@ -101,7 +101,7 @@ const routes = [
           {
             path: "reset-pass",
             component: () =>
-              import("@/components/adminpage/TAdminResetPass.vue"),
+              import("@/components/adminpage/TAdminAccountManagement.vue"),
             meta: {
               title: "Add New Admin",
             },

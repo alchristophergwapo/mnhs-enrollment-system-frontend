@@ -2,7 +2,6 @@
   <div app>
     <v-card-title>
       <v-spacer></v-spacer>
-      <!-- @keyup="filterByName(($event = search))" -->
       <v-text-field
         v-model="search"
         append-icon="mdi-magnify"
@@ -21,9 +20,11 @@
     >
       <template v-slot:item="row">
         <tr>
-          <td>{{ row.item.grade_level }}</td>
+          <td>{{ row.item.assigned_gr_level }}</td>
           <td>{{ row.item.user_fullname }}</td>
           <td>
+            <v-btn @click="openEdit(row.item)">Edit</v-btn>
+            &nbsp;&nbsp;&nbsp;
             <v-btn
               color="primary"
               @click="resetPassword(row.item.id)"
@@ -34,21 +35,30 @@
         </tr>
       </template>
     </v-data-table>
+    <v-dialog v-model="edit" max-width="500px">
+      <EditAdminDetails :data="tAdminToEdit" />
+    </v-dialog>
   </div>
 </template>
 
 <script>
 export default {
+  components: {
+    EditAdminDetails: () =>
+      import("@/components/adminpage/EditTAdminDetails.vue"),
+  },
   data() {
     return {
       search: "",
       loading: false,
+      edit: false,
       headers: [
         { text: "Grade Level", align: "start", value: "grade_level" },
         { text: "Admin Name", value: "user_fullname" },
-        { text: "Action", value: "action" },
+        { text: "Manage", sortable: false },
       ],
       teacher_admins: [],
+      tAdminToEdit: null,
     };
   },
   created() {
@@ -59,12 +69,17 @@ export default {
         for (const key in teacherAdmins) {
           if (teacherAdmins.hasOwnProperty.call(teacherAdmins, key)) {
             const element = teacherAdmins[key];
+            // console.log(element);
             const tAdmin = {
-              grade_level: Number(element.username.split("_")[1]),
+              assigned_gr_level: Number(element.username.split("_")[1]),
               user_fullname: element.user_fullname,
+              assigned_teacher: element.user_fullname,
+              username: element.username,
+              user_email: "",
               id: element.id,
             };
             this.teacher_admins.push(tAdmin);
+            console.log(this.teacher_admins);
           }
         }
       })
@@ -97,6 +112,11 @@ export default {
             text: "An error encountered!",
           });
         });
+    },
+    openEdit(toEdit) {
+      this.edit = true;
+      this.tAdminToEdit = toEdit;
+      console.log(toEdit);
     },
   },
 };
