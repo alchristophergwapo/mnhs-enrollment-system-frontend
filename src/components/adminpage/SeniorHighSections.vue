@@ -94,27 +94,26 @@
           >
           </section-dialog>
         </v-dialog>
-        <div v-if="viewSubject=='true'">
-        <v-dialog v-model="addSubject" persistent max-width="800px">
-          <add-subject-dialog
-            :gradeLevel="addOrEdit.name.split(' ')[2]"
-            :subjectsInGradeLevel="subjects"
-          ></add-subject-dialog>
-        </v-dialog>
-      </div>
-        <div v-if="viewScheds=='true'">
-        <v-dialog
-          v-model="openSched"
-          fullscreen
-          hide-overlay
-          transition="dialog-bottom-transition"
-        >
-          <section-schedules
-            :gradelevel="Number(addOrEdit.name.split(' ')[2])"
-            :schedules="schedules"
-            :section_id="sectionId"
-          ></section-schedules>
-        </v-dialog>
+        <div v-if="viewSubject == 'true'">
+          <v-dialog v-model="addSubject" persistent max-width="800px">
+            <add-subject-dialog
+              :gradeLevel="addOrEdit.name.split(' ')[2]"
+              :subjectsInGradeLevel="subjects"
+            ></add-subject-dialog>
+          </v-dialog>
+        </div>
+        <div v-if="viewScheds">
+          <v-dialog
+            v-model="openSched"
+            fullscreen
+            hide-overlay
+            transition="dialog-bottom-transition"
+          >
+            <section-schedules
+              :gradelevel="Number(addOrEdit.name.split(' ')[2])"
+              :section_id="sectionId"
+            ></section-schedules>
+          </v-dialog>
         </div>
       </v-row>
     </v-container>
@@ -134,11 +133,11 @@ export default {
   data() {
     return {
       overlay: false,
-      viewSubject:'false',
+      viewSubject: "false",
       addSubject: false,
       actionDialog: false,
-      viewScheds:'false',
-      openSched:false,
+      viewScheds: false,
+      openSched: false,
       edit: false,
       tab: null,
       sectionId: null,
@@ -168,7 +167,6 @@ export default {
       },
       allsections: [],
       subjects: [],
-      schedules: [],
       gradelevel: "11",
       addOrEdit: { name: "Add Grade 11" },
     };
@@ -187,11 +185,11 @@ export default {
 
     EventBus.$on("closeSubjectModal", (data) => {
       this.addSubject = data;
-      this.viewSubject=false;
+      this.viewSubject = false;
     });
 
     EventBus.$on("closeSectionScheduleModal", () => {
-      this.viewScheds=false;
+      this.viewScheds = false;
     });
   },
   methods: {
@@ -218,42 +216,9 @@ export default {
         });
     },
     viewSchedules(sectionId) {
-      this.overlay = true;
-      this.viewScheds ='true';
-      this.openSched=true;
-      this.schedules = [];
+      this.viewScheds = true;
+      this.openSched = true;
       this.sectionId = sectionId;
-      this.$axios.get(`classSchedules/${sectionId}`).then((response) => {
-        this.viewScheds = true;
-        this.overlay = false;
-        const schedulesOnDB = response.data.schedules;
-
-        let count = 0;
-        let friday = false;
-        for (const index in schedulesOnDB) {
-          if (schedulesOnDB.hasOwnProperty.call(schedulesOnDB, index)) {
-            const element = schedulesOnDB[index];
-            this.sched.Time = `${element.start_time}-${element.end_time}`;
-
-            this.sched[element.day] = element;
-            if (element.day == "Friday") {
-              friday = true;
-            }
-            count += 1;
-          }
-          if (count == 5 && friday) {
-            this.schedules.push(this.sched);
-            this.sched = {
-              Time: null,
-              Monday: null,
-              Tuesday: null,
-              Wednesday: null,
-              Thursday: null,
-              Friday: null,
-            };
-          }
-        }
-      });
     },
     selected(item) {
       this.addOrEdit.name = "Add " + item;
@@ -272,7 +237,7 @@ export default {
         .get(`gradelevelSubject/${Number(this.addOrEdit.name.split(" ")[2])}`)
         .then((response) => {
           this.subjects = response.data.subject;
-          this.viewSubject='true';
+          this.viewSubject = "true";
           this.addSubject = true;
           this.overlay = false;
         });

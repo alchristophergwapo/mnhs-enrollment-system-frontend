@@ -135,12 +135,11 @@ export default {
             confirm_password: this.confirmPass,
           })
           .then((response) => {
+            this.loading = false;
             if (response.data.message) {
               this.currentPass = null;
               this.newpassword = null;
               this.confirmPass = null;
-              // alert("Successfully changed!");
-              //this.$router.push({path:"/admin"});
               this.$swal.fire({
                 icon: "success",
                 title: "Success",
@@ -150,7 +149,11 @@ export default {
               this.$store.commit("setUserData", this.userDetails);
               this.$router.push({ path: "/student/dashboard" });
             } else {
-              alert("Your current password is wrong!");
+              this.$swal.fire({
+                icon: "warning",
+                title: "Oops!",
+                text: "Your current password is wrong!",
+              });
             }
           })
           .catch((error) => {

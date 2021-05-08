@@ -91,79 +91,89 @@ export default {
   },
   created() {
     this.isDataNotLoaded = false;
-    this.$axios.get(`classSchedules/` + this.sectionId).then((res) => {
-      const schedules = res.data.sectionSchedules;
+    this.$axios
+      .get(`classSchedules/` + this.sectionId)
+      .then((res) => {
+        const schedules = res.data.sectionSchedules;
 
-      let sched = {
-        Monday: {
-          subject_name: null,
-          teacher_name: null,
-          time: null,
-        },
-        Tuesday: {
-          subject_name: null,
-          teacher_name: null,
-          time: null,
-        },
-        Wednesday: {
-          subject_name: null,
-          teacher_name: null,
-          time: null,
-        },
-        Thursday: {
-          subject_name: null,
-          teacher_name: null,
-          time: null,
-        },
-        Friday: {
-          subject_name: null,
-          teacher_name: null,
-          time: null,
-        },
-      };
-      let count = 0;
-      let next = false;
-      for (const index in schedules) {
-        if (schedules.hasOwnProperty.call(schedules, index)) {
-          const element = schedules[index];
-          if (sched[element.day].subject_name == null)
-            (sched[element.day].subject_name = element.subject_name),
-              (sched[element.day].teacher_name = element.teacher_name),
-              (sched[element.day].time =
-                element.start_time + " - " + element.end_time),
-              (count += 1);
-          else (next = true), (count = 0);
+        let sched = {
+          Monday: {
+            subject_name: null,
+            teacher_name: null,
+            time: null,
+          },
+          Tuesday: {
+            subject_name: null,
+            teacher_name: null,
+            time: null,
+          },
+          Wednesday: {
+            subject_name: null,
+            teacher_name: null,
+            time: null,
+          },
+          Thursday: {
+            subject_name: null,
+            teacher_name: null,
+            time: null,
+          },
+          Friday: {
+            subject_name: null,
+            teacher_name: null,
+            time: null,
+          },
+        };
+        let count = 0;
+        let next = false;
+        for (const index in schedules) {
+          if (schedules.hasOwnProperty.call(schedules, index)) {
+            const element = schedules[index];
+            if (sched[element.day].subject_name == null)
+              (sched[element.day].subject_name = element.subject_name),
+                (sched[element.day].teacher_name = element.teacher_name),
+                (sched[element.day].time =
+                  element.start_time + " - " + element.end_time),
+                (count += 1);
+            else (next = true), (count = 0);
+          }
+          if (count == 5 || next) {
+            this.schedules.push(sched);
+            count = 0;
+            sched = {
+              Time: null,
+              Monday: {
+                subject_name: null,
+                teacher_name: null,
+              },
+              Tuesday: {
+                subject_name: null,
+                teacher_name: null,
+              },
+              Wednesday: {
+                subject_name: null,
+                teacher_name: null,
+              },
+              Thursday: {
+                subject_name: null,
+                teacher_name: null,
+              },
+              Friday: {
+                subject_name: null,
+                teacher_name: null,
+              },
+            };
+          }
         }
-        if (count == 5 || next) {
-          this.schedules.push(sched);
-          count = 0;
-          sched = {
-            Time: null,
-            Monday: {
-              subject_name: null,
-              teacher_name: null,
-            },
-            Tuesday: {
-              subject_name: null,
-              teacher_name: null,
-            },
-            Wednesday: {
-              subject_name: null,
-              teacher_name: null,
-            },
-            Thursday: {
-              subject_name: null,
-              teacher_name: null,
-            },
-            Friday: {
-              subject_name: null,
-              teacher_name: null,
-            },
-          };
-        }
-      }
-      this.isDataNotLoaded = false;
-    });
+        this.isDataNotLoaded = false;
+      })
+      .catch(() => {
+        this.isDataNotLoaded = false;
+        this.$swal.fire({
+          icon: "warning",
+          title: "Oops!",
+          text: "An error occured!",
+        });
+      });
   },
   methods: {
     //Dowloadcsv

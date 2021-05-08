@@ -209,6 +209,7 @@ export default {
             this.clear();
           })
           .catch((error) => {
+            this.loading = false;
             if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);
             } else {

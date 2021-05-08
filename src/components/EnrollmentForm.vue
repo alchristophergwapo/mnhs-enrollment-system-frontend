@@ -2,7 +2,13 @@
   <v-app>
     <div class="enrollment">
       <v-toolbar dark color="primary" class="toolbar-content">
-        <v-avatar @click="$router.push({ path: '/' })">
+        <v-avatar
+          @click="
+            !user
+              ? $router.push({ path: '/' })
+              : $router.push({ path: '/admin' })
+          "
+        >
           <v-img :src="require('../assets/images/logo.jpg')"></v-img>
         </v-avatar>
         <v-toolbar-title class="toolbar-title">

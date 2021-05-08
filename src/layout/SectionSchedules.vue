@@ -516,14 +516,8 @@ export default {
     });
 
     EventBus.$on("editgradelevelSubject", (data) => {
-      let startTime =
-        this.$moment(new Date()).format("YYYY/MM/DD") +
-        " " +
-        this.scheduleInputs.startTime;
-      let endTime =
-        this.$moment(new Date()).format("YYYY/MM/DD") +
-        " " +
-        this.scheduleInputs.endTime;
+      let startTime = this.scheduleInputs.startTime;
+      let endTime = this.scheduleInputs.endTime;
       this.scheduleInputs[data.day]
         ? ((this.scheduleInputs[data.day].subject_id = data.data.id),
           (this.scheduleInputs[data.day].subject_name = data.data.subject_name),
@@ -586,18 +580,16 @@ export default {
             count = 0;
           }
         }
+        var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
         if (this.schedules.length > 0) {
           var time = this.schedules[this.schedules.length - 1].Monday.end_time;
-          var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
           let newEndTime = this.addTimes(time, span);
           this.scheduleInputs.startTime = time;
           this.scheduleInputs.endTime = newEndTime;
         } else {
-          this.scheduleInputs.startTime = "08:00:00";
-          this.scheduleInputs.endTime = this.addTimes(
-            this.scheduleInputs.startTime,
-            span
-          );
+          this.scheduleInputs.startTime = "08:00";
+          this.scheduleInputs.endTime = this.addTimes("08:00", span);
+          console.log(this.scheduleInputs.endTime);
         }
       });
     },
@@ -692,7 +684,10 @@ export default {
     },
 
     openDialog() {
-      var time = this.schedules[this.schedules.length - 1].Monday.end_time;
+      var time =
+        this.schedules.length > 0
+          ? this.schedules[this.schedules.length - 1].Monday.end_time
+          : "09:00";
       var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
       if (this.schedules.length > 0) {
         this.minTime = this.addTimes(time, span);
@@ -716,7 +711,7 @@ export default {
       var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
       if (isTimeComplete)
         this.scheduleInputs.endTime = this.addTimes(time, span);
-      else this.scheduleInputs.endTime = this.addTimes(`${time}:00`, span);
+      else this.scheduleInputs.endTime = this.addTimes(`${time}`, span);
     },
 
     closeDialog() {

@@ -367,7 +367,6 @@ export default {
           );
           this.students.push(element);
         }
-        console.log(this.students);
       });
     },
     openDialog(data) {
@@ -447,6 +446,7 @@ export default {
           text: "Please select a section.",
         });
         this.dialog = true;
+        this.loading = false;
       }
     },
 

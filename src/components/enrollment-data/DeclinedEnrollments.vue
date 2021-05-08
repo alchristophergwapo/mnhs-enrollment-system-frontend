@@ -883,6 +883,7 @@ export default {
           title: "Ooops....",
           text: "Please select a section.",
         });
+        this.loading = false;
         this.dialog = true;
       }
     },

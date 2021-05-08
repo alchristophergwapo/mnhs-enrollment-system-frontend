@@ -168,8 +168,6 @@ export default {
             this.currentPass = null;
             this.newpassword = null;
             this.confirmPass = null;
-            // alert("Successfully changed!");
-            //this.$router.push({path:"/admin"});
             this.$swal.fire({
               icon: "success",
               title: "Success",
@@ -179,7 +177,11 @@ export default {
             this.$store.commit("setUserData", this.userData);
             this.$router.push({ path: "/admin" });
           } else {
-            alert("Your current password is wrong!");
+            this.$swal.fire({
+              icon: "warning",
+              title: "Oops!",
+              text: "Your current password is wrong!",
+            });
           }
         })
         .catch((error) => {
@@ -187,7 +189,6 @@ export default {
           if (error.response.status == 422) {
             this.setErrors(error.response.data.errors);
           } else {
-            // alert("Something went wrong!");
             this.$swal.fire({
               icon: "error",
               title: "Oooops....",

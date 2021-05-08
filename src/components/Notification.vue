@@ -189,6 +189,7 @@ export default {
       section: null,
       id: null,
       indexToDel: null,
+      remarks: null,
       notification: null,
       date: new Date(),
     };
@@ -273,10 +274,11 @@ export default {
           })
           .catch(() => {
             this.$swal.fire({
-              icon: "alert",
+              icon: "warning",
               title: "Ooops!",
               text: "An error encountered!",
             });
+            this.loading = false;
             this.dialog = true;
             this.openDialog = true;
           });
@@ -287,6 +289,7 @@ export default {
           text: "Please select a section.",
         });
         this.openDialog = true;
+        this.loading = false;
       }
     },
 
@@ -302,9 +305,11 @@ export default {
     },
 
     declineEnrollment(id) {
+      this.declining = true;
       this.$axios
         .post("declineEnrollment/" + id)
         .then((response) => {
+          this.declining = false;
           this.deleteNotif();
           this.$swal.fire({
             icon: "info",
@@ -313,8 +318,9 @@ export default {
           });
         })
         .catch(() => {
+          this.declining = false;
           this.$swal.fire({
-            icon: "alert",
+            icon: "warning",
             title: "Ooops!",
             text: "An error encountered!",
           });
@@ -335,7 +341,7 @@ export default {
         })
         .catch(() => {
           this.$swal.fire({
-            icon: "alert",
+            icon: "warning",
             title: "Ooops!",
             text: "An error encountered!",
           });

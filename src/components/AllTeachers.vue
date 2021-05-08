@@ -471,7 +471,7 @@ export default {
         })
         .catch(() => {
           this.$swal.fire({
-            icon: "alert",
+            icon: "warning",
             title: "Ooops!",
             text: "An error encountered!",
           });
@@ -538,7 +538,7 @@ export default {
         })
         .catch(() => {
           this.$swal.fire({
-            icon: "alert",
+            icon: "warning",
             title: "Ooops!",
             text: "An error encountered!",
           });
@@ -579,7 +579,7 @@ export default {
               })
               .catch(() => {
                 this.$swal.fire({
-                  icon: "alert",
+                  icon: "warning",
                   title: "Ooops!",
                   text: "An error encountered!",
                 });
@@ -645,13 +645,13 @@ export default {
             section_id: this.selected_section,
           })
           .then((response) => {
+            this.loading = false;
             if (response.data.message)
               this.$swal.fire({
                 icon: "success",
                 title: "Success",
                 text: "Successfully saved.",
               }),
-                (this.loading = false),
                 (this.statusdialog = false),
                 (this.Teacher = null),
                 (this.Email = null),
@@ -660,24 +660,23 @@ export default {
                 (this.Id = null),
                 this.display();
             else
-              (this.loading = false),
-                this.$swal.fire({
-                  icon: "error",
-                  title: "Error",
-                  text:
-                    "Section " +
-                    response.data.section +
-                    " was already assigned to " +
-                    response.data.teacher +
-                    ".",
-                });
+              this.$swal.fire({
+                icon: "error",
+                title: "Error",
+                text:
+                  "Section " +
+                  response.data.section +
+                  " was already assigned to " +
+                  response.data.teacher +
+                  ".",
+              });
           })
           .catch((error) => {
             if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);
             } else {
               this.$swal.fire({
-                icon: "alert",
+                icon: "warning",
                 title: "Ooops!",
                 text: "An error encountered!",
               });
@@ -695,8 +694,8 @@ export default {
             section_id: this.selected_section,
           })
           .then((response) => {
+            this.loading = false;
             if (response.data.message) {
-              this.loading = false;
               this.$swal.fire({
                 icon: "success",
                 title: "Success",
@@ -711,7 +710,6 @@ export default {
               this.statusdialog = false;
               this.display();
             } else {
-              this.loading = false;
               this.$swal
                 .fire({
                   title:
@@ -728,6 +726,7 @@ export default {
                 })
                 .then((result) => {
                   if (result.isConfirmed) {
+                    this.loading = true;
                     this.$axios
                       .post("updateTeacher/" + "update", {
                         updateId: this.Id,
@@ -764,7 +763,7 @@ export default {
                       .catch(() => {
                         this.loading = false;
                         this.$swal.fire({
-                          icon: "alert",
+                          icon: "warning",
                           title: "Ooops!",
                           text: "An error encountered!",
                         });
@@ -778,7 +777,7 @@ export default {
               this.setErrors(error.response.data.errors);
             } else {
               this.$swal.fire({
-                icon: "alert",
+                icon: "warning",
                 title: "Ooops!",
                 text: "An error encountered!",
               });

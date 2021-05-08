@@ -78,9 +78,11 @@ export default {
   },
   methods: {
     resetPassword(id) {
+      this.loading = true;
       this.$axios
         .get(`resetPassword/${id}`)
         .then((response) => {
+          this.loading = false;
           this.$swal.fire({
             icon: "success",
             title: "Successs",
@@ -88,6 +90,7 @@ export default {
           });
         })
         .catch(() => {
+          this.loading = false;
           this.$swal.fire({
             icon: "error",
             title: "Error",

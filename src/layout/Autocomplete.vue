@@ -112,7 +112,7 @@ export default {
         })
         .catch(() => {
           this.$swal.fire({
-            icon: "alert",
+            icon: "warning",
             title: "Ooops!",
             text: "An error encountered!",
           });

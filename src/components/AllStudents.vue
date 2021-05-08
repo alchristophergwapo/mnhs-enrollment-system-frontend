@@ -44,7 +44,7 @@
                 v-model="selectedSection"
                 prepend-inner-icon="mdi-filter-outline"
                 @change="filterBySection(($event = selectedSection))"
-                :items="section"
+                :items="sections"
                 menu-props="auto"
                 label="Section"
                 dense
@@ -764,7 +764,7 @@ export default {
       })
       .catch(() => {
         this.$swal.fire({
-          icon: "alert",
+          icon: "warning",
           title: "Ooops!",
           text: "An error encountered!",
         });
@@ -778,14 +778,14 @@ export default {
         for (const key in section) {
           if (section.hasOwnProperty.call(section, key)) {
             const element = section[key];
-            this.section.push(element.name);
+            this.sections.push(element.name);
           }
         }
         this.filteredSections = response.data.sections;
       })
       .catch(() => {
         this.$swal.fire({
-          icon: "alert",
+          icon: "warning",
           title: "Ooops!",
           text: "An error encountered!",
         });
@@ -832,7 +832,7 @@ export default {
             val.grade_level === grade && val.start_school_year === this.year
           );
         });
-        this.section = arraySection;
+        this.sections = arraySection;
         this.selectedSection = null;
       }
     },
@@ -936,7 +936,7 @@ export default {
         })
         .catch(() => {
           this.$swal.fire({
-            icon: "alert",
+            icon: "warning",
             title: "Oops!",
             text: "An error encountered!",
           });
@@ -954,26 +954,37 @@ export default {
       this.section = this.studentInfo.section_name;
       this.dialog = true;
       this.sections = [];
-      this.$store.dispatch("allSections").then((res) => {
-        let sections = res;
-        for (const key in sections) {
-          if (sections.hasOwnProperty.call(sections, key)) {
-            const element = sections[key];
-            const grade_levelData = element["gradelevel"];
-            for (const glKey in grade_levelData) {
-              let section = element["name"];
-              if (grade_levelData.hasOwnProperty.call(grade_levelData, glKey)) {
-                const element1 = grade_levelData[glKey];
-                if (glKey == "grade_level") {
-                  if (element1 == student.grade_level) {
-                    this.sections.push(section);
+      this.$store
+        .dispatch("allSections")
+        .then((res) => {
+          let sections = res;
+          for (const key in sections) {
+            if (sections.hasOwnProperty.call(sections, key)) {
+              const element = sections[key];
+              const grade_levelData = element["gradelevel"];
+              for (const glKey in grade_levelData) {
+                let section = element["name"];
+                if (
+                  grade_levelData.hasOwnProperty.call(grade_levelData, glKey)
+                ) {
+                  const element1 = grade_levelData[glKey];
+                  if (glKey == "grade_level") {
+                    if (element1 == student.grade_level) {
+                      this.sections.push(section);
+                    }
                   }
                 }
               }
             }
           }
-        }
-      });
+        })
+        .catch(() => {
+          this.$swal.fire({
+            icon: "warning",
+            title: "Oops!",
+            text: "An error occured!",
+          });
+        });
     },
 
     //Method For Approving the enrollment

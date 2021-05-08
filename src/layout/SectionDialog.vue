@@ -171,7 +171,7 @@ export default {
                 this.setErrors(error.response.data.errors);
               } else {
                 this.$swal.fire({
-                  icon: "alert",
+                  icon: "warning",
                   title: "Ooops!",
                   text: "An error encountered!",
                 });

@@ -83,10 +83,11 @@ export default {
   },
   methods: {
     resetPassword(student) {
-      //this.loading = true;
+      this.loading = true;
       this.$axios
         .post(`reset-password`, { LRN: student.LRN })
         .then((response) => {
+          this.loading = false;
           if (response.data.success) {
             this.$swal.fire({
               icon: "success",
@@ -102,6 +103,7 @@ export default {
           }
         })
         .catch(() => {
+          this.loading = false;
           this.$swal.fire({
             icon: "error",
             title: "Ooops...",
