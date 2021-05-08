@@ -758,7 +758,7 @@ export default {
             this.showResponse("Success", response.data.success, "success");
           })
           .catch(() => {
-            this.showResponse("Success", "An error encountered!", "success");
+            this.showResponse("Oops!", "An error encountered!", "warning");
           });
       } else {
         this.showResponse(
