@@ -261,7 +261,7 @@ export default {
                 },
                 {
                   icon: "mdi-account-key",
-                  text: "Reset Password",
+                  text: "Manage",
                   to: "/admin/teacher-admin/reset-pass",
                 },
               ],
