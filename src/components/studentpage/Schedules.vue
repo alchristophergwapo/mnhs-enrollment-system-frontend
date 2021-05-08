@@ -10,7 +10,6 @@
     >
       <template v-slot:item="row">
         <tr>
-          <td>{{ row.item.Time }}</td>
           <td>
             {{ row.item.Monday.subject_name }}<br />
             <strong
@@ -78,7 +77,6 @@ export default {
   data() {
     return {
       headers: [
-        { text: "Time", value: "Time", sortable: false },
         { text: "Monday", value: "Monday", sortable: false },
         { text: "Tuesday", value: "Tuesday", sortable: false },
         { text: "Wednesday", value: "Wednesday", sortable: false },
@@ -140,7 +138,6 @@ export default {
             this.schedules.push(sched);
             count = 0;
             sched = {
-              Time: null,
               Monday: {
                 subject_name: null,
                 teacher_name: null,
@@ -177,8 +174,7 @@ export default {
   },
   methods: {
     //Dowloadcsv
-    csvExport() {
-      let arrData = this.schedules;
+    csvExport(arrData) {
       let csvContent = "data:text/csv;charset=utf-8,";
       csvContent += [
         Object.keys(arrData[0]),
@@ -196,20 +192,24 @@ export default {
   computed: {
     csvData() {
       return this.schedules.map((item) => ({
-        Time: item.Time,
-        Monday:
-          item.Monday.subject_name + " (" + item.Monday.teacher_name + ")",
-        Tuesday:
-          item.Tuesday.subject_name + " (" + item.Tuesday.teacher_name + ")",
-        Wednesday:
-          item.Wednesday.subject_name +
-          " (" +
-          item.Wednesday.teacher_name +
-          ")",
-        Thursday:
-          item.Thursday.subject_name + " (" + item.Thursday.teacher_name + ")",
-        Friday:
-          item.Friday.subject_name + " (" + item.Friday.teacher_name + ")",
+        Monday: item.Monday.subject_name
+          ? item.Monday.subject_name + " (" + item.Monday.teacher_name + ")"
+          : "",
+        Tuesday: item.Tuesday.subject_name
+          ? item.Tuesday.subject_name + " (" + item.Tuesday.teacher_name + ")"
+          : "",
+        Wednesday: item.Wednesday.subject_name
+          ? item.Wednesday.subject_name +
+            " (" +
+            item.Wednesday.teacher_name +
+            ")"
+          : "",
+        Thursday: item.Thursday.subject_name
+          ? item.Thursday.subject_name + " (" + item.Thursday.teacher_name + ")"
+          : "",
+        Friday: item.Friday.subject_name
+          ? item.Friday.subject_name + " (" + item.Friday.teacher_name + ")"
+          : "",
       }));
     },
   },
