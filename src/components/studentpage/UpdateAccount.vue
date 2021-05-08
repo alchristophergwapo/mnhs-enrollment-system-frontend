@@ -194,9 +194,7 @@ export default {
       this.currentPass = null;
       this.newpassword = null;
       this.confirmPass = null;
-      for (let key in this.errors) {
-        this.$delete(this.errors, key);
-      }
+      this.errors = {};
     },
   },
 };
