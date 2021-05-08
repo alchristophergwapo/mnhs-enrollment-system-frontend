@@ -27,9 +27,8 @@
                 outlined
               ></v-select>
             </v-col>
-            <v-col sm="3">
+            <v-col sm="3" v-if="isAdmin">
               <v-select
-                v-if="isAdmin"
                 v-model="gradelevel"
                 :items="grade_level"
                 prepend-inner-icon="mdi-filter-outline"
