@@ -5,7 +5,7 @@
       <v-card-title>
         <v-row>
           <v-icon>mdi-account</v-icon>
-          <h3>ADD NEW ADMIN</h3>
+          <h3>EDIT ADMIN</h3>
         </v-row>
       </v-card-title>
 
@@ -21,6 +21,7 @@
             :rules="[(value) => !!value || 'This field is required.']"
             @change="setUsername()"
             hide-selected
+            readonly
             dense
             outlined
             required
@@ -92,12 +93,7 @@
       <v-divider></v-divider>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn
-          class="mr-4"
-          color="green"
-          :loading="loading"
-          :disabled="hasAnyErors"
-          @click="submit"
+        <v-btn class="mr-4" color="green" :loading="loading" @click="submit"
           >submit</v-btn
         >
       </v-card-actions>
@@ -149,17 +145,18 @@ export default {
         this.loading = true;
         let data = {
           username: this.data.username,
-          password: this.data.password,
+          password: this.password,
           user_type: "teacher_admin",
           user_fullname: this.data.assigned_teacher,
           user_email: this.data.teacher_email,
         };
         this.$axios
-          .post(`updateTeacherAdmin/${data.id}`, data)
+          .post(`updateTeacherAdmin/${this.data.id}`, data)
           .then((response) => {
             this.loading = false;
             this.showResponse("Success", response.data.success, "success");
             this.clearInputs();
+            EventBus.$emit("updated");
           })
           .catch((error) => {
             this.loading = false;
@@ -204,7 +201,8 @@ export default {
     },
 
     setUsername() {
-      this.username = "TeacherAdmin_" + this.data.assigned_gr_level;
+      console.log(this.data);
+      this.data.username = "TeacherAdmin_" + this.data.assigned_gr_level;
     },
 
     //Methods For All Errors

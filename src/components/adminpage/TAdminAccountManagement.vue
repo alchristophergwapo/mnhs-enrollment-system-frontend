@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import { EventBus } from "../../bus/bus";
 export default {
   components: {
     EditAdminDetails: () =>
@@ -62,36 +63,43 @@ export default {
     };
   },
   created() {
-    this.$axios
-      .get("/allTeacherAdmin")
-      .then((response) => {
-        let teacherAdmins = response.data.teacher_admins;
-        for (const key in teacherAdmins) {
-          if (teacherAdmins.hasOwnProperty.call(teacherAdmins, key)) {
-            const element = teacherAdmins[key];
-            // console.log(element);
-            const tAdmin = {
-              assigned_gr_level: Number(element.username.split("_")[1]),
-              user_fullname: element.user_fullname,
-              assigned_teacher: element.user_fullname,
-              username: element.username,
-              user_email: "",
-              id: element.id,
-            };
-            this.teacher_admins.push(tAdmin);
-            console.log(this.teacher_admins);
-          }
-        }
-      })
-      .catch(() => {
-        this.$swal.fire({
-          icon: "error",
-          title: "Ooops...",
-          text: "An error encountered.",
-        });
-      });
+    this.initializeData();
+    EventBus.$on("updated", () => {
+      this.initializeData();
+    });
   },
   methods: {
+    initializeData() {
+      this.teacher_admins = [];
+      this.$axios
+        .get("/allTeacherAdmin")
+        .then((response) => {
+          let teacherAdmins = response.data.teacher_admins;
+          for (const key in teacherAdmins) {
+            if (teacherAdmins.hasOwnProperty.call(teacherAdmins, key)) {
+              const element = teacherAdmins[key];
+              // console.log(element);
+              const tAdmin = {
+                assigned_gr_level: Number(element.username.split("_")[1]),
+                user_fullname: element.user_fullname,
+                assigned_teacher: element.user_fullname,
+                username: element.username,
+                user_email: "",
+                id: element.id,
+              };
+              this.teacher_admins.push(tAdmin);
+              console.log(this.teacher_admins);
+            }
+          }
+        })
+        .catch(() => {
+          this.$swal.fire({
+            icon: "error",
+            title: "Ooops...",
+            text: "An error encountered.",
+          });
+        });
+    },
     resetPassword(id) {
       this.loading = true;
       this.$axios
