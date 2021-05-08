@@ -247,8 +247,6 @@ export default {
         }
 
         if (this.isTransfereeOrBalikAral) {
-          // if (this.$refs.balikAralorTransferInfo.validate()) {
-          // error = false;
           let balikOrTransfer = JSON.parse(
             this.$refs.balikAralorTransferInfoData.getData
           );
@@ -260,24 +258,21 @@ export default {
           }
 
           formdata.append("isBalikOrTransfer", true);
-          // } else error = true;
         } else formdata.append("isBalikOrTransfer", false);
 
         if (this.isSeniorHigh) {
+          error = false;
+          let seniorHigh = JSON.parse(this.$refs.seniorHighData.getData);
           if (this.$refs.seniorHigh.validate()) {
-            error = false;
-            let seniorHigh = JSON.parse(this.$refs.seniorHighData.getData);
-            if (this.$refs.seniorHigh.validate()) {
-              for (const key in seniorHigh) {
-                if (seniorHigh[key]) {
-                  const element = seniorHigh[key];
-                  this.student[key] = element;
-                }
+            for (const key in seniorHigh) {
+              if (seniorHigh[key]) {
+                const element = seniorHigh[key];
+                this.student[key] = element;
               }
-
-              formdata.append("isSeniorHigh", true);
             }
-          } else error = true;
+
+            formdata.append("isSeniorHigh", true);
+          }
         } else formdata.append("isSeniorHigh", false);
 
         for (const key in this.student) {
