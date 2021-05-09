@@ -35,7 +35,7 @@
         name="average"
         :rules="[
           (v) => !!v || 'Average is required',
-          (v) => /^[0-9]+$/.test(v) == true || 'Only Number is  allowed!',
+          (v) => new RegExp(/^\d*\.?\d*$/).test(v)  || 'Only number and  one dot is allowed!',
           (v) => v <= 100 || 'Maximum average is 100',
         ]"
         label="Average"
@@ -208,6 +208,7 @@
         required
       ></v-text-field>
     </v-col>
+
     <v-col cols="12" xs="6" sm="6" md="6" lg="3">
       <v-text-field
         v-model="studentInfo.mother_tongue"
@@ -224,6 +225,7 @@
         required
       ></v-text-field>
     </v-col>
+
     <v-col cols="12" xs="6" sm="6" md="6" lg="3">
       <v-text-field
         v-model="studentInfo.contact"
@@ -245,6 +247,7 @@
         required
       ></v-text-field>
     </v-col>
+    
     <v-col cols="12" xs="6" sm="6" md="6" lg="3">
       <v-text-field
         v-model="studentInfo.address"
