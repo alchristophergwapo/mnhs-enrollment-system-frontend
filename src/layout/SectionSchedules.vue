@@ -23,287 +23,353 @@
     </v-toolbar>
     <br /><br />
     <v-container>
-      <v-form ref="scheduleForm" v-model="scheduleValid" lazy-validation>
-        <!-- schedule table -->
-        <div>
-          <v-container>
-            <v-row>
-              <v-col cols="4">
-                <div>Span of each schedule of classes</div>
-              </v-col>
-              <v-col cols="2">
-                <v-text-field
-                  v-model="spanOfClasses.hour"
-                  label="Hour(s)"
-                  type="number"
-                  @change="
-                    changeSpanOfClassess(
-                      spanOfClasses.hour,
-                      spanOfClasses.minutes
-                    )
-                  "
-                  outlined
-                ></v-text-field>
-              </v-col>
-              <v-col cols="2">
-                <v-text-field
-                  v-model="spanOfClasses.minutes"
-                  label="Minutes"
-                  type="number"
-                  @change="
-                    changeSpanOfClassess(
-                      spanOfClasses.hour,
-                      spanOfClasses.minutes
-                    )
-                  "
-                  outlined
-                ></v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
+      <!-- schedule table -->
+      <div>
+        <v-data-table
+          :headers="headers"
+          :items="schedules"
+          item-key="Time"
+          hide-default-footer
+          class="elevation-1"
+        >
+          <template v-slot:item="row">
+            <tr class="table-row">
+              <td>
+                <span v-if="row.item.Monday">
+                  {{ row.item.Monday.subject_name }} <br />
+                  <strong>{{ row.item.Monday.teacher_name }}</strong> <br />
+                  <p v-if="row.item.Monday.subject_name">
+                    {{ row.item.Monday.start_time }} -
+                    {{ row.item.Monday.end_time }}
+                  </p>
+                </span>
+              </td>
+              <td>
+                <span v-if="row.item.Tuesday">
+                  {{ row.item.Tuesday.subject_name }} <br />
+                  <strong>{{ row.item.Tuesday.teacher_name }}</strong> <br />
+                  <p v-if="row.item.Tuesday.subject_name">
+                    {{ row.item.Tuesday.start_time }} -
+                    {{ row.item.Tuesday.end_time }}
+                  </p>
+                </span>
+              </td>
+              <td>
+                <span v-if="row.item.Wednesday">
+                  {{ row.item.Wednesday.subject_name }} <br />
+                  <strong>{{ row.item.Wednesday.teacher_name }}</strong>
+                  <br />
+                  <p v-if="row.item.Wednesday.subject_name">
+                    {{ row.item.Wednesday.start_time }} -
+                    {{ row.item.Wednesday.end_time }}
+                  </p>
+                </span>
+              </td>
+              <td>
+                <span v-if="row.item.Thursday">
+                  {{ row.item.Thursday.subject_name }} <br />
+                  <strong>{{ row.item.Thursday.teacher_name }}</strong> <br />
+                  <p v-if="row.item.Thursday.subject_name">
+                    {{ row.item.Thursday.start_time }} -
+                    {{ row.item.Thursday.end_time }}
+                  </p>
+                </span>
+              </td>
+              <td>
+                <span v-if="row.item.Friday">
+                  {{ row.item.Friday.subject_name }} <br />
+                  <strong>{{ row.item.Friday.teacher_name }}</strong> <br />
+                  <p v-if="row.item.Friday.subject_name">
+                    {{ row.item.Friday.start_time }} -
+                    {{ row.item.Friday.end_time }}
+                  </p>
+                </span>
+              </td>
+              <td>
+                <v-icon color="primary" @click="editSched(row.item, row.index)">
+                  mdi-pencil
+                </v-icon>
+              </td>
+            </tr>
+          </template>
+        </v-data-table>
+        <v-dialog v-model="scheduleDialog" width="800px">
+          <v-card>
+            <v-card-title>
+              <v-row>
+                <v-icon>mdi-pencil</v-icon>
+                <h3>{{ mode }} SCHEDULE</h3>
+              </v-row>
+              <v-btn icon @click="closeDialog()">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </v-card-title>
+            <hr />
+            <v-container>
+              <v-form
+                ref="scheduleInputForm"
+                v-model="scheduleValid"
+                lazy-validation
+              >
+                <v-row>
+                  <v-col cols="6">
+                    <div>Span of each schedule of classes</div>
+                  </v-col>
+                  <v-col cols="3">
+                    <v-text-field
+                      v-model="spanOfClasses.hour"
+                      :rules="[
+                        (v) => !!v || 'Time cannot be empty. Put 0 instead.',
+                        (v) =>
+                          (v >= 0 && v <= 4) ||
+                          'Time should not be greater than 4 and lesser than 0',
+                      ]"
+                      label="Hour(s)"
+                      type="number"
+                      @keyup="changeSpanOfClassess($event, (isMinute = false))"
+                      dense
+                      outlined
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="3">
+                    <v-text-field
+                      v-model="spanOfClasses.minutes"
+                      :rules="[
+                        (v) => v >= 0 || 'Minutes cannot be lesser than 0.',
+                        (v) =>
+                          spanOfClasses.hour > 0 ||
+                          v >= 15 ||
+                          'If hour is equal to 0, minutes cannot be lesser than to 15.',
+                      ]"
+                      label="Minutes"
+                      type="number"
+                      @keyup="changeSpanOfClassess($event, (isMinute = true))"
+                      dense
+                      outlined
+                    ></v-text-field>
+                  </v-col>
+                  <v-col sm="3">
+                    <label for="startTime">Start Time</label>
+                    <v-dialog
+                      ref="dialog"
+                      v-model="modal"
+                      :return-value.sync="scheduleInputs.startTime"
+                      persistent
+                      width="290px"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="scheduleInputs.startTime"
+                          name="startTime"
+                          prepend-inner-icon="mdi-clock-time-four-outline"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                          dense
+                          outlined
+                        ></v-text-field>
+                      </template>
+                      <v-time-picker
+                        v-if="modal"
+                        v-model="scheduleInputs.startTime"
+                        :min="minOnMax"
+                        @click:hour="inputStartTime($event)"
+                        @click:minute="inputStartTime($event)"
+                        full-width
+                      >
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="modal = false">
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.dialog.save(scheduleInputs.startTime)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-time-picker>
+                    </v-dialog>
+                  </v-col>
 
-          <v-data-table
-            :headers="headers"
-            :items="schedules"
-            item-key="Time"
-            hide-default-footer
-            class="elevation-1"
-          >
-            <template v-slot:item="row">
-              <tr class="table-row">
-                <td>
-                  <v-text-field
-                    :value="row.item.Time"
-                    v-model="schedToEdit.Time"
-                    @change="editScheduleTime(($event = schedToEdit.Time))"
-                    v-if="editSchedule"
-                  ></v-text-field>
-                  <span v-else>{{ row.item.Time }}</span>
-                </td>
-                <td>
-                  <span v-if="editSchedule">
+                  <v-col sm="3">
+                    <label for="endTime">End Time</label>
+                    <v-dialog
+                      ref="dialog2"
+                      v-model="modal2"
+                      :return-value.sync="scheduleInputs.endTime"
+                      persistent
+                      width="290px"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="scheduleInputs.endTime"
+                          name="endTime"
+                          dense
+                          outlined
+                          prepend-inner-icon="mdi-clock-time-four-outline"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-time-picker
+                        v-if="modal2"
+                        v-model="scheduleInputs.endTime"
+                        :min="minTime"
+                        full-width
+                      >
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="modal2 = false">
+                          Cancel
+                        </v-btn>
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="$refs.dialog2.save(scheduleInputs.endTime)"
+                        >
+                          OK
+                        </v-btn>
+                      </v-time-picker>
+                    </v-dialog>
+                  </v-col>
+                  <v-col sm="6">
                     <autocomplete
+                      :prepend_icon="
+                        scheduleInputs.Monday.subject_id
+                          ? 'mdi-check-underline'
+                          : 'mdi-help'
+                      "
                       request="gradelevelSubject"
                       :gradelevel="gradelevel"
-                      :edit="true"
+                      :edit="editSchedule ? true : false"
                       day="Monday"
-                      :modelValue="row.item.Monday.subject_name"
                       property="subject_name"
-                      :rules="[(value) => !!value || 'This field is required.']"
                     >
-                    </autocomplete
-                    ><br />
-                    <strong>{{ schedToEdit.Monday.teacher_name }}</strong>
-                  </span>
-                  <span v-else
-                    >{{ row.item.Monday.subject_name }} <br />
-                    {{ row.item.Monday.teacher_name }}</span
-                  >
-                </td>
-                <td>
-                  <span v-if="editSchedule">
+                      <template v-slot:label
+                        >Monday<strong
+                          v-if="scheduleInputs.Monday.subject_name"
+                        >
+                          ({{ scheduleInputs.Monday.subject_name }})</strong
+                        ></template
+                      >
+                    </autocomplete>
+                  </v-col>
+                  <v-col sm="6">
                     <autocomplete
+                      :prepend_icon="
+                        scheduleInputs.Tuesday.subject_id
+                          ? 'mdi-check-underline'
+                          : 'mdi-help'
+                      "
                       request="gradelevelSubject"
                       :gradelevel="gradelevel"
-                      :edit="true"
+                      :edit="editSchedule ? true : false"
                       day="Tuesday"
-                      :modelValue="row.item.Tuesday.subject_name"
                       property="subject_name"
-                      :rules="[(value) => !!value || 'This field is required.']"
                     >
-                    </autocomplete
-                    ><br />
-                    <strong>{{ schedToEdit.Tuesday.teacher_name }}</strong>
-                  </span>
-                  <span v-else
-                    >{{ row.item.Tuesday.subject_name }} <br />
-                    {{ row.item.Tuesday.teacher_name }}</span
-                  >
-                </td>
-                <td>
-                  <span v-if="editSchedule">
+                      <template v-slot:label
+                        >Tuesday<strong
+                          v-if="scheduleInputs.Tuesday.subject_name"
+                        >
+                          ({{ scheduleInputs.Tuesday.subject_name }})</strong
+                        ></template
+                      >
+                    </autocomplete>
+                  </v-col>
+                  <v-col sm="6">
                     <autocomplete
+                      :prepend_icon="
+                        scheduleInputs.Wednesday.subject_id
+                          ? 'mdi-check-underline'
+                          : 'mdi-help'
+                      "
                       request="gradelevelSubject"
                       :gradelevel="gradelevel"
-                      :edit="true"
+                      :edit="editSchedule ? true : false"
                       day="Wednesday"
-                      :modelValue="row.item.Wednesday.subject_name"
                       property="subject_name"
-                      :rules="[(value) => !!value || 'This field is required.']"
                     >
-                    </autocomplete
-                    ><br />
-                    <strong>{{ schedToEdit.Wednesday.teacher_name }}</strong>
-                  </span>
-                  <span v-else
-                    >{{ row.item.Wednesday.subject_name }} <br />
-                    {{ row.item.Wednesday.teacher_name }}</span
-                  >
-                </td>
-                <td>
-                  <span v-if="editSchedule">
+                      <template v-slot:label
+                        >Wednesday<strong
+                          v-if="scheduleInputs.Wednesday.subject_name"
+                        >
+                          ({{ scheduleInputs.Wednesday.subject_name }})</strong
+                        ></template
+                      >
+                    </autocomplete>
+                  </v-col>
+                  <v-col sm="6">
                     <autocomplete
+                      :prepend_icon="
+                        scheduleInputs.Thursday.subject_id
+                          ? 'mdi-check-underline'
+                          : 'mdi-help'
+                      "
                       request="gradelevelSubject"
                       :gradelevel="gradelevel"
-                      :edit="true"
+                      :edit="editSchedule ? true : false"
                       day="Thursday"
-                      :modelValue="row.item.Thursday.subject_name"
                       property="subject_name"
-                      :rules="[(value) => !!value || 'This field is required.']"
                     >
-                    </autocomplete
-                    ><br />
-                    <strong>{{ schedToEdit.Thursday.teacher_name }}</strong>
-                  </span>
-                  <span v-else
-                    >{{ row.item.Thursday.subject_name }} <br />
-                    {{ row.item.Thursday.teacher_name }}</span
-                  >
-                </td>
-                <td>
-                  <span v-if="editSchedule">
+                      <template v-slot:label
+                        >Thursday<strong
+                          v-if="scheduleInputs.Thursday.subject_name"
+                        >
+                          ({{ scheduleInputs.Thursday.subject_name }})</strong
+                        ></template
+                      >
+                    </autocomplete>
+                  </v-col>
+                  <v-col sm="6">
                     <autocomplete
+                      :prepend_icon="
+                        scheduleInputs.Friday.subject_id
+                          ? 'mdi-check-underline'
+                          : 'mdi-help'
+                      "
                       request="gradelevelSubject"
                       :gradelevel="gradelevel"
-                      :edit="true"
+                      :edit="editSchedule ? true : false"
                       day="Friday"
-                      :modelValue="row.item.Friday.subject_name"
                       property="subject_name"
-                      :rules="[(value) => !!value || 'This field is required.']"
                     >
-                    </autocomplete
-                    ><br />
-                    <strong>{{ schedToEdit.Friday.teacher_name }}</strong>
-                  </span>
-                  <span v-else
-                    >{{ row.item.Friday.subject_name }} <br />
-                    {{ row.item.Friday.teacher_name }}</span
-                  >
-                </td>
-                <td>
-                  <v-icon
-                    v-if="!editSchedule"
-                    color="primary"
-                    @click="editSched(row.item, row.index)"
-                  >
-                    mdi-pencil
-                  </v-icon>
-                  <v-icon
-                    v-else
-                    color="success"
-                    @click="saveEditSchedChanges(row.index)"
-                    >mdi-check</v-icon
-                  >
-                </td>
-              </tr>
-            </template>
-          </v-data-table>
-          <v-container>
-            <v-row>
-              <v-col sm="4">
-                <label for="Time">Time</label>
-                <v-text-field
-                  v-model="scheduleInputs.Time"
-                  name="Time"
-                  dense
-                  outlined
-                ></v-text-field>
-              </v-col>
-              <v-col sm="4">
-                <autocomplete
-                  :prepend_icon="
-                    scheduleInputs.Monday && scheduleInputs.Monday.icon
-                      ? scheduleInputs.Monday.icon
-                      : 'mdi-help'
-                  "
-                  request="gradelevelSubject"
-                  :gradelevel="gradelevel"
-                  :edit="false"
-                  day="Monday"
-                  property="subject_name"
-                  :rules="[(value) => !!value || 'This field is required.']"
-                >
-                  <template v-slot:label>Monday</template>
-                </autocomplete>
-              </v-col>
-              <v-col sm="4">
-                <autocomplete
-                  :prepend_icon="
-                    scheduleInputs.Tuesday && scheduleInputs.Tuesday.icon
-                      ? scheduleInputs.Tuesday.icon
-                      : 'mdi-help'
-                  "
-                  request="gradelevelSubject"
-                  :gradelevel="gradelevel"
-                  :edit="false"
-                  day="Tuesday"
-                  property="subject_name"
-                  :rules="[(value) => !!value || 'This field is required.']"
-                >
-                  <template v-slot:label>Tuesday</template>
-                </autocomplete>
-              </v-col>
-              <v-col sm="4">
-                <autocomplete
-                  :prepend_icon="
-                    scheduleInputs.Wednesday && scheduleInputs.Wednesday.icon
-                      ? scheduleInputs.Wednesday.icon
-                      : 'mdi-help'
-                  "
-                  request="gradelevelSubject"
-                  :gradelevel="gradelevel"
-                  day="Wednesday"
-                  property="subject_name"
-                  :rules="[(value) => !!value || 'This field is required.']"
-                >
-                  <template v-slot:label>Wednesday</template>
-                </autocomplete>
-              </v-col>
-              <v-col sm="4">
-                <autocomplete
-                  :prepend_icon="
-                    scheduleInputs.Thursday && scheduleInputs.Thursday.icon
-                      ? scheduleInputs.Thursday.icon
-                      : 'mdi-help'
-                  "
-                  request="gradelevelSubject"
-                  :gradelevel="gradelevel"
-                  :edit="false"
-                  day="Thursday"
-                  property="subject_name"
-                  :rules="[(value) => !!value || 'This field is required.']"
-                >
-                  <template v-slot:label>Thursday</template>
-                </autocomplete>
-              </v-col>
-              <v-col sm="4">
-                <autocomplete
-                  :prepend_icon="
-                    scheduleInputs.Friday && scheduleInputs.Friday.icon
-                      ? scheduleInputs.Friday.icon
-                      : 'mdi-help'
-                  "
-                  request="gradelevelSubject"
-                  :gradelevel="gradelevel"
-                  :edit="false"
-                  day="Friday"
-                  property="subject_name"
-                  :rules="[(value) => !!value || 'This field is required.']"
-                >
-                  <template v-slot:label>Friday</template>
-                </autocomplete>
-              </v-col>
-              <br />
-            </v-row>
-          </v-container>
-        </div>
-      </v-form>
+                      <template v-slot:label
+                        >Friday<strong
+                          v-if="scheduleInputs.Friday.subject_name"
+                        >
+                          ({{ scheduleInputs.Friday.subject_name }})</strong
+                        ></template
+                      >
+                    </autocomplete>
+                  </v-col>
+                  <br />
+                </v-row>
+              </v-form>
+            </v-container>
+            <hr />
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="success"
+                @click="saveSchedule(scheduleInputs.index)"
+                :loading="loading"
+                >save</v-btn
+              >
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </div>
 
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn @click="addSchedule()" color="primary" :loading="loading">add</v-btn>
+        <v-btn @click="openDialog()" color="primary">add</v-btn>
       </v-card-actions>
     </v-container>
+
+    <v-overlay :value="overlay">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
   </v-card>
 </template>
 
@@ -313,10 +379,6 @@ export default {
   props: {
     gradelevel: {
       type: Number,
-      required: true,
-    },
-    schedules: {
-      type: Array,
       required: true,
     },
     section_id: {
@@ -329,8 +391,14 @@ export default {
   },
   data() {
     return {
+      readonly: false,
+      modal: false,
+      modal2: false,
+      maxTime: null,
+      maxOnMin: null,
+      minTime: null,
+      minOnMax: null,
       headers: [
-        { text: "Time", value: "Time", sortable: false },
         { text: "Monday", value: "Monday", sortable: false },
         { text: "Tuesday", value: "Tuesday", sortable: false },
         { text: "Wednesday", value: "Wednesday", sortable: false },
@@ -340,50 +408,93 @@ export default {
       ],
       scheduleInput: [{}],
       scheduleInputs: {
-        Time: null,
+        startTime: null,
+        endTime: null,
+        Monday: {
+          day: "Monday",
+          start_time: null,
+          end_time: null,
+          subject_name: null,
+          teacher_name: null,
+          teacher_id: null,
+          subject_id: null,
+          section_id: this.section_id,
+        },
+        Tuesday: {
+          day: "Tuesday",
+          start_time: null,
+          end_time: null,
+          subject_name: null,
+          teacher_name: null,
+          teacher_id: null,
+          subject_id: null,
+          section_id: this.section_id,
+        },
+        Wednesday: {
+          day: "Wednesday",
+          start_time: null,
+          end_time: null,
+          subject_name: null,
+          teacher_name: null,
+          teacher_id: null,
+          subject_id: null,
+          section_id: this.section_id,
+        },
+        Thursday: {
+          day: "Thursday",
+          start_time: null,
+          end_time: null,
+          subject_name: null,
+          teacher_name: null,
+          teacher_id: null,
+          subject_id: null,
+          section_id: this.section_id,
+        },
+        Friday: {
+          day: "Friday",
+          start_time: null,
+          end_time: null,
+          subject_name: null,
+          teacher_name: null,
+          teacher_id: null,
+          subject_id: null,
+          section_id: this.section_id,
+        },
+      },
+      sched: {
+        startTime: null,
+        endTime: null,
         Monday: null,
         Tuesday: null,
         Wednesday: null,
         Thursday: null,
         Friday: null,
       },
-      schedToEdit: null,
       schedulesToAdd: [],
+      schedules: [],
       loading: false,
       isLoading: false,
       schedule: false,
       editSchedule: false,
+      scheduleDialog: false,
       scheduleValid: false,
+      overlay: false,
       spanOfClasses: {
         hour: 1,
         minutes: 0,
       },
+      mode: "ADD",
     };
   },
   created() {
-    if (this.schedules.length > 0) {
-      var time = this.schedules[this.schedules.length - 1].Time.split("-")[1];
-      var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
-      let newEndTime = this.addTimes(time, span);
-      this.scheduleInputs.Time = time + "-" + newEndTime;
-    } else {
-      this.scheduleInputs.Time = "08:00-09:00";
-    }
+    this.retrieveSchedules();
     EventBus.$on("gradelevelSubject", (data) => {
-      // console.log(data);
-      let startTime =
-        this.$moment(new Date()).format("YYYY/MM/DD") +
-        " " +
-        this.scheduleInputs.Time.split("-")[0];
-      let endTime =
-        this.$moment(new Date()).format("YYYY/MM/DD") +
-        " " +
-        this.scheduleInputs.Time.split("-")[1];
+      let startTime = this.scheduleInputs.startTime;
+      let endTime = this.scheduleInputs.endTime;
       var sched = {
-        icon: "mdi-check-underline",
         day: data.day,
-        start_time: this.$moment(startTime).format("hh:mm"),
-        end_time: this.$moment(endTime).format("hh:mm"),
+        start_time: startTime,
+        end_time: endTime,
         subject_name: data.data.subject_name,
         teacher_name: data.data.teacher_name,
         teacher_id: data.data.teacher_id,
@@ -391,57 +502,160 @@ export default {
         section_id: this.section_id,
       };
       this.scheduleInputs[data.day] = sched;
-      console.log(this.scheduleInputs[data.day]);
+      for (const key in this.scheduleInputs) {
+        if (this.scheduleInputs.hasOwnProperty.call(this.scheduleInputs, key)) {
+          if (key != "startTime" && key != "endTime") {
+            this.scheduleInputs[key].start_time = this.scheduleInputs.startTime;
+            this.scheduleInputs[key].end_time = this.scheduleInputs.endTime;
+          }
+        }
+      }
     });
 
     EventBus.$on("editgradelevelSubject", (data) => {
-      // console.log(this.schedToEdit, data);
-      this.schedToEdit[data.day].subject_id = data.data.id;
-      this.schedToEdit[data.day].subject_name = data.data.subject_name;
-      this.schedToEdit[data.day].teacher_id = data.data.teacher_id;
-      this.schedToEdit[data.day].teacher_name = data.data.teacher_name;
-      console.log(this.schedToEdit[data.day]);
+      let startTime = this.scheduleInputs.startTime;
+      let endTime = this.scheduleInputs.endTime;
+      this.scheduleInputs[data.day]
+        ? ((this.scheduleInputs[data.day].subject_id = data.data.id),
+          (this.scheduleInputs[data.day].subject_name = data.data.subject_name),
+          (this.scheduleInputs[data.day].teacher_id = data.data.teacher_id),
+          (this.scheduleInputs[data.day].teacher_name = data.data.teacher_name),
+          (this.scheduleInputs[data.day].start_time = this.$moment(
+            startTime
+          ).format("hh:mm")),
+          (this.scheduleInputs[data.day].end_time = this.$moment(
+            endTime
+          ).format("hh:mm")))
+        : (this.scheduleInputs[data.day] = {
+            day: data.day,
+            subject_id: data.data.id,
+            subject_name: data.data.subject_name,
+            teacher_id: data.data.teacher_id,
+            teacher_name: data.data.teacher_name,
+          });
+    });
+
+    EventBus.$on("clearData", (data) => {
+      this.scheduleInputs[data.day].subject_id = null;
+      this.scheduleInputs[data.day].subject_name = null;
+      this.scheduleInputs[data.day].teacher_id = null;
+      this.scheduleInputs[data.day].teacher_name = null;
     });
   },
   methods: {
-    addSchedule() {
-      if (this.$refs.scheduleForm.validate()) {
-        this.loading = true;
-        for (const index in this.scheduleInputs) {
-          if (
-            this.scheduleInputs.hasOwnProperty.call(this.scheduleInputs, index)
-          ) {
-            const element = this.scheduleInputs[index];
-            if (index != "Time") {
-              // console.log(element);
-              var filter = this.schedulesToAdd.filter((el) => {
-                return (
-                  el.day == element.day &&
-                  el.start_time == element.start_time &&
-                  el.end_time == element.end_time
-                );
-              });
-              if (filter.length == 0) {
-                this.schedulesToAdd.push(element);
-                // added += 1;
-              }
+    retrieveSchedules() {
+      this.schedules = [];
+      this.$axios.get(`classSchedules/${this.section_id}`).then((response) => {
+        this.overlay = true;
+        const schedRes = response.data.sectionSchedules;
+        this.overlay = false;
+
+        let count = 0;
+        let next = false;
+        for (const index in schedRes) {
+          if (schedRes.hasOwnProperty.call(schedRes, index)) {
+            const element = schedRes[index];
+            if (!this.sched[element.day] || index != schedRes.length - 1) {
+              count += 1;
+              this.sched[element.day] = element;
+            }
+            if (index == schedRes.length - 1) {
+              next = true;
             }
           }
+          if (count >= 5 || next) {
+            this.schedules.push(this.sched);
+            this.sched = {
+              startTime: null,
+              endTime: null,
+              Monday: null,
+              Tuesday: null,
+              Wednesday: null,
+              Thursday: null,
+              Friday: null,
+            };
+            count = 0;
+          }
         }
-        console.log(this.schedulesToAdd);
-        this.$axios
-          .post("addSchedules", this.schedulesToAdd)
-          .then((response) => {
-            this.loading = false;
-            this.schedules.push(this.scheduleInputs);
-            this.showResponse("", response.data.success, "success");
-            this.this.clearScheduleInputs();
-            EventBus.$emit("save");
-            this.$refs.scheduleForm.resetValidation();
-          }).catch(error=>{
-            this.loading = false
-            this.showResponse('', error.response.data.error, 'error')
-          }).finally(this.loading = false);
+        var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
+        if (this.schedules.length > 0) {
+          var time = this.schedules[this.schedules.length - 1].Monday.end_time;
+          let newEndTime = this.addTimes(time, span);
+          this.scheduleInputs.startTime = time;
+          this.scheduleInputs.endTime = newEndTime;
+        } else {
+          this.scheduleInputs.startTime = "08:00";
+          this.scheduleInputs.endTime = this.addTimes("08:00", span);
+          console.log(this.scheduleInputs.endTime);
+        }
+      });
+    },
+    saveSchedule(index) {
+      if (this.editSchedule) {
+        this.saveEditSchedChanges(index);
+        this.readonly = false;
+      } else {
+        this.addSchedule();
+      }
+    },
+
+    /**
+     * Method for adding schedule
+     * returns void
+     */
+    addSchedule() {
+      let schedInput = this.scheduleInputs;
+      let schedCount = 0;
+      for (const key in schedInput) {
+        if (schedInput.hasOwnProperty.call(schedInput, key)) {
+          const element = schedInput[key];
+          if (key != "startTime" && key != "endTime") {
+            this.schedulesToAdd.push(element);
+          }
+          element != null && element.subject_id
+            ? (schedCount += 1)
+            : (schedCount += 0);
+        }
+      }
+      if (this.$refs.scheduleInputForm.validate()) {
+        this.loading = true;
+        if (schedCount > 0) {
+          this.$axios
+            .post("addSchedules", this.schedulesToAdd)
+            .then((response) => {
+              this.loading = false;
+              this.schedules.push(this.schedulesToAdd);
+              this.showResponse("", response.data.success, "success");
+              this.clearData();
+              EventBus.$emit("save");
+              this.retrieveSchedules();
+              this.$refs.scheduleForm.resetValidation();
+            })
+            .catch((error) => {
+              this.loading = false;
+              this.schedulesToAdd = [];
+              if (error.response.data.error && error.response.status == 500)
+                this.showResponse(
+                  "Ooops...",
+                  "An error encountered! If this is a mistake, please retry. If error persist, please reload the page.",
+                  "error"
+                );
+              if (error.response.status == 400)
+                this.showResponse(
+                  "Ooops...",
+                  error.response.data.has_sched,
+                  "error"
+                );
+            })
+            .finally((this.loading = false));
+        } else {
+          this.showResponse(
+            "Ooops...",
+            "Please add at least one schedule.",
+            "info"
+          );
+          this.loading = false;
+        }
       }
     },
 
@@ -453,58 +667,185 @@ export default {
       });
     },
 
-    clearScheduleInputs() {
-      var time = this.schedules[this.schedules.length - 1].Time.split("-")[1];
+    editSched(item, index) {
+      this.mode = "EDIT";
+      this.editSchedule = true;
+      this.scheduleDialog = true;
+      this.readonly = true;
+      this.scheduleInputs = item;
+      this.scheduleInputs.startTime = item.Monday.start_time;
       var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
-      let newEndTime = this.addTimes(time, span);
-      this.scheduleInputs = {
-        Time: time + "-" + newEndTime,
-        Monday: null,
-        Tuesday: null,
-        Wednesday: null,
-        Thursday: null,
-        Friday: null,
-      };
+      let newEndTime = this.addTimes(item.Monday.start_time, span);
+      this.scheduleInputs.endTime = newEndTime;
+      this.scheduleInputs["index"] = index;
     },
 
-    editSched(item) {
-      this.editSchedule = true;
-      this.schedToEdit = item;
-      console.log(this.schedToEdit);
+    openDialog() {
+      var time =
+        this.schedules.length > 0
+          ? this.schedules[this.schedules.length - 1].Monday.end_time
+          : "09:00";
+      var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
+      if (this.schedules.length > 0) {
+        this.minTime = this.addTimes(time, span);
+        this.maxTime = this.addTimes(time, "0:45");
+        this.maxOnMin = this.addTimes(this.scheduleInputs.startTime, span);
+        this.minOnMax = time;
+      } else {
+        this.minTime = this.addTimes(this.scheduleInputs.startTime, span);
+        this.maxOnMin = this.addTimes(this.scheduleInputs.startTime, span);
+        this.minOnMax = time;
+      }
+      this.scheduleDialog = true;
+      this.mode = "ADD";
+    },
+
+    inputStartTime(time) {
+      let isTimeComplete = false;
+      for (let i = 0; i < time.length; i++) {
+        if (time[i] === ":") (isTimeComplete = true), (i = time.length - 1);
+      }
+      var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
+      if (isTimeComplete)
+        this.scheduleInputs.endTime = this.addTimes(time, span);
+      else this.scheduleInputs.endTime = this.addTimes(`${time}`, span);
+    },
+
+    closeDialog() {
+      this.clearData();
+      const length = this.schedules.length;
+      let schedToBase = this.schedules[length - 1];
+      for (const key in schedToBase) {
+        if (schedToBase.hasOwnProperty.call(schedToBase, key)) {
+          const element = schedToBase[key];
+          if (element != null)
+            (this.scheduleInputs.startTime = element.end_time),
+              (schedToBase = []);
+        }
+      }
+      var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
+      let newEndTime = this.addTimes(this.scheduleInputs.startTime, span);
+      this.scheduleInputs.endTime = newEndTime;
+      this.readonly = false;
+      this.scheduleDialog = false;
     },
 
     saveEditSchedChanges(index) {
-      this.schedules[index] = this.schedToEdit;
+      this.schedules[index] = this.scheduleInputs;
       const edited = {
-        Monday: this.schedToEdit.Monday,
-        Tuesday: this.schedToEdit.Tuesday,
-        Wednesday: this.schedToEdit.Wednesday,
-        Thursday: this.schedToEdit.Thursday,
-        Friday: this.schedToEdit.Friday,
+        Monday: this.scheduleInputs.Monday,
+        Tuesday: this.scheduleInputs.Tuesday,
+        Wednesday: this.scheduleInputs.Wednesday,
+        Thursday: this.scheduleInputs.Thursday,
+        Friday: this.scheduleInputs.Friday,
       };
-      this.$axios
-        .post("editSchedules", edited)
-        .then((response) => {
-          console.log(response);
-          this.editSchedule = false;
-          // this.schedToEdit = null;
-        })
-        .catch((error) => {
-          console.log(error.response);
-        });
+      let forEditCount = 0;
+      for (const key in edited) {
+        if (edited.hasOwnProperty.call(edited, key)) {
+          const element = edited[key];
+          element.subject_id ? (forEditCount += 1) : (forEditCount += 0);
+        }
+      }
+      if (forEditCount > 0) {
+        this.$axios
+          .post("editSchedules", edited)
+          .then((response) => {
+            this.scheduleDialog = false;
+            this.editSchedule = false;
+            this.clearData();
+            EventBus.$emit("save");
+            this.retrieveSchedules();
+            this.showResponse("Success", response.data.success, "success");
+          })
+          .catch(() => {
+            this.showResponse("Oops!", "An error encountered!", "warning");
+          });
+      } else {
+        this.showResponse(
+          "Ooops...",
+          "It seems you emptied it all. It cannot be empty.",
+          "info"
+        );
+        this.loading = false;
+      }
     },
 
-    changeSpanOfClassess(hour, minutes) {
-      console.log(hour, minutes);
-      var time = null;
-      if (this.schedules.length > 0) {
-        time = this.schedules[this.schedules.length - 1].Time.split("-")[1];
-      } else {
-        time = this.scheduleInputs.Time.split("-")[0];
+    clearData() {
+      this.schedulesToAdd = [];
+      this.scheduleInputs = {
+        startTime: null,
+        endTime: null,
+        Monday: {
+          day: "Monday",
+          start_time: null,
+          end_time: null,
+          subject_name: null,
+          teacher_name: null,
+          teacher_id: null,
+          subject_id: null,
+          section_id: this.section_id,
+        },
+        Tuesday: {
+          day: "Tuesday",
+          start_time: null,
+          end_time: null,
+          subject_name: null,
+          teacher_name: null,
+          teacher_id: null,
+          subject_id: null,
+          section_id: this.section_id,
+        },
+        Wednesday: {
+          day: "Wednesday",
+          start_time: null,
+          end_time: null,
+          subject_name: null,
+          teacher_name: null,
+          teacher_id: null,
+          subject_id: null,
+          section_id: this.section_id,
+        },
+        Thursday: {
+          day: "Thursday",
+          start_time: null,
+          end_time: null,
+          subject_name: null,
+          teacher_name: null,
+          teacher_id: null,
+          subject_id: null,
+          section_id: this.section_id,
+        },
+        Friday: {
+          day: "Friday",
+          start_time: null,
+          end_time: null,
+          subject_name: null,
+          teacher_name: null,
+          teacher_id: null,
+          subject_id: null,
+          section_id: this.section_id,
+        },
+      };
+    },
+
+    changeSpanOfClassess(e, isMinute) {
+      let hour = this.spanOfClasses.hour;
+      let minutes = this.spanOfClasses.minutes;
+
+      if (e.keyCode === 8 && isMinute) this.spanOfClasses.hour = 0;
+      else {
+        if (hour > 0 || minutes >= 15)
+          this.$refs.scheduleInputForm.resetValidation();
+        if (minutes >= 60)
+          (this.spanOfClasses.hour += Math.floor(minutes / 60)),
+            (this.spanOfClasses.minutes = minutes % 60);
       }
+      var time = null;
+      time = this.scheduleInputs.startTime;
       var span = hour + ":" + minutes;
       let newEndTime = this.addTimes(time, span);
-      this.scheduleInputs.Time = time + "-" + newEndTime;
+      this.scheduleInputs.startTime = time;
+      this.scheduleInputs.endTime = newEndTime;
     },
 
     editScheduleTime(time) {
@@ -517,19 +858,18 @@ export default {
         " " +
         time.split("-")[1];
 
-      for (const key in this.schedToEdit) {
-        if (this.schedToEdit.hasOwnProperty.call(this.schedToEdit, key)) {
+      for (const key in this.scheduleInputs) {
+        if (this.scheduleInputs.hasOwnProperty.call(this.scheduleInputs, key)) {
           if (key != "Time") {
-            this.schedToEdit[key].start_time = this.$moment(start_time).format(
-              "hh:mm"
-            );
-            this.schedToEdit[key].end_time = this.$moment(end_time).format(
+            this.scheduleInputs[key].start_time = this.$moment(
+              start_time
+            ).format("hh:mm");
+            this.scheduleInputs[key].end_time = this.$moment(end_time).format(
               "hh:mm"
             );
           }
         }
       }
-      console.log(this.schedToEdit);
     },
     addTimes(time, timeSpan) {
       var times = [0, 0];
@@ -562,6 +902,7 @@ export default {
 
       return ("0" + hours).slice(-2) + ":" + ("0" + minutes).slice(-2);
     },
+
     close() {
       EventBus.$emit("closeSectionScheduleModal");
     },

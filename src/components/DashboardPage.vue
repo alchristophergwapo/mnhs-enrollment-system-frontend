@@ -96,7 +96,12 @@
             :value="totalDeclined"
           >
             <template v-slot:actions>
-              <v-btn id="btn" block link elevation="24">
+              <v-btn
+                id="btn"
+                block
+                @click="redirectToDeclinedPage()"
+                elevation="24"
+              >
                 see all
                 <v-icon dark right>mdi-arrow-right</v-icon>
               </v-btn>
@@ -130,6 +135,7 @@
   </div>
 </template>
 <script>
+import { EventBus } from "../bus/bus";
 // import Vue from "vue";
 // const lineSmooth = Vue.chartist.Interpolation.cardinal({
 //   tension: 0,
@@ -192,37 +198,38 @@ export default {
     },
   }),
   created() {
-    setTimeout(() => {
-      this.initializeData();
-      this.initialized = true;
-    }, 3000);
     this.initializeData();
+    this.totalTeachers = this.$store.getters.totalTeachers;
+    this.totalDeclined = this.$store.getters.allDeclinedEnrollments.length;
+    this.totalPending = this.$store.getters.allPendingEnrollments.length;
 
     this.$store.dispatch("allTeacher").then((res) => {
       this.totalTeachers = res.teacher.length;
     });
 
-    this.$store.dispatch("allPendingEnrollments").then((res) => {
-      this.totalPending = res.length;
+    this.$axios.get("pendingEnrollments/" + null).then((res) => {
+      this.totalPending = res.data.pendingEnrollment.length;
     });
 
     this.$store.dispatch("allDeclinedEnrollments").then((res) => {
       this.totalDeclined = res.length;
     });
-    console.log(this.enrollmentChart);
   },
-  mounted: () => {},
   methods: {
+    redirectToDeclinedPage() {
+      EventBus.$emit("redirectToDeclinedTab");
+      this.$router.push({ path: "/admin/enrollment" });
+    },
     initializeData() {
       this.enrollmentChart.data.series = [[0], [0]];
 
-      this.$store.dispatch("allStudents").then((res) => {
+      this.$store.dispatch("allStudents", null).then((res) => {
         let enrollments = res;
         this.totalEnrolled = enrollments.length;
         for (let index = enrollments.length - 1; index >= 0; index--) {
           const element = enrollments[index];
           const school_year = element["start_school_year"];
-          let gender = element["student"]["gender"];
+          let gender = element["gender"];
 
           let exist = this.enrollmentChart.data.labels.some((item) => {
             return item === school_year;

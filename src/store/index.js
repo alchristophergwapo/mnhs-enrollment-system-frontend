@@ -5,8 +5,8 @@ import "es6-promise/auto";
 
 Vue.use(Vuex);
 
-//axios.defaults.baseURL = 'http://127.0.0.1:8000/api/'
- axios.defaults.baseURL = "https://mnhs-enrollment-system.herokuapp.com/api";
+// axios.defaults.baseURL = "http://127.0.0.1:8000/api/";
+axios.defaults.baseURL = "https://mnhs-enrollment-system.herokuapp.com/api";
 
 export default new Vuex.Store({
   state: {
@@ -37,7 +37,6 @@ export default new Vuex.Store({
       localStorage.removeItem("user");
       location.reload();
     },
-
     setNumberOfTeachers(state, totalTeachers) {
       state.numberOfTeachers = totalTeachers;
     },
@@ -84,14 +83,14 @@ export default new Vuex.Store({
 
     allTeacher({ commit }) {
       return axios.get(`allTeacher`).then((response) => {
-        commit("setTeachers", response.data);
-        commit("setNumberOfTeachers", response.data.length);
+        commit("setTeachers", response.data.teacher);
+        commit("setNumberOfTeachers", response.data.teacher.length);
         return response.data;
       });
     },
 
-    allStudents({ commit }) {
-      return axios.get("approvedEnrollments").then((response) => {
+    allStudents({ commit }, gradeLevel) {
+      return axios.get("approvedEnrollments/" + gradeLevel).then((response) => {
         let data = response.data.approvedEnrollment;
         commit("setStudents", data);
         commit("setNumberOfEnrolledStudents", data.length);
@@ -106,15 +105,15 @@ export default new Vuex.Store({
       });
     },
 
-    allPendingEnrollments({ commit }) {
-      return axios.get("pendingEnrollments").then((response) => {
+    allPendingEnrollments({ commit }, adminLevel) {
+      return axios.get("pendingEnrollments/" + adminLevel).then((response) => {
         commit("setPendingEnrollments", response.data.pendingEnrollment);
         return response.data.pendingEnrollment;
       });
     },
 
-    allDeclinedEnrollments({ commit }) {
-      return axios.get("declinedEnrollments").then((response) => {
+    allDeclinedEnrollments({ commit }, adminLevel) {
+      return axios.get("declinedEnrollments/" + adminLevel).then((response) => {
         commit("setDeclinedEnrollments", response.data.declinedEnrollment);
         return response.data.declinedEnrollment;
       });

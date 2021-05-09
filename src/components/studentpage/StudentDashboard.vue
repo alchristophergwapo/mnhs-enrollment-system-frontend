@@ -44,12 +44,11 @@
               </v-tab-item>
               <v-tab-item :value="'tab-2'">
                 <student-class-details
-                  :section_name="
+                  :teacher_name="
                     user.section.adviser
                       ? user.section.adviser.teacher_name
                       : 'No Adviser'
                   "
-                  :classmates="students"
                 ></student-class-details>
               </v-tab-item>
             </v-tabs-items>
@@ -118,7 +117,6 @@ export default {
   data() {
     return {
       user: [],
-      students: [],
       panel: [],
       tab: null,
     };
@@ -138,25 +136,17 @@ export default {
       for (const key in classmates) {
         if (classmates.hasOwnProperty.call(classmates, key)) {
           const element = classmates[key];
-          this.students.push(element["student"]);
-          // console.log(classmates["student"]);
+          this.students.push(element["students"]);
         }
       }
 
       const section = this.user.enrollment.student_section;
-
+      this.isDataLoaded = false;
       this.$axios.get(`studentSectionDetails/${section}`).then((res) => {
-        console.log(res);
+        this.isDataLoaded = true;
         this.students = res.data.classmates;
         this.students.sort(this.sortData("lastname"));
       });
-      // console.log(this.students);
-    },
-
-    sortData(property) {
-      return function (data1, data2) {
-        return data1[property].localeCompare(data2[property]);
-      };
     },
 
     onResize() {
@@ -170,7 +160,6 @@ export default {
 
   created() {
     this.initialize();
-    // console.log(this.user);
   },
 };
 </script>

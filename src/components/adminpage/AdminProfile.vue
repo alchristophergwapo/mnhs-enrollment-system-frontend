@@ -2,21 +2,24 @@
   <div class="admin-profile">
     <v-container>
       <v-card
-        class="profile-card pa-4"
+        class="profile-card"
         width="100%"
         max-width="500px"
         outlined
         elevation="24"
       >
-        <v-card-title>
-          <v-row>
-            <v-icon>mdi-account</v-icon>
-            <h3>ADMIN PROFILE</h3>
-          </v-row>
-          <v-btn icon link to="/admin">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-        </v-card-title>
+        <div class="icon-container" :style="'background: #006a4e'">
+          <v-icon style="color: white" large>mdi-account</v-icon>
+        </div>
+        <template>
+          <div class="ml-auto text-right">
+            <div class="body-3 grey--text font-weight-light" />
+            <h3 id="card-header-title">ADMIN PROFILE</h3>
+            <v-btn icon link to="/admin" class="close-icon">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </div>
+        </template>
         <v-divider></v-divider>
         <v-card-title>
           <v-spacer></v-spacer>
@@ -32,15 +35,20 @@
         <br />
         <v-container>
           <v-form>
+            <div class="field-label">
               <label for="username">Username</label>
+            </div>
             <v-text-field
               v-model="username"
               name="username"
               placeholder="Username"
               :readonly="true"
+              dense
               outlined
             ></v-text-field>
-            <label for="currentpassword">Current Password</label>
+            <div class="field-label">
+              <label for="currentpassword">Current Password</label>
+            </div>
             <v-text-field
               v-model="currentPass"
               :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
@@ -50,14 +58,17 @@
               @click:append="showPass = !showPass"
               @keydown="clearErrors"
               :error="hasError('currentpassword')"
+              dense
               outlined
             ></v-text-field>
-            <div>
+            <div class="error-message">
               <p v-if="hasError('currentpassword')" class="invalid-feedback">
                 {{ getError("currentpassword") }}
               </p>
             </div>
-            <label for="new_password">New Password</label>
+            <div class="field-label">
+              <label for="new_password">New Password</label>
+            </div>
             <v-text-field
               v-model="newpassword"
               :append-icon="showNPass ? 'mdi-eye' : 'mdi-eye-off'"
@@ -67,14 +78,17 @@
               @click:append="showNPass = !showNPass"
               @keydown="clearErrors"
               :error="hasError('new_password')"
+              dense
               outlined
             ></v-text-field>
-            <div>
+            <div class="error-message">
               <p v-if="hasError('new_password')" class="invalid-feedback">
                 {{ getError("new_password") }}
               </p>
             </div>
-            <label for="confirm_password">Confirm Password</label>
+            <div class="field-label">
+              <label for="confirm_password">Confirm Password</label>
+            </div>
             <v-text-field
               v-model="confirmPass"
               :append-icon="showCPass ? 'mdi-eye' : 'mdi-eye-off'"
@@ -84,9 +98,10 @@
               @click:append="showCPass = !showCPass"
               @keydown="clearErrors"
               :error="hasError('confirm_password')"
+              dense
               outlined
             ></v-text-field>
-            <div>
+            <div class="error-message">
               <p v-if="hasError('confirm_password')" class="invalid-feedback">
                 {{ getError("confirm_password") }}
               </p>
@@ -97,7 +112,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            class="mr-4"
+            class="submit-btn"
             color="green"
             :loading="loading"
             :disabled="hasAnyErors"
@@ -116,7 +131,7 @@ export default {
   props: {},
   data() {
     return {
-      username: "admin",
+      username: null,
       currentPass: null,
       newpassword: null,
       confirmPass: null,
@@ -132,7 +147,7 @@ export default {
     //Get Admin Profile
     const userInfo = localStorage.getItem("user");
     this.userData = JSON.parse(userInfo);
-    if (this.userData.user.user_type == "admin") {
+    if (this.userData.user.user_type != "student") {
       this.username = this.userData.user.username;
     }
   },
@@ -153,19 +168,20 @@ export default {
             this.currentPass = null;
             this.newpassword = null;
             this.confirmPass = null;
-            // alert("Successfully changed!");
-            //this.$router.push({path:"/admin"});
             this.$swal.fire({
               icon: "success",
               title: "Success",
               text: "Password is successfully changed.",
             });
-
             this.userData.user.updated = 1;
             this.$store.commit("setUserData", this.userData);
             this.$router.push({ path: "/admin" });
           } else {
-            alert("Your current password is wrong!");
+            this.$swal.fire({
+              icon: "warning",
+              title: "Oops!",
+              text: "Your current password is wrong!",
+            });
           }
         })
         .catch((error) => {
@@ -173,7 +189,6 @@ export default {
           if (error.response.status == 422) {
             this.setErrors(error.response.data.errors);
           } else {
-            // alert("Something went wrong!");
             this.$swal.fire({
               icon: "error",
               title: "Oooops....",
@@ -218,9 +233,61 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.admin-profile {
+  margin-top: 50px;
+}
+
+.field-label,
+.error-message {
+  padding: 0 0 0 10px;
+}
+
+.v-input {
+  margin: 10px 0 3px 0;
+}
+
+.icon-container {
+  max-height: 90px;
+  height: 90px;
+  width: 90px;
+  margin-left: 10px;
+  /* border-radius: 9999px; */
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  font-size: 24px;
+  justify-content: center;
+  letter-spacing: normal;
+  line-height: 1;
+  position: relative;
+  top: -25px;
+  text-indent: 0;
+}
+
+#card-header-title {
+  width: 100%;
+  position: absolute;
+  top: 10px;
+  margin: auto;
+}
+
+.close-icon {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.invalid-feedback {
+  margin-top: -15px;
+}
 .profile-card {
   margin: auto;
+  box-shadow: 0px 11px 15px -7px rgb(0 0 0 / 20%),
+    0px 24px 38px 3px rgb(0 0 0 / 14%), 0px 9px 46px 8px rgb(0 0 0 / 12%) !important;
 }
 
 .subtitle {
@@ -229,5 +296,18 @@ export default {
 
 .subtitle span {
   font-size: 20px;
+}
+
+.theme--light.v-btn.v-btn--has-bg {
+  background-color: #006a4e;
+  color: white;
+  letter-spacing: 0.5rem;
+  width: 150px;
+}
+
+@media screen and (max-width: 767.98px) {
+  .invalid-feedback {
+    margin-top: -25px;
+  }
 }
 </style>

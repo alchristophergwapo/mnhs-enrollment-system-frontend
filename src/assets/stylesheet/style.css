@@ -1,3 +1,6 @@
+* {
+  font-family: "Roboto", sans-serif !important;
+}
 .body {
   background-color: #eee;
 }
@@ -50,7 +53,6 @@
 }
 
 .view_dtls_btn {
-  font-family: Roboto;
   font-style: normal;
   font-weight: normal;
   color: #48d3ff;
@@ -146,7 +148,10 @@
 
 .ct-labels span {
   color: black;
-  font-size: 0.975rem;
+  padding-left: 6px;
+  padding-right: 0;
+  margin-right: 0;
+  font-size: 0.9rem;
   font-weight: 100;
 }
 
@@ -172,6 +177,7 @@
 .invalid-feedback {
   color: red;
   font-size: 14px;
+  margin: 0 0 25px 0;
 }
 
 .sheet-container {
@@ -243,7 +249,6 @@
 
 /* All Students */
 .gl_filter {
-  font-family: Roboto;
   font-style: normal;
   font-weight: normal;
   font-size: 14px;
@@ -282,8 +287,6 @@
 .mx-auto {
   padding: 10px;
   text-align: justify;
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
 .footer-copyright {
@@ -358,6 +361,7 @@
 
 .login-btn .v-btn__content {
   color: white;
+  letter-spacing: 0.1rem;
 }
 
 .l-container {
@@ -369,37 +373,7 @@
   margin-bottom: 50px;
 }
 
-/* On screens that are 600px wide or less, the background color is olive */
-@media screen and (max-width: 600px) {
-  #logo {
-    margin-left: 20%;
-    width: 60px;
-    height: 60px;
-  }
-  #logo2 {
-    position: relative;
-    right: 60%;
-    width: 60px;
-    height: 60px;
-  }
-
-  #col2 {
-    text-align: center;
-    width: 60%;
-    font-size: 15px;
-    color: rgb(220, 240, 247);
-    position: relative;
-    top: -18px;
-  }
-  .btn {
-    color: white;
-    text-transform: uppercase;
-    font-size: 30px;
-    margin-top: 0%;
-  }
-}
-
-/* Sign In ****************************************************************************************************************************************************/
+/* Sign In */
 
 .card1 {
   margin: auto;
@@ -423,7 +397,6 @@ h3 {
   text-align: center;
   color: #006a4e;
   font-weight: bolder;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .signin-container {
@@ -450,10 +423,10 @@ h3 {
 }
 
 /* Enrollment Form ***************************************************************************************************************************************/
-.enrollment {
-  /* height: 269vh; */
+/* .enrollment {
+  height: 269vh;
   background: #eee;
-}
+} */
 
 .v-messages__message {
   color: red;
@@ -462,6 +435,7 @@ h3 {
 .form-container {
   margin-right: 20px;
   margin-bottom: 20px;
+  padding-top: 100px !important;
 }
 
 #stepper-container {
@@ -470,7 +444,6 @@ h3 {
 }
 
 .v-card__title {
-  font-family: Manrope;
   font-style: normal;
   font-weight: 500;
   font-size: 18px;
@@ -479,9 +452,7 @@ h3 {
 .form-head {
   width: 100%;
   padding: 30px;
-  /* margin-bottom: 50px; */
   text-align: center;
-  font-family: Manrope;
   font-style: normal;
   font-weight: bold;
   font-size: 18px;
@@ -541,6 +512,38 @@ h3 {
 }
 
 @media (max-width: 767.98px) {
+  .v-data-table {
+    margin: 0;
+  }
+  .table-header {
+    margin: 0;
+  }
+  #logo {
+    margin-left: 20%;
+    width: 60px;
+    height: 60px;
+  }
+  #logo2 {
+    position: relative;
+    right: 60%;
+    width: 60px;
+    height: 60px;
+  }
+
+  #col2 {
+    text-align: center;
+    width: 60%;
+    font-size: 15px;
+    color: rgb(220, 240, 247);
+    position: relative;
+    top: -18px;
+  }
+  .btn {
+    color: white;
+    text-transform: uppercase;
+    font-size: 30px;
+    margin-top: 0%;
+  }
   #stepper-container {
     width: 98%;
   }

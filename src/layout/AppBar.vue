@@ -1,8 +1,12 @@
 <template>
-  <v-app-bar app color="primary" dark elevation="0">
-    <v-toolbar-title class="header-title"
-      >Welcome to Mantalongon, Dalaguete NHS</v-toolbar-title
-    >
+  <v-app-bar app color="primary" dark elevation="0" class="toolbar-content">
+    <v-avatar @click="$router.push({ path: '/' })">
+      <v-img :src="require('../assets/images/logo.jpg')"></v-img>
+    </v-avatar>
+    <v-toolbar-title class="toolbar-title">
+      <h4>Mantalongon National High School</h4>
+      <span>Mantalongon, Dalaguete Cebu</span>
+    </v-toolbar-title>
 
     <v-spacer></v-spacer>
 
@@ -17,17 +21,6 @@
           <v-icon medium color="white">mdi-bell</v-icon>
         </v-badge>
       </v-btn>
-      <!-- </template> -->
-      <!-- <v-list>
-          <v-list-item v-for="(item, index) in allNotifications" :key="index">
-            <v-list-item-title
-              >{{ item.data.enrollment.firstname }}
-              {{ item.data.enrollment.lastname }} submitted a new
-              enrollment.</v-list-item-title
-            >
-          </v-list-item>
-        </v-list> -->
-      <!-- </v-menu> -->
     </div>
     <div v-if="$route.name != 'AdminProfile'">
       <v-card-title>
@@ -86,7 +79,6 @@ export default {
       this.$axios
         .get(`mark-all-read/${this.user_details.id}`)
         .then((response) => {
-          console.log(response);
           this.notifications = 0;
           this.setUserData(response.data);
         });
@@ -111,13 +103,11 @@ export default {
     } else {
       this.user_details = userData.userInfo;
     }
-    console.log(userData);
     let notificationsFromStorage = userData.user.notifications;
     if (notificationsFromStorage) {
       this.allNotifications = notificationsFromStorage;
       this.notifications = this.unreadNotification.length;
     }
-    // console.log(this.allNotifications);
   },
   computed: {
     unreadNotification() {
@@ -132,8 +122,9 @@ export default {
   },
   mounted() {
     if (this.user_details.user_type == "admin") {
-      window.Echo.private("App.Models.User."+this.user_details.id).notification((eventData) => {
-        console.log(eventData);
+      window.Echo.private(
+        "App.Models.User." + this.user_details.id
+      ).notification((eventData) => {
         this.allNotifications.push(eventData.notification);
         this.notifications = this.unreadNotification.length;
         this.setUserData(eventData);
@@ -150,3 +141,33 @@ export default {
   },
 };
 </script>
+
+<style scoped lang="scss">
+.toolbar-content {
+  height: 80px !important;
+  padding: 8px;
+  position: fixed;
+  z-index: 999;
+  width: 100%;
+
+  .toolbar-title {
+    margin-left: 20px;
+    text-align: center;
+
+    h4 {
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.08rem;
+    }
+
+    span {
+      font-size: 15px;
+      letter-spacing: 0.1rem;
+    }
+  }
+
+  .form-container {
+    padding-top: 64px !important;
+  }
+}
+</style>

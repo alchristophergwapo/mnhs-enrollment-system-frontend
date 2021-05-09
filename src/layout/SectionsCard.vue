@@ -8,7 +8,6 @@
       </h3>
     </div>
 
-    <!-- </v-card> -->
     <template> </template>
     <v-card-text>
       <div>
@@ -21,7 +20,7 @@
       Adviser: <span v-if="teacher">{{ teacher }}</span
       ><span v-else>None</span>
     </v-card-text>
-    <v-card-actions>
+    <v-card-actions class="card-actions-container">
       <!-- <div class="ml-auto text-right"> -->
       <slot name="btns"></slot>
       <!-- </div> -->
@@ -29,7 +28,7 @@
     <v-progress-linear
       :value="(total_students / capacity) * 100"
       height="25"
-      :color="progress_color"
+      :color="total_students === capacity ? 'red darken-3' : progress_color"
     >
       <strong>
         {{ total_students }} Student(s) Enrolled
@@ -88,5 +87,9 @@ export default {
   top: -20px;
   text-indent: 0;
   vertical-align: middle;
+}
+
+.card-actions-container {
+  width: 100%;
 }
 </style>

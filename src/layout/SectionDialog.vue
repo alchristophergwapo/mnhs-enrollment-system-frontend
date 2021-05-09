@@ -109,19 +109,19 @@ export default {
   },
   watch: {},
   created() {
-    console.log(this.Section);
-
     EventBus.$on("allNoneAdvisoryTeacher", (data) => {
-      console.log(data);
-      this.sectionData.teacher = data.data.id;
-      console.log(this.sectionData);
+      this.sectionData.teacher = data.data ? data.data.teacher_name : "";
+      this.sectionData.teacher_id = data.data ? data.data.id : "";
     });
 
     EventBus.$on("editallNoneAdvisoryTeacher", (data) => {
-      // console.log(data);
       this.sectionData.teacher = data.data.teacher_name;
       this.sectionData.teacher_id = data.data.id;
-      console.log(this.sectionData);
+    });
+
+    EventBus.$on("clearData", () => {
+      this.Section.teacher = null;
+      this.Section.teacher_id = null;
     });
   },
   mounted() {},
@@ -129,10 +129,8 @@ export default {
     //Method For Adding A Section In Junior High School Category
     async addSection(grades) {
       if (this.$refs.sectionForm.validate()) {
+        this.loading = true;
         if (this.edit == false) {
-          this.loading = true;
-          // console.log(grades.split(" ")[2]);
-          console.log(this.sectionData);
           this.$axios
             .post("addSection", {
               grade: grades.split(" ")[2],
@@ -140,6 +138,7 @@ export default {
               capacity: this.sectionData.capacity,
               total_students: 0,
               teacher: this.sectionData.teacher,
+              teacher_id: this.sectionData.teacher_id,
             })
             .then((response) => {
               if (response.data.message) {
@@ -149,6 +148,7 @@ export default {
                   data1: grades,
                 });
                 this.showResponse("Success", response.data.message, "success");
+                EventBus.$emit("reloadData");
                 this.loading = false;
                 this.close();
               }
@@ -170,11 +170,15 @@ export default {
               if (error.response.status == 422) {
                 this.setErrors(error.response.data.errors);
               } else {
-                console.log(error);
+                this.$swal.fire({
+                  icon: "warning",
+                  title: "Ooops!",
+                  text: "An error encountered!",
+                });
               }
             });
         } else {
-          //console.log("Teacher:"+this.Section.teacher);
+          this.loading = true;
           this.$axios
             .post("updateSection/" + this.sectionData.id, {
               name: this.sectionData.section,
@@ -183,6 +187,7 @@ export default {
             })
             .then((response) => {
               if (response.data.message) {
+                this.loading = false;
                 this.showResponse("Success", response.data.message, "success");
                 EventBus.$emit("displayAllsection", {
                   data1: grades,
@@ -190,6 +195,7 @@ export default {
                 this.clear();
                 this.close();
               } else {
+                this.loading = false;
                 this.$swal
                   .fire({
                     title:
@@ -206,6 +212,7 @@ export default {
                   })
                   .then((result) => {
                     if (result.isConfirmed) {
+                      this.loading = true;
                       this.$axios
                         .post("updateSection/" + "update", {
                           updateId: this.sectionData.id,
@@ -214,7 +221,7 @@ export default {
                           teacher_id: this.sectionData.teacher_id,
                         })
                         .then((response) => {
-                          console.log(response);
+                          this.loading = false;
                           if (response.data.newTeacher) {
                             this.showResponse(
                               "Updated!",
@@ -236,8 +243,8 @@ export default {
                             this.close();
                           }
                         })
-                        .catch((error) => {
-                          console.log(error);
+                        .catch(() => {
+                          this.loading = false;
                           this.clear();
                           this.close();
                         });
@@ -251,7 +258,7 @@ export default {
               if (error.response.status == 422) {
                 this.setErrors(error.response.data.errors);
               } else {
-                console.log(error);
+                this.showResponse("Ooops...", "An error encountered!", "error");
               }
             });
         }
@@ -259,14 +266,22 @@ export default {
     },
 
     showResponse(title, message, icon) {
-      this.$swal.fire({
-        icon: icon,
-        title: title,
-        text: message,
-      });
+      this.$swal
+        .fire({
+          icon: icon,
+          title: title,
+          text: message,
+        })
+        .then((result) => {
+          if (result.isConfirmed) {
+            this.$refs.sectionForm.resetValidation();
+          }
+        });
     },
 
     close() {
+      this.$refs.sectionForm.resetValidation();
+      EventBus.$emit("save");
       EventBus.$emit("closeModal", "close-modal");
     },
     clear() {
@@ -275,6 +290,7 @@ export default {
       this.sectionData.capacity = null;
       this.sectionData.teacher = null;
       this.$refs.sectionForm.resetValidation();
+      EventBus.$emit("save");
     },
     //Methods For All Errors In Junior High School
     setErrors(error) {
@@ -288,9 +304,6 @@ export default {
     },
     getError(fieldName) {
       return this.errors[fieldName][0];
-    },
-    filter(data) {
-      console.log(data);
     },
   },
   computed: {

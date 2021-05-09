@@ -94,24 +94,27 @@
           >
           </section-dialog>
         </v-dialog>
-        <v-dialog v-model="addSubject" persistent max-width="800px">
-          <add-subject-dialog
-            :gradeLevel="addOrEdit.name.split(' ')[2]"
-            :subjectsInGradeLevel="subjects"
-          ></add-subject-dialog>
-        </v-dialog>
-        <v-dialog
-          v-model="viewScheds"
-          fullscreen
-          hide-overlay
-          transition="dialog-bottom-transition"
-        >
-          <section-schedules
-            :gradelevel="Number(addOrEdit.name.split(' ')[2])"
-            :schedules="schedules"
-            :section_id="sectionId"
-          ></section-schedules>
-        </v-dialog>
+        <div v-if="viewSubject == 'true'">
+          <v-dialog v-model="addSubject" persistent max-width="800px">
+            <add-subject-dialog
+              :gradeLevel="addOrEdit.name.split(' ')[2]"
+              :subjectsInGradeLevel="subjects"
+            ></add-subject-dialog>
+          </v-dialog>
+        </div>
+        <div v-if="viewScheds">
+          <v-dialog
+            v-model="openSched"
+            fullscreen
+            hide-overlay
+            transition="dialog-bottom-transition"
+          >
+            <section-schedules
+              :gradelevel="Number(addOrEdit.name.split(' ')[2])"
+              :section_id="sectionId"
+            ></section-schedules>
+          </v-dialog>
+        </div>
       </v-row>
     </v-container>
   </div>
@@ -130,9 +133,11 @@ export default {
   data() {
     return {
       overlay: false,
+      viewSubject: "false",
       addSubject: false,
       actionDialog: false,
       viewScheds: false,
+      openSched: false,
       edit: false,
       tab: null,
       sectionId: null,
@@ -162,12 +167,12 @@ export default {
       },
       allsections: [],
       subjects: [],
-      schedules: [],
       gradelevel: "11",
       addOrEdit: { name: "Add Grade 11" },
     };
   },
   created() {
+    this.allsections = this.$store.getters.allsections;
     this.displayAllsection(this.gradelevel);
 
     EventBus.$on("closeModal", () => {
@@ -175,12 +180,12 @@ export default {
     });
 
     EventBus.$on("displayAllsection", (data) => {
-      console.log(data);
-      this.displayAllsection(data.data1.split(' ')[2]);
+      this.displayAllsection(data.data1.split(" ")[2]);
     });
 
     EventBus.$on("closeSubjectModal", (data) => {
       this.addSubject = data;
+      this.viewSubject = false;
     });
 
     EventBus.$on("closeSectionScheduleModal", () => {
@@ -194,56 +199,26 @@ export default {
         .get("allSections")
         .then((response) => {
           this.allsections = response.data.sections;
-          console.log(this.allsections);
           this.senior_high.forEach((senior) => {
             if (senior.text.split(" ")[1] == gradelevel) {
               senior.content = this.allsections.filter(function (val) {
                 return val.gradelevel.grade_level == gradelevel;
               });
-              //   console.log(junior.content);
             }
           });
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+          this.$swal.filter({
+            icon: "error",
+            title: "Ooops...",
+            text: "An error encountered!",
+          });
         });
     },
     viewSchedules(sectionId) {
-      this.overlay = true;
-      this.schedules = [];
+      this.viewScheds = true;
+      this.openSched = true;
       this.sectionId = sectionId;
-      this.$axios.get(`classSchedules/${sectionId}`).then((response) => {
-        this.viewScheds = true;
-        this.overlay = false;
-        const schedulesOnDB = response.data.schedules;
-        console.log(schedulesOnDB);
-
-        let count = 0;
-        let friday = false;
-        for (const index in schedulesOnDB) {
-          if (schedulesOnDB.hasOwnProperty.call(schedulesOnDB, index)) {
-            const element = schedulesOnDB[index];
-            this.sched.Time = `${element.start_time}-${element.end_time}`;
-
-            this.sched[element.day] = element;
-            if (element.day == "Friday") {
-              friday = true;
-            }
-            count += 1;
-          }
-          if (count == 5 && friday) {
-            this.schedules.push(this.sched);
-            this.sched = {
-              Time: null,
-              Monday: null,
-              Tuesday: null,
-              Wednesday: null,
-              Thursday: null,
-              Friday: null,
-            };
-          }
-        }
-      });
     },
     selected(item) {
       this.addOrEdit.name = "Add " + item;
@@ -257,19 +232,18 @@ export default {
     },
     retrieveSubjects() {
       this.subjects = [];
-      console.log(this.subjects);
       this.overlay = true;
       this.$axios
         .get(`gradelevelSubject/${Number(this.addOrEdit.name.split(" ")[2])}`)
         .then((response) => {
           this.subjects = response.data.subject;
+          this.viewSubject = "true";
           this.addSubject = true;
           this.overlay = false;
         });
     },
     //Method For Opening Dialog
     open(grade) {
-      console.log(grade);
       this.addOrEdit.name = "Add " + grade;
       this.actionDialog = true;
       this.edit = false;
@@ -287,7 +261,6 @@ export default {
 
     //Method For Editing The Section
     async editSection(data) {
-      console.log(data);
       this.addOrEdit.name = "Edit Grade " + data.gradelevel.grade_level;
       this.edit = true;
       this.actionDialog = true;

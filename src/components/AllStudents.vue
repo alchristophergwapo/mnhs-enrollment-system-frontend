@@ -522,7 +522,7 @@ export default {
     },
     //Method For Filtering By Grade Level
     filterByGradeLevel(grade) {
-      if (grade == "Alls") {
+      if (grade == "All") {
         this.selectGrade = "Allstudent";
         this.students = this.filteredStudents;
         let arraySection = [];

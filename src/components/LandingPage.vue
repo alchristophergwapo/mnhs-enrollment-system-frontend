@@ -16,7 +16,17 @@
       </div>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn outlined color="white" link to="/sign-in">login</v-btn>
+        <v-btn
+          outlined
+          style="
+            background-color: #006a4e;
+            color: white;
+            letter-spacing: 0.3rem;
+          "
+          link
+          to="/sign-in"
+          ><b>login</b></v-btn
+        >
       </v-card-actions>
     </v-card>
     <v-carousel cycle height="500" :show-arrows="false">
@@ -163,7 +173,6 @@ export default {
       if (userData.user_type == "admin") {
         this.$router.push({ path: "/admin" });
       }
-      console.log(userInfo);
     }
   },
 };

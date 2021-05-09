@@ -17,11 +17,15 @@
                 :gradelevel="Number(gradeLevel)"
                 :modelValue="editSubjectDetails.teacher_name"
                 :edit="true"
-                :prepend_icon="editSubjectDetails.teacher_name ? 'mdi-check-underline' : 'mdi-help'"
+                :prepend_icon="
+                  editSubjectDetails.teacher_name
+                    ? 'mdi-check-underline'
+                    : 'mdi-help'
+                "
                 property="teacher_name"
                 :rules="[(value) => !!value || 'This field is required']"
               >
-              <template v-slot:label>Teacher</template>
+                <template v-slot:label>Teacher</template>
               </autocomplete>
             </v-card-text>
             <v-divider></v-divider>
@@ -99,7 +103,9 @@
                   request="allTeacher"
                   :gradelevel="Number(gradeLevel)"
                   :edit="false"
-                  :prepend_icon="teacher != null ? 'mdi-check-underline' : 'mdi-help'"
+                  :prepend_icon="
+                    teacher != null ? 'mdi-check-underline' : 'mdi-help'
+                  "
                   property="teacher_name"
                   :rules="[(value) => !!value || 'This field is required']"
                 ></autocomplete>
@@ -171,19 +177,15 @@ export default {
   },
   watch: {},
   created() {
-    console.log(this.subjects);
     EventBus.$on("allTeacher", (data) => {
-      console.log(data);
       this.teacher = data.data.teacher_name;
       this.teacher_id = data.data.id;
     });
 
     EventBus.$on("editallTeacher", (data) => {
-      console.log(data.data);
       this.editSubjectDetails.teacher_name = data.data.teacher_name;
       this.editSubjectDetails.teacher_id = data.data.id;
-this.editSubjectDetails.icon = 'mdi-check-underline'
-      console.log(this.editSubjectDetails);
+      this.editSubjectDetails.icon = "mdi-check-underline";
     });
   },
   methods: {
@@ -202,13 +204,12 @@ this.editSubjectDetails.icon = 'mdi-check-underline'
             this.showResponse("success", "Success", response.data.success);
 
             this.subjects.push(subject);
-            // console.log(this.subjects);
             this.clear();
             EventBus.$emit("save");
             this.clear();
           })
           .catch((error) => {
-            console.log(error.response);
+            this.loading = false;
             if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);
             } else {
@@ -222,7 +223,6 @@ this.editSubjectDetails.icon = 'mdi-check-underline'
     },
 
     openEditSub(itemData, index) {
-      console.log(itemData);
       this.editSubjectDetails.grade_level_id = itemData.grade_level_id;
       this.editSubjectDetails.subject_name = itemData.subject_name;
       this.editSubjectDetails.teacher_name = itemData.teacher_name;
@@ -233,16 +233,15 @@ this.editSubjectDetails.icon = 'mdi-check-underline'
     },
 
     editSubject() {
-      // this.subjects[
-      //   this.editSubjectDetails.index
-      // ].name = this.editSubjectDetails.name;
-      // this.subjects[
-      //   this.editSubjectDetails.index
-      // ].teacher_id = this.editSubjectDetails.teacher_id;
-      // this.subjects[
-      //   this.editSubjectDetails.index
-      // ].teacher_name = this.editSubjectDetails.teacher_name;
-      console.log(this.editSubjectDetails);
+      this.subjects[
+        this.editSubjectDetails.index
+      ].name = this.editSubjectDetails.name;
+      this.subjects[
+        this.editSubjectDetails.index
+      ].teacher_id = this.editSubjectDetails.teacher_id;
+      this.subjects[
+        this.editSubjectDetails.index
+      ].teacher_name = this.editSubjectDetails.teacher_name;
       this.$axios
         .post(`updateSubject`, this.editSubjectDetails)
         .then((response) => {
@@ -314,9 +313,6 @@ this.editSubjectDetails.icon = 'mdi-check-underline'
     },
     getError(fieldName) {
       return this.errors[fieldName][0];
-    },
-    filter(data) {
-      console.log(data);
     },
   },
   computed: {

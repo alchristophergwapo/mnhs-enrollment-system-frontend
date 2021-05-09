@@ -23,7 +23,7 @@
             <v-spacer></v-spacer>
             <v-btn
               color="error"
-              @click="declineEnrollment(notification.enrollment.id)"
+              @click="opendeclineModal(notification.enrollment.id)"
               :loading="declining"
               >decline</v-btn
             >
@@ -31,7 +31,7 @@
               color="primary"
               @click="
                 filterSections(
-                  notification.grade_level,
+                  notification.enrollment.grade_level,
                   notification.enrollment.id
                 )
               "
@@ -85,15 +85,17 @@
             <v-list-item
               @click="markAsOpened(item.data.enrollment, item.id, item.index)"
             >
-              <v-icon>mdi-plus</v-icon>
+              <v-icon>mdi-information-variant</v-icon>
 
               <v-list-item-content>
                 <v-list-item-title>
                   <v-card-text
                     >{{ item.data.enrollment.firstname }}
                     {{ item.data.enrollment.lastname }} submitted a new
-                    enrollment application for
-                    {{ item.data.enrollment.grade_level }}.</v-card-text
+                    enrollment application for grade &nbsp;
+                    {{
+                      item.data.enrollment.enrollment.grade_level
+                    }}.</v-card-text
                   >
                 </v-list-item-title>
               </v-list-item-content>
@@ -110,6 +112,45 @@
     <v-overlay :value="overlay">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
+    <!-- REASON FOR DECLINING THE ENROLLMENT -->
+    <v-dialog
+      transition="dialog-bottom-transition"
+      max-width="600"
+      v-model="declineModal"
+    >
+      <template>
+        <v-card>
+          <v-card-title>
+            <v-row>
+              <h3>Reason For Declining</h3>
+            </v-row>
+            <v-btn icon @click="closeDeclineModal()">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-divider></v-divider>
+          <v-form ref="form" v-model="valid" lazy-validation>
+            <v-textarea
+              v-model="remarks"
+              outlined
+              full-width
+              single-line
+              placeholder="Write the reason for declining here......."
+              name="remarks"
+              :rules="[
+                (remarks) => !!remarks || 'Reason for declining is required',
+              ]"
+            ></v-textarea>
+            <!-- <v-divider></v-divider> -->
+            <v-card-actions class="justify-end" id="textarea">
+              <v-btn :disabled="!valid" color="blue" @click="declineEnrollment"
+                >done</v-btn
+              >
+            </v-card-actions>
+          </v-form>
+        </v-card>
+      </template>
+    </v-dialog>
   </div>
 </template>
 
@@ -142,46 +183,57 @@ export default {
       approving: false,
       declining: false,
       overlay: false,
+      declineModal: false,
+      valid: true,
+      declineId: null,
       section: null,
       id: null,
       indexToDel: null,
+      remarks: null,
       notification: null,
       date: new Date(),
     };
   },
+  created() {
+    this.overlay = true;
+    let storedInfo = localStorage.getItem("user");
+    let userData = JSON.parse(storedInfo);
+    // this.notifications = userData.user.notifications;
+    this.$axios
+      .get(`/allNotifications/${userData.user.id}`)
+      .then((response) => {
+        this.overlay = false;
+        this.notifications = response.data.notifications;
+      });
+  },
   methods: {
     filterSections(gradelevel, id) {
       this.id = id;
-      let sections = this.$store.getters.allSections;
-      // console.log(index);
       this.dialog = true;
       this.sections = [];
-      // console.log(grade_level);
-      for (const key in sections) {
-        if (sections.hasOwnProperty.call(sections, key)) {
-          const element = sections[key];
-          const grade_levelData = element["gradelevel"];
-          for (const glKey in grade_levelData) {
-            let section = element["name"];
-            if (grade_levelData.hasOwnProperty.call(grade_levelData, glKey)) {
-              const element1 = grade_levelData[glKey];
-              // console.log(glKey);
-              if (glKey == "grade_level") {
-                // console.log("here");
-                if (element1 == gradelevel) {
-                  // console.log("here");
-                  this.sections.push(section);
+      this.$store.dispatch("allSections").then((res) => {
+        let sections = res;
+        for (const key in sections) {
+          if (sections.hasOwnProperty.call(sections, key)) {
+            const element = sections[key];
+            const grade_levelData = element["gradelevel"];
+            for (const glKey in grade_levelData) {
+              let section = element["name"];
+              if (grade_levelData.hasOwnProperty.call(grade_levelData, glKey)) {
+                const element1 = grade_levelData[glKey];
+                if (glKey == "grade_level") {
+                  if (element1 == gradelevel) {
+                    this.sections.push(section);
+                  }
                 }
               }
             }
           }
         }
-      }
-      // console.log(this.sections);
+      });
     },
 
     checkIfExist(data) {
-      console.log("data: ", data);
       let exist = false;
       let students = this.$store.getters.allStudents;
       for (const index in students) {
@@ -189,7 +241,6 @@ export default {
           const element = students[index];
           if (element.id == data.id) {
             exist = true;
-            console.log("Exist: ", element);
           } else {
             exist = false;
           }
@@ -197,7 +248,6 @@ export default {
       }
       if (!exist) {
         students.push(data);
-        console.log("Not exist: ", data);
       }
 
       this.$store.commit("setStudents", students);
@@ -205,7 +255,6 @@ export default {
       // EventBus.$emit("newApprovedStudent", students);
     },
     approveEnrollment(id) {
-      console.log(this.section);
       this.loading = true;
       if (this.section) {
         this.$axios
@@ -223,13 +272,13 @@ export default {
             this.loading = false;
             // window.location.reload(true);
           })
-          .catch((error) => {
-            console.log(error);
+          .catch(() => {
             this.$swal.fire({
-              icon: "error",
-              title: "Ooops....",
-              text: error.response.data.message,
+              icon: "warning",
+              title: "Ooops!",
+              text: "An error encountered!",
             });
+            this.loading = false;
             this.dialog = true;
             this.openDialog = true;
           });
@@ -240,13 +289,27 @@ export default {
           text: "Please select a section.",
         });
         this.openDialog = true;
+        this.loading = false;
       }
     },
 
+    opendeclineModal(id) {
+      this.declineId = id;
+      this.declineModal = true;
+    },
+
+    closeDeclineModal() {
+      this.declineModal = false;
+      this.remarks = null;
+      this.$refs.form.resetValidation();
+    },
+
     declineEnrollment(id) {
+      this.declining = true;
       this.$axios
         .post("declineEnrollment/" + id)
         .then((response) => {
+          this.declining = false;
           this.deleteNotif();
           this.$swal.fire({
             icon: "info",
@@ -254,8 +317,13 @@ export default {
             text: response.data.success,
           });
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+          this.declining = false;
+          this.$swal.fire({
+            icon: "warning",
+            title: "Ooops!",
+            text: "An error encountered!",
+          });
         });
     },
 
@@ -266,18 +334,18 @@ export default {
       this.$axios
         .get("mark-as-opened/" + id)
         .then((response) => {
-          console.log(typeof response.data.notification.data);
           this.notification.opened_at = this.date;
           this.notification.data = JSON.parse(response.data.notification.data);
           let index = this.notifications.indexOf(notif);
           this.notifications[index] = response.data.notification;
-          console.log(this.notification);
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
+          this.$swal.fire({
+            icon: "warning",
+            title: "Ooops!",
+            text: "An error encountered!",
+          });
         });
-
-      // console.log(this.notification);
     },
 
     closeDialog() {
@@ -287,19 +355,6 @@ export default {
     deleteNotif() {
       this.notifications.splice(this.indexToDel, 1);
     },
-  },
-  created() {
-    this.overlay = true;
-    let storedInfo = localStorage.getItem("user");
-    let userData = JSON.parse(storedInfo);
-    console.log(userData);
-    // this.notifications = userData.user.notifications;
-    this.$axios
-      .get(`/allNotifications/${userData.user.id}`)
-      .then((response) => {
-        this.overlay = false;
-        this.notifications = response.data.notifications;
-      });
   },
 };
 </script>

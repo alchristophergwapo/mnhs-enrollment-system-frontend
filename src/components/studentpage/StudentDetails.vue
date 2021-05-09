@@ -20,12 +20,12 @@
         >
         <v-card-text
           ><strong class="student_details"
-            >Grade: {{ student.grade_level }}
+            >Grade: {{ student.enrollment.grade_level }}
           </strong></v-card-text
         >
         <v-card-text
           ><strong class="student_details"
-            >Section: {{ student.enrollment.student_section }}
+            >Section: {{ student.section.name }}
           </strong></v-card-text
         >
       </v-container>

@@ -64,10 +64,7 @@
           </v-col>
           <v-container v-if="enrollment.enrollment.card_image != 'undefined'">
             <v-img
-              :src="
-                `http://127.0.0.1:8000/images/` +
-                enrollment.enrollment.card_image
-              "
+              :src="imageUrl+enrollment.enrollment.card_image"
             ></v-img>
           </v-container>
         </v-row>
@@ -85,5 +82,11 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      //imageUrl: "http://localhost:8000/images/",
+      imageUrl: "https://mnhs-enrollment-system.herokuapp.com/images/",
+    };
+  }
 };
 </script>

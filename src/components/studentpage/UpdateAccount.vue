@@ -18,7 +18,8 @@
             v-model="username"
             name="username"
             label="Username"
-            :disabled="true"
+            readonly
+            outlined
           ></v-text-field>
           <v-text-field
             v-model="currentPass"
@@ -28,7 +29,9 @@
             label="Current Password"
             @click:append="showPass = !showPass"
             @keydown="clearErrors"
+            @keyup="enterKeyTriggered"
             :error="hasError('currentpassword')"
+            outlined
           >
           </v-text-field>
           <div>
@@ -44,7 +47,9 @@
             name="new_password"
             @click:append="showNPass = !showNPass"
             @keydown="clearErrors"
+            @keyup="enterKeyTriggered"
             :error="hasError('new_password')"
+            outlined
           ></v-text-field>
           <div>
             <p v-if="hasError('new_password')" class="invalid-feedback">
@@ -59,7 +64,9 @@
             name="confirm_password"
             @click:append="showCPass = !showCPass"
             @keydown="clearErrors"
+            @keyup="enterKeyTriggered"
             :error="hasError('confirm_password')"
+            outlined
           ></v-text-field>
           <div>
             <p v-if="hasError('confirm_password')" class="invalid-feedback">
@@ -114,6 +121,9 @@ export default {
     }
   },
   methods: {
+    enterKeyTriggered(e) {
+      if (e.keyCode === 13) this.submit();
+    },
     submit() {
       if (this.$refs.update.validate()) {
         this.loading = true;
@@ -125,12 +135,11 @@ export default {
             confirm_password: this.confirmPass,
           })
           .then((response) => {
+            this.loading = false;
             if (response.data.message) {
               this.currentPass = null;
               this.newpassword = null;
               this.confirmPass = null;
-              // alert("Successfully changed!");
-              //this.$router.push({path:"/admin"});
               this.$swal.fire({
                 icon: "success",
                 title: "Success",
@@ -140,11 +149,14 @@ export default {
               this.$store.commit("setUserData", this.userDetails);
               this.$router.push({ path: "/student/dashboard" });
             } else {
-              alert("Your current password is wrong!");
+              this.$swal.fire({
+                icon: "warning",
+                title: "Oops!",
+                text: "Your current password is wrong!",
+              });
             }
           })
           .catch((error) => {
-            console.log(error.response);
             this.loading = false;
             if (error.response.status == 422) {
               this.setErrors(error.response.data.errors);
@@ -182,10 +194,21 @@ export default {
       this.currentPass = null;
       this.newpassword = null;
       this.confirmPass = null;
-      for (let key in this.errors) {
-        this.$delete(this.errors, key);
-      }
+      this.errors = {};
     },
   },
 };
 </script>
+<style scoped>
+.invalid-feedback {
+  margin-top: -20px;
+  margin-bottom: 20px;
+}
+
+@media screen and (max-width: 767.98px) {
+  .invalid-feedback {
+    margin-top: -19px;
+    margin-bottom: 19px;
+  }
+}
+</style>

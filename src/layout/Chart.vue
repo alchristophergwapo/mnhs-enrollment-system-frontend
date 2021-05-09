@@ -1,18 +1,14 @@
 <template>
   <v-card class="v-card--material-chart" color="#e6e6e6">
-    <template>
-      <!-- <div class="pa-4"> -->
-      <chartist
-        :data="data"
-        :event-handlers="eventHandlers"
-        :options="options"
-        :ratio="ratio"
-        :responsive-options="responsiveOptions"
-        :type="type"
-        style="max-height: 300px"
-      />
-      <!-- </div> -->
-    </template>
+    <chartist
+      :data="data"
+      :event-handlers="eventHandlers"
+      :options="options"
+      :ratio="ratio"
+      :responsive-options="responsiveOptions"
+      :type="type"
+      style="max-height: 300px"
+    />
 
     <slot slot="reveal-actions" name="reveal-actions" />
 
