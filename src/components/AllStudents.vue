@@ -67,6 +67,7 @@
           :headers="headers"
           :items="students"
           :search="search"
+          :loading="isDataLoaded ? false : true"
           :items-per-page="10"
           class="elevation-1"
         >
@@ -93,7 +94,7 @@
           max-width="800"
         >
           <template>
-            <v-form ref="studentDetails" lazy-validation>
+            <v-form ref="studentDetails" v-model="valid" lazy-validation>
               <v-card>
                 <v-card-title class="text-center justify-center">
                   <v-spacer></v-spacer>
@@ -167,6 +168,12 @@
                         :rules="[
                           (v) =>
                             (!!v && v.trim() != '') || 'Firstname is required',
+                          (v) =>
+                            (v && v.length >= 3) ||
+                            'Firstname cannot be lesser than 3 characters.',
+                          (v) =>
+                            /^[a-zA-Z\s]+$/.test(v) == true ||
+                            'Only letters are  allowed!',
                         ]"
                         label="Firstname"
                         outlined
@@ -179,6 +186,12 @@
                         v-model="studentInfo.middlename"
                         name="middlename"
                         label="Middlename"
+                        :rules="[
+                          (v) =>
+                            /^[a-zA-Z\s-]+$/.test(v) == true ||
+                            v == '' ||
+                            'Only letters are  allowed, except for - !',
+                        ]"
                         outlined
                         :readonly="readonly"
                         required
@@ -191,6 +204,12 @@
                         :rules="[
                           (v) =>
                             (!!v && v.trim() != '') || 'Lastname is required',
+                          (v) =>
+                            (v && v.length >= 3) ||
+                            'Firtname cannot be lesser than 3 characters.',
+                          (v) =>
+                            /^[a-zA-Z\s-]+$/.test(v) == true ||
+                            'Only letters are  allowed, except for - !',
                         ]"
                         label="Lastname"
                         outlined
@@ -204,26 +223,63 @@
                         v-model="studentInfo.birthdate"
                         name="birthdate"
                         :rules="[(v) => !!v || 'Birthdate is required']"
+                        @click="modal = !modal"
                         label="Date of Birth"
-                        type="date"
+                        prepend-inner-icon="mdi-calendar"
+                        readonly
                         outlined
-                        :readonly="readonly"
-                        required
                       ></v-text-field>
+                      <v-dialog
+                        ref="dialog"
+                        v-model="modal"
+                        :return-value.sync="studentInfo.birthdate"
+                        persistent
+                        width="290px"
+                      >
+                        <v-date-picker
+                          v-model="studentInfo.birthdate"
+                          year-icon="mdi-calendar-blank"
+                          :min="min_date"
+                          :max="max_date"
+                          scrollable
+                        >
+                          <v-spacer></v-spacer>
+                          <v-btn text color="primary" @click="modal = false">
+                            Cancel
+                          </v-btn>
+                          <v-btn
+                            text
+                            color="primary"
+                            @click="
+                              $refs.dialog.save(studentInfo.birthdate),
+                                getAge(studentInfo.birthdate)
+                            "
+                          >
+                            OK
+                          </v-btn>
+                        </v-date-picker>
+                      </v-dialog>
                     </v-col>
 
                     <v-col cols="12" xs="6" sm="4" md="4" lg="4">
                       <v-text-field
                         v-model="studentInfo.age"
                         name="age"
-                        :rules="[(v) => !!v || 'Age is required']"
+                        :rules="[
+                          (v) => !!v || 'Age is required',
+                          (v) =>
+                            v >= 10 ||
+                            'You are too young to enroll for high school.',
+                          (v) => v <= 50 || 'Please confirm your age.',
+                        ]"
                         label="Age"
+                        readonly
                         outlined
-                        :readonly="readonly"
                         type="number"
                         required
                       ></v-text-field>
                     </v-col>
+
                     <v-col cols="12" xs="6" sm="2" md="2" lg="2">
                       <v-checkbox
                         v-model="studentInfo.gender"
@@ -256,6 +312,7 @@
                         Community/Indegenous Cultural Community?
                       </p>
                     </v-col>
+
                     <v-col cols="12" xs="6" sm="2" md="2" lg="2">
                       <v-checkbox
                         v-model="studentInfo.IP"
@@ -274,19 +331,11 @@
                         :rules="[(IP) => !!IP || 'This field is required']"
                         value="No"
                         label="No"
-                        @change="ipCommunity()"
-                        :readonly="readonly"
                         type="checkbox"
+                        :readonly="readonly"
                       ></v-checkbox>
                     </v-col>
                     <v-col cols="12" xs="6" sm="4" md="4" lg="4">
-                      <v-text-field
-                        v-if="studentInfo.IP === 'No'"
-                        v-model="studentInfo.IP_community"
-                        label="If yes, please specify"
-                        outlined
-                        readonly
-                      ></v-text-field>
                       <v-text-field
                         v-if="studentInfo.IP === 'Yes'"
                         v-model="studentInfo.IP_community"
@@ -302,7 +351,8 @@
                         required
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" xs="6" sm="6" md="6" lg="6">
+
+                    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
                       <v-text-field
                         v-model="studentInfo.mother_tongue"
                         name="mother_tongue"
@@ -310,14 +360,19 @@
                           (mother_tongue) =>
                             (!!mother_tongue && mother_tongue.trim() != '') ||
                             'Mother tongue is required',
+                          (mother_tongue) =>
+                            /^[a-zA-Z\s]+$/.test(mother_tongue) == true ||
+                            'Only letters are allowed.',
                         ]"
                         label="Mother Tongue"
+                        placeholder="e.g Cebuano, Tagalog, Waray"
                         outlined
                         :readonly="readonly"
                         required
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" xs="6" sm="6" md="6" lg="6">
+
+                    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
                       <v-text-field
                         v-model="studentInfo.contact"
                         name="contact"
@@ -328,19 +383,21 @@
                             'Only Number is  allowed!',
                           (contact) =>
                             String(contact).length <= 11 ||
-                            'Student Contact Number cannot be greater than 11 digits',
+                            'Contact number cannot be greater than 11 digits',
                           (contact) =>
                             String(contact).length == 11 ||
-                            'Student Contact Number contact number must be 11 digits',
+                            'Contact number must be 11 digits',
                         ]"
-                        label="Student Contact Number"
+                        type="text"
+                        label="Contact Number"
                         :counter="11"
-                        outlined
                         :readonly="readonly"
+                        outlined
                         required
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" xs="6" sm="6" md="6" lg="6">
+
+                    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
                       <v-text-field
                         v-model="studentInfo.address"
                         name="address"
@@ -348,14 +405,20 @@
                           (address) =>
                             (!!address && address.trim() != '') ||
                             'Address is required',
+                          (address) =>
+                            (address && address.length >= 4) ||
+                            'Address must be at least 4 characters.',
+                          (address) =>
+                            /^[a-zA-Z0-9\s-,]+$/.test(address) == true ||
+                            'Only letters and numbers are allowed excepts - and , .',
                         ]"
                         label="Address"
-                        outlined
                         :readonly="readonly"
+                        outlined
                         required
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" xs="6" sm="6" md="6" lg="6">
+                    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
                       <v-text-field
                         v-model="studentInfo.zipcode"
                         name="zipcode"
@@ -364,37 +427,61 @@
                           (zipcode) =>
                             /^[0-9]+$/.test(zipcode) == true ||
                             'Only Number is  allowed!',
+                          (zipcode) =>
+                            String(zipcode).length <= 4 ||
+                            'Zipcode cannot be greater than 4 digits',
+                          (zipcode) =>
+                            String(zipcode).length == 4 ||
+                            'Zipcode must be 4 digits',
                         ]"
+                        :counter="4"
                         label="Zipcode"
+                        :readonly="readonly"
+                        outlined
+                        required
+                      ></v-text-field>
+                    </v-col>
+
+                    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
+                      <v-text-field
+                        v-model="studentInfo.father"
+                        label="Father's Name"
+                        :rules="[
+                          (v) =>
+                            /^[a-zA-Z\s-]+$/.test(v) == true ||
+                            v == '' ||
+                            'Only letters are  allowed, except for - !',
+                        ]"
+                        :readonly="readonly"
+                        outlined
+                        required
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
+                      <v-text-field
+                        v-model="studentInfo.mother"
+                        label="Mother's Maiden Name"
+                        :rules="[
+                          (v) =>
+                            /^[a-zA-Z\s-\s]+$/.test(v) == true ||
+                            v == '' ||
+                            'Only letters are  allowed, except for - !',
+                        ]"
                         outlined
                         :readonly="readonly"
                         required
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" xs="6" sm="6" md="6" lg="6">
-                      <v-text-field
-                        v-model="studentInfo.father"
-                        label="Father's Name"
-                        outlined
-                        :readonly="readonly"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" xs="6" sm="6" md="6" lg="6">
-                      <v-text-field
-                        v-model="studentInfo.mother"
-                        label="Mother's Maiden Name"
-                        outlined
-                        :readonly="readonly"
-                      ></v-text-field>
-                    </v-col>
-                    <v-col cols="12" xs="6" sm="6" md="6" lg="6">
+                    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
                       <v-text-field
                         v-model="studentInfo.guardian"
-                        name="guardian"
                         :rules="[
-                          (guardian) =>
-                            (!!guardian && guardian.trim() != '') ||
+                          (v) =>
+                            (!!v && v.trim() != '') ||
                             'Guardian name is required',
+                          (v) =>
+                            /^[a-zA-Z\s-]+$/.test(v) == true ||
+                            'Only letters are  allowed, except for - !',
                         ]"
                         label="Guardian's Name"
                         outlined
@@ -402,85 +489,98 @@
                         required
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="6" md="6" lg="6">
+                    <v-col cols="12" sm="6" md="6" lg="3">
                       <v-text-field
                         v-model="studentInfo.parent_number"
-                        name="contact"
                         :rules="[
-                          (contact) =>
-                            !!contact ||
+                          (parent_number) =>
+                            !!parent_number ||
                             'Parent/Guardian contact number is required.',
-                          (contact) =>
-                            /^[0-9]+$/.test(contact) == true ||
+                          (parent_number) =>
+                            /^[0-9]+$/.test(parent_number) == true ||
                             'Only Number is  allowed!',
-                          (contact) =>
-                            String(contact).length <= 11 ||
+                          (parent_number) =>
+                            String(parent_number).length <= 11 ||
                             'Parent/Guardian cannot be greater than 11 digits',
-                          (contact) =>
-                            String(contact).length == 11 ||
+                          (parent_number) =>
+                            String(parent_number).length == 11 ||
                             'Parent/Guardian contact number must be 11 digits',
                         ]"
                         label="Parent/Guardian Contact Number"
+                        :counter="11"
                         outlined
                         :readonly="readonly"
                         required
                       ></v-text-field>
                     </v-col>
                     <!----------------------------------THIS IS FOR SENIOR HIGH STUDENT DATA INFORMATION------------------------------------------->
-                    <v-col cols="12" sm="6" v-if="studentInfo.semester != null">
-                      <v-select
-                        v-model="studentInfo.semester"
-                        name="semester"
-                        :rules="[
-                          (semester) => !!semester || 'Semester is required.',
-                        ]"
-                        label="Select a semester"
-                        :items="['First Semester', 'Second Semester']"
-                        type="checkbox"
-                        required
-                        outlined
-                        :readonly="readonly"
-                      ></v-select>
+                    <v-col
+                      cols="12"
+                      xs="12"
+                      sm="12"
+                      md="12"
+                      lg="12"
+                      v-if="studentInfo.semester != null"
+                    >
+                      <p style="text-align: center; font-size: 20px">
+                        <b>SENIOR HIGH LEARNER</b>
+                      </p>
                     </v-col>
                     <v-col
                       cols="12"
                       xs="6"
-                      sm="6"
-                      md="6"
-                      lg="3"
-                      v-if="studentInfo.track != null"
+                      sm="4"
+                      md="4"
+                      lg="4"
+                      v-if="studentInfo.semester != null"
                     >
                       <v-select
-                        name="track"
+                        v-model="studentInfo.semester"
+                        :rules="[
+                          (semester) => !!semester || 'Semester is required.',
+                        ]"
+                        :items="['Second semester', 'First Semester']"
+                        label="Select semester"
+                        outlined
+                        :readonly="readonly"
+                      ></v-select>
+                    </v-col>
+                    <v-col cols="12" xs="6" sm="6" md="6" lg="4">
+                      <v-select
                         v-model="studentInfo.track"
                         :rules="[(track) => !!track || 'Track is required.']"
                         :items="tracks"
                         label="Track"
+                        :readonly="readonly"
                         outlined
                         required
-                        :readonly="readonly"
                       ></v-select>
                     </v-col>
-                    <v-col
-                      cols="12"
-                      xs="6"
-                      sm="6"
-                      md="6"
-                      lg="3"
-                      v-if="studentInfo.strand != null"
-                    >
+                    <v-col cols="12" xs="6" sm="6" md="6" lg="4">
                       <v-select
-                        name="strand"
                         v-model="studentInfo.strand"
                         :items="strands[0][studentInfo.track]"
                         :rules="[(strand) => !!strand || 'Strand is required.']"
                         label="Strand"
                         outlined
-                        required
                         :readonly="readonly"
+                        required
                       ></v-select>
                     </v-col>
+
                     <!-------------------------------THIS------------IS---------FOR------BALIK----ARAL--- STUDENT----SIDE --------------- -->
+                    <v-col
+                      cols="12"
+                      xs="12"
+                      sm="12"
+                      md="12"
+                      lg="12"
+                      v-if="studentInfo.last_school_ID != null"
+                    >
+                      <p style="text-align: center; font-size: 20px">
+                        <b>Balik Aral/Transferee</b>
+                      </p>
+                    </v-col>
                     <v-col
                       cols="12"
                       xs="6"
@@ -499,9 +599,8 @@
                           )
                         "
                         :rules="[
-                          (last_grade_completed) =>
-                            !!last_grade_completed ||
-                            'Last Grade Level Completed is required',
+                          (v) =>
+                            !!v || 'Last Grade Level Completed is required',
                         ]"
                         label="Last Grade Level Completed"
                         :readonly="readonly"
@@ -520,9 +619,8 @@
                       <v-text-field
                         v-model="studentInfo.last_year_completed"
                         :rules="[
-                          (last_year_completed) =>
-                            !!last_year_completed ||
-                            'Last School Year Completed is required',
+                          (v) =>
+                            !!v || 'Last School Year Completed is required',
                         ]"
                         label="Last School Year Completed"
                         :readonly="readonly"
@@ -541,16 +639,15 @@
                       <v-text-field
                         v-model="studentInfo.last_school_ID"
                         :rules="[
-                          (last_school_ID) =>
-                            !!last_school_ID || 'School ID is required',
-                          (last_school_ID) =>
-                            /^[0-9]+$/.test(last_school_ID) == true ||
+                          (v) => !!v || 'School ID is required',
+                          (v) =>
+                            /^[0-9]+$/.test(v) == true ||
                             'Only Number is  allowed!',
-                          (last_school_ID) =>
-                            String(last_school_ID).length <= 6 ||
+                          (v) =>
+                            (v && String(v).length <= 6) ||
                             'School ID cannot be greater than 6 digits',
-                          (last_school_ID) =>
-                            String(last_school_ID).length == 6 ||
+                          (v) =>
+                            (v && String(v).length == 6) ||
                             'School ID must be 6 digits',
                         ]"
                         label="School ID"
@@ -570,10 +667,15 @@
                       <v-text-field
                         v-model="studentInfo.last_school_attended"
                         :rules="[
-                          (last_school_attended) =>
-                            (!!last_school_attended &&
-                              last_school_attended.trim() != '') ||
+                          (v) =>
+                            (!!v && v.trim() != '') ||
                             'School name is required',
+                          (v) =>
+                            (v && v.length >= 8) ||
+                            'School name must be at least 8 characters.',
+                          (v) =>
+                            /^[a-zA-Z\s]+$/.test(v) == true ||
+                            'Only letters are allowed.',
                         ]"
                         label="School Name"
                         :readonly="readonly"
@@ -591,10 +693,15 @@
                       <v-text-field
                         v-model="studentInfo.last_school_address"
                         :rules="[
-                          (last_school_address) =>
-                            (!!last_school_address &&
-                              Last_school_address.trim() != '') ||
+                          (v) =>
+                            (!!v && v.trim() != '') ||
                             'School adress is required',
+                          (v) =>
+                            (v && v.length >= 4) ||
+                            'School address must be at least 4 characters.',
+                          (v) =>
+                            /^[a-zA-Z0-9\s-,]+$/.test(v) == true ||
+                            'Only letters and numbers are allowed excepts - and , .',
                         ]"
                         label="School Address"
                         :readonly="readonly"
@@ -622,6 +729,7 @@
                       elevation="5"
                       block
                       color="blue darken-1"
+                      :disabled="!valid"
                       @click="
                         readonly
                           ? ((readonly = false), (statusLevel = false))
@@ -699,8 +807,13 @@ export default {
     ],
     year: new Date().getFullYear(),
     studentDialog: false,
+    max_date: null,
+    min_date: null,
+    modal: false,
     dialog: false,
+    isDataLoaded: false,
     readonly: true,
+    valid: true,
     statusLevel: true,
     studentInfo: {},
     search: "",
@@ -744,6 +857,13 @@ export default {
     isAdmin: true,
   }),
   created() {
+    let todayDate = new Date();
+    this.max_date = this.$moment(
+      new Date(`${todayDate.getFullYear() - 8}-12-31`)
+    ).format("YYYY-MM-DD");
+    this.min_date = this.$moment(
+      new Date(`${todayDate.getFullYear() - 50}-12-31`)
+    ).format("YYYY-MM-DD");
     let adminLevel = null;
     if (this.$user.user_type == "teacher_admin") {
       let temp = this.$user.username.split("_");
@@ -753,6 +873,7 @@ export default {
     this.$store
       .dispatch("allStudents", adminLevel)
       .then((response) => {
+        this.isDataLoaded = true;
         let studs = response;
         for (var index in studs) {
           let element = studs[index];
@@ -854,7 +975,17 @@ export default {
         });
       }
     },
-
+    //get THE  AGE OF THE STUDENT
+    getAge(bday) {
+      var today = new Date();
+      var birthDate = new Date(bday);
+      var age = today.getFullYear() - birthDate.getFullYear();
+      var m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) age--;
+      if (bday) {
+        this.studentInfo.age = age;
+      }
+    },
     //Select Community turns to null
     ipCommunity() {
       this.studentInfo.IP_community = null;
@@ -991,8 +1122,8 @@ export default {
 
     //Method For Approving the enrollment
     approveEnrollment() {
-      this.studentInfo.section_name = this.section;
-      if (this.$refs.sectionDetails.validate()) {
+      if (this.sections.includes(this.section)) {
+        this.studentInfo.section_name = this.section;
         this.$axios
           .post(
             `updateStudent/` + this.studentInfo.student_id,
@@ -1041,6 +1172,14 @@ export default {
               });
             }
           });
+      } else {
+        this.$swal.fire({
+          icon: "error",
+          title: "Ooops....",
+          text: "Please select a section.",
+        });
+        this.loading = false;
+        this.dialog = true;
       }
     },
 

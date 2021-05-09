@@ -211,6 +211,7 @@
         required
       ></v-text-field>
     </v-col>
+
     <v-col cols="12" xs="6" sm="6" md="6" lg="3">
       <v-text-field
         v-model="studentInfo.mother_tongue"
@@ -229,6 +230,7 @@
         required
       ></v-text-field>
     </v-col>
+
     <v-col cols="12" xs="6" sm="6" md="6" lg="3">
       <v-text-field
         v-model="studentInfo.contact"
@@ -255,6 +257,7 @@
         required
       ></v-text-field>
     </v-col>
+
     <v-col cols="12" xs="6" sm="6" md="6" lg="3">
       <v-text-field
         v-model="studentInfo.address"

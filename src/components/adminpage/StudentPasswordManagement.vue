@@ -16,6 +16,7 @@
       :items="students"
       :headers="headers"
       :items-per-page="10"
+       :loading="isDataLoaded ? false : true"
       :search="search"
       class="elevation-1"
     >
@@ -57,6 +58,7 @@ export default {
         { text: "Action", value: "action" },
       ],
       students: [],
+      isDataLoaded:false
     };
   },
   created() {
@@ -67,6 +69,7 @@ export default {
       adminLevel = temp[1];
     }
     this.$store.dispatch("allStudents", adminLevel).then((res) => {
+      this.isDataLoaded=true;
       let students = res;
       for (const key in students) {
         if (students.hasOwnProperty.call(students, key)) {

@@ -16,6 +16,7 @@
       :headers="headers"
       :items-per-page="10"
       :search="search"
+      :loading="isDataLoaded ? false : true"
       class="elevation-1"
     >
       <template v-slot:item="row">
@@ -51,6 +52,7 @@ export default {
   data() {
     return {
       search: "",
+      isDataLoaded:false, 
       loading: false,
       edit: false,
       headers: [
@@ -75,6 +77,7 @@ export default {
       this.$axios
         .get("/allTeacherAdmin")
         .then((response) => {
+          this.isDataLoaded= true;
           let teacherAdmins = response.data.teacher_admins;
           for (const key in teacherAdmins) {
             if (teacherAdmins.hasOwnProperty.call(teacherAdmins, key)) {
@@ -125,7 +128,6 @@ export default {
     openEdit(toEdit) {
       this.edit = true;
       this.tAdminToEdit = toEdit;
-      console.log(toEdit);
     },
   },
 };
