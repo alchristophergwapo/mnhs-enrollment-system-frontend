@@ -223,10 +223,11 @@ export default {
       else this.options;
     },
     selectGradeLevel(event) {
-      if (event == 7 && !this.isTransfereeOrBalikAral)
+      if (event == 7 && this.isTransfereeOrBalikAral === false)
         (this.isNew = true),
           (this.options = []),
           ((this.options = [event - 1]), (this.isTransfereeOrBalikAral = true));
+      else this.options = [event - 1];
     },
     clearSelected() {
       this.options = [6, 7, 8, 9, 10, 11, 12];

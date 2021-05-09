@@ -34,10 +34,10 @@
         v-model="studentInfo.average"
         name="average"
         :rules="[
-          (v) => !!v || 'Average is required',
-          (v) => /^[0-9]+$/.test(v) == true || 'Only Number is  allowed!',
+          (v) => (!!v && v != '') || 'Average is required',
           (v) => v <= 100 || 'Maximum average is 100',
         ]"
+        type="number"
         label="Average"
         outlined
         required
@@ -48,12 +48,12 @@
         v-model="studentInfo.firstname"
         name="firstname"
         :rules="[
-          (v) => !!v || 'Firstname is required',
+          (v) => (!!v && v.trim() !== '') || 'Firstname is required',
           (v) =>
             (v && v.length >= 3) ||
             'Firstname cannot be lesser than 3 characters.',
           (v) =>
-            /^[a-zA-Z\s]+$/.test(v) == true || 'Only letters are  allowed!',
+            /^[a-zA-Z\s]+$/.test(v) === true || 'Only letters are  allowed!',
         ]"
         label="Firstname"
         outlined
@@ -79,7 +79,7 @@
         v-model="studentInfo.lastname"
         name="lastname"
         :rules="[
-          (v) => !!v || 'Lastname is required',
+          (v) => (!!v && v.trim() != '') || 'Lastname is required',
           (v) =>
             (v && v.length >= 3) ||
             'Firtname cannot be lesser than 3 characters.',
@@ -138,7 +138,6 @@
         name="age"
         :rules="[
           (v) => !!v || 'Age is required',
-          (v) => /^[0-9]+$/.test(v) == true || 'Only Number is  allowed!',
           (v) => v >= 10 || 'You are too young to enroll for high school.',
           (v) => v <= 50 || 'Please confirm your age.',
         ]"
@@ -202,7 +201,11 @@
         v-if="studentInfo.IP === 'Yes'"
         v-model="studentInfo.IP_community"
         name="IP_Community"
-        :rules="[(IP_Community) => !!IP_Community || 'This field is required']"
+        :rules="[
+          (IP_Community) =>
+            (!!IP_Community && IP_Community.trim() != '') ||
+            'This field is required',
+        ]"
         label="If yes, please specify"
         outlined
         required
@@ -213,7 +216,9 @@
         v-model="studentInfo.mother_tongue"
         name="mother_tongue"
         :rules="[
-          (mother_tongue) => !!mother_tongue || 'Mother tongue is required',
+          (mother_tongue) =>
+            (!!mother_tongue && mother_tongue.trim() != '') ||
+            'Mother tongue is required',
           (mother_tongue) =>
             /^[a-zA-Z\s]+$/.test(mother_tongue) == true ||
             'Only letters are allowed.',
@@ -230,6 +235,11 @@
         name="contact"
         :rules="[
           (contact) => !!contact || 'Contact is required',
+          (contact) =>
+            (studentInfo.contact.length > 0 &&
+              String(contact).charAt(0) === '0' &&
+              String(contact).charAt(1) === '9') ||
+            'Contact number is invalid!',
           (contact) =>
             /^[0-9]+$/.test(contact) == true || 'Only Number is  allowed!',
           (contact) =>
@@ -250,12 +260,13 @@
         v-model="studentInfo.address"
         name="address"
         :rules="[
-          (address) => !!address || 'Address is required',
+          (address) =>
+            (!!address && address.trim() != '') || 'Address is required',
           (address) =>
             (address && address.length >= 4) ||
             'Address must be at least 4 characters.',
           (address) =>
-            /^[a-zA-Z0-9\s-,]+$/.test(address) == true ||
+            /^[a-zA-Z0-9\s-.]+$/.test(address) == true ||
             'Only letters and numbers are allowed excepts - and , .',
         ]"
         label="Address"
@@ -268,7 +279,7 @@
         v-model="studentInfo.zipcode"
         name="zipcode"
         :rules="[
-          (zipcode) => !!zipcode || 'Zipcode is required',
+          (zipcode) => (!!zipcode && zipcode != '') || 'Zipcode is required',
           (zipcode) =>
             /^[0-9]+$/.test(zipcode) == true || 'Only Number is  allowed!',
           (zipcode) =>
@@ -279,6 +290,7 @@
         ]"
         :counter="4"
         label="Zipcode"
+        type="number"
         outlined
         required
       ></v-text-field>
@@ -306,7 +318,7 @@ export default {
       IP: null,
       IP_community: null,
       mother_tongue: null,
-      contact: null,
+      contact: "",
       address: null,
       zipcode: null,
     },

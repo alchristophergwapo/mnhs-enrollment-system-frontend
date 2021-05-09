@@ -25,10 +25,7 @@
           <td>
             <v-btn @click="openEdit(row.item)">Edit</v-btn>
             &nbsp;&nbsp;&nbsp;
-            <v-btn
-              color="primary"
-              @click="resetPassword(row.item.id)"
-              :loading="loading"
+            <v-btn color="primary" @click="resetPassword(row.item.id)"
               >Reset Password</v-btn
             >
           </td>
@@ -38,6 +35,9 @@
     <v-dialog v-model="edit" max-width="500px">
       <EditAdminDetails :data="tAdminToEdit" />
     </v-dialog>
+    <v-overlay :value="loading" absolute>
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
   </div>
 </template>
 
@@ -65,6 +65,7 @@ export default {
   created() {
     this.initializeData();
     EventBus.$on("updated", () => {
+      this.edit = false;
       this.initializeData();
     });
   },

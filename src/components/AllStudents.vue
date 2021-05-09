@@ -150,14 +150,12 @@
                         name="average"
                         :rules="[
                           (v) => !!v || 'Average is required',
-                          (v) =>
-                            /^[0-9]+$/.test(v) == true ||
-                            'Only Number is allowed!',
                           (v) => v <= 100 || 'Maximum average is 100',
                         ]"
                         label="Average"
                         outlined
                         :readonly="readonly"
+                        type="number"
                         required
                       ></v-text-field>
                     </v-col>
@@ -166,7 +164,10 @@
                       <v-text-field
                         v-model="studentInfo.firstname"
                         name="firstname"
-                        :rules="[(v) => !!v || 'Firstname is required']"
+                        :rules="[
+                          (v) =>
+                            (!!v && v.trim() != '') || 'Firstname is required',
+                        ]"
                         label="Firstname"
                         outlined
                         :readonly="readonly"
@@ -187,7 +188,10 @@
                       <v-text-field
                         v-model="studentInfo.lastname"
                         name="lastname"
-                        :rules="[(v) => !!v || 'Lastname is required']"
+                        :rules="[
+                          (v) =>
+                            (!!v && v.trim() != '') || 'Lastname is required',
+                        ]"
                         label="Lastname"
                         outlined
                         :readonly="readonly"
@@ -212,15 +216,11 @@
                       <v-text-field
                         v-model="studentInfo.age"
                         name="age"
-                        :rules="[
-                          (v) => !!v || 'Age is required',
-                          (v) =>
-                            /^[0-9]+$/.test(v) == true ||
-                            'Only Number is allowed!',
-                        ]"
+                        :rules="[(v) => !!v || 'Age is required']"
                         label="Age"
                         outlined
                         :readonly="readonly"
+                        type="number"
                         required
                       ></v-text-field>
                     </v-col>
@@ -286,7 +286,6 @@
                         label="If yes, please specify"
                         outlined
                         readonly
-                        required
                       ></v-text-field>
                       <v-text-field
                         v-if="studentInfo.IP === 'Yes'"
@@ -294,7 +293,8 @@
                         name="IP_Community"
                         :rules="[
                           (IP_Community) =>
-                            !!IP_Community || 'This field is required',
+                            (!!IP_Community && IP_Community.trim() != '') ||
+                            'This field is required',
                         ]"
                         label="If yes, please specify"
                         outlined
@@ -308,7 +308,8 @@
                         name="mother_tongue"
                         :rules="[
                           (mother_tongue) =>
-                            !!mother_tongue || 'Mother tongue is required',
+                            (!!mother_tongue && mother_tongue.trim() != '') ||
+                            'Mother tongue is required',
                         ]"
                         label="Mother Tongue"
                         outlined
@@ -344,7 +345,9 @@
                         v-model="studentInfo.address"
                         name="address"
                         :rules="[
-                          (address) => !!address || 'Address is required',
+                          (address) =>
+                            (!!address && address.trim() != '') ||
+                            'Address is required',
                         ]"
                         label="Address"
                         outlined
@@ -390,7 +393,8 @@
                         name="guardian"
                         :rules="[
                           (guardian) =>
-                            !!guardian || 'Guardian name is required',
+                            (!!guardian && guardian.trim() != '') ||
+                            'Guardian name is required',
                         ]"
                         label="Guardian's Name"
                         outlined
@@ -423,14 +427,7 @@
                       ></v-text-field>
                     </v-col>
                     <!----------------------------------THIS IS FOR SENIOR HIGH STUDENT DATA INFORMATION------------------------------------------->
-                    <v-col
-                      cols="12"
-                      xs="6"
-                      sm="6"
-                      md="6"
-                      lg="6"
-                      v-if="studentInfo.semester != null"
-                    >
+                    <v-col cols="12" sm="6" v-if="studentInfo.semester != null">
                       <v-select
                         v-model="studentInfo.semester"
                         name="semester"
@@ -574,7 +571,9 @@
                         v-model="studentInfo.last_school_attended"
                         :rules="[
                           (last_school_attended) =>
-                            !!last_school_attended || 'School name is required',
+                            (!!last_school_attended &&
+                              last_school_attended.trim() != '') ||
+                            'School name is required',
                         ]"
                         label="School Name"
                         :readonly="readonly"
@@ -593,7 +592,8 @@
                         v-model="studentInfo.last_school_address"
                         :rules="[
                           (last_school_address) =>
-                            !!last_school_address ||
+                            (!!last_school_address &&
+                              Last_school_address.trim() != '') ||
                             'School adress is required',
                         ]"
                         label="School Address"
@@ -1017,6 +1017,7 @@ export default {
               this.readonly = true;
               this.statusLevel = true;
             } else {
+              this.dialog = false;
               this.$swal
                 .fire({
                   icon: "error",

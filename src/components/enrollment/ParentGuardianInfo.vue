@@ -7,9 +7,9 @@
         label="Father's Name"
         :rules="[
           (v) =>
-            /^[a-zA-Z\s-]+$/.test(v) == true ||
+            /^[a-zA-Z\s-.]+$/.test(v) == true ||
             v == '' ||
-            'Only letters are  allowed, except for - !',
+            'Only letters are  allowed, except for - and .',
         ]"
         outlined
         required
@@ -21,9 +21,9 @@
         label="Mother's Maiden Name"
         :rules="[
           (v) =>
-            /^[a-zA-Z\s-\s]+$/.test(v) == true ||
+            /^[a-zA-Z\s-\s.]+$/.test(v) == true ||
             v == '' ||
-            'Only letters are  allowed, except for - !',
+            'Only letters are  allowed, except for -  and .',
         ]"
         outlined
         required
@@ -33,10 +33,11 @@
       <v-text-field
         v-model="parentGuardianInfo.guardian"
         :rules="[
-          (v) => !!v || 'Guardian name is required',
+          (v) => (!!v && v.trim() != '') || 'Guardian name is required',
+          (v) => v.length >= 4 || 'Guardian must be at least 4 characters.',
           (v) =>
-            /^[a-zA-Z\s-]+$/.test(v) == true ||
-            'Only letters are  allowed, except for - !',
+            /^[a-zA-Z\s-.]+$/.test(v) == true ||
+            'Only letters are  allowed, except for -  and .',
         ]"
         label="Guardian's Name"
         outlined
@@ -48,7 +49,13 @@
         v-model="parentGuardianInfo.parent_number"
         :rules="[
           (parent_number) =>
-            !!parent_number || 'Parent/Guardian contact number is required.',
+            (!!parent_number && parent_number.trim() != '') ||
+            'Parent/Guardian contact number is required.',
+          (parent_number) =>
+            (parentGuardianInfo.parent_number.length > 0 &&
+              String(parent_number).charAt(0) === '0' &&
+              String(parent_number).charAt(1) === '9') ||
+            'Contact number is invalid!',
           (parent_number) =>
             /^[0-9]+$/.test(parent_number) == true ||
             'Only Number is  allowed!',
@@ -73,10 +80,10 @@ export default {
   data() {
     return {
       parentGuardianInfo: {
-        father: null,
-        mother: null,
-        guardian: null,
-        parent_number: null,
+        father: "",
+        mother: "",
+        guardian: "",
+        parent_number: "",
       },
     };
   },

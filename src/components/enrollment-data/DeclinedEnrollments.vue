@@ -69,7 +69,7 @@
                     v-model="studentInfo.LRN"
                     name="LRN"
                     :rules="[
-                      (LRN) => !!LRN || 'LRN is required',
+                      (LRN) => (!!LRN && LRN.trim() != '') || 'LRN is required',
                       (LRN) =>
                         /^[0-9]+$/.test(LRN) == true ||
                         'Only Number is  allowed!',
@@ -92,10 +92,9 @@
                     name="average"
                     :rules="[
                       (v) => !!v || 'Average is required',
-                      (v) =>
-                        /^[0-9]+$/.test(v) == true || 'Only Number is allowed!',
                       (v) => v <= 100 || 'Maximum average is 100',
                     ]"
+                    type="number"
                     label="Average"
                     outlined
                     :readonly="readonly"
@@ -107,7 +106,9 @@
                   <v-text-field
                     v-model="studentInfo.firstname"
                     name="firstname"
-                    :rules="[(v) => !!v || 'Firstname is required']"
+                    :rules="[
+                      (v) => (!!v && v.trim() != '') || 'Firstname is required',
+                    ]"
                     label="Firstname"
                     outlined
                     :readonly="readonly"
@@ -128,7 +129,9 @@
                   <v-text-field
                     v-model="studentInfo.lastname"
                     name="lastname"
-                    :rules="[(v) => !!v || 'Lastname is required']"
+                    :rules="[
+                      (v) => (!!v && v.trim() != '') || 'Lastname is required',
+                    ]"
                     label="Lastname"
                     outlined
                     :readonly="readonly"
@@ -247,8 +250,8 @@
                     v-model="studentInfo.mother_tongue"
                     name="mother_tongue"
                     :rules="[
-                      (mother_tongue) =>
-                        !!mother_tongue || 'Mother tongue is required',
+                      (v) =>
+                        (!!v && v.trim()) != '' || 'Mother tongue is required',
                     ]"
                     label="Mother Tongue"
                     outlined
@@ -261,7 +264,9 @@
                     v-model="studentInfo.contact"
                     name="contact"
                     :rules="[
-                      (contact) => !!contact || 'Contact is required',
+                      (contact) =>
+                        (!!contact && contact.trim() != '') ||
+                        'Contact is required',
                       (contact) =>
                         /^[0-9]+$/.test(contact) == true ||
                         'Only Number is  allowed!',
@@ -283,7 +288,11 @@
                   <v-text-field
                     v-model="studentInfo.address"
                     name="address"
-                    :rules="[(address) => !!address || 'Address is required']"
+                    :rules="[
+                      (address) =>
+                        (!!address && address.trim() != '') ||
+                        'Address is required',
+                    ]"
                     label="Address"
                     outlined
                     :readonly="readonly"
@@ -295,7 +304,9 @@
                     v-model="studentInfo.zipcode"
                     name="zipcode"
                     :rules="[
-                      (zipcode) => !!zipcode || 'Zipcode is required',
+                      (zipcode) =>
+                        (!!zipcode && zipcode.trim() != '') ||
+                        'Zipcode is required',
                       (zipcode) =>
                         /^[0-9]+$/.test(zipcode) == true ||
                         'Only Number is  allowed!',
@@ -327,7 +338,9 @@
                     v-model="studentInfo.guardian"
                     name="guardian"
                     :rules="[
-                      (guardian) => !!guardian || 'Guardian name is required',
+                      (guardian) =>
+                        (!!guardian && guardian.trim() != '') ||
+                        'Guardian name is required',
                     ]"
                     label="Guardian's Name"
                     outlined
@@ -341,7 +354,7 @@
                     name="contact"
                     :rules="[
                       (contact) =>
-                        !!contact ||
+                        (!!contact && contact.trim() != '') ||
                         'Parent/Guardian contact number is required.',
                       (contact) =>
                         /^[0-9]+$/.test(contact) == true ||
@@ -476,6 +489,7 @@
                     ]"
                     label="Last School Year Completed"
                     :readonly="readonly"
+                    type="number"
                     outlined
                     required
                   ></v-text-field>
@@ -506,6 +520,7 @@
                     label="School ID"
                     :counter="6"
                     :readonly="readonly"
+                    type="number"
                     outlined
                     required
                   ></v-text-field>
@@ -521,7 +536,9 @@
                     v-model="studentInfo.last_school_attended"
                     :rules="[
                       (last_school_attended) =>
-                        !!last_school_attended || 'School name is required',
+                        (!!last_school_attended &&
+                          last_school_attended.trim() != '') ||
+                        'School name is required',
                     ]"
                     label="School Name"
                     :readonly="readonly"
@@ -540,7 +557,9 @@
                     v-model="studentInfo.last_school_address"
                     :rules="[
                       (last_school_address) =>
-                        !!last_school_address || 'School adress is required',
+                        (!!last_school_address &&
+                          last_school_address.trim() != '') ||
+                        'School adress is required',
                     ]"
                     label="School Address"
                     :readonly="readonly"

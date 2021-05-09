@@ -22,10 +22,12 @@
       <v-text-field
         v-model="balikOrTransferInfo.last_year_completed"
         :rules="[
-          (v) => !!v || 'Last School Year Completed is required',
+          (v) =>
+            (!!v && v.trim() != '') || 'Last School Year Completed is required',
           (v) => /^[0-9]+$/.test(v) == true || 'Only numbers are allowed.',
           (v) => v < year,
         ]"
+        type="number"
         label="Last School Year Completed"
         outlined
         required
@@ -35,7 +37,9 @@
       <v-text-field
         v-model="balikOrTransferInfo.last_school_ID"
         :rules="[
-          (last_school_ID) => !!last_school_ID || 'School ID is required',
+          (last_school_ID) =>
+            (!!last_school_ID && last_school_ID.trim() != '') ||
+            'School ID is required',
           (last_school_ID) =>
             /^[0-9]+$/.test(last_school_ID) == true ||
             'Only Number is  allowed!',
@@ -46,6 +50,7 @@
             (last_school_ID && String(last_school_ID).length == 6) ||
             'School ID must be 6 digits',
         ]"
+        type="number"
         label="School ID"
         :counter="6"
         outlined
@@ -57,7 +62,8 @@
         v-model="balikOrTransferInfo.last_school_attended"
         :rules="[
           (last_school_attended) =>
-            !!last_school_attended || 'School name is required',
+            (!!last_school_attended && last_school_attended.trim() != '') ||
+            'School name is required',
           (last_school_attended) =>
             (last_school_attended && last_school_attended.length >= 8) ||
             'School name must be at least 8 characters.',
@@ -73,13 +79,14 @@
         v-model="balikOrTransferInfo.last_school_address"
         :rules="[
           (last_school_address) =>
-            !!last_school_address || 'School adress is required',
+            (!!last_school_address && last_school_address.trim() != '') ||
+            'School adress is required',
           (last_school_address) =>
             (last_school_address && last_school_address.length >= 4) ||
             'School address must be at least 4 characters.',
           (v) =>
-            /^[a-zA-Z0-9\s-,]+$/.test(v) == true ||
-            'Only letters and numbers are allowed excepts - and , .',
+            /^[a-zA-Z0-9\s-,.]+$/.test(v) == true ||
+            'Only letters and numbers are allowed excepts -,.',
         ]"
         label="School Address"
         outlined

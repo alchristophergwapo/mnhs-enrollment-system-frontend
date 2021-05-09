@@ -14,7 +14,10 @@
           <v-text-field
             v-model="sectionData.section"
             label="Section name"
-            :rules="[(value) => !!value || 'This field is required']"
+            :rules="[
+              (value) =>
+                (!!value && value.trim() != '') || 'This field is required',
+            ]"
             required
             @keydown="clearError"
             name="name"
@@ -39,7 +42,7 @@
           <p v-if="hasError('capacity')" class="invalid-feedback">
             {{ getError("capacity") }}
           </p>
-          <autocomplete
+          <Autocomplete
             request="allNoneAdvisoryTeacher"
             :gradelevel="Number(type.split(' ')[2])"
             :edit="type.split(' ')[0] == 'Edit' ? true : false"
@@ -55,7 +58,7 @@
                 >Adviser : <strong>{{ Section.teacher }}</strong></span
               >
             </template>
-          </autocomplete>
+          </Autocomplete>
         </v-container>
       </v-form>
     </v-card-text>

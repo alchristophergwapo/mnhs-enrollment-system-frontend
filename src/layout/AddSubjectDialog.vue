@@ -90,7 +90,11 @@
                 <v-text-field
                   label="Subject name"
                   v-model="name"
-                  :rules="[(name) => !!name || 'Subject name is required']"
+                  :rules="[
+                    (name) =>
+                      (!!name && name.trim() != '') ||
+                      'Subject name is required',
+                  ]"
                   @keydown="clearError"
                   name="name"
                   :error="hasError('name')"
@@ -99,7 +103,7 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
-                <autocomplete
+                <Autocomplete
                   request="allTeacher"
                   :gradelevel="Number(gradeLevel)"
                   :edit="false"
@@ -108,7 +112,7 @@
                   "
                   property="teacher_name"
                   :rules="[(value) => !!value || 'This field is required']"
-                ></autocomplete>
+                />
               </v-col>
             </v-row>
           </v-form>

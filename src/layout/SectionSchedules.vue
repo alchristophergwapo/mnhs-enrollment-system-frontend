@@ -495,10 +495,10 @@ export default {
         day: data.day,
         start_time: startTime,
         end_time: endTime,
-        subject_name: data.data.subject_name,
-        teacher_name: data.data.teacher_name,
-        teacher_id: data.data.teacher_id,
-        subject_id: data.data.id,
+        subject_name: data.data ? data.data.subject_name : null,
+        teacher_name: data.data ? data.data.teacher_name : null,
+        teacher_id: data.data ? data.data.teacher_id : null,
+        subject_id: data.data ? data.data.id : null,
         section_id: this.section_id,
       };
       this.scheduleInputs[data.day] = sched;
@@ -536,10 +536,7 @@ export default {
     });
 
     EventBus.$on("clearData", (data) => {
-      this.scheduleInputs[data.day].subject_id = null;
-      this.scheduleInputs[data.day].subject_name = null;
-      this.scheduleInputs[data.day].teacher_id = null;
-      this.scheduleInputs[data.day].teacher_name = null;
+      console.log(data);
     });
   },
   methods: {
@@ -584,8 +581,8 @@ export default {
           this.scheduleInputs.startTime = time;
           this.scheduleInputs.endTime = newEndTime;
         } else {
-          this.scheduleInputs.startTime = "08:00";
-          this.scheduleInputs.endTime = this.addTimes("08:00", span);
+          this.scheduleInputs.startTime = "08:00:00";
+          this.scheduleInputs.endTime = this.addTimes("08:00:00", span);
           console.log(this.scheduleInputs.endTime);
         }
       });
@@ -684,7 +681,7 @@ export default {
       var time =
         this.schedules.length > 0
           ? this.schedules[this.schedules.length - 1].Monday.end_time
-          : "09:00";
+          : "09:00:00";
       var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
       if (this.schedules.length > 0) {
         this.minTime = this.addTimes(time, span);
@@ -728,6 +725,7 @@ export default {
       this.scheduleInputs.endTime = newEndTime;
       this.readonly = false;
       this.scheduleDialog = false;
+      EventBus.$emit("save");
     },
 
     saveEditSchedChanges(index) {
@@ -848,29 +846,6 @@ export default {
       this.scheduleInputs.endTime = newEndTime;
     },
 
-    editScheduleTime(time) {
-      const start_time =
-        this.$moment(new Date()).format("YYYY/MM/DD") +
-        " " +
-        time.split("-")[0];
-      const end_time =
-        this.$moment(new Date()).format("YYYY/MM/DD") +
-        " " +
-        time.split("-")[1];
-
-      for (const key in this.scheduleInputs) {
-        if (this.scheduleInputs.hasOwnProperty.call(this.scheduleInputs, key)) {
-          if (key != "Time") {
-            this.scheduleInputs[key].start_time = this.$moment(
-              start_time
-            ).format("hh:mm");
-            this.scheduleInputs[key].end_time = this.$moment(end_time).format(
-              "hh:mm"
-            );
-          }
-        }
-      }
-    },
     addTimes(time, timeSpan) {
       var times = [0, 0];
       var length = times.length;
@@ -900,7 +875,9 @@ export default {
         minutes -= 60 * hour;
       }
 
-      return ("0" + hours).slice(-2) + ":" + ("0" + minutes).slice(-2);
+      return (
+        ("0" + hours).slice(-2) + ":" + ("0" + minutes).slice(-2) + ":" + "00"
+      );
     },
 
     close() {

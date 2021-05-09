@@ -103,7 +103,7 @@ const routes = [
             component: () =>
               import("@/components/adminpage/TAdminAccountManagement.vue"),
             meta: {
-              title: "Add New Admin",
+              title: "Manage Teacher Admin",
             },
           },
         ],

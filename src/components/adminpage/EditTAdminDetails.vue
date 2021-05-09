@@ -6,6 +6,9 @@
         <v-row>
           <v-icon>mdi-account</v-icon>
           <h3>EDIT ADMIN</h3>
+          <v-btn icon @click="close()" class="close-icon">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
         </v-row>
       </v-card-title>
 
@@ -183,6 +186,10 @@ export default {
       }
     },
 
+    close() {
+      EventBus.$emit("updated");
+    },
+
     showResponse(title, message, icon) {
       this.$swal.fire({
         icon: icon,
@@ -251,5 +258,11 @@ export default {
 
 .subtitle span {
   font-size: 20px;
+}
+
+.close-icon {
+  position: absolute;
+  right: 10px;
+  top: 10px;
 }
 </style>

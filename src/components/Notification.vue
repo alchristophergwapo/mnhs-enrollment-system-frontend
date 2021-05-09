@@ -130,23 +130,28 @@
           </v-card-title>
           <v-divider></v-divider>
           <v-form ref="form" v-model="valid" lazy-validation>
-            <v-textarea
-              v-model="remarks"
-              outlined
-              full-width
-              single-line
-              placeholder="Write the reason for declining here......."
-              name="remarks"
-              :rules="[
-                (remarks) => !!remarks || 'Reason for declining is required',
-              ]"
-            ></v-textarea>
-            <!-- <v-divider></v-divider> -->
-            <v-card-actions class="justify-end" id="textarea">
-              <v-btn :disabled="!valid" color="blue" @click="declineEnrollment"
-                >done</v-btn
-              >
-            </v-card-actions>
+            <v-container>
+              <v-textarea
+                v-model="remarks"
+                outlined
+                full-width
+                single-line
+                placeholder="Write the reason for declining here......."
+                name="remarks"
+                :rules="[
+                  (remarks) => !!remarks || 'Reason for declining is required',
+                ]"
+              ></v-textarea>
+              <!-- <v-divider></v-divider> -->
+              <v-card-actions class="justify-end" id="textarea">
+                <v-btn
+                  :disabled="!valid"
+                  color="blue"
+                  @click="declineEnrollment"
+                  >done</v-btn
+                >
+              </v-card-actions>
+            </v-container>
           </v-form>
         </v-card>
       </template>
@@ -272,12 +277,19 @@ export default {
             this.loading = false;
             // window.location.reload(true);
           })
-          .catch(() => {
-            this.$swal.fire({
-              icon: "warning",
-              title: "Ooops!",
-              text: "An error encountered!",
-            });
+          .catch((error) => {
+            if (error.response.status === 400)
+              this.$swal.fire({
+                icon: "warning",
+                title: "Ooops!",
+                text: error.response.data.message,
+              });
+            if (error.response.status === 500)
+              this.$swal.fire({
+                icon: "warning",
+                title: "Ooops!",
+                text: "An error encountered!",
+              });
             this.loading = false;
             this.dialog = true;
             this.openDialog = true;
