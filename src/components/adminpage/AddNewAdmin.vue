@@ -49,7 +49,7 @@
             <label for="email">Teacher Email</label>
             <v-text-field
               v-model="teacher_email"
-              placeholder="Enter email"
+              placeholder="Email"
               name="email"
               @keydown="clearErrors"
               :error="hasError('user_email')"
@@ -60,7 +60,7 @@
             <label for="username">Default Username</label>
             <v-text-field
               v-model="username"
-              placeholder="Enter Username"
+              placeholder="Username"
               name="username"
               @keydown="clearErrors"
               :error="hasError('username')"
