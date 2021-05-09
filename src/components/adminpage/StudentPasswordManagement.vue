@@ -16,7 +16,7 @@
       :items="students"
       :headers="headers"
       :items-per-page="10"
-       :loading="isDataLoaded ? false : true"
+      :loading="isDataLoaded ? false : true"
       :search="search"
       class="elevation-1"
     >
@@ -26,16 +26,16 @@
           <td>{{ row.item.fullname }}</td>
           <td>{{ row.item.LRN }}</td>
           <td>
-            <v-btn
-              color="primary"
-              @click="resetPassword(row.item)"
-              :loading="loading"
+            <v-btn color="primary" @click="resetPassword(row.item)"
               >Reset Password</v-btn
             >
           </td>
         </tr>
       </template>
     </v-data-table>
+    <v-overlay :value="loading" absolute>
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
   </div>
 </template>
 
@@ -58,7 +58,7 @@ export default {
         { text: "Action", value: "action" },
       ],
       students: [],
-      isDataLoaded:false
+      isDataLoaded: false,
     };
   },
   created() {
@@ -69,7 +69,7 @@ export default {
       adminLevel = temp[1];
     }
     this.$store.dispatch("allStudents", adminLevel).then((res) => {
-      this.isDataLoaded=true;
+      this.isDataLoaded = true;
       let students = res;
       for (const key in students) {
         if (students.hasOwnProperty.call(students, key)) {
@@ -95,7 +95,7 @@ export default {
             this.$swal.fire({
               icon: "success",
               title: "Success",
-              text: "Student details is successfully updated!",
+              text: response.data.success,
             });
           } else {
             this.$swal.fire({
