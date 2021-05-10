@@ -131,7 +131,6 @@ export default {
     };
   },
   created: function () {
-    console.log(this.data);
     EventBus.$on("allTeacher", (data) => {
       this.data.assigned_teacher = data.data ? data.data.teacher_name : "";
       this.data.teacher_email = data.data ? data.data.email : "";
@@ -208,7 +207,6 @@ export default {
     },
 
     setUsername() {
-      console.log(this.data);
       this.data.username = "TeacherAdmin_" + this.data.assigned_gr_level;
     },
 

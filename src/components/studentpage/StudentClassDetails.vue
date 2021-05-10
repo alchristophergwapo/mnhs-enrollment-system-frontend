@@ -63,7 +63,6 @@ export default {
       const section = user.enrollment.student_section;
       this.isDataLoaded = true;
       this.$axios.get(`studentSectionDetails/${section}`).then((res) => {
-        console.log("Response =>", res);
         this.isDataLoaded = false;
         this.students = res.data.classmates;
         this.students.sort(this.sortData("lastname"));

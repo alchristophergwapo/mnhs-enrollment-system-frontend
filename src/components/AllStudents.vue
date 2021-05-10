@@ -545,7 +545,14 @@
                         :readonly="readonly"
                       ></v-select>
                     </v-col>
-                    <v-col cols="12" xs="6" sm="6" md="6" lg="4">
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="6"
+                      md="6"
+                      lg="4"
+                      v-if="studentInfo.track != null"
+                    >
                       <v-select
                         v-model="studentInfo.track"
                         :rules="[(track) => !!track || 'Track is required.']"
@@ -556,7 +563,14 @@
                         required
                       ></v-select>
                     </v-col>
-                    <v-col cols="12" xs="6" sm="6" md="6" lg="4">
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="6"
+                      md="6"
+                      lg="4"
+                      v-if="studentInfo.strand != null"
+                    >
                       <v-select
                         v-model="studentInfo.strand"
                         :items="strands[0][studentInfo.track]"
@@ -996,7 +1010,7 @@ export default {
       this.backupGrade = student.grade_level;
       if (student.track != null && student.last_school_attended == null) {
         let studentInfo = student;
-        this.selectLevel = [10, 11];
+        this.selectLevel = ["10", "11"];
         this.GradeLevel = [11, 12];
         studentInfo["school_year"] =
           student.start_school_year + " - " + student.end_school_year;
@@ -1008,7 +1022,7 @@ export default {
         student.last_school_attended != null
       ) {
         let studentInfo = student;
-        this.selectLevel = [10, 11];
+        this.selectLevel = ["10", "11"];
         this.GradeLevel = [11, 12];
         studentInfo["school_year"] =
           student.start_school_year + " - " + student.end_school_year;
@@ -1020,7 +1034,7 @@ export default {
         student.last_school_attended != null
       ) {
         let studentInfo = student;
-        this.selectLevel = [6, 7, 8, 9];
+        this.selectLevel = ["6", "7", "8", "9"];
         this.GradeLevel = [7, 8, 9, 10];
         studentInfo["school_year"] =
           student.start_school_year + " - " + student.end_school_year;
@@ -1041,7 +1055,7 @@ export default {
     //Change GradeLevel
     lastGradeLevel(grade) {
       this.statusLevel = true;
-      this.studentInfo.grade_level = grade.last_grade_completed + 1;
+      this.studentInfo.grade_level = Number(grade.last_grade_completed) + 1;
     },
 
     //Close The Student Details Dialog

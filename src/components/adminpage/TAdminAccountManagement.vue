@@ -82,7 +82,6 @@ export default {
           for (const key in teacherAdmins) {
             if (teacherAdmins.hasOwnProperty.call(teacherAdmins, key)) {
               const element = teacherAdmins[key];
-              // console.log(element);
               const tAdmin = {
                 assigned_gr_level: Number(element.username.split("_")[1]),
                 user_fullname: element.user_fullname,
@@ -92,7 +91,6 @@ export default {
                 id: element.id,
               };
               this.teacher_admins.push(tAdmin);
-              console.log(this.teacher_admins);
             }
           }
         })

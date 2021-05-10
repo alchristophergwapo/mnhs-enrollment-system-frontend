@@ -583,7 +583,6 @@ export default {
         } else {
           this.scheduleInputs.startTime = "08:00:00";
           this.scheduleInputs.endTime = this.addTimes("08:00:00", span);
-          console.log(this.scheduleInputs.endTime);
         }
       });
     },

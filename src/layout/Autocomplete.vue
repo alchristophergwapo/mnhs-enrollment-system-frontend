@@ -82,7 +82,6 @@ export default {
     };
   },
   created() {
-    console.log(this.request);
     this.retrieveData();
     EventBus.$on("reloadData", () => {
       this.retrieveData();
@@ -110,7 +109,6 @@ export default {
         .get(request)
         .then((res) => {
           this.items = res.data[resRef];
-          console.log(this.items);
         })
         .catch(() => {
           this.$swal.fire({
