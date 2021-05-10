@@ -539,7 +539,7 @@
                         :rules="[
                           (semester) => !!semester || 'Semester is required.',
                         ]"
-                        :items="['Second semester', 'First Semester']"
+                        :items="['Second Semester', 'First Semester']"
                         label="Select semester"
                         outlined
                         :readonly="readonly"
