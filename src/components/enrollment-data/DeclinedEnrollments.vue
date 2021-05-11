@@ -319,7 +319,7 @@
                     :rules="[
                       (v) => (!!v && v.trim() != '') || 'Contact is required',
                       (v) =>
-                        (studentInfo.v.length > 0 &&
+                        (v.length > 0 &&
                           String(v).charAt(0) === '0' &&
                           String(v).charAt(1) === '9') ||
                         'Contact number is invalid!',
