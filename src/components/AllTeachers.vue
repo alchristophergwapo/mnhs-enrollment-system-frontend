@@ -52,6 +52,16 @@
                         <v-text-field
                           @keydown="clearError"
                           label="Teacher's Fullname"
+                          :rules="[
+                            (value) =>
+                              !!value || 'Teacher name field is required!',
+                            (value) =>
+                              /^[a-zA-Z\s.-]+$/.test(value) === true ||
+                              'Teacher name is invalid.',
+                            (value) =>
+                              value.length >= 4 ||
+                              'Teacher name cannot be lesser than 4.',
+                          ]"
                           type="text"
                           class="form-control"
                           v-model="Teacher"
@@ -69,6 +79,12 @@
                           @keydown="clearError"
                           label="Email"
                           type="email"
+                          :rules="[
+                            (value) =>
+                              /^\w+([\.-]?\w+)*@\w+([a-z\.-]?\w+)*(\.\w[a-z]{1,3})+$/.test(
+                                value
+                              ) === true || 'Please enter a valid email.',
+                          ]"
                           :error="hasError('email')"
                           v-model="Email"
                           name="email"
@@ -84,6 +100,20 @@
                           min="0"
                           v-model="Contact"
                           name="contact"
+                          :rules="[
+                            (contact) => !!contact || 'Contact is required',
+                            (contact) =>
+                              (contact.length > 0 &&
+                                String(contact).charAt(0) === '0' &&
+                                String(contact).charAt(1) === '9') ||
+                              'Contact number is invalid!',
+                            (contact) =>
+                              String(contact).length <= 11 ||
+                              'Contact number cannot be greater than 11 digits',
+                            (contact) =>
+                              String(contact).length == 11 ||
+                              'Contact number must be 11 digits',
+                          ]"
                           :error="hasError('contact')"
                           outlined
                         ></v-text-field>

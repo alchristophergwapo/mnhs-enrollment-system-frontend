@@ -78,11 +78,17 @@
               v-model="password"
               :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
               :type="showPass ? 'text' : 'password'"
+              :rules="[
+                (value) =>
+                  (!!value && value.trim() != '') ||
+                  'The password field is required',
+              ]"
               placeholder="Enter password"
               name="password"
               @click:append="showPass = !showPass"
               @keydown="clearErrors"
               :error="hasError('password')"
+              required
               dense
               outlined
             ></v-text-field>

@@ -296,7 +296,8 @@ export default {
             .then((response) => {
               this.$swal.fire({
                 title: "Success",
-                text: response.data.success,
+                html: `${response.data.success} <br/> Once your enrollment will be approved, you can login into your account by using your LRN as your username and Lastname+LRN as password. 
+                    <br/> Example (Username: 303000123456 Password: Roxas303000123456)`,
                 icon: "success",
               });
               this.submitting = false;

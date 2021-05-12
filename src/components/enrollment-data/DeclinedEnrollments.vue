@@ -354,7 +354,7 @@
                         (address && address.length >= 4) ||
                         'Address must be at least 4 characters.',
                       (address) =>
-                        /^[a-zA-Z0-9\s-,]+$/.test(address) == true ||
+                        /^[a-zA-Z0-9\s-,.]+$/.test(address) == true ||
                         'Only letters and numbers are allowed excepts - and , .',
                     ]"
                     label="Address"
@@ -395,7 +395,7 @@
                     label="Father's Name"
                     :rules="[
                       (v) =>
-                        /^[a-zA-Z\s-]+$/.test(v) == true ||
+                        /^[a-zA-Z\s-.]+$/.test(v) == true ||
                         v == '' ||
                         'Only letters are  allowed, except for - !',
                     ]"
@@ -410,7 +410,7 @@
                     label="Mother's Maiden Name"
                     :rules="[
                       (v) =>
-                        /^[a-zA-Z\s-\s]+$/.test(v) == true ||
+                        /^[a-zA-Z\s-.]+$/.test(v) == true ||
                         v == '' ||
                         'Only letters are  allowed, except for - !',
                     ]"
@@ -427,7 +427,7 @@
                         (!!guardian && guardian.trim() != '') ||
                         'Guardian name is required',
                       (v) =>
-                        /^[a-zA-Z\s-]+$/.test(v) == true ||
+                        /^[a-zA-Z\s-.]+$/.test(v) == true ||
                         'Only letters are  allowed, except for - !',
                     ]"
                     label="Guardian's Name"
@@ -694,7 +694,7 @@
                           last_school_address.length >= 4) ||
                         'School address must be at least 4 characters.',
                       (v) =>
-                        /^[a-zA-Z0-9\s-,]+$/.test(v) == true ||
+                        /^[a-zA-Z0-9\s-,.]+$/.test(v) == true ||
                         'Only letters and numbers are allowed excepts - and , .',
                     ]"
                     label="School Address"

@@ -409,7 +409,7 @@
                             (address && address.length >= 4) ||
                             'Address must be at least 4 characters.',
                           (address) =>
-                            /^[a-zA-Z0-9\s-,]+$/.test(address) == true ||
+                            /^[a-zA-Z0-9\s-,.]+$/.test(address) == true ||
                             'Only letters and numbers are allowed excepts - and , .',
                         ]"
                         label="Address"
@@ -714,7 +714,7 @@
                             (v && v.length >= 4) ||
                             'School address must be at least 4 characters.',
                           (v) =>
-                            /^[a-zA-Z0-9\s-,]+$/.test(v) == true ||
+                            /^[a-zA-Z0-9\s-,.]+$/.test(v) == true ||
                             'Only letters and numbers are allowed excepts - and , .',
                         ]"
                         label="School Address"
@@ -743,12 +743,12 @@
                       elevation="5"
                       block
                       color="blue darken-1"
-                      :disabled="!valid"
                       @click="
                         readonly
                           ? ((readonly = false), (statusLevel = false))
                           : updateStudent(studentInfo)
                       "
+                      :disabled="readonly === false ? !valid : false"
                     >
                       {{ btnText }}
                     </v-btn>
@@ -787,7 +787,7 @@
                   <v-spacer></v-spacer>
                   <v-btn
                     color="blue darken-1"
-                    @click="approveEnrollment(studentInfo)"
+                    @click="updateStudentDetails(studentInfo)"
                   >
                     Done
                   </v-btn>
@@ -878,34 +878,8 @@ export default {
     this.min_date = this.$moment(
       new Date(`${todayDate.getFullYear() - 50}-12-31`)
     ).format("YYYY-MM-DD");
-    let adminLevel = null;
-    if (this.$user.user_type == "teacher_admin") {
-      let temp = this.$user.username.split("_");
-      adminLevel = temp[1];
-      this.isAdmin = false;
-    }
-    this.$store
-      .dispatch("allStudents", adminLevel)
-      .then((response) => {
-        this.isDataLoaded = true;
-        let studs = response;
-        for (var index in studs) {
-          let element = studs[index];
-          element["fullname"] = element["firstname"].concat(
-            " ",
-            element["lastname"]
-          );
-          this.students.push(element);
-          this.filteredStudents.push(element);
-        }
-      })
-      .catch(() => {
-        this.$swal.fire({
-          icon: "warning",
-          title: "Ooops!",
-          text: "An error encountered!",
-        });
-      });
+
+    this.retrieveData();
   },
   mounted() {
     this.$axios
@@ -932,6 +906,37 @@ export default {
     }
   },
   methods: {
+    retrieveData() {
+      this.students = [];
+      let adminLevel = null;
+      if (this.$user.user_type == "teacher_admin") {
+        let temp = this.$user.username.split("_");
+        adminLevel = temp[1];
+        this.isAdmin = false;
+      }
+      this.$store
+        .dispatch("allStudents", adminLevel)
+        .then((response) => {
+          this.isDataLoaded = true;
+          let studs = response;
+          for (var index in studs) {
+            let element = studs[index];
+            element["fullname"] = element["firstname"].concat(
+              " ",
+              element["lastname"]
+            );
+            this.students.push(element);
+            this.filteredStudents.push(element);
+          }
+        })
+        .catch(() => {
+          this.$swal.fire({
+            icon: "warning",
+            title: "Ooops!",
+            text: "An error encountered!",
+          });
+        });
+    },
     //Filter The Studentr By School Year
     filterByYear(year) {
       this.gradelevel = null;
@@ -1135,7 +1140,7 @@ export default {
     },
 
     //Method For Approving the enrollment
-    approveEnrollment() {
+    updateStudentDetails() {
       if (this.sections.includes(this.section)) {
         this.studentInfo.section_name = this.section;
         this.$axios
@@ -1145,18 +1150,15 @@ export default {
           )
           .then((response) => {
             if (response.data.updated) {
-              this.$swal
-                .fire({
-                  icon: "success",
-                  title: "Success",
-                  text: "Student details is successfully updated!",
-                })
-                .then((result) => {
-                  if (result.isConfirmed) {
-                    this.$refs.sectionDetails.resetValidation();
-                    this.$refs.studentDetails.resetValidation();
-                  }
-                });
+              this.$swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Student details is successfully updated!",
+              });
+
+              this.$refs.sectionDetails.resetValidation();
+              this.$refs.studentDetails.resetValidation();
+              this.retrieveData();
               this.dialog = false;
               this.studentDialog = false;
               this.readonly = true;
@@ -1221,9 +1223,9 @@ export default {
         ...arrData.map((item) => Object.values(item)),
       ]
         .join("\n")
-
         .replace(/(^\[)|(\]$)/gm, "");
       const data = encodeURI(csvContent);
+      console.log(data);
       const link = document.createElement("a");
       link.setAttribute("href", data);
       link.setAttribute("download", this.selectGrade + ".csv");
@@ -1233,7 +1235,7 @@ export default {
   computed: {
     csvData() {
       return this.students.map((item) => ({
-        SchoolYear: `${item.start_school_year} ${item.end_school_year}`,
+        SchoolYear: `${item.start_school_year} - ${item.end_school_year}`,
         GradeLevel: item.grade_level,
         Section: item.student_section,
         StudentName: `${item.firstname} ${item.lastname}`,
