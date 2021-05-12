@@ -235,6 +235,8 @@ export default {
         (this.isNew = false), (this.isTransfereeOrBalikAral = false);
     },
     submitEnrollment() {
+      const userData = JSON.parse(this.user);
+      const isAdmin = userData.user.user_type != "student";
       if (this.$refs.basicInfo.validate()) {
         let error = false;
         this.student = this.$refs.studentInfoData.getData;
@@ -282,7 +284,8 @@ export default {
         }
 
         formdata.append("grade_level", this.grade_level);
-        formdata.append("enrollment_status", "Pending");
+
+        formdata.append("enrollment_status", isAdmin ? "Approved" : "Pending");
         formdata.append(
           "card_image",
           this.card_image,
