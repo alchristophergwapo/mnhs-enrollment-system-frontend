@@ -1225,7 +1225,6 @@ export default {
         .join("\n")
         .replace(/(^\[)|(\]$)/gm, "");
       const data = encodeURI(csvContent);
-      console.log(data);
       const link = document.createElement("a");
       link.setAttribute("href", data);
       link.setAttribute("download", this.selectGrade + ".csv");

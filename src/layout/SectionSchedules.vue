@@ -545,19 +545,15 @@ export default {
             teacher_id: data.data.teacher_id,
             teacher_name: data.data.teacher_name,
           });
-
-      console.log(this.scheduleInputs[data.day]);
     });
 
-    EventBus.$on("clearData", (data) => {
-      console.log(data);
-    });
+    // EventBus.$on("clearData", (data) => {
+    // });
   },
   methods: {
     retrieveSchedules() {
       this.schedules = [];
       this.$axios.get(`classSchedules/${this.section_id}`).then((response) => {
-        console.log(response.data.sectionSchedules);
         this.overlay = true;
         const schedRes = response.data.sectionSchedules;
         this.overlay = false;
@@ -791,9 +787,12 @@ export default {
             this.retrieveSchedules();
             this.showResponse("Success", response.data.success, "success");
           })
-          .catch((error) => {
-            console.log(error);
-            this.showResponse("Oops!", "An error encountered!", "warning");
+          .catch(() => {
+            this.showResponse(
+              "Oops!",
+              "An error encountered! If this is a mistake, please try again.",
+              "warning"
+            );
           });
       } else {
         this.showResponse(
