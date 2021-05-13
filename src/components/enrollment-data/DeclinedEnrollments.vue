@@ -111,11 +111,11 @@
                     :rules="[
                       (v) => (!!v && v.trim() != '') || 'Firstname is required',
                       (v) =>
-                        (v && v.length >= 3) ||
-                        'Firstname cannot be lesser than 3 characters.',
+                        (v && v.length >= 2) ||
+                        'Firstname cannot be lesser than 2 characters.',
                       (v) =>
-                        /^[a-zA-Z\s]+$/.test(v) == true ||
-                        'Only letters are  allowed!',
+                        /^[a-zA-Z\sñÑ]+$/.test(v) == true ||
+                        'First name is invalid!',
                     ]"
                     label="Firstname"
                     outlined
@@ -130,9 +130,9 @@
                     label="Middlename"
                     :rules="[
                       (v) =>
-                        /^[a-zA-Z\s-]+$/.test(v) == true ||
+                        /^[a-zA-Z\s-ñÑ']+$/.test(v) == true ||
                         v == '' ||
-                        'Only letters are  allowed, except for - !',
+                        'Middlename is invalid!',
                     ]"
                     outlined
                     :readonly="readonly"
@@ -147,10 +147,10 @@
                       (v) => (!!v && v.trim() != '') || 'Lastname is required',
                       (v) =>
                         (v && v.length >= 3) ||
-                        'Firtname cannot be lesser than 3 characters.',
+                        'Last cannot be lesser than 3 characters.',
                       (v) =>
-                        /^[a-zA-Z\s-]+$/.test(v) == true ||
-                        'Only letters are  allowed, except for - !',
+                        /^[a-zA-Z\s-ñÑ']+$/.test(v) == true ||
+                        'Lastname is invalid!',
                     ]"
                     label="Lastname"
                     outlined
@@ -396,9 +396,9 @@
                     label="Father's Name"
                     :rules="[
                       (v) =>
-                        /^[a-zA-Z\s-.]+$/.test(v) == true ||
+                        /^[a-zA-Z\s-.Ññ']+$/.test(v) == true ||
                         v == '' ||
-                        'Only letters are  allowed, except for - !',
+                        'Father name is invalid!',
                     ]"
                     :readonly="readonly"
                     outlined
@@ -411,9 +411,9 @@
                     label="Mother's Maiden Name"
                     :rules="[
                       (v) =>
-                        /^[a-zA-Z\s-.]+$/.test(v) == true ||
+                        /^[a-zA-Z\s-.Ññ']+$/.test(v) == true ||
                         v == '' ||
-                        'Only letters are  allowed, except for - !',
+                        'Mother name is invalid!',
                     ]"
                     outlined
                     :readonly="readonly"
@@ -428,8 +428,8 @@
                         (!!guardian && guardian.trim() != '') ||
                         'Guardian name is required',
                       (v) =>
-                        /^[a-zA-Z\s-.]+$/.test(v) == true ||
-                        'Only letters are  allowed, except for - !',
+                        /^[a-zA-Z\s-.Ññ']+$/.test(v) == true ||
+                        'Guardian name is invalid!',
                     ]"
                     label="Guardian's Name"
                     outlined

@@ -40,7 +40,7 @@
                   </v-btn>
                 </template>
                 <br />
-                <v-form>
+                <v-form ref="addTeacher" lazy-validation>
                   <v-card>
                     <v-card-title class="text-center justify-center headline">
                       <div class="font-weight-light">
@@ -56,7 +56,7 @@
                             (value) =>
                               !!value || 'Teacher name field is required!',
                             (value) =>
-                              /^[a-zA-Z\s.-]+$/.test(value) === true ||
+                              /^[a-zA-Z\s.-Ññ']+$/.test(value) === true ||
                               'Teacher name is invalid.',
                             (value) =>
                               value.length >= 4 ||
@@ -68,7 +68,10 @@
                           :error="hasError('teacher_name')"
                           name="teacher_name"
                           outlined
-                        ><v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon></v-text-field>
+                          ><v-icon slot="prepend-inner" color="red" x-small
+                            >mdi-asterisk</v-icon
+                          ></v-text-field
+                        >
                         <p
                           v-if="hasError('teacher_name')"
                           class="invalid-feedback"
@@ -89,17 +92,20 @@
                           v-model="Email"
                           name="email"
                           outlined
-                        ><v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon></v-text-field>
-                        <p v-if="hasError('email')" class="invalid-feedback">
+                          ><v-icon slot="prepend-inner" color="red" x-small
+                            >mdi-asterisk</v-icon
+                          ></v-text-field
+                        >
+                        <!-- <p v-if="hasError('email')" class="invalid-feedback">
                           {{ getError("email") }}
-                        </p>
+                        </p> -->
                         <v-text-field
                           @keydown="clearError"
                           label="Phone Number"
                           type="number"
                           min="0"
                           v-model="Contact"
-                             onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+                          onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
                           name="contact"
                           :rules="[
                             (contact) => !!contact || 'Contact is required',
@@ -117,7 +123,10 @@
                           ]"
                           :error="hasError('contact')"
                           outlined
-                        ><v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon></v-text-field>
+                          ><v-icon slot="prepend-inner" color="red" x-small
+                            >mdi-asterisk</v-icon
+                          ></v-text-field
+                        >
                         <p v-if="hasError('contact')" class="invalid-feedback">
                           {{ getError("contact") }}
                         </p>
@@ -641,6 +650,7 @@ export default {
     //Resetting the validation in cancel button
     async dialogs() {
       //This is for Add Teacher Reset Validation
+      this.$refs.addTeacher.resetValidation();
       if (this.booleanStatus == false) {
         for (let key in this.errors) {
           this.$delete(this.errors, key);
