@@ -86,6 +86,9 @@
                 </span>
               </td>
               <td>
+                <v-icon color="red" @click="deleteSched(row.item)"
+                  >mdi-delete</v-icon
+                >
                 <v-icon color="primary" @click="editSched(row.item, row.index)">
                   mdi-pencil
                 </v-icon>
@@ -803,6 +806,21 @@ export default {
         );
         this.loading = false;
       }
+    },
+
+    deleteSched(scheds) {
+      let schedToDelete = [];
+      for (const key in scheds) {
+        if (scheds.hasOwnProperty.call(scheds, key)) {
+          const element = scheds[key];
+          console.log(element);
+          if (element && element.id) schedToDelete.push(element.id);
+        }
+      }
+      this.$axios.post("deleteScheds", schedToDelete).then((res) => {
+        console.log(res);
+        this.retrieveSchedules();
+      });
     },
 
     clearData() {
