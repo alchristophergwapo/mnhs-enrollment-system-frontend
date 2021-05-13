@@ -23,7 +23,8 @@
             name="name"
             :error="hasError('name')"
             outlined
-          ></v-text-field>
+          ><v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+          </v-text-field>
           <p v-if="hasError('name')" class="invalid-feedback">
             {{ getError("name") }}
           </p>
@@ -31,6 +32,7 @@
             type="number"
             name="capacity"
             label="Max Capacity"
+            onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
             @keydown="clearError"
             v-model="sectionData.capacity"
             :rules="[(value) => !!value || 'This field is required']"
@@ -38,7 +40,7 @@
             :error="hasError('capacity')"
             min="0"
             outlined
-          ></v-text-field>
+          ><v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon></v-text-field>
           <p v-if="hasError('capacity')" class="invalid-feedback">
             {{ getError("capacity") }}
           </p>

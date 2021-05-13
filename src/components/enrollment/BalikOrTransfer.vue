@@ -23,6 +23,8 @@
     <v-col cols="12" sm="4">
       <v-text-field
         v-model="balikOrTransferInfo.last_year_completed"
+        onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+        min="0"
         :rules="[
           (v) =>
             (!!v && v.trim() != '') || 'Last School Year Completed is required',
@@ -40,6 +42,8 @@
     <v-col cols="12" sm="4">
       <v-text-field
         v-model="balikOrTransferInfo.last_school_ID"
+        onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+        min="0"
         :rules="[
           (last_school_ID) =>
             (!!last_school_ID && last_school_ID.trim() != '') ||

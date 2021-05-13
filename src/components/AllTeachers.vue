@@ -68,7 +68,7 @@
                           :error="hasError('teacher_name')"
                           name="teacher_name"
                           outlined
-                        ></v-text-field>
+                        ><v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon></v-text-field>
                         <p
                           v-if="hasError('teacher_name')"
                           class="invalid-feedback"
@@ -89,7 +89,7 @@
                           v-model="Email"
                           name="email"
                           outlined
-                        ></v-text-field>
+                        ><v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon></v-text-field>
                         <p v-if="hasError('email')" class="invalid-feedback">
                           {{ getError("email") }}
                         </p>
@@ -99,6 +99,7 @@
                           type="number"
                           min="0"
                           v-model="Contact"
+                             onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
                           name="contact"
                           :rules="[
                             (contact) => !!contact || 'Contact is required',
@@ -116,7 +117,7 @@
                           ]"
                           :error="hasError('contact')"
                           outlined
-                        ></v-text-field>
+                        ><v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon></v-text-field>
                         <p v-if="hasError('contact')" class="invalid-feedback">
                           {{ getError("contact") }}
                         </p>

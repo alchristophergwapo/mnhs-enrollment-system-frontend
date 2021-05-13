@@ -155,6 +155,7 @@
                         ]"
                         label="Average"
                         outlined
+                        min="0"
                         :readonly="readonly"
                         type="number"
                         required

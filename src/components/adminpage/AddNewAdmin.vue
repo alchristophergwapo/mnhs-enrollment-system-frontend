@@ -30,7 +30,10 @@
               dense
               outlined
               required
-            ></v-select>
+              ><v-icon slot="prepend-inner" color="red" x-small
+                >mdi-asterisk</v-icon
+              ></v-select
+            >
             <Autocomplete
               request="allTeacher"
               :gradelevel="Number(assigned_gr_level)"
@@ -91,7 +94,10 @@
               required
               dense
               outlined
-            ></v-text-field>
+              ><v-icon slot="prepend-inner" color="red" x-small
+                >mdi-asterisk</v-icon
+              ></v-text-field
+            >
             <div>
               <p v-if="hasError('password')" class="invalid-feedback">
                 {{ getError("password") }}

@@ -95,6 +95,7 @@
                       (v) => !!v || 'Average is required',
                       (v) => v <= 100 || 'Maximum average is 100',
                     ]"
+                    min="0"
                     type="number"
                     label="Average"
                     outlined
@@ -764,7 +765,10 @@
               :loading="isDataLoaded ? false : true"
               loading-text="Loading... Please wait"
               required
-            ></v-select>
+              ><v-icon slot="prepend-inner" color="red" x-small
+                >mdi-asterisk</v-icon
+              ></v-select
+            >
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
