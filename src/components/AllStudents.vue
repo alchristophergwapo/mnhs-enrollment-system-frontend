@@ -1203,7 +1203,7 @@ export default {
         ...arrData.map((item) => Object.values(item)),
       ]
         .join("\n")
-        .replace(/(^\[)|(\]$)/gm, "");
+      
       const data = encodeURI(csvContent);
       const link = document.createElement("a");
       link.setAttribute("href", data);
@@ -1213,10 +1213,11 @@ export default {
   },
   computed: {
     csvData() {
+      console.log(this.students);
       return this.students.map((item) => ({
         SchoolYear: `${item.start_school_year} - ${item.end_school_year}`,
         GradeLevel: item.grade_level,
-        Section: item.student_section,
+        Section: item.section_name,
         StudentName: `${item.firstname} ${item.lastname}`,
         Age: item.age,
         Address: item.address.replace(/[^a-zA-Z ]/g, " "),
