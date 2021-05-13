@@ -553,8 +553,8 @@ export default {
   methods: {
     retrieveSchedules() {
       this.schedules = [];
+      this.overlay = true;
       this.$axios.get(`classSchedules/${this.section_id}`).then((response) => {
-        this.overlay = true;
         const schedRes = response.data.sectionSchedules;
         this.overlay = false;
 
@@ -598,7 +598,7 @@ export default {
       });
     },
     saveSchedule(index) {
-      if (this.editSchedule) {
+      if (this.editSchedule === true) {
         this.saveEditSchedChanges(index);
         this.readonly = false;
       } else {
@@ -708,6 +708,7 @@ export default {
         this.maxOnMin = this.addTimes(this.scheduleInputs.startTime, span);
         this.minOnMax = "06:00";
       }
+      this.editSchedule = false;
       this.scheduleDialog = true;
       this.mode = "ADD";
     },
