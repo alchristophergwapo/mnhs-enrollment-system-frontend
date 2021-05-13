@@ -26,7 +26,6 @@
             'Only letters are  allowed, except for -  and .',
         ]"
         outlined
-        required
       ></v-text-field>
     </v-col>
     <v-col cols="12" xs="6" sm="6" md="6" lg="3">
@@ -42,7 +41,9 @@
         label="Guardian's Name"
         outlined
         required
-      ></v-text-field>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-text-field>
     </v-col>
     <v-col cols="12" sm="6" md="6" lg="3">
       <v-text-field
@@ -70,7 +71,9 @@
         :counter="11"
         outlined
         required
-      ></v-text-field>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-text-field>
     </v-col>
   </v-row>
 </template>

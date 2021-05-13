@@ -1180,11 +1180,18 @@ export default {
             }
           })
           .catch((error) => {
-            if (error.response.status == 500) {
+            alert(JSON.stringify(error.response.data));
+            if (error.response.status == 400) {
               this.$swal.fire({
                 icon: "error",
                 title: "Failed",
                 text: "This section has reach its limits!",
+              });
+            } else {
+              this.$swal.fire({
+                icon: "error",
+                title: "Failed",
+                text: "An error encountered!",
               });
             }
           });
