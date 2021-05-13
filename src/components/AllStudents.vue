@@ -887,6 +887,7 @@ export default {
   },
   methods: {
     retrieveData() {
+      this.isDataLoaded = false;
       this.students = [];
       let adminLevel = null;
       if (this.$user.user_type == "teacher_admin") {
@@ -1102,7 +1103,7 @@ export default {
                 ) {
                   const element1 = grade_levelData[glKey];
                   if (glKey == "grade_level") {
-                    if (element1 == gradelevel) {
+                    if (element1 === gradelevel) {
                       this.sections.push(section);
                     }
                   }

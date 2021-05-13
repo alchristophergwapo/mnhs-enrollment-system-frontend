@@ -659,6 +659,8 @@ export default {
             })
             .finally((this.loading = false));
         } else {
+          this.schedulesToAdd = [];
+          this.clearData();
           this.showResponse(
             "Ooops...",
             "Please add at least one schedule.",
