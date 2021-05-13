@@ -30,7 +30,7 @@
               dense
               outlined
               required
-            ></v-select>
+            ><v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon></v-select>
             <Autocomplete
               request="allTeacher"
               :gradelevel="Number(assigned_gr_level)"

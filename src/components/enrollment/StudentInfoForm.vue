@@ -34,6 +34,8 @@
     <v-col cols="12" xs="6" sm="4" md="4" lg="4">
       <v-text-field
         v-model="studentInfo.average"
+        onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+        min="0"
         name="average"
         :rules="[
           (v) => (!!v && v != '') || 'Average is required',
@@ -303,7 +305,9 @@
     <v-col cols="12" xs="6" sm="6" md="6" lg="3">
       <v-text-field
         v-model="studentInfo.zipcode"
+        min="0"
         name="zipcode"
+           onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
         :rules="[
           (zipcode) => (!!zipcode && zipcode != '') || 'Zipcode is required',
           (zipcode) =>

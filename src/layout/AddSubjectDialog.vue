@@ -100,7 +100,7 @@
                   :error="hasError('name')"
                   outlined
                   dense
-                ></v-text-field>
+                > <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
                 <Autocomplete

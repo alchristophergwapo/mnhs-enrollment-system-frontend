@@ -781,7 +781,7 @@
                     label="Section"
                     outlined
                     required
-                  ></v-select>
+                  ><v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon></v-select>
                 </v-card-text>
                 <v-card-actions>
                   <v-spacer></v-spacer>
