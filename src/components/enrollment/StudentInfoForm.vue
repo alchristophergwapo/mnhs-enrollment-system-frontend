@@ -56,10 +56,10 @@
         :rules="[
           (v) => (!!v && v.trim() !== '') || 'Firstname is required',
           (v) =>
-            (v && v.length >= 3) ||
-            'Firstname cannot be lesser than 3 characters.',
+            (v && v.length >= 2) ||
+            'Firstname cannot be lesser than 2 characters.',
           (v) =>
-            /^[a-zA-Z\s]+$/.test(v) === true || 'Only letters are  allowed!',
+            /^[a-zA-Z\sÑñ]+$/.test(v) === true || 'Only letters are  allowed!',
         ]"
         label="Firstname"
         outlined
@@ -73,7 +73,7 @@
         v-model="studentInfo.middlename"
         :rules="[
           (v) =>
-            /^[a-zA-Z\s-]+$/.test(v) == true ||
+            /^[a-zA-Z\sÑñ-]+$/.test(v) == true ||
             v == '' ||
             'Only letters are  allowed, except for - !',
         ]"
@@ -89,10 +89,10 @@
         :rules="[
           (v) => (!!v && v.trim() != '') || 'Lastname is required',
           (v) =>
-            (v && v.length >= 3) ||
-            'Firtname cannot be lesser than 3 characters.',
+            (v && v.length >= 2) ||
+            'Lastname cannot be lesser than 2 characters.',
           (v) =>
-            /^[a-zA-Z\s-]+$/.test(v) == true ||
+            /^[a-zA-Z\s-'Ññ]+$/.test(v) == true ||
             'Only letters are  allowed, except for - !',
         ]"
         label="Lastname"
@@ -292,7 +292,7 @@
             (address && address.length >= 4) ||
             'Address must be at least 4 characters.',
           (address) =>
-            /^[a-zA-Z0-9\s-.]+$/.test(address) == true ||
+            /^[a-zA-Z0-9\s-.,]+$/.test(address) == true ||
             'Only letters and numbers are allowed excepts - and , .',
         ]"
         label="Address"
@@ -307,7 +307,7 @@
         v-model="studentInfo.zipcode"
         min="0"
         name="zipcode"
-           onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+        onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
         :rules="[
           (zipcode) => (!!zipcode && zipcode != '') || 'Zipcode is required',
           (zipcode) =>

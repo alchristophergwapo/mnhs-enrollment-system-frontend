@@ -7,9 +7,9 @@
         label="Father's Name"
         :rules="[
           (v) =>
-            /^[a-zA-Z\s-.]+$/.test(v) == true ||
+            /^[a-zA-Z\s-.Ññ']+$/.test(v) == true ||
             v == '' ||
-            'Only letters are  allowed, except for - and .',
+            'Father name is invalid!',
         ]"
         outlined
         required
@@ -21,9 +21,9 @@
         label="Mother's Maiden Name"
         :rules="[
           (v) =>
-            /^[a-zA-Z\s-\s.]+$/.test(v) == true ||
+            /^[a-zA-Z\s-\s.Ññ']+$/.test(v) == true ||
             v == '' ||
-            'Only letters are  allowed, except for -  and .',
+            'Mother name is invalid!',
         ]"
         outlined
       ></v-text-field>
@@ -35,8 +35,7 @@
           (v) => (!!v && v.trim() != '') || 'Guardian name is required',
           (v) => v.length >= 4 || 'Guardian must be at least 4 characters.',
           (v) =>
-            /^[a-zA-Z\s-.]+$/.test(v) == true ||
-            'Only letters are  allowed, except for -  and .',
+            /^[a-zA-Z\s-.Ññ']+$/.test(v) == true || 'Guardian name is invalid!',
         ]"
         label="Guardian's Name"
         outlined

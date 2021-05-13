@@ -9,8 +9,9 @@
   <title>
     <%= htmlWebpackPlugin.options.title %>
   </title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
+  <link rel="stylesheet; preconnect" href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900">
+  <link rel="stylesheet; preconnect"
+    href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css">
 </head>
 
 <body>
@@ -21,7 +22,7 @@
   <div id="app"></div>
   <script>
     document.addEventListener('contextmenu', (e) => {
-      alert("Sorry, inpect element is disabled to prevent leakage of confidential functions and datas");
+      alert("Sorry, inspect element is disabled to prevent leakage of confidential functions and datas");
       e.preventDefault();
     })
     document.onkeydown = function (e) {

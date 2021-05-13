@@ -165,15 +165,9 @@ export default {
             if (error.response.status == 422)
               this.setErrors(error.response.data.errors);
             if (
-              error.response.status == 400 &&
-              error.response.data.teacher_admin_exist
+              error.response.data.teacher_isAssigned &&
+              error.response.status == 400
             )
-              this.$swal.fire({
-                title: "Ooops...",
-                text: error.response.data.teacher_admin_exist,
-                icon: "warning",
-              });
-            if (error.response.data.teacher_isAssigned)
               this.showResponse(
                 "Ooops...",
                 error.response.data.teacher_isAssigned,
@@ -187,6 +181,7 @@ export default {
 
     close() {
       EventBus.$emit("updated");
+      this.clearInputs();
     },
 
     showResponse(title, message, icon) {

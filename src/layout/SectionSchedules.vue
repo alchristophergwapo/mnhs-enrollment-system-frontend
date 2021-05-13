@@ -86,6 +86,9 @@
                 </span>
               </td>
               <td>
+                <v-icon color="red" @click="deleteSched(row.item)"
+                  >mdi-delete</v-icon
+                >
                 <v-icon color="primary" @click="editSched(row.item, row.index)">
                   mdi-pencil
                 </v-icon>
@@ -553,8 +556,8 @@ export default {
   methods: {
     retrieveSchedules() {
       this.schedules = [];
+      this.overlay = true;
       this.$axios.get(`classSchedules/${this.section_id}`).then((response) => {
-        this.overlay = true;
         const schedRes = response.data.sectionSchedules;
         this.overlay = false;
 
@@ -598,7 +601,7 @@ export default {
       });
     },
     saveSchedule(index) {
-      if (this.editSchedule) {
+      if (this.editSchedule === true) {
         this.saveEditSchedChanges(index);
         this.readonly = false;
       } else {
@@ -708,6 +711,7 @@ export default {
         this.maxOnMin = this.addTimes(this.scheduleInputs.startTime, span);
         this.minOnMax = "06:00";
       }
+      this.editSchedule = false;
       this.scheduleDialog = true;
       this.mode = "ADD";
     },
@@ -802,6 +806,21 @@ export default {
         );
         this.loading = false;
       }
+    },
+
+    deleteSched(scheds) {
+      let schedToDelete = [];
+      for (const key in scheds) {
+        if (scheds.hasOwnProperty.call(scheds, key)) {
+          const element = scheds[key];
+          console.log(element);
+          if (element && element.id) schedToDelete.push(element.id);
+        }
+      }
+      this.$axios.post("deleteScheds", schedToDelete).then((res) => {
+        console.log(res);
+        this.retrieveSchedules();
+      });
     },
 
     clearData() {
