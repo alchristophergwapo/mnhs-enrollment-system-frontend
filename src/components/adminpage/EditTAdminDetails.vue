@@ -187,6 +187,7 @@ export default {
 
     close() {
       EventBus.$emit("updated");
+      this.clearInputs();
     },
 
     showResponse(title, message, icon) {

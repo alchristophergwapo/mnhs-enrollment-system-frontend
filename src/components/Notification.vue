@@ -25,6 +25,11 @@
               color="error"
               @click="opendeclineModal(notification.enrollment.id)"
               :loading="declining"
+              :disabled="
+                notification.enrollment.enrollment_status === 'Approved'
+                  ? true
+                  : false
+              "
               >decline</v-btn
             >
             <v-btn
@@ -40,12 +45,8 @@
                   ? true
                   : false
               "
-              :text="
-                notification.enrollment.enrollment_status === 'Approved'
-                  ? 'Already Enrolled'
-                  : 'Approve'
-              "
-            ></v-btn>
+              >{{ text }}</v-btn
+            >
           </v-card-actions>
         </template>
       </enrollment-data-dialog>
@@ -200,6 +201,7 @@ export default {
       indexToDel: null,
       remarks: null,
       notification: null,
+      text: "Approve",
       date: new Date(),
     };
   },
@@ -344,6 +346,10 @@ export default {
     },
 
     markAsOpened(notif, id, index) {
+      this.text =
+        notif.enrollment.enrollment_status === "Approved"
+          ? "Already Enrolled"
+          : "Approve";
       this.notification = notif;
       this.openDialog = true;
       this.indexToDel = index;
