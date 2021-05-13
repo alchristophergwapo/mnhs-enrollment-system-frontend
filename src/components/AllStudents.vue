@@ -1131,6 +1131,9 @@ export default {
           )
           .then((response) => {
             this.studentDialog = false;
+            this.readonly = true;
+            this.statusLevel = true;
+            this.btnText = "Update";
             if (response.data.updated) {
               this.$swal.fire({
                 icon: "success",
@@ -1142,8 +1145,6 @@ export default {
               this.$refs.studentDetails.resetValidation();
               this.retrieveData();
               this.dialog = false;
-              this.readonly = true;
-              this.statusLevel = true;
             } else {
               this.dialog = false;
               this.$swal
