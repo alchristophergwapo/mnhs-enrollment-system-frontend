@@ -21,10 +21,10 @@
   </noscript>
   <div id="app"></div>
   <script>
-    document.addEventListener('contextmenu', (e) => {
-      alert("Sorry, inspect element is disabled to prevent leakage of confidential functions and datas");
-      e.preventDefault();
-    })
+    // document.addEventListener('contextmenu', (e) => {
+    //   alert("Sorry, inspect element is disabled to prevent leakage of confidential functions and datas");
+    //   e.preventDefault();
+    // })
     document.onkeydown = function (e) {
       if (event.keyCode == 123) {
         return false;
