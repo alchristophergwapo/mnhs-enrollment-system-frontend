@@ -36,12 +36,16 @@
                 )
               "
               :disabled="
-                notification.enrollment.enrollment_status == 'Approved'
+                notification.enrollment.enrollment_status === 'Approved'
                   ? true
                   : false
               "
-              >approve</v-btn
-            >
+              :text="
+                notification.enrollment.enrollment_status === 'Approved'
+                  ? 'Already Enrolled'
+                  : 'Approve'
+              "
+            ></v-btn>
           </v-card-actions>
         </template>
       </enrollment-data-dialog>

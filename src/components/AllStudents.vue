@@ -728,7 +728,23 @@
                         v-model="studentInfo.grade_level"
                         :rules="[(v) => !!v || 'Required']"
                         :items="GradeLevel"
+                        @change="filterSections(studentInfo.grade_level)"
                         label="Grade Level"
+                        :readonly="statusLevel"
+                        outlined
+                        required
+                      ></v-select>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-select
+                        :items="sections"
+                        v-model="studentInfo.section_name"
+                        name="section"
+                        @change="
+                          theSection(($event = studentInfo.section_name))
+                        "
+                        :rules="[(v) => !!v || 'Section name is required!']"
+                        label="Section"
                         :readonly="statusLevel"
                         outlined
                         required
@@ -746,7 +762,7 @@
                       @click="
                         readonly
                           ? ((readonly = false), (statusLevel = false))
-                          : updateStudent(studentInfo)
+                          : updateStudentDetails(studentInfo)
                       "
                       :disabled="readonly === false ? !valid : false"
                     >
@@ -755,43 +771,6 @@
                   </v-container>
                 </v-card-actions>
                 <br />
-              </v-card>
-            </v-form>
-          </template>
-        </v-dialog>
-        <!------------- Selected a Section for the selected gradelevel------------>
-        <v-dialog v-model="dialog" persistent max-width="500px">
-          <template>
-            <v-form ref="sectionDetails" lazy-validation>
-              <v-card>
-                <v-card-title>
-                  <span class="headline">Select Student Sections</span>
-                  <v-spacer></v-spacer>
-                  <v-btn icon @click="closeApprove()">
-                    <v-icon>mdi-close</v-icon>
-                  </v-btn>
-                </v-card-title>
-                <v-card-text>
-                  <v-select
-                    :items="sections"
-                    v-model="section"
-                    name="section"
-                    @change="theSection(($event = section))"
-                    :rules="[(v) => !!v || 'Section name is required!']"
-                    label="Section"
-                    outlined
-                    required
-                  ></v-select>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="blue darken-1"
-                    @click="updateStudentDetails(studentInfo)"
-                  >
-                    Done
-                  </v-btn>
-                </v-card-actions>
               </v-card>
             </v-form>
           </template>
@@ -1102,7 +1081,8 @@ export default {
       this.studentInfo.section_name = secName;
     },
     //Selecting A Section
-    filterSections(student) {
+    filterSections(gradelevel) {
+      this.studentInfo.section_name = null;
       this.section = this.studentInfo.section_name;
       this.dialog = true;
       this.sections = [];
@@ -1121,7 +1101,7 @@ export default {
                 ) {
                   const element1 = grade_levelData[glKey];
                   if (glKey == "grade_level") {
-                    if (element1 == student.grade_level) {
+                    if (element1 == gradelevel) {
                       this.sections.push(section);
                     }
                   }
@@ -1141,14 +1121,15 @@ export default {
 
     //Method For Approving the enrollment
     updateStudentDetails() {
-      if (this.sections.includes(this.section)) {
-        this.studentInfo.section_name = this.section;
+      if (this.studentInfo.section_name) {
+        //   this.studentInfo.section_name = this.section;
         this.$axios
           .post(
             `updateStudent/` + this.studentInfo.student_id,
             this.studentInfo
           )
           .then((response) => {
+            this.studentDialog = false;
             if (response.data.updated) {
               this.$swal.fire({
                 icon: "success",
@@ -1160,7 +1141,6 @@ export default {
               this.$refs.studentDetails.resetValidation();
               this.retrieveData();
               this.dialog = false;
-              this.studentDialog = false;
               this.readonly = true;
               this.statusLevel = true;
             } else {
@@ -1180,7 +1160,6 @@ export default {
             }
           })
           .catch((error) => {
-            alert(JSON.stringify(error.response.data));
             if (error.response.status == 400) {
               this.$swal.fire({
                 icon: "error",
@@ -1212,14 +1191,6 @@ export default {
       this.studentInfo.grade_level = this.backupGrade;
       this.dialog = false;
       this.$refs.sectionDetails.resetValidation();
-    },
-
-    //UPDATE A STUDENT DETAILS
-    updateStudent(formdata) {
-      if (this.$refs.studentDetails.validate()) {
-        this.studentInfo = formdata;
-        this.filterSections(formdata);
-      }
     },
 
     //Dowloadcsv
