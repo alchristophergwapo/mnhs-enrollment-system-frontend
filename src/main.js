@@ -73,7 +73,7 @@ new Vue({
         }
       }
 
-      this.$store.dispatch("allSections");
+      this.$store.dispatch("allSections", null);
 
       this.$store.dispatch("allTeacher");
 

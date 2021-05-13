@@ -296,9 +296,14 @@ export default {
   },
   methods: {
     displayAllsection(gradelevel) {
+      let adminLevel = null;
+      if (this.$user.user_type == "teacher_admin") {
+        let temp = this.$user.username.split("_");
+        adminLevel = temp[1];
+      }
       this.$axios
         // .get("allGradeLevelSections")
-        .get("allSections")
+        .get("allSections/" + adminLevel)
         .then((response) => {
           this.allsections = response.data.sections;
           this.junior_high.forEach((junior) => {

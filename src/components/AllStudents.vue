@@ -860,10 +860,21 @@ export default {
     ).format("YYYY-MM-DD");
 
     this.retrieveData();
+    let adminLevel = null;
+    if (this.$user.user_type == "teacher_admin") {
+      let temp = this.$user.username.split("_");
+      adminLevel = temp[1];
+    }
+    this.filterSections(adminLevel);
   },
   mounted() {
+    let adminLevel = null;
+    if (this.$user.user_type == "teacher_admin") {
+      let temp = this.$user.username.split("_");
+      adminLevel = temp[1];
+    }
     this.$axios
-      .get("allGradeLevelSections")
+      .get("allSections/" + adminLevel)
       .then((response) => {
         let section = response.data.sections;
         for (const key in section) {
@@ -1088,8 +1099,15 @@ export default {
       this.section = this.studentInfo.section_name;
       this.dialog = true;
       this.sections = [];
+
+      let adminLevel = null;
+      if (this.$user.user_type == "teacher_admin") {
+        let temp = this.$user.username.split("_");
+        adminLevel = temp[1];
+      }
+      // alert(adminLevel);
       this.$store
-        .dispatch("allSections")
+        .dispatch("allSections", adminLevel)
         .then((res) => {
           let sections = res;
           for (const key in sections) {
