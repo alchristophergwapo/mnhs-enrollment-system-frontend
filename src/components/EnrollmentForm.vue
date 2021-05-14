@@ -31,7 +31,8 @@
       <div class="form-container">
         <v-card-title
           ><span style="width: 100%; text-align: center"
-            >Please fill out the information below and SUBMIT.</span
+            >Please fill out the information below and SUBMIT. <br />
+            Fields with * indicates required fields.</span
           >
         </v-card-title>
         <v-form
@@ -68,11 +69,6 @@
                   ></v-checkbox>
                 </v-container>
               </v-col>
-              <!-- <v-form
-                ref="balikAralorTransferInfo"
-                v-model="transfereeValid"
-                lazy-validation
-              > -->
               <v-container v-if="isTransfereeOrBalikAral">
                 <balik-or-transfer
                   ref="balikAralorTransferInfoData"
@@ -80,12 +76,6 @@
                   :grade_level_options="options"
                 ></balik-or-transfer>
               </v-container>
-              <!-- </v-form> -->
-              <!-- <v-form
-                ref="seniorHigh"
-                v-model="seniorHighValid"
-                lazy-validation
-              > -->
               <v-container v-if="isSeniorHigh">
                 <senior-high
                   ref="seniorHighData"
@@ -93,7 +83,6 @@
                   v-bind:strand="strands"
                 ></senior-high>
               </v-container>
-              <!-- </v-form> -->
               <v-col cols="12" sm="6" md="6">
                 <v-file-input
                   v-model="card_image"
@@ -103,7 +92,11 @@
                   v-on:keyup="enterKeyTriggered()"
                   outlined
                   prepend-icon="mdi-camera"
-                ></v-file-input>
+                >
+                  <v-icon slot="prepend-inner" color="red" x-small
+                    >mdi-asterisk</v-icon
+                  >
+                </v-file-input>
               </v-col>
               <v-col cols="12" sm="6" md="6">
                 <v-select
@@ -120,7 +113,11 @@
                   v-on:keyup="enterKeyTriggered()"
                   outlined
                   required
-                ></v-select>
+                >
+                  <v-icon slot="prepend-inner" color="red" x-small
+                    >mdi-asterisk</v-icon
+                  >
+                </v-select>
               </v-col>
             </v-row>
 
@@ -235,6 +232,8 @@ export default {
         (this.isNew = false), (this.isTransfereeOrBalikAral = false);
     },
     submitEnrollment() {
+      const userData = JSON.parse(this.user);
+      const isAdmin = userData ? userData.user.user_type != "student" : false;
       if (this.$refs.basicInfo.validate()) {
         let error = false;
         this.student = this.$refs.studentInfoData.getData;
@@ -282,7 +281,8 @@ export default {
         }
 
         formdata.append("grade_level", this.grade_level);
-        formdata.append("enrollment_status", "Pending");
+
+        formdata.append("enrollment_status", isAdmin ? "Approved" : "Pending");
         formdata.append(
           "card_image",
           this.card_image,
@@ -294,9 +294,12 @@ export default {
           this.$axios
             .post(`addStudent`, formdata)
             .then((response) => {
+              const text = isAdmin
+                ? response.data.success
+                : `${response.data.success} Once your enrollment will be approved, you can login into your account by using your LRN as your username and Lastname+LRN as password. Example (Username: 303000123456 Password: Roxas303000123456)`;
               this.$swal.fire({
                 title: "Success",
-                text: response.data.success,
+                html: text,
                 icon: "success",
               });
               this.submitting = false;

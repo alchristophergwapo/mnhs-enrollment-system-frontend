@@ -58,6 +58,7 @@
           :type="showPass ? 'text' : 'password'"
           placeholder="Enter password"
           name="password"
+          autocomplete
           @click:append="showPass = !showPass"
           dense
           outlined

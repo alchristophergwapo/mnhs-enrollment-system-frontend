@@ -100,7 +100,11 @@
                   :error="hasError('name')"
                   outlined
                   dense
-                ></v-text-field>
+                >
+                  <v-icon slot="prepend-inner" color="red" x-small
+                    >mdi-asterisk</v-icon
+                  ></v-text-field
+                >
               </v-col>
               <v-col cols="12" sm="6">
                 <Autocomplete
@@ -237,18 +241,18 @@ export default {
     },
 
     editSubject() {
-      this.subjects[
-        this.editSubjectDetails.index
-      ].name = this.editSubjectDetails.name;
-      this.subjects[
-        this.editSubjectDetails.index
-      ].teacher_id = this.editSubjectDetails.teacher_id;
-      this.subjects[
-        this.editSubjectDetails.index
-      ].teacher_name = this.editSubjectDetails.teacher_name;
       this.$axios
         .post(`updateSubject`, this.editSubjectDetails)
         .then((response) => {
+          this.subjects[
+            this.editSubjectDetails.index
+          ].name = this.editSubjectDetails.name;
+          this.subjects[
+            this.editSubjectDetails.index
+          ].teacher_id = this.editSubjectDetails.teacher_id;
+          this.subjects[
+            this.editSubjectDetails.index
+          ].teacher_name = this.editSubjectDetails.teacher_name;
           this.showResponse("success", "", response.data.success);
         })
         .catch((error) => {

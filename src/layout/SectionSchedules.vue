@@ -86,6 +86,9 @@
                 </span>
               </td>
               <td>
+                <v-icon color="red" @click="deleteSched(row.item)"
+                  >mdi-delete</v-icon
+                >
                 <v-icon color="primary" @click="editSched(row.item, row.index)">
                   mdi-pencil
                 </v-icon>
@@ -173,6 +176,7 @@
                         v-if="modal"
                         v-model="scheduleInputs.startTime"
                         :min="minOnMax"
+                        max="17:00"
                         @click:hour="inputStartTime($event)"
                         @click:minute="inputStartTime($event)"
                         full-width
@@ -217,6 +221,7 @@
                         v-if="modal2"
                         v-model="scheduleInputs.endTime"
                         :min="minTime"
+                        max="18:00"
                         full-width
                       >
                         <v-spacer></v-spacer>
@@ -236,6 +241,7 @@
                   <v-col sm="6">
                     <autocomplete
                       :prepend_icon="
+                        scheduleInputs.Monday != null &&
                         scheduleInputs.Monday.subject_id
                           ? 'mdi-check-underline'
                           : 'mdi-help'
@@ -248,7 +254,10 @@
                     >
                       <template v-slot:label
                         >Monday<strong
-                          v-if="scheduleInputs.Monday.subject_name"
+                          v-if="
+                            scheduleInputs.Monday &&
+                            scheduleInputs.Monday.subject_name
+                          "
                         >
                           ({{ scheduleInputs.Monday.subject_name }})</strong
                         ></template
@@ -258,6 +267,7 @@
                   <v-col sm="6">
                     <autocomplete
                       :prepend_icon="
+                        scheduleInputs.Tuesday != null &&
                         scheduleInputs.Tuesday.subject_id
                           ? 'mdi-check-underline'
                           : 'mdi-help'
@@ -270,7 +280,10 @@
                     >
                       <template v-slot:label
                         >Tuesday<strong
-                          v-if="scheduleInputs.Tuesday.subject_name"
+                          v-if="
+                            scheduleInputs.Tuesday &&
+                            scheduleInputs.Tuesday.subject_name
+                          "
                         >
                           ({{ scheduleInputs.Tuesday.subject_name }})</strong
                         ></template
@@ -280,6 +293,7 @@
                   <v-col sm="6">
                     <autocomplete
                       :prepend_icon="
+                        scheduleInputs.Wednesday != null &&
                         scheduleInputs.Wednesday.subject_id
                           ? 'mdi-check-underline'
                           : 'mdi-help'
@@ -302,6 +316,7 @@
                   <v-col sm="6">
                     <autocomplete
                       :prepend_icon="
+                        scheduleInputs.Thursday != null &&
                         scheduleInputs.Thursday.subject_id
                           ? 'mdi-check-underline'
                           : 'mdi-help'
@@ -314,7 +329,10 @@
                     >
                       <template v-slot:label
                         >Thursday<strong
-                          v-if="scheduleInputs.Thursday.subject_name"
+                          v-if="
+                            scheduleInputs.Thursday &&
+                            scheduleInputs.Thursday.subject_name
+                          "
                         >
                           ({{ scheduleInputs.Thursday.subject_name }})</strong
                         ></template
@@ -324,6 +342,7 @@
                   <v-col sm="6">
                     <autocomplete
                       :prepend_icon="
+                        scheduleInputs.Friday != null &&
                         scheduleInputs.Friday.subject_id
                           ? 'mdi-check-underline'
                           : 'mdi-help'
@@ -520,12 +539,8 @@ export default {
           (this.scheduleInputs[data.day].subject_name = data.data.subject_name),
           (this.scheduleInputs[data.day].teacher_id = data.data.teacher_id),
           (this.scheduleInputs[data.day].teacher_name = data.data.teacher_name),
-          (this.scheduleInputs[data.day].start_time = this.$moment(
-            startTime
-          ).format("hh:mm")),
-          (this.scheduleInputs[data.day].end_time = this.$moment(
-            endTime
-          ).format("hh:mm")))
+          (this.scheduleInputs[data.day].start_time = startTime),
+          (this.scheduleInputs[data.day].end_time = endTime))
         : (this.scheduleInputs[data.day] = {
             day: data.day,
             subject_id: data.data.id,
@@ -535,15 +550,14 @@ export default {
           });
     });
 
-    EventBus.$on("clearData", (data) => {
-      console.log(data);
-    });
+    // EventBus.$on("clearData", (data) => {
+    // });
   },
   methods: {
     retrieveSchedules() {
       this.schedules = [];
+      this.overlay = true;
       this.$axios.get(`classSchedules/${this.section_id}`).then((response) => {
-        this.overlay = true;
         const schedRes = response.data.sectionSchedules;
         this.overlay = false;
 
@@ -561,6 +575,7 @@ export default {
             }
           }
           if (count >= 5 || next) {
+            count = 0;
             this.schedules.push(this.sched);
             this.sched = {
               startTime: null,
@@ -571,7 +586,6 @@ export default {
               Thursday: null,
               Friday: null,
             };
-            count = 0;
           }
         }
         var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
@@ -587,7 +601,7 @@ export default {
       });
     },
     saveSchedule(index) {
-      if (this.editSchedule) {
+      if (this.editSchedule === true) {
         this.saveEditSchedChanges(index);
         this.readonly = false;
       } else {
@@ -597,7 +611,7 @@ export default {
 
     /**
      * Method for adding schedule
-     * returns void
+     * @returns void
      */
     addSchedule() {
       let schedInput = this.scheduleInputs;
@@ -645,6 +659,8 @@ export default {
             })
             .finally((this.loading = false));
         } else {
+          this.schedulesToAdd = [];
+          this.clearData();
           this.showResponse(
             "Ooops...",
             "Please add at least one schedule.",
@@ -669,9 +685,14 @@ export default {
       this.scheduleDialog = true;
       this.readonly = true;
       this.scheduleInputs = item;
-      this.scheduleInputs.startTime = item.Monday.start_time;
+      this.scheduleInputs.startTime = item.Monday
+        ? item.Monday.start_time
+        : "08:00:00";
       var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
-      let newEndTime = this.addTimes(item.Monday.start_time, span);
+      let newEndTime = this.addTimes(
+        item.Monday ? item.Monday.start_time : this.scheduleInputs.startTime,
+        span
+      );
       this.scheduleInputs.endTime = newEndTime;
       this.scheduleInputs["index"] = index;
     },
@@ -690,8 +711,9 @@ export default {
       } else {
         this.minTime = this.addTimes(this.scheduleInputs.startTime, span);
         this.maxOnMin = this.addTimes(this.scheduleInputs.startTime, span);
-        this.minOnMax = time;
+        this.minOnMax = "06:00";
       }
+      this.editSchedule = false;
       this.scheduleDialog = true;
       this.mode = "ADD";
     },
@@ -703,8 +725,12 @@ export default {
       }
       var span = this.spanOfClasses.hour + ":" + this.spanOfClasses.minutes;
       if (isTimeComplete)
-        this.scheduleInputs.endTime = this.addTimes(time, span);
-      else this.scheduleInputs.endTime = this.addTimes(`${time}`, span);
+        (this.scheduleInputs.startTime = this.addTimes(`${time}:00`, "00:00")),
+          (this.scheduleInputs.endTime = this.addTimes(time, span));
+      else
+        (this.scheduleInputs.startTime = this.addTimes(`${time}:00`, "00:00")),
+          (this.scheduleInputs.endTime = this.addTimes(`${time}:00`, span));
+      // this.startTime = this.addTimes(`${time}:00`, "00:00");
     },
 
     closeDialog() {
@@ -737,13 +763,26 @@ export default {
         Friday: this.scheduleInputs.Friday,
       };
       let forEditCount = 0;
+      let error = false;
       for (const key in edited) {
         if (edited.hasOwnProperty.call(edited, key)) {
           const element = edited[key];
-          element.subject_id ? (forEditCount += 1) : (forEditCount += 0);
+          if (
+            (element && element.start_time === null) ||
+            (element && element.end_time === null)
+          )
+            this.showResponse(
+              "Oops!",
+              "It seems that your input time is invalid. If this is a mistake please retry.",
+              "warning"
+            ),
+              (error = true);
+          element && element.subject_id
+            ? (forEditCount += 1)
+            : (forEditCount += 0);
         }
       }
-      if (forEditCount > 0) {
+      if (forEditCount > 0 && error === false) {
         this.$axios
           .post("editSchedules", edited)
           .then((response) => {
@@ -755,7 +794,11 @@ export default {
             this.showResponse("Success", response.data.success, "success");
           })
           .catch(() => {
-            this.showResponse("Oops!", "An error encountered!", "warning");
+            this.showResponse(
+              "Oops!",
+              "An error encountered! If this is a mistake, please try again.",
+              "warning"
+            );
           });
       } else {
         this.showResponse(
@@ -765,6 +808,21 @@ export default {
         );
         this.loading = false;
       }
+    },
+
+    deleteSched(scheds) {
+      let schedToDelete = [];
+      for (const key in scheds) {
+        if (scheds.hasOwnProperty.call(scheds, key)) {
+          const element = scheds[key];
+          console.log(element);
+          if (element && element.id) schedToDelete.push(element.id);
+        }
+      }
+      this.$axios.post("deleteScheds", schedToDelete).then((res) => {
+        console.log(res);
+        this.retrieveSchedules();
+      });
     },
 
     clearData() {

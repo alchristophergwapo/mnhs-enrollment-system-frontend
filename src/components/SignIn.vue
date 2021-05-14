@@ -113,6 +113,7 @@ export default {
         this.$store
           .dispatch("login", data)
           .then((response) => {
+            console.log(response);
             this.loading = false;
             const user = response.data.user;
             this.$user = user;

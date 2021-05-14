@@ -52,11 +52,11 @@ export default {
   data() {
     return {
       search: "",
-      isDataLoaded:false, 
+      isDataLoaded: false,
       loading: false,
       edit: false,
       headers: [
-        { text: "Grade Level", align: "start", value: "grade_level" },
+        { text: "Grade Level", align: "start", value: "assigned_gr_level" },
         { text: "Admin Name", value: "user_fullname" },
         { text: "Manage", sortable: false },
       ],
@@ -77,7 +77,7 @@ export default {
       this.$axios
         .get("/allTeacherAdmin")
         .then((response) => {
-          this.isDataLoaded= true;
+          this.isDataLoaded = true;
           let teacherAdmins = response.data.teacher_admins;
           for (const key in teacherAdmins) {
             if (teacherAdmins.hasOwnProperty.call(teacherAdmins, key)) {

@@ -155,6 +155,7 @@
                         ]"
                         label="Average"
                         outlined
+                        min="0"
                         :readonly="readonly"
                         type="number"
                         required
@@ -169,10 +170,10 @@
                           (v) =>
                             (!!v && v.trim() != '') || 'Firstname is required',
                           (v) =>
-                            (v && v.length >= 3) ||
-                            'Firstname cannot be lesser than 3 characters.',
+                            (v && v.length >= 2) ||
+                            'Firstname cannot be lesser than 2 characters.',
                           (v) =>
-                            /^[a-zA-Z\s]+$/.test(v) == true ||
+                            /^[a-zA-Z\sÑñ]+$/.test(v) == true ||
                             'Only letters are  allowed!',
                         ]"
                         label="Firstname"
@@ -188,7 +189,7 @@
                         label="Middlename"
                         :rules="[
                           (v) =>
-                            /^[a-zA-Z\s-]+$/.test(v) == true ||
+                            /^[a-zA-Z\s-Ññ']+$/.test(v) == true ||
                             v == '' ||
                             'Only letters are  allowed, except for - !',
                         ]"
@@ -205,8 +206,8 @@
                           (v) =>
                             (!!v && v.trim() != '') || 'Lastname is required',
                           (v) =>
-                            (v && v.length >= 3) ||
-                            'Firtname cannot be lesser than 3 characters.',
+                            (v && v.length >= 2) ||
+                            'Lastname cannot be lesser than 2 characters.',
                           (v) =>
                             /^[a-zA-Z\s-]+$/.test(v) == true ||
                             'Only letters are  allowed, except for - !',
@@ -409,7 +410,7 @@
                             (address && address.length >= 4) ||
                             'Address must be at least 4 characters.',
                           (address) =>
-                            /^[a-zA-Z0-9\s-,]+$/.test(address) == true ||
+                            /^[a-zA-Z0-9\s-,.]+$/.test(address) == true ||
                             'Only letters and numbers are allowed excepts - and , .',
                         ]"
                         label="Address"
@@ -448,9 +449,9 @@
                         label="Father's Name"
                         :rules="[
                           (v) =>
-                            /^[a-zA-Z\s-]+$/.test(v) == true ||
+                            /^[a-zA-Z\s-Ññ']+$/.test(v) == true ||
                             v == '' ||
-                            'Only letters are  allowed, except for - !',
+                            'Father name is invalid!',
                         ]"
                         :readonly="readonly"
                         outlined
@@ -463,9 +464,9 @@
                         label="Mother's Maiden Name"
                         :rules="[
                           (v) =>
-                            /^[a-zA-Z\s-\s]+$/.test(v) == true ||
+                            /^[a-zA-Z\s-\sÑñ']+$/.test(v) == true ||
                             v == '' ||
-                            'Only letters are  allowed, except for - !',
+                            'Mother name is invalid!',
                         ]"
                         outlined
                         :readonly="readonly"
@@ -480,8 +481,8 @@
                             (!!v && v.trim() != '') ||
                             'Guardian name is required',
                           (v) =>
-                            /^[a-zA-Z\s-]+$/.test(v) == true ||
-                            'Only letters are  allowed, except for - !',
+                            /^[a-zA-Z\s-Ññ']+$/.test(v) == true ||
+                            'Guardian name is invalid!',
                         ]"
                         label="Guardian's Name"
                         outlined
@@ -714,7 +715,7 @@
                             (v && v.length >= 4) ||
                             'School address must be at least 4 characters.',
                           (v) =>
-                            /^[a-zA-Z0-9\s-,]+$/.test(v) == true ||
+                            /^[a-zA-Z0-9\s-,.]+$/.test(v) == true ||
                             'Only letters and numbers are allowed excepts - and , .',
                         ]"
                         label="School Address"
@@ -728,7 +729,23 @@
                         v-model="studentInfo.grade_level"
                         :rules="[(v) => !!v || 'Required']"
                         :items="GradeLevel"
+                        @change="filterSections(studentInfo.grade_level)"
                         label="Grade Level"
+                        :readonly="statusLevel"
+                        outlined
+                        required
+                      ></v-select>
+                    </v-col>
+                    <v-col cols="12" sm="6" md="6">
+                      <v-select
+                        :items="sections"
+                        v-model="studentInfo.section_name"
+                        name="section"
+                        @change="
+                          theSection(($event = studentInfo.section_name))
+                        "
+                        :rules="[(v) => !!v || 'Section name is required!']"
+                        label="Section"
                         :readonly="statusLevel"
                         outlined
                         required
@@ -743,55 +760,18 @@
                       elevation="5"
                       block
                       color="blue darken-1"
-                      :disabled="!valid"
                       @click="
                         readonly
                           ? ((readonly = false), (statusLevel = false))
-                          : updateStudent(studentInfo)
+                          : updateStudentDetails(studentInfo)
                       "
+                      :disabled="readonly === false ? !valid : false"
                     >
                       {{ btnText }}
                     </v-btn>
                   </v-container>
                 </v-card-actions>
                 <br />
-              </v-card>
-            </v-form>
-          </template>
-        </v-dialog>
-        <!------------- Selected a Section for the selected gradelevel------------>
-        <v-dialog v-model="dialog" persistent max-width="500px">
-          <template>
-            <v-form ref="sectionDetails" lazy-validation>
-              <v-card>
-                <v-card-title>
-                  <span class="headline">Select Student Sections</span>
-                  <v-spacer></v-spacer>
-                  <v-btn icon @click="closeApprove()">
-                    <v-icon>mdi-close</v-icon>
-                  </v-btn>
-                </v-card-title>
-                <v-card-text>
-                  <v-select
-                    :items="sections"
-                    v-model="section"
-                    name="section"
-                    @change="theSection(($event = section))"
-                    :rules="[(v) => !!v || 'Section name is required!']"
-                    label="Section"
-                    outlined
-                    required
-                  ></v-select>
-                </v-card-text>
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="blue darken-1"
-                    @click="approveEnrollment(studentInfo)"
-                  >
-                    Done
-                  </v-btn>
-                </v-card-actions>
               </v-card>
             </v-form>
           </template>
@@ -878,38 +858,23 @@ export default {
     this.min_date = this.$moment(
       new Date(`${todayDate.getFullYear() - 50}-12-31`)
     ).format("YYYY-MM-DD");
+
+    this.retrieveData();
     let adminLevel = null;
     if (this.$user.user_type == "teacher_admin") {
       let temp = this.$user.username.split("_");
       adminLevel = temp[1];
-      this.isAdmin = false;
     }
-    this.$store
-      .dispatch("allStudents", adminLevel)
-      .then((response) => {
-        this.isDataLoaded = true;
-        let studs = response;
-        for (var index in studs) {
-          let element = studs[index];
-          element["fullname"] = element["firstname"].concat(
-            " ",
-            element["lastname"]
-          );
-          this.students.push(element);
-          this.filteredStudents.push(element);
-        }
-      })
-      .catch(() => {
-        this.$swal.fire({
-          icon: "warning",
-          title: "Ooops!",
-          text: "An error encountered!",
-        });
-      });
+    this.filterSections(adminLevel);
   },
   mounted() {
+    let adminLevel = null;
+    if (this.$user.user_type == "teacher_admin") {
+      let temp = this.$user.username.split("_");
+      adminLevel = temp[1];
+    }
     this.$axios
-      .get("allGradeLevelSections")
+      .get("allSections/" + adminLevel)
       .then((response) => {
         let section = response.data.sections;
         for (const key in section) {
@@ -932,6 +897,38 @@ export default {
     }
   },
   methods: {
+    retrieveData() {
+      this.isDataLoaded = false;
+      this.students = [];
+      let adminLevel = null;
+      if (this.$user.user_type == "teacher_admin") {
+        let temp = this.$user.username.split("_");
+        adminLevel = temp[1];
+        this.isAdmin = false;
+      }
+      this.$store
+        .dispatch("allStudents", adminLevel)
+        .then((response) => {
+          this.isDataLoaded = true;
+          let studs = response;
+          for (var index in studs) {
+            let element = studs[index];
+            element["fullname"] = element["firstname"].concat(
+              " ",
+              element["lastname"]
+            );
+            this.students.push(element);
+            this.filteredStudents.push(element);
+          }
+        })
+        .catch(() => {
+          this.$swal.fire({
+            icon: "warning",
+            title: "Ooops!",
+            text: "An error encountered!",
+          });
+        });
+    },
     //Filter The Studentr By School Year
     filterByYear(year) {
       this.gradelevel = null;
@@ -1097,12 +1094,20 @@ export default {
       this.studentInfo.section_name = secName;
     },
     //Selecting A Section
-    filterSections(student) {
+    filterSections(gradelevel) {
+      this.studentInfo.section_name = null;
       this.section = this.studentInfo.section_name;
       this.dialog = true;
       this.sections = [];
+
+      let adminLevel = null;
+      if (this.$user.user_type == "teacher_admin") {
+        let temp = this.$user.username.split("_");
+        adminLevel = temp[1];
+      }
+      // alert(adminLevel);
       this.$store
-        .dispatch("allSections")
+        .dispatch("allSections", adminLevel)
         .then((res) => {
           let sections = res;
           for (const key in sections) {
@@ -1116,7 +1121,7 @@ export default {
                 ) {
                   const element1 = grade_levelData[glKey];
                   if (glKey == "grade_level") {
-                    if (element1 == student.grade_level) {
+                    if (element1 === gradelevel) {
                       this.sections.push(section);
                     }
                   }
@@ -1135,32 +1140,30 @@ export default {
     },
 
     //Method For Approving the enrollment
-    approveEnrollment() {
-      if (this.sections.includes(this.section)) {
-        this.studentInfo.section_name = this.section;
+    updateStudentDetails() {
+      if (this.studentInfo.section_name) {
+        //   this.studentInfo.section_name = this.section;
         this.$axios
           .post(
             `updateStudent/` + this.studentInfo.student_id,
             this.studentInfo
           )
           .then((response) => {
+            this.studentDialog = false;
+            this.readonly = true;
+            this.statusLevel = true;
+            this.btnText = "Update";
             if (response.data.updated) {
-              this.$swal
-                .fire({
-                  icon: "success",
-                  title: "Success",
-                  text: "Student details is successfully updated!",
-                })
-                .then((result) => {
-                  if (result.isConfirmed) {
-                    this.$refs.sectionDetails.resetValidation();
-                    this.$refs.studentDetails.resetValidation();
-                  }
-                });
+              this.$swal.fire({
+                icon: "success",
+                title: "Success",
+                text: "Student details is successfully updated!",
+              });
+
+              this.$refs.sectionDetails.resetValidation();
+              this.$refs.studentDetails.resetValidation();
+              this.retrieveData();
               this.dialog = false;
-              this.studentDialog = false;
-              this.readonly = true;
-              this.statusLevel = true;
             } else {
               this.dialog = false;
               this.$swal
@@ -1178,11 +1181,17 @@ export default {
             }
           })
           .catch((error) => {
-            if (error.response.status == 500) {
+            if (error.response.status == 400) {
               this.$swal.fire({
                 icon: "error",
                 title: "Failed",
                 text: "This section has reach its limits!",
+              });
+            } else {
+              this.$swal.fire({
+                icon: "error",
+                title: "Failed",
+                text: "An error encountered!",
               });
             }
           });
@@ -1205,14 +1214,6 @@ export default {
       this.$refs.sectionDetails.resetValidation();
     },
 
-    //UPDATE A STUDENT DETAILS
-    updateStudent(formdata) {
-      if (this.$refs.studentDetails.validate()) {
-        this.studentInfo = formdata;
-        this.filterSections(formdata);
-      }
-    },
-
     //Dowloadcsv
     csvExport(arrData) {
       let csvContent = "data:text/csv;charset=utf-8,";
@@ -1221,7 +1222,6 @@ export default {
         ...arrData.map((item) => Object.values(item)),
       ]
         .join("\n")
-
         .replace(/(^\[)|(\]$)/gm, "");
       const data = encodeURI(csvContent);
       const link = document.createElement("a");
@@ -1233,7 +1233,7 @@ export default {
   computed: {
     csvData() {
       return this.students.map((item) => ({
-        SchoolYear: `${item.start_school_year} ${item.end_school_year}`,
+        SchoolYear: `${item.start_school_year} - ${item.end_school_year}`,
         GradeLevel: item.grade_level,
         Section: item.student_section,
         StudentName: `${item.firstname} ${item.lastname}`,

@@ -95,6 +95,7 @@
                       (v) => !!v || 'Average is required',
                       (v) => v <= 100 || 'Maximum average is 100',
                     ]"
+                    min="0"
                     type="number"
                     label="Average"
                     outlined
@@ -110,11 +111,11 @@
                     :rules="[
                       (v) => (!!v && v.trim() != '') || 'Firstname is required',
                       (v) =>
-                        (v && v.length >= 3) ||
-                        'Firstname cannot be lesser than 3 characters.',
+                        (v && v.length >= 2) ||
+                        'Firstname cannot be lesser than 2 characters.',
                       (v) =>
-                        /^[a-zA-Z\s]+$/.test(v) == true ||
-                        'Only letters are  allowed!',
+                        /^[a-zA-Z\sñÑ]+$/.test(v) == true ||
+                        'First name is invalid!',
                     ]"
                     label="Firstname"
                     outlined
@@ -129,9 +130,9 @@
                     label="Middlename"
                     :rules="[
                       (v) =>
-                        /^[a-zA-Z\s-]+$/.test(v) == true ||
+                        /^[a-zA-Z\s-ñÑ']+$/.test(v) == true ||
                         v == '' ||
-                        'Only letters are  allowed, except for - !',
+                        'Middlename is invalid!',
                     ]"
                     outlined
                     :readonly="readonly"
@@ -146,10 +147,10 @@
                       (v) => (!!v && v.trim() != '') || 'Lastname is required',
                       (v) =>
                         (v && v.length >= 3) ||
-                        'Firtname cannot be lesser than 3 characters.',
+                        'Last cannot be lesser than 3 characters.',
                       (v) =>
-                        /^[a-zA-Z\s-]+$/.test(v) == true ||
-                        'Only letters are  allowed, except for - !',
+                        /^[a-zA-Z\s-ñÑ']+$/.test(v) == true ||
+                        'Lastname is invalid!',
                     ]"
                     label="Lastname"
                     outlined
@@ -354,7 +355,7 @@
                         (address && address.length >= 4) ||
                         'Address must be at least 4 characters.',
                       (address) =>
-                        /^[a-zA-Z0-9\s-,]+$/.test(address) == true ||
+                        /^[a-zA-Z0-9\s-,.]+$/.test(address) == true ||
                         'Only letters and numbers are allowed excepts - and , .',
                     ]"
                     label="Address"
@@ -395,9 +396,9 @@
                     label="Father's Name"
                     :rules="[
                       (v) =>
-                        /^[a-zA-Z\s-]+$/.test(v) == true ||
+                        /^[a-zA-Z\s-.Ññ']+$/.test(v) == true ||
                         v == '' ||
-                        'Only letters are  allowed, except for - !',
+                        'Father name is invalid!',
                     ]"
                     :readonly="readonly"
                     outlined
@@ -410,9 +411,9 @@
                     label="Mother's Maiden Name"
                     :rules="[
                       (v) =>
-                        /^[a-zA-Z\s-\s]+$/.test(v) == true ||
+                        /^[a-zA-Z\s-.Ññ']+$/.test(v) == true ||
                         v == '' ||
-                        'Only letters are  allowed, except for - !',
+                        'Mother name is invalid!',
                     ]"
                     outlined
                     :readonly="readonly"
@@ -427,8 +428,8 @@
                         (!!guardian && guardian.trim() != '') ||
                         'Guardian name is required',
                       (v) =>
-                        /^[a-zA-Z\s-]+$/.test(v) == true ||
-                        'Only letters are  allowed, except for - !',
+                        /^[a-zA-Z\s-.Ññ']+$/.test(v) == true ||
+                        'Guardian name is invalid!',
                     ]"
                     label="Guardian's Name"
                     outlined
@@ -694,7 +695,7 @@
                           last_school_address.length >= 4) ||
                         'School address must be at least 4 characters.',
                       (v) =>
-                        /^[a-zA-Z0-9\s-,]+$/.test(v) == true ||
+                        /^[a-zA-Z0-9\s-,.]+$/.test(v) == true ||
                         'Only letters and numbers are allowed excepts - and , .',
                     ]"
                     label="School Address"
@@ -764,7 +765,10 @@
               :loading="isDataLoaded ? false : true"
               loading-text="Loading... Please wait"
               required
-            ></v-select>
+              ><v-icon slot="prepend-inner" color="red" x-small
+                >mdi-asterisk</v-icon
+              ></v-select
+            >
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -876,7 +880,12 @@ export default {
       this.index = index;
       this.dialog = true;
       this.sections = [];
-      this.$store.dispatch("allSections").then((res) => {
+      let adminLevel = null;
+      if (this.$user.user_type == "teacher_admin") {
+        let temp = this.$user.username.split("_");
+        adminLevel = temp[1];
+      }
+      this.$store.dispatch("allSections", adminLevel).then((res) => {
         let sections = res;
         for (const key in sections) {
           if (sections.hasOwnProperty.call(sections, key)) {

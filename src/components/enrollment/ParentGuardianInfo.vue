@@ -7,9 +7,9 @@
         label="Father's Name"
         :rules="[
           (v) =>
-            /^[a-zA-Z\s-.]+$/.test(v) == true ||
+            /^[a-zA-Z\s-.Ññ']+$/.test(v) == true ||
             v == '' ||
-            'Only letters are  allowed, except for - and .',
+            'Father name is invalid!',
         ]"
         outlined
         required
@@ -21,12 +21,11 @@
         label="Mother's Maiden Name"
         :rules="[
           (v) =>
-            /^[a-zA-Z\s-\s.]+$/.test(v) == true ||
+            /^[a-zA-Z\s-\s.Ññ']+$/.test(v) == true ||
             v == '' ||
-            'Only letters are  allowed, except for -  and .',
+            'Mother name is invalid!',
         ]"
         outlined
-        required
       ></v-text-field>
     </v-col>
     <v-col cols="12" xs="6" sm="6" md="6" lg="3">
@@ -36,13 +35,14 @@
           (v) => (!!v && v.trim() != '') || 'Guardian name is required',
           (v) => v.length >= 4 || 'Guardian must be at least 4 characters.',
           (v) =>
-            /^[a-zA-Z\s-.]+$/.test(v) == true ||
-            'Only letters are  allowed, except for -  and .',
+            /^[a-zA-Z\s-.Ññ']+$/.test(v) == true || 'Guardian name is invalid!',
         ]"
         label="Guardian's Name"
         outlined
         required
-      ></v-text-field>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-text-field>
     </v-col>
     <v-col cols="12" sm="6" md="6" lg="3">
       <v-text-field
@@ -70,7 +70,9 @@
         :counter="11"
         outlined
         required
-      ></v-text-field>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-text-field>
     </v-col>
   </v-row>
 </template>

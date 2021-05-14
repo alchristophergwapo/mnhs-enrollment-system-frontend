@@ -26,12 +26,16 @@
         label="Learners Reference No. (LRN)"
         outlined
         required
-      ></v-text-field>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-text-field>
     </v-col>
 
     <v-col cols="12" xs="6" sm="4" md="4" lg="4">
       <v-text-field
         v-model="studentInfo.average"
+        onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+        min="0"
         name="average"
         :rules="[
           (v) => (!!v && v != '') || 'Average is required',
@@ -41,7 +45,9 @@
         label="Average"
         outlined
         required
-      ></v-text-field>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-text-field>
     </v-col>
     <v-col cols="12" xs="6" sm="4" md="4" lg="4">
       <v-text-field
@@ -50,22 +56,24 @@
         :rules="[
           (v) => (!!v && v.trim() !== '') || 'Firstname is required',
           (v) =>
-            (v && v.length >= 3) ||
-            'Firstname cannot be lesser than 3 characters.',
+            (v && v.length >= 2) ||
+            'Firstname cannot be lesser than 2 characters.',
           (v) =>
-            /^[a-zA-Z\s]+$/.test(v) === true || 'Only letters are  allowed!',
+            /^[a-zA-Z\sÑñ]+$/.test(v) === true || 'Only letters are  allowed!',
         ]"
         label="Firstname"
         outlined
         required
-      ></v-text-field>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-text-field>
     </v-col>
     <v-col cols="12" xs="6" sm="4" md="4" lg="4">
       <v-text-field
         v-model="studentInfo.middlename"
         :rules="[
           (v) =>
-            /^[a-zA-Z\s-]+$/.test(v) == true ||
+            /^[a-zA-Z\sÑñ-]+$/.test(v) == true ||
             v == '' ||
             'Only letters are  allowed, except for - !',
         ]"
@@ -81,16 +89,18 @@
         :rules="[
           (v) => (!!v && v.trim() != '') || 'Lastname is required',
           (v) =>
-            (v && v.length >= 3) ||
-            'Firtname cannot be lesser than 3 characters.',
+            (v && v.length >= 2) ||
+            'Lastname cannot be lesser than 2 characters.',
           (v) =>
-            /^[a-zA-Z\s-]+$/.test(v) == true ||
+            /^[a-zA-Z\s-'Ññ]+$/.test(v) == true ||
             'Only letters are  allowed, except for - !',
         ]"
         label="Lastname"
         outlined
         required
-      ></v-text-field>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-text-field>
     </v-col>
     <v-col cols="12" xs="6" sm="4" md="4" lg="4">
       <v-text-field
@@ -100,9 +110,12 @@
         @click="modal = !modal"
         label="Date of Birth"
         prepend-inner-icon="mdi-calendar"
+        required
         readonly
         outlined
-      ></v-text-field>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-text-field>
       <v-dialog
         ref="dialog"
         v-model="modal"
@@ -145,7 +158,9 @@
         readonly
         outlined
         required
-      ></v-text-field>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-text-field>
     </v-col>
     <v-col cols="12" xs="6" sm="2" md="2" lg="2">
       <v-checkbox
@@ -156,7 +171,8 @@
         label="Male"
         type="checkbox"
         :required="!studentInfo.gender ? true : false"
-      ></v-checkbox>
+      >
+      </v-checkbox>
       <v-spacer></v-spacer>
     </v-col>
     <v-col cols="12" xs="6" sm="2" md="2" lg="2">
@@ -172,6 +188,7 @@
     </v-col>
     <v-col cols="12" xs="6" sm="4" md="4" lg="4">
       <p>
+        <v-icon slot="prepend" color="red" x-small>mdi-asterisk</v-icon>
         Belonging to any Indigenous People (IP) Community/Indigenous Cultural
         Community?
       </p>
@@ -209,7 +226,9 @@
         label="If yes, please specify"
         outlined
         required
-      ></v-text-field>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-text-field>
     </v-col>
 
     <v-col cols="12" xs="6" sm="6" md="6" lg="3">
@@ -228,7 +247,9 @@
         placeholder="e.g Cebuano, Tagalog, Waray"
         outlined
         required
-      ></v-text-field>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-text-field>
     </v-col>
 
     <v-col cols="12" xs="6" sm="6" md="6" lg="3">
@@ -255,7 +276,9 @@
         :counter="11"
         outlined
         required
-      ></v-text-field>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-text-field>
     </v-col>
 
     <v-col cols="12" xs="6" sm="6" md="6" lg="3">
@@ -269,18 +292,22 @@
             (address && address.length >= 4) ||
             'Address must be at least 4 characters.',
           (address) =>
-            /^[a-zA-Z0-9\s-.]+$/.test(address) == true ||
+            /^[a-zA-Z0-9\s-.,]+$/.test(address) == true ||
             'Only letters and numbers are allowed excepts - and , .',
         ]"
         label="Address"
         outlined
         required
-      ></v-text-field>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-text-field>
     </v-col>
     <v-col cols="12" xs="6" sm="6" md="6" lg="3">
       <v-text-field
         v-model="studentInfo.zipcode"
+        min="0"
         name="zipcode"
+        onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
         :rules="[
           (zipcode) => (!!zipcode && zipcode != '') || 'Zipcode is required',
           (zipcode) =>
@@ -296,7 +323,9 @@
         type="number"
         outlined
         required
-      ></v-text-field>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-text-field>
     </v-col>
   </v-row>
 </template>

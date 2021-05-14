@@ -2,7 +2,10 @@
   <v-row>
     <div class="form-head">For Senior High Learners</div>
     <v-col cols="12" xs="6" sm="4" md="4" lg="2">
-      <p class="checkbox-label" style="padding-top: 28px">Semester</p>
+      <p class="checkbox-label" style="padding-top: 28px">
+        <v-icon slot="start" color="red" x-small>mdi-asterisk</v-icon>
+        Semester
+      </p>
     </v-col>
     <v-col cols="12" xs="6" sm="4" md="4" lg="2">
       <v-checkbox
@@ -32,7 +35,9 @@
         label="Track"
         outlined
         required
-      ></v-select>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-select>
     </v-col>
     <v-col cols="12" xs="6" sm="6" md="6" lg="3">
       <v-select
@@ -42,7 +47,9 @@
         label="Strand"
         outlined
         required
-      ></v-select>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-select>
     </v-col>
   </v-row>
 </template>

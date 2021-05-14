@@ -3,7 +3,7 @@
     <div class="form-head">
       For Returning Learners (Balik Aral) and Those Who Shall Transfer/ Move In
     </div>
-    <v-col cols="12" xs="6" sm="4" md="4" lg="2">
+    <v-col cols="12" sm="4">
       <v-select
         v-model="balikOrTransferInfo.last_grade_completed"
         :items="grade_level_options"
@@ -16,11 +16,15 @@
         type="number"
         outlined
         required
-      ></v-select>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-select>
     </v-col>
-    <v-col cols="12" xs="6" sm="4" md="4" lg="2">
+    <v-col cols="12" sm="4">
       <v-text-field
         v-model="balikOrTransferInfo.last_year_completed"
+        onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+        min="0"
         :rules="[
           (v) =>
             (!!v && v.trim() != '') || 'Last School Year Completed is required',
@@ -31,11 +35,15 @@
         label="Last School Year Completed"
         outlined
         required
-      ></v-text-field>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-text-field>
     </v-col>
-    <v-col cols="12" xs="6" sm="4" md="4" lg="2">
+    <v-col cols="12" sm="4">
       <v-text-field
         v-model="balikOrTransferInfo.last_school_ID"
+        onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+        min="0"
         :rules="[
           (last_school_ID) =>
             (!!last_school_ID && last_school_ID.trim() != '') ||
@@ -55,9 +63,11 @@
         :counter="6"
         outlined
         required
-      ></v-text-field>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-text-field>
     </v-col>
-    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
+    <v-col cols="12" sm="6">
       <v-text-field
         v-model="balikOrTransferInfo.last_school_attended"
         :rules="[
@@ -72,9 +82,11 @@
         label="School Name"
         outlined
         required
-      ></v-text-field>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-text-field>
     </v-col>
-    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
+    <v-col cols="12" sm="6">
       <v-text-field
         v-model="balikOrTransferInfo.last_school_address"
         :rules="[
@@ -91,7 +103,9 @@
         label="School Address"
         outlined
         required
-      ></v-text-field>
+      >
+        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+      </v-text-field>
     </v-col>
   </v-row>
 </template>
