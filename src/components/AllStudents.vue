@@ -641,6 +641,8 @@
                         ]"
                         label="Last School Year Completed"
                         :readonly="readonly"
+                        type="number"
+                        min="0"
                         outlined
                         required
                       ></v-text-field>
@@ -655,6 +657,7 @@
                     >
                       <v-text-field
                         v-model="studentInfo.last_school_ID"
+                          onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
                         :rules="[
                           (v) => !!v || 'School ID is required',
                           (v) =>
@@ -669,6 +672,7 @@
                         ]"
                         label="School ID"
                         type="number"
+                        min="0"
                         :counter="6"
                         :readonly="readonly"
                         outlined

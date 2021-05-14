@@ -334,6 +334,8 @@ export default {
             title: "Success",
             text: response.data.success,
           });
+          this.declineModal=false;
+          this.openDialog=false;
         })
         .catch(() => {
           this.declining = false;
