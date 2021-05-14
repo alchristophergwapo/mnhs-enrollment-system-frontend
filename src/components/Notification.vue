@@ -325,7 +325,7 @@ export default {
     declineEnrollment(id) {
       this.declining = true;
       this.$axios
-        .post("declineEnrollment/" + id)
+        .post("declineEnrollment/" + id,{remarks:this.remarks})
         .then((response) => {
           this.declining = false;
           this.deleteNotif();
