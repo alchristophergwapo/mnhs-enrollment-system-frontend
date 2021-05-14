@@ -70,9 +70,8 @@
         cancel
       </v-btn>
       <v-btn
-        dark
         :loading="loading"
-        :disabled="hasAnyErors"
+        :disabled="!sectionValid"
         color="primary"
         @click="addSection(type)"
         >Save</v-btn

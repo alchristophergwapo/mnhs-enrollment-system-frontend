@@ -333,7 +333,6 @@ export default {
       dialog: false,
       loading: false,
      imageUrl: "https://mnhs-enrollment-system.herokuapp.com/images/",
-    // imageUrl: "https:// 127.0.0.1:8000/images/",
       item: null,
       id: null,
       index: null,

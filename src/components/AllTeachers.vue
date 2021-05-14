@@ -50,7 +50,6 @@
                     <v-card-text>
                       <v-container>
                         <v-text-field
-                          @keydown="clearError"
                           label="Teacher's Fullname"
                           :rules="[
                             (value) =>
@@ -64,50 +63,35 @@
                           ]"
                           type="text"
                           class="form-control"
-                          v-model="Teacher"
-                          :error="hasError('teacher_name')"
+                          v-model="Teacher"      
                           name="teacher_name"
                           outlined
                           ><v-icon slot="prepend-inner" color="red" x-small
                             >mdi-asterisk</v-icon
                           ></v-text-field
-                        >
-                        <p
-                          v-if="hasError('teacher_name')"
-                          class="invalid-feedback"
-                        >
-                          {{ getError("teacher_name") }}
-                        </p>
-                        <v-text-field
-                          @keydown="clearError"
+                        >                     
+                        <v-text-field               
                           label="Email"
                           type="email"
                           :rules="[
                             (value) =>
+                              !!value || 'Email field is required!',
+                            (value) =>
                               /^\w+([\.-]?\w+)*@\w+([a-z\.-]?\w+)*(\.\w[a-z]{1,3})+$/.test(
                                 value
                               ) === true || 'Please enter a valid email.',
+                          String(value).length > 10 ||
+                             'Email cannot be greater than 100 characters!',
                           ]"
-                          :error="hasError('email')"
-                          v-model="Email"
+                          v-model="Email"              
                           name="email"
                           outlined
                           ><v-icon slot="prepend-inner" color="red" x-small
                             >mdi-asterisk</v-icon
-                          ></v-text-field
-                        >
-                        <!-- <p v-if="hasError('email')" class="invalid-feedback">
-                          {{ getError("email") }}
-                        </p> -->
-                        <v-text-field
-                          @keydown="clearError"
+                          ></v-text-field>                       
+                        <v-text-field              
                           label="Phone Number"
-                          type="number"
-                          min="0"
-                          v-model="Contact"
-                          onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
-                          name="contact"
-                          :rules="[
+                         :rules="[
                             (contact) => !!contact || 'Contact is required',
                             (contact) =>
                               (contact.length > 0 &&
@@ -116,20 +100,20 @@
                               'Contact number is invalid!',
                             (contact) =>
                               String(contact).length <= 11 ||
-                              'Contact number cannot be greater than 11 digits',
+                              'Contact number cannot be greater than 11 digits!',
                             (contact) =>
                               String(contact).length == 11 ||
-                              'Contact number must be 11 digits',
+                              'Contact number must be 11 digits!',
                           ]"
-                          :error="hasError('contact')"
+                          type="number"
+                          min="0"
+                          v-model="Contact"
+                          onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+                          name="contact"               
                           outlined
                           ><v-icon slot="prepend-inner" color="red" x-small
                             >mdi-asterisk</v-icon
-                          ></v-text-field
-                        >
-                        <p v-if="hasError('contact')" class="invalid-feedback">
-                          {{ getError("contact") }}
-                        </p>
+                          ></v-text-field>                     
                         <v-select
                           v-model="selected_section"
                           item-text="name"
