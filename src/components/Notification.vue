@@ -152,7 +152,7 @@
                 <v-btn
                   :disabled="!valid"
                   color="blue"
-                  @click="declineEnrollment"
+                  @click="declineEnrollment(declineId)"
                   >done</v-btn
                 >
               </v-card-actions>
