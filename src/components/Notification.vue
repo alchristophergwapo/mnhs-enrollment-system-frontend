@@ -269,7 +269,7 @@ export default {
       this.loading = true;
       if (this.section) {
         this.$axios
-          .post("approveEnrollment/" + id, { student_section: this.section })
+          .post("approveEnrollment/" + id, { student_section: this.sectio })
           .then((response) => {
             this.deleteNotif();
             this.$swal.fire({
