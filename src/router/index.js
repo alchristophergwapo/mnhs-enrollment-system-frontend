@@ -93,7 +93,7 @@ const routes = [
         children: [
           {
             path: "add",
-            component: () => import("@/components/adminpage/AddNewAdmin.vue"),
+            component: () => import("@/views/admin-page/AddNewAdmin.vue"),
             meta: {
               title: "Add New Admin",
             },

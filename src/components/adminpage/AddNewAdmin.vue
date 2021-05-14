@@ -248,12 +248,4 @@ export default {
 .profile-card {
   margin: auto;
 }
-
-.subtitle {
-  text-align: center;
-}
-
-.subtitle span {
-  font-size: 20px;
-}
 </style>
