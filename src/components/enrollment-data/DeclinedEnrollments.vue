@@ -614,6 +614,7 @@
                     label="Last School Year Completed"
                     :readonly="readonly"
                     type="number"
+                    min="0"
                     outlined
                     required
                   ></v-text-field>
@@ -648,6 +649,7 @@
                     :counter="6"
                     :readonly="readonly"
                     type="number"
+                    min="0"
                     outlined
                     required
                   ></v-text-field>

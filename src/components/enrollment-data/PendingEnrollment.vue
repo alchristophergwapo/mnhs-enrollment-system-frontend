@@ -478,7 +478,7 @@ export default {
     },
 
     declineEnrollment() {
-      if (this.$refs.form.validate()) {
+      if (this.$refs.form.validate()) {    
         this.$axios
           .post("declineEnrollment/" + this.declineId, {
             remarks: this.remarks,
