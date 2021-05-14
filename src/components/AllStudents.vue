@@ -95,6 +95,7 @@
         >
           <template>
             <v-form ref="studentDetails" v-model="valid" lazy-validation>
+              
               <v-card>
                 <v-card-title class="text-center justify-center">
                   <v-spacer></v-spacer>
@@ -148,6 +149,7 @@
                     <v-col cols="12" xs="3" sm="4" md="4" lg="4">
                       <v-text-field
                         v-model="studentInfo.average"
+                        onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
                         name="average"
                         :rules="[
                           (v) => !!v || 'Average is required',
@@ -208,9 +210,7 @@
                           (v) =>
                             (v && v.length >= 2) ||
                             'Lastname cannot be lesser than 2 characters.',
-                          (v) =>
-                            /^[a-zA-Z\s-]+$/.test(v) == true ||
-                            'Only letters are  allowed, except for - !',
+                          (v) =>/^[a-zA-Z\s-'Ññ]+$/.test(v) == true || 'Only letters are  allowed, except for - !',
                         ]"
                         label="Lastname"
                         outlined
@@ -514,7 +514,7 @@
                         required
                       ></v-text-field>
                     </v-col>
-                    <!----------------------------------THIS IS FOR SENIOR HIGH STUDENT DATA INFORMATION------------------------------------------->
+<!----------------------------------THIS IS FOR SENIOR HIGH STUDENT DATA INFORMATION------------------------------------------->
                     <v-col
                       cols="12"
                       xs="12"
@@ -633,9 +633,11 @@
                     >
                       <v-text-field
                         v-model="studentInfo.last_year_completed"
+                         onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
                         :rules="[
                           (v) =>
                             !!v || 'Last School Year Completed is required',
+                          (v) =>v < new Date().getFullYear(),
                         ]"
                         label="Last School Year Completed"
                         :readonly="readonly"
@@ -666,6 +668,7 @@
                             'School ID must be 6 digits',
                         ]"
                         label="School ID"
+                        type="number"
                         :counter="6"
                         :readonly="readonly"
                         outlined

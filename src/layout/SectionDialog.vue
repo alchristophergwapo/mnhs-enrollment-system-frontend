@@ -181,6 +181,7 @@ export default {
                 });
               }
             });
+               this.loading = false;
         } else {
           this.loading = true;
           this.$axios

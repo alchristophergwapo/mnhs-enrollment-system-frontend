@@ -332,7 +332,7 @@ export default {
       remarks: null,
       dialog: false,
       loading: false,
-     imageUrl: "https://mnhs-enrollment-system.herokuapp.com/images/",
+      imageUrl: "https://mnhs-enrollment-system.herokuapp.com/images/",
       item: null,
       id: null,
       index: null,

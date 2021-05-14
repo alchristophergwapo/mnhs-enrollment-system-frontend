@@ -89,6 +89,7 @@
                 </v-col>
                 <v-col cols="12" xs="3" sm="4" md="4" lg="4">
                   <v-text-field
+                    onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
                     v-model="studentInfo.average"
                     name="average"
                     :rules="[
@@ -599,14 +600,16 @@
                   sm="6"
                   md="6"
                   lg="6"
-                  v-if="studentInfo.last_grade_completed != null"
+                  v-if="studentInfo.last_year_completed != null"
                 >
                   <v-text-field
                     v-model="studentInfo.last_year_completed"
+                     onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
                     :rules="[
                       (last_year_completed) =>
                         !!last_year_completed ||
                         'Last School Year Completed is required',
+                     (last_year_completed) =>last_year_completed < new Date().getFullYear(),
                     ]"
                     label="Last School Year Completed"
                     :readonly="readonly"
@@ -625,6 +628,7 @@
                 >
                   <v-text-field
                     v-model="studentInfo.last_school_ID"
+                    onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
                     :rules="[
                       (last_school_ID) =>
                         !!last_school_ID || 'School ID is required',
