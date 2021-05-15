@@ -168,8 +168,12 @@
 // import { EventBus } from "../bus/bus.js";
 export default {
   components: {
-    BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
-    EnrollmentDataDialog: () => import("@/layout/EnrollmentDataDialog.vue"),
+    BreadCrumb: () =>
+      import(/* webpackChunkName: "BreadCrumb" */ "@/layout/BreadCrumb.vue"),
+    EnrollmentDataDialog: () =>
+      import(
+        /* webpackChunkName: "EnrollmentDataDialog" */ "@/layout/EnrollmentDataDialog.vue"
+      ),
   },
   data() {
     return {
@@ -325,7 +329,7 @@ export default {
     declineEnrollment(id) {
       this.declining = true;
       this.$axios
-        .post("declineEnrollment/" + id,{remarks:this.remarks})
+        .post("declineEnrollment/" + id, { remarks: this.remarks })
         .then((response) => {
           this.declining = false;
           this.deleteNotif();
@@ -334,8 +338,8 @@ export default {
             title: "Success",
             text: response.data.success,
           });
-          this.declineModal=false;
-          this.openDialog=false;
+          this.declineModal = false;
+          this.openDialog = false;
         })
         .catch(() => {
           this.declining = false;

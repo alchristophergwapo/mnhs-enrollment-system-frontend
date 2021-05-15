@@ -10,6 +10,9 @@
         style="width: 0px"
         outlined
       ></v-text-field>
+      <v-btn class="add_btn" color="primary" @click="add = true">
+        <v-icon>mdi-plus</v-icon>Add New
+      </v-btn>
     </v-card-title>
     <v-data-table
       :items="teacher_admins"
@@ -36,6 +39,15 @@
     <v-dialog v-model="edit" max-width="500px">
       <EditAdminDetails :data="tAdminToEdit" />
     </v-dialog>
+    <v-dialog v-model="add" max-width="500px">
+      <AddNewAdmin>
+        <template v-slot:close_btn>
+          <v-btn icon @click="add = false" class="close-icon">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </template>
+      </AddNewAdmin>
+    </v-dialog>
     <v-overlay :value="loading" absolute>
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
@@ -47,7 +59,13 @@ import { EventBus } from "../../bus/bus";
 export default {
   components: {
     EditAdminDetails: () =>
-      import("@/components/adminpage/EditTAdminDetails.vue"),
+      import(
+        /* webpackChunkName: "EditAdminDetails" */ "@/components/adminpage/EditTAdminDetails.vue"
+      ),
+    AddNewAdmin: () =>
+      import(
+        /* webpackChunkName: "AddAdmin" */ "@/components/adminpage/AddNewAdmin.vue"
+      ),
   },
   data() {
     return {
@@ -55,6 +73,7 @@ export default {
       isDataLoaded: false,
       loading: false,
       edit: false,
+      add: false,
       headers: [
         { text: "Grade Level", align: "start", value: "assigned_gr_level" },
         { text: "Admin Name", value: "user_fullname" },
@@ -68,6 +87,11 @@ export default {
     this.initializeData();
     EventBus.$on("updated", () => {
       this.edit = false;
+      this.initializeData();
+    });
+
+    EventBus.$on("newAdminAdded", () => {
+      this.add = false;
       this.initializeData();
     });
   },
@@ -131,5 +155,8 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+.add_btn {
+  margin: -29px 0 0 10px;
+}
 </style>

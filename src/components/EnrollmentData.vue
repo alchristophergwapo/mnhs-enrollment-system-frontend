@@ -55,11 +55,16 @@
 import { EventBus } from "../bus/bus";
 export default {
   components: {
-    BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
+    BreadCrumb: () =>
+      import(/* webpackChunkName: "BreadCrumb" */ "@/layout/BreadCrumb.vue"),
     PendingEnrollment: () =>
-      import("@/components/enrollment-data/PendingEnrollment.vue"),
+      import(
+        /* webpackChunkName: "PendingEnrollment" */ "@/components/enrollment-data/PendingEnrollment.vue"
+      ),
     DeclinedEnrollments: () =>
-      import("@/components/enrollment-data/DeclinedEnrollments.vue"),
+      import(
+        /* webpackChunkName: "DeclinedEnrollment" */ "@/components/enrollment-data/DeclinedEnrollments.vue"
+      ),
   },
   data: () => ({
     gradelevel: null,

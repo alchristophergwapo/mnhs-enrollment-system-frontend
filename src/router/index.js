@@ -7,7 +7,10 @@ const routes = [
   {
     path: "/",
     name: "Home",
-    component: () => import("@/components/LandingPage.vue"),
+    component: () =>
+      import(
+        /* webpackChunkName: "LandingPage" */ "@/components/LandingPage.vue"
+      ),
     meta: {
       title: "MNHS",
     },
@@ -15,7 +18,10 @@ const routes = [
   {
     path: "/enroll",
     name: "EnrollmentForm",
-    component: () => import("@/components/EnrollmentForm.vue"),
+    component: () =>
+      import(
+        /* webpackChunkName: "EnrollmentForm" */ "@/components/EnrollmentForm.vue"
+      ),
     meta: {
       title: "Enrollment Form",
     },
@@ -23,35 +29,46 @@ const routes = [
   {
     path: "/sign-in",
     name: "SignIn",
-    component: () => import("@/components/SignIn.vue"),
+    component: () =>
+      import(/* webpackChunkName: "SignIn" */ "@/components/SignIn.vue"),
     meta: {
       title: "SignIn",
     },
   },
   {
     path: "/admin",
-    component: () => import("@/layout/Index.vue"),
+    component: () =>
+      import(/* webpackChunkName: "Navigations" */ "@/layout/Index.vue"),
     meta: {
       auth: true,
     },
     children: [
       {
         path: "/",
-        component: () => import("@/components/DashboardPage.vue"),
+        component: () =>
+          import(
+            /* webpackChunkName: "DashboardPage" */ "@/components/DashboardPage.vue"
+          ),
         meta: {
           title: "Admin Dashboard",
         },
       },
       {
         path: "enrollment",
-        component: () => import("@/components/EnrollmentData.vue"),
+        component: () =>
+          import(
+            /* webpackChunkName: "EnrollmentData" */ "@/components/EnrollmentData.vue"
+          ),
         meta: {
           title: "Enrollments",
         },
       },
       {
         path: "all_students",
-        component: () => import("@/components/AllStudents.vue"),
+        component: () =>
+          import(
+            /* webpackChunkName: "AllStudents" */ "@/components/AllStudents.vue"
+          ),
         meta: {
           title: "Students",
         },
@@ -59,14 +76,19 @@ const routes = [
       {
         path: "student-password-management",
         component: () =>
-          import("@/components/adminpage/StudentPasswordManagement.vue"),
+          import(
+            /* webpackChunkName: "StudentPasswordManagement" */ "@/components/adminpage/StudentPasswordManagement.vue"
+          ),
         meta: {
           title: "Student Password Management",
         },
       },
       {
         path: "all_teachers",
-        component: () => import("@/components/AllTeachers.vue"),
+        component: () =>
+          import(
+            /* webpackChunkName: "AllTeachers" */ "@/components/AllTeachers.vue"
+          ),
         meta: {
           title: "Teachers",
         },
@@ -74,7 +96,9 @@ const routes = [
       {
         path: "sections/junior_high",
         component: () =>
-          import("@/components/adminpage/JuniorHighSections.vue"),
+          import(
+            /* webpackChunkName: "JuniorHighSections" */ "@/components/adminpage/JuniorHighSections.vue"
+          ),
         meta: {
           title: "Junior High Sections",
         },
@@ -82,26 +106,26 @@ const routes = [
       {
         path: "sections/senior_high",
         component: () =>
-          import("@/components/adminpage/SeniorHighSections.vue"),
+          import(
+            /* webpackChunkName: "SeniorHighSections" */ "@/components/adminpage/SeniorHighSections.vue"
+          ),
         meta: {
           title: "Senior High Sections",
         },
       },
       {
         path: "teacher-admin",
-        component: () => import("@/layout/EmptyRouteView.vue"),
+        component: () =>
+          import(
+            /* webpackChunkName: "EmptyRouteView" */ "@/layout/EmptyRouteView.vue"
+          ),
         children: [
-          {
-            path: "add",
-            component: () => import("@/components/adminpage/AddNewAdmin.vue"),
-            meta: {
-              title: "Add New Admin",
-            },
-          },
           {
             path: "reset-pass",
             component: () =>
-              import("@/components/adminpage/TAdminAccountManagement.vue"),
+              import(
+                /* webpackChunkName: "AdminAccountManagement" */ "@/components/adminpage/TAdminAccountManagement.vue"
+              ),
             meta: {
               title: "Manage Teacher Admin",
             },
@@ -110,7 +134,10 @@ const routes = [
       },
       {
         path: "notifications",
-        component: () => import("@/components/Notification.vue"),
+        component: () =>
+          import(
+            /* webpackChunkName: "Notification" */ "@/components/Notification.vue"
+          ),
         meta: {
           title: "Notifications",
         },
@@ -120,7 +147,10 @@ const routes = [
   {
     path: "/admin/profile",
     name: "AdminProfile",
-    component: () => import("@/components/adminpage/AdminProfile.vue"),
+    component: () =>
+      import(
+        /* webpackChunkName: "AdminProfile" */ "@/components/adminpage/AdminProfile.vue"
+      ),
     meta: {
       title: "Admin Profile Settings",
     },
@@ -128,7 +158,10 @@ const routes = [
   {
     path: "/student/dashboard",
     name: "StudentDashboard",
-    component: () => import("@/components/studentpage/StudentDashboard.vue"),
+    component: () =>
+      import(
+        /* webpackChunkName: "StudentDashboard" */ "@/components/studentpage/StudentDashboard.vue"
+      ),
     meta: {
       title: "Student Dashboard",
       auth: true,
@@ -137,7 +170,10 @@ const routes = [
   {
     path: "/student/update-password",
     name: "Student Update Account",
-    component: () => import("@/components/studentpage/UpdateAccount.vue"),
+    component: () =>
+      import(
+        /* webpackChunkName: "UpdateAccount" */ "@/components/studentpage/UpdateAccount.vue"
+      ),
     meta: {
       title: "Student Update Password",
     },

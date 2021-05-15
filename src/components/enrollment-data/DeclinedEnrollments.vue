@@ -604,12 +604,13 @@
                 >
                   <v-text-field
                     v-model="studentInfo.last_year_completed"
-                     onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+                    onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
                     :rules="[
                       (last_year_completed) =>
                         !!last_year_completed ||
                         'Last School Year Completed is required',
-                     (last_year_completed) =>last_year_completed < new Date().getFullYear(),
+                      (last_year_completed) =>
+                        last_year_completed < new Date().getFullYear(),
                     ]"
                     label="Last School Year Completed"
                     :readonly="readonly"
@@ -721,6 +722,25 @@
                     required
                   ></v-select>
                 </v-col>
+                <v-col
+                  cols="6"
+                  v-if="
+                    studentInfo.grade_level === 9 ||
+                    studentInfo.grade_level === 10
+                  "
+                >
+                  <v-select
+                    v-model="studentInfo.specialization"
+                    :items="specializations"
+                    @click:clear="studentInfo.specialization = null"
+                    :rules="[(v) => !!v || 'Required']"
+                    :label="'Specialization'"
+                    :readonly="statusLevel"
+                    outlined
+                    required
+                  >
+                  </v-select>
+                </v-col>
               </v-row>
             </v-card-text>
             <v-card-actions>
@@ -807,6 +827,7 @@ export default {
           "TECHNICAL-VOCATIONAL LIVELIHOOD (TLV) TRACK": ["AGRI-FISHERY ARTS"],
         },
       ],
+      specializations: ["Agriculture", "Electricity", "Household", "ICT"],
       headers: [
         {
           text: "Grade Level",

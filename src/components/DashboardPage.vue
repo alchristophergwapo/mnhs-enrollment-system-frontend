@@ -142,9 +142,11 @@ import { EventBus } from "../bus/bus";
 // });
 export default {
   components: {
-    BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
-    Chart: () => import("@/layout/Chart.vue"),
-    StatusCards: () => import("@/layout/StatusCards.vue"),
+    BreadCrumb: () =>
+      import(/* webpackChunkName: "BreadCrumb" */ "@/layout/BreadCrumb.vue"),
+    Chart: () => import(/* webpackChunkName: "Chart" */ "@/layout/Chart.vue"),
+    StatusCards: () =>
+      import(/* webpackChunkName: "StatusCard" */ "@/layout/StatusCards.vue"),
   },
   data: () => ({
     totalEnrolled: 0,

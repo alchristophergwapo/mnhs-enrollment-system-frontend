@@ -255,12 +255,7 @@ export default {
               model: false,
               subChildren: [
                 {
-                  icon: "mdi-account-plus",
-                  text: "Add Admin",
-                  to: "/admin/teacher-admin/add",
-                },
-                {
-                  icon: "mdi-account-key",
+                  icon: "mdi-account-box-multiple",
                   text: "Manage",
                   to: "/admin/teacher-admin/reset-pass",
                 },

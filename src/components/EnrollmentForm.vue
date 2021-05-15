@@ -47,7 +47,7 @@
               ref="parentGuardianInfoData"
             ></parent-guardian-info>
             <v-row>
-              <v-col cols="12" sm="6" md="6">
+              <v-col cols="12" sm="6">
                 <v-container>
                   <v-checkbox
                     class="checkbox-input"
@@ -59,7 +59,7 @@
                   </v-checkbox>
                 </v-container>
               </v-col>
-              <v-col cols="12" sm="6" md="6">
+              <v-col cols="12" sm="6">
                 <v-container>
                   <v-checkbox
                     class="checkbox-input"
@@ -83,7 +83,10 @@
                   v-bind:strand="strands"
                 ></senior-high>
               </v-container>
-              <v-col cols="12" sm="6" md="6">
+              <v-col
+                cols="12"
+                :sm="grade_level === 9 || grade_level === 10 ? '4' : '6'"
+              >
                 <v-file-input
                   v-model="card_image"
                   label="Card Picture"
@@ -98,7 +101,10 @@
                   >
                 </v-file-input>
               </v-col>
-              <v-col cols="12" sm="6" md="6">
+              <v-col
+                cols="12"
+                :sm="grade_level === 9 || grade_level === 10 ? '4' : '6'"
+              >
                 <v-select
                   v-model="grade_level"
                   :items="
@@ -111,6 +117,30 @@
                   label="Select Grade Level"
                   :clearable="clearable"
                   v-on:keyup="enterKeyTriggered()"
+                  outlined
+                  required
+                >
+                  <v-icon slot="prepend-inner" color="red" x-small
+                    >mdi-asterisk</v-icon
+                  >
+                </v-select>
+              </v-col>
+              <v-col
+                cols="12"
+                sm="4"
+                v-if="grade_level === 9 || grade_level === 10"
+              >
+                <v-select
+                  v-model="specialization"
+                  :items="specializations"
+                  @click:clear="specialization = null"
+                  :rules="[(v) => !!v || 'Required']"
+                  :label="
+                    grade_level === 9
+                      ? 'Select Specialization'
+                      : 'Grade 9 Specialization'
+                  "
+                  :clearable="clearable"
                   outlined
                   required
                 >
@@ -146,12 +176,21 @@ import { EventBus } from "../bus/bus";
 export default {
   components: {
     StudentInfoForm: () =>
-      import("@/components/enrollment/StudentInfoForm.vue"),
+      import(
+        /* webpackChunkName: "StudentInfoForm" */ "@/components/enrollment/StudentInfoForm.vue"
+      ),
     ParentGuardianInfo: () =>
-      import("@/components/enrollment/ParentGuardianInfo.vue"),
+      import(
+        /* webpackChunkName: "ParentGuardianInfo" */ "@/components/enrollment/ParentGuardianInfo.vue"
+      ),
     BalikOrTransfer: () =>
-      import("@/components/enrollment/BalikOrTransfer.vue"),
-    SeniorHigh: () => import("@/components/enrollment/SeniorHigh.vue"),
+      import(
+        /* webpackChunkName: "BalikOrTransfer" */ "@/components/enrollment/BalikOrTransfer.vue"
+      ),
+    SeniorHigh: () =>
+      import(
+        /* webpackChunkName: "SeniorHigh" */ "@/components/enrollment/SeniorHigh.vue"
+      ),
   },
   data() {
     return {
@@ -180,6 +219,7 @@ export default {
           "TECHNICAL-VOCATIONAL LIVELIHOOD (TVL) TRACK": ["AGRI-FISHERY ARTS"],
         },
       ],
+      specializations: ["Agriculture", "Electricity", "Household", "ICT"],
       grade_levels: [
         [7, 8, 9, 10],
         [11, 12],
@@ -187,6 +227,7 @@ export default {
       options: [6, 7, 8, 9, 10, 11],
       grade_level: null,
       card_image: null,
+      specialization: null,
       student: null,
       grades: null,
       parentGuardian: null,
@@ -281,7 +322,9 @@ export default {
         }
 
         formdata.append("grade_level", this.grade_level);
-
+        if (this.grade_level === 9 || this.grade_level === 10)
+          formdata.append("specialization", this.specialization);
+        else formdata.append("specialization", null);
         formdata.append("enrollment_status", isAdmin ? "Approved" : "Pending");
         formdata.append(
           "card_image",

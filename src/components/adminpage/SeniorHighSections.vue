@@ -124,11 +124,22 @@
 import { EventBus } from "../../bus/bus";
 export default {
   components: {
-    BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
-    SectionsCard: () => import("@/layout/SectionsCard.vue"),
-    SectionDialog: () => import("@/layout/SectionDialog.vue"),
-    AddSubjectDialog: () => import("@/layout/AddSubjectDialog.vue"),
-    SectionSchedules: () => import("@/layout/SectionSchedules.vue"),
+    BreadCrumb: () =>
+      import(/* webpackChunkName: "BreadCrumb" */ "@/layout/BreadCrumb.vue"),
+    SectionsCard: () =>
+      import(/* webpackChunkName: "SectionsCard"*/ "@/layout/SectionsCard.vue"),
+    SectionDialog: () =>
+      import(
+        /* webpackChunkName: "SectionDialog" */ "@/layout/SectionDialog.vue"
+      ),
+    AddSubjectDialog: () =>
+      import(
+        /* webpackChunkName: "AddSubjectDialog" */ "@/layout/AddSubjectDialog.vue"
+      ),
+    SectionSchedules: () =>
+      import(
+        /* webpackChunkName: "SectionSchedules" */ "@/layout/SectionSchedules.vue"
+      ),
   },
   data() {
     return {

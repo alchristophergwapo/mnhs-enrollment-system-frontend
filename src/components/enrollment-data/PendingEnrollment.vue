@@ -39,38 +39,40 @@
                   </v-card-title>
                   <v-card-text>
                     <v-row>
-                      <v-col cols="12" md="6" sm="6">
-                        PSA No.:&nbsp;&nbsp;<strong>{{ row.item.PSA }}</strong>
-                      </v-col>
-                      <v-col cols="12" md="6" sm="6">
-                        LRN:&nbsp;&nbsp;<strong>{{ row.item.LRN }}</strong>
-                      </v-col>
-                      <v-col cols="12" md="6" sm="6">
-                        Average:&nbsp;&nbsp;<strong>{{
-                          row.item.average
-                        }}</strong>
-                      </v-col>
-                      <v-col cols="12" md="6" sm="6">
+                      <v-col cols="4">
                         Full Name:&nbsp;&nbsp;<strong
                           >{{ row.item.firstname }}
                           {{ row.item.lastname }}</strong
                         >
                       </v-col>
-                      <v-col cols="12" sm="6" md="6">
+                      <v-col cols="4">
+                        PSA No.:&nbsp;&nbsp;<strong>
+                          {{ row.item.PSA ? row.item.PSA : "N/A" }}
+                        </strong>
+                      </v-col>
+                      <v-col cols="4">
+                        LRN:&nbsp;&nbsp;<strong>{{ row.item.LRN }}</strong>
+                      </v-col>
+                      <v-col cols="3">
+                        Average:&nbsp;&nbsp;<strong>{{
+                          row.item.average
+                        }}</strong>
+                      </v-col>
+                      <v-col cols="3">
                         Birth Date:&nbsp;&nbsp;<strong>{{
                           row.item.birthdate
                         }}</strong>
                       </v-col>
-                      <v-col cols="12" sm="6" md="2">
+                      <v-col cols="3">
                         Age:&nbsp;&nbsp;<strong>{{ row.item.age }}</strong>
                       </v-col>
-                      <v-col cols="12" sm="6" md="4">
+                      <v-col cols="3">
                         Gender:&nbsp;&nbsp;<strong>{{
                           row.item.gender
                         }}</strong>
                       </v-col>
                       <v-col cols="12">
-                        Belonging to any Indigenous Peoples (IP)<br />Community
+                        Belonging to any Indigenous Peoples (IP) Community
                         /Indigenous Cultural Community ?
                         <strong>&nbsp;&nbsp;{{ row.item.IP }}</strong>
                         <strong v-if="row.item.IP == 'Yes'"
@@ -97,14 +99,27 @@
                           row.item.zipcode
                         }}</strong>
                       </v-col>
+                      <v-col
+                        cols="6"
+                        v-if="
+                          row.item.grade_level === 9 ||
+                          row.item.grade_level === 10
+                        "
+                      >
+                        Specialization:&nbsp;&nbsp;<strong>{{
+                          row.item.specialization
+                            ? row.item.specialization
+                            : "N/A"
+                        }}</strong>
+                      </v-col>
                       <v-col cols="12" sm="6" md="6">
                         Father's Name:&nbsp;&nbsp;<strong>{{
-                          row.item.father
+                          row.item.father ? row.item.father : "N/A"
                         }}</strong>
                       </v-col>
                       <v-col cols="12" sm="6" md="6">
                         Mother's Name:&nbsp;&nbsp;<strong>{{
-                          row.item.mother
+                          row.item.mother ? row.item.mother : "N/A"
                         }}</strong>
                       </v-col>
                       <v-col cols="12" sm="6" md="6">
@@ -478,7 +493,7 @@ export default {
     },
 
     declineEnrollment() {
-      if (this.$refs.form.validate()) {    
+      if (this.$refs.form.validate()) {
         this.$axios
           .post("declineEnrollment/" + this.declineId, {
             remarks: this.remarks,

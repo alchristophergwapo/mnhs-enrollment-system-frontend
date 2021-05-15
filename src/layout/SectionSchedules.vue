@@ -406,7 +406,10 @@ export default {
     },
   },
   components: {
-    Autocomplete: () => import("@/layout/Autocomplete.vue"),
+    Autocomplete: () =>
+      import(
+        /* webpackChunkName: "Autocomplete" */ "@/layout/Autocomplete.vue"
+      ),
   },
   data() {
     return {

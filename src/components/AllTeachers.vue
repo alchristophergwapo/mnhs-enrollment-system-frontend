@@ -2,8 +2,8 @@
 <template>
   <div>
     <bread-crumb :item="items" page_name="All Teachers"></bread-crumb>
-    <br>
-    <br>
+    <br />
+    <br />
     <div>
       <v-container>
         <v-card class="table-header" color="orange">
@@ -11,9 +11,9 @@
             <div class="display-2 font-weight-light">All Teachers</div>
           </v-card-title>
 
-          <div
-            class="subtitle-1 font-weight-light text-center justify-center"
-          >All teachers as of year {{ year }}</div>
+          <div class="subtitle-1 font-weight-light text-center justify-center">
+            All teachers as of year {{ year }}
+          </div>
         </v-card>
         <v-card-title>
           <v-text-field
@@ -39,7 +39,7 @@
                     <v-icon>mdi-plus</v-icon>Add Teacher
                   </v-btn>
                 </template>
-                <br>
+                <br />
                 <v-card>
                   <v-card-title class="text-center justify-center headline">
                     <div class="font-weight-light">{{ status }}</div>
@@ -50,9 +50,10 @@
                         <v-text-field
                           @keydown="clearError"
                           label="Teacher's Fullname"
-                          :rules="[                    
-                           value =>
-                          (!!value && value.trim() != '') || 'The teacher name field is required!',
+                          :rules="[
+                            (value) =>
+                              (!!value && value.trim() != '') ||
+                              'The teacher name field is required!',
                             (value) =>
                               /^[a-zA-Z\s.-Ññ']+$/.test(value) === true ||
                               'Teacher name is invalid.',
@@ -67,25 +68,30 @@
                           name="teacher_name"
                           outlined
                         >
-                          <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+                          <v-icon slot="prepend-inner" color="red" x-small
+                            >mdi-asterisk</v-icon
+                          >
                         </v-text-field>
                         <p
                           v-if="hasError('teacher_name')"
                           class="invalid-feedback"
-                        >{{ getError("teacher_name") }}</p>
+                        >
+                          {{ getError("teacher_name") }}
+                        </p>
                         <v-text-field
                           @keydown="clearError"
                           label="Email"
                           type="email"
                           :rules="[
-                            value=>
-                             (!!value && value.trim() != '') || 'The email field is required!',
+                            (value) =>
+                              (!!value && value.trim() != '') ||
+                              'The email field is required!',
                             (value) =>
                               /^\w+([\.-]?\w+)*@\w+([a-z\.-]?\w+)*(\.\w[a-z]{1,3})+$/.test(
                                 value
                               ) === true || 'Please enter a valid email!',
                             (value) =>
-                            String(value).length <=100 ||
+                              String(value).length <= 100 ||
                               'The email may not be greater than 100 characters!',
                           ]"
                           :error="hasError('email')"
@@ -93,9 +99,13 @@
                           name="email"
                           outlined
                         >
-                          <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+                          <v-icon slot="prepend-inner" color="red" x-small
+                            >mdi-asterisk</v-icon
+                          >
                         </v-text-field>
-                        <p v-if="hasError('email')" class="invalid-feedback">{{ getError("email") }}</p>
+                        <p v-if="hasError('email')" class="invalid-feedback">
+                          {{ getError("email") }}
+                        </p>
                         <v-text-field
                           @keydown="clearError"
                           label="Phone Number"
@@ -105,7 +115,9 @@
                           onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
                           name="contact"
                           :rules="[
-                            contact => (!!contact && contact.trim() != '') || 'The contact field is required!',
+                            (contact) =>
+                              (!!contact && contact.trim() != '') ||
+                              'The contact field is required!',
                             (contact) =>
                               (String(contact).length > 0 &&
                                 String(contact).charAt(0) === '0' &&
@@ -121,12 +133,13 @@
                           :error="hasError('contact')"
                           outlined
                         >
-                          <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+                          <v-icon slot="prepend-inner" color="red" x-small
+                            >mdi-asterisk</v-icon
+                          >
                         </v-text-field>
-                        <p
-                          v-if="hasError('contact')"
-                          class="invalid-feedback"
-                        >{{ getError("contact") }}</p>
+                        <p v-if="hasError('contact')" class="invalid-feedback">
+                          {{ getError("contact") }}
+                        </p>
                         <v-select
                           v-model="selected_section"
                           item-text="name"
@@ -142,13 +155,16 @@
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
-                    <v-btn color="error darken-1" @click="dialogs">Cancel</v-btn>
+                    <v-btn color="error darken-1" @click="dialogs"
+                      >Cancel</v-btn
+                    >
                     <v-btn
                       color="blue darken-1"
                       :loading="loading"
-                      :disabled="!valid==false ? hasAnyErors:true"
+                      :disabled="!valid == false ? hasAnyErors : true"
                       @click="addTeacher()"
-                    >Save</v-btn>
+                      >Save</v-btn
+                    >
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -169,7 +185,9 @@
               <td>
                 <v-dialog transition="dialog-top-transition" max-width="400">
                   <template v-slot:activator="{ on, attrs }">
-                    <v-btn text small v-bind="attrs" v-on="on">View Details</v-btn>
+                    <v-btn text small v-bind="attrs" v-on="on"
+                      >View Details</v-btn
+                    >
                   </template>
                   <template v-slot:default="dialog">
                     <v-card>
@@ -183,58 +201,55 @@
                         <v-row>
                           <v-col cols="12">
                             Name:&nbsp;&nbsp;
-                            <br>
+                            <br />
                             <strong>
-                              {{
-                              row.item.teacher_name
-                              }}
+                              {{ row.item.teacher_name }}
                             </strong>
                           </v-col>
                           <v-col cols="12">
                             Email:&nbsp;&nbsp;
-                            <br>
+                            <br />
                             <strong>
-                              {{
-                              row.item.email
-                              }}
+                              {{ row.item.email }}
                             </strong>
                           </v-col>
                           <v-col cols="12">
                             Contact:&nbsp;&nbsp;
-                            <br>
+                            <br />
                             <strong>
-                              {{
-                              row.item.contact
-                              }}
+                              {{ row.item.contact }}
                             </strong>
                           </v-col>
                           <v-col cols="12">
                             AssignedSection:&nbsp;&nbsp;
-                            <br>
+                            <br />
                             <strong>
                               {{
-                              row.item.section_id
-                              ? row.item.section_id
-                              : "No Section"
+                                row.item.section_id
+                                  ? row.item.section_id
+                                  : "No Section"
                               }}
                             </strong>
                           </v-col>
                           <v-col cols="12">
                             School Year:&nbsp;&nbsp;
-                            <br>
+                            <br />
                             <strong>
                               {{
-                              row.item.created_at
-                              .substring(0, row.item.created_at.indexOf("-"))
-                              .concat(
-                              "-",
-                              parseInt(
-                              row.item.created_at.substring(
-                              0,
-                              row.item.created_at.indexOf("-")
-                              )
-                              ) + 1
-                              )
+                                row.item.created_at
+                                  .substring(
+                                    0,
+                                    row.item.created_at.indexOf("-")
+                                  )
+                                  .concat(
+                                    "-",
+                                    parseInt(
+                                      row.item.created_at.substring(
+                                        0,
+                                        row.item.created_at.indexOf("-")
+                                      )
+                                    ) + 1
+                                  )
                               }}
                             </strong>
                           </v-col>
@@ -245,7 +260,9 @@
                 </v-dialog>
               </td>
               <td>
-                <v-btn small text @click="getTeacherSchedule(row.item.id)">View Schedules</v-btn>
+                <v-btn small text @click="getTeacherSchedule(row.item.id)"
+                  >View Schedules</v-btn
+                >
               </td>
 
               <td>{{ row.item.section_id }}</td>
@@ -254,12 +271,14 @@
                   @click="editTeacher(row.item)"
                   color="primary"
                   :disabled="notAdmin"
-                >mdi-pencil</v-icon>
+                  >mdi-pencil</v-icon
+                >
                 <v-icon
                   @click="removeTeacher(row.item.id)"
                   color="error"
                   :disabled="notAdmin"
-                >mdi-delete</v-icon>
+                  >mdi-delete</v-icon
+                >
               </td>
             </tr>
           </template>
@@ -274,7 +293,7 @@
                 <v-icon>mdi-close</v-icon>
               </v-btn>
             </v-card-title>
-            <br>
+            <br />
             <v-data-table
               :headers="schedules_headers"
               :items="schedules"
@@ -289,20 +308,18 @@
                         Time:
                         <strong>
                           {{ row.item.Monday.start_time }}-{{
-                          row.item.Monday.end_time
+                            row.item.Monday.end_time
                           }}
                         </strong>
                       </span>
-                      <br>
+                      <br />
                       <span>
                         Subject:
                         <strong>
-                          {{
-                          row.item.Monday.subject_name
-                          }}
+                          {{ row.item.Monday.subject_name }}
                         </strong>
                       </span>
-                      <br>
+                      <br />
                       <span>
                         Section:
                         <strong>{{ row.item.Monday.name }}</strong>
@@ -315,20 +332,18 @@
                         Time:
                         <strong>
                           {{ row.item.Tuesday.start_time }}-{{
-                          row.item.Tuesday.end_time
+                            row.item.Tuesday.end_time
                           }}
                         </strong>
                       </span>
-                      <br>
+                      <br />
                       <span>
                         Subject:
                         <strong>
-                          {{
-                          row.item.Tuesday.subject_name
-                          }}
+                          {{ row.item.Tuesday.subject_name }}
                         </strong>
                       </span>
-                      <br>
+                      <br />
                       <span>
                         Section:
                         <strong>{{ row.item.Tuesday.name }}</strong>
@@ -341,20 +356,18 @@
                         Time:
                         <strong>
                           {{ row.item.Wednesday.start_time }}-{{
-                          row.item.Wednesday.end_time
+                            row.item.Wednesday.end_time
                           }}
                         </strong>
                       </span>
-                      <br>
+                      <br />
                       <span>
                         Subject:
                         <strong>
-                          {{
-                          row.item.Wednesday.subject_name
-                          }}
+                          {{ row.item.Wednesday.subject_name }}
                         </strong>
                       </span>
-                      <br>
+                      <br />
                       <span>
                         Section:
                         <strong>{{ row.item.Wednesday.name }}</strong>
@@ -367,20 +380,18 @@
                         Time:
                         <strong>
                           {{ row.item.Thursday.start_time }}-{{
-                          row.item.Thursday.end_time
+                            row.item.Thursday.end_time
                           }}
                         </strong>
                       </span>
-                      <br>
+                      <br />
                       <span>
                         Subject:
                         <strong>
-                          {{
-                          row.item.Thursday.subject_name
-                          }}
+                          {{ row.item.Thursday.subject_name }}
                         </strong>
                       </span>
-                      <br>
+                      <br />
                       <span>
                         Section:
                         <strong>{{ row.item.Thursday.name }}</strong>
@@ -393,20 +404,18 @@
                         Time:
                         <strong>
                           {{ row.item.Friday.start_time }}-{{
-                          row.item.Friday.end_time
+                            row.item.Friday.end_time
                           }}
                         </strong>
                       </span>
-                      <br>
+                      <br />
                       <span>
                         Subject:
                         <strong>
-                          {{
-                          row.item.Friday.subject_name
-                          }}
+                          {{ row.item.Friday.subject_name }}
                         </strong>
                       </span>
-                      <br>
+                      <br />
                       <span>
                         Section:
                         <strong>{{ row.item.Friday.name }}</strong>
@@ -416,7 +425,7 @@
                 </tr>
               </template>
             </v-data-table>
-            <br>
+            <br />
           </v-card>
         </v-dialog>
       </v-container>
@@ -427,7 +436,8 @@
 <script>
 export default {
   components: {
-    BreadCrumb: () => import("@/layout/BreadCrumb.vue")
+    BreadCrumb: () =>
+      import(/* webpackChunkName: "BreadCrumb" */ "@/layout/BreadCrumb.vue"),
   },
 
   data() {
@@ -456,30 +466,30 @@ export default {
         {
           text: "Home",
           disabled: false,
-          href: "/admin"
+          href: "/admin",
         },
         {
           text: "Teachers",
           disabled: true,
-          href: "admin/all_teachers"
-        }
+          href: "admin/all_teachers",
+        },
       ],
       headers: [
         {
           text: "Name",
-          value: "teacher_name"
+          value: "teacher_name",
         },
         { text: "Details", value: "detatils" },
         { text: "Schedules", value: "schedules" },
         { text: "Assigned Section", value: "section_id" },
-        { text: "Action", value: "action" }
+        { text: "Action", value: "action" },
       ],
       schedules_headers: [
         { text: "Monday", sortable: false },
         { text: "Tuesday", sortable: false },
         { text: "Wednesday", sortable: false },
         { text: "Thursday", sortable: false },
-        { text: "Friday", sortable: false }
+        { text: "Friday", sortable: false },
       ],
 
       teachers: [],
@@ -488,15 +498,15 @@ export default {
       schedules: [],
       spanOfClasses: {
         hour: 1,
-        minutes: 0
+        minutes: 0,
       },
       sched: {
         Monday: null,
         Tuesday: null,
         Wednesday: null,
         Thursday: null,
-        Friday: null
-      }
+        Friday: null,
+      },
     };
   },
   created() {
@@ -516,7 +526,7 @@ export default {
         this.teachers = this.filterTeachers;
         this.year = new Date().getFullYear();
       } else {
-        this.teachers = this.filterTeachers.filter(val => {
+        this.teachers = this.filterTeachers.filter((val) => {
           return (
             val.created_at.substring(0, val.created_at.indexOf("-")) == year ||
             val.created_at.includes(year)
@@ -529,7 +539,7 @@ export default {
     allNoAdviserSections() {
       this.$axios
         .get("noAdviserSections")
-        .then(response => {
+        .then((response) => {
           let sections = response.data.sections;
           for (const key in sections) {
             if (sections.hasOwnProperty.call(sections, key)) {
@@ -542,7 +552,7 @@ export default {
           this.$swal.fire({
             icon: "warning",
             title: "Ooops!",
-            text: "An error encountered!"
+            text: "An error encountered!",
           });
         });
     },
@@ -555,9 +565,9 @@ export default {
         Tuesday: null,
         Wednesday: null,
         Thursday: null,
-        Friday: null
+        Friday: null,
       };
-      this.$axios.get(`getTeacherSchedule/${id}`).then(res => {
+      this.$axios.get(`getTeacherSchedule/${id}`).then((res) => {
         // this.schedules = res.data.schedules;
         const schedulesRes = res.data.schedules;
         let count = 0;
@@ -581,7 +591,7 @@ export default {
                 Tuesday: null,
                 Wednesday: null,
                 Thursday: null,
-                Friday: null
+                Friday: null,
               }),
               (count = 0);
         }
@@ -593,10 +603,10 @@ export default {
       this.teachersIsNotLoaded = true;
       this.$store
         .dispatch("allTeacher")
-        .then(res => {
+        .then((res) => {
           this.teachers = res.teacher;
           this.filterTeachers = this.teachers;
-          this.teachers = this.filterTeachers.filter(val => {
+          this.teachers = this.filterTeachers.filter((val) => {
             return (
               val.created_at.substring(0, val.created_at.indexOf("-")) ==
                 this.year || val.created_at.includes(this.year)
@@ -609,7 +619,7 @@ export default {
           this.$swal.fire({
             icon: "warning",
             title: "Ooops!",
-            text: "An error encountered!"
+            text: "An error encountered!",
           });
         });
     },
@@ -624,25 +634,25 @@ export default {
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
-          confirmButtonText: "Confirm"
+          confirmButtonText: "Confirm",
         })
-        .then(result => {
+        .then((result) => {
           if (result.isConfirmed) {
             this.$axios
               .get("delTeacher/" + dataid)
-              .then(response => {
+              .then((response) => {
                 if (response.data.message) {
                   this.$swal.fire({
                     icon: "success",
                     title: "Success",
-                    text: "Successfully deleted."
+                    text: "Successfully deleted.",
                   });
                   this.display();
                 } else {
                   this.$swal.fire({
                     icon: "error",
                     title: "Error",
-                    text: "Not Successfully deleted."
+                    text: "Not Successfully deleted.",
                   });
                 }
               })
@@ -650,7 +660,7 @@ export default {
                 this.$swal.fire({
                   icon: "warning",
                   title: "Ooops!",
-                  text: "An error encountered!"
+                  text: "An error encountered!",
                 });
               });
           }
@@ -713,18 +723,18 @@ export default {
               teacher_name: this.Teacher,
               email: this.Email,
               contact: this.Contact,
-              section_id: this.selected_section
+              section_id: this.selected_section,
             })
-            .then(response => {
+            .then((response) => {
               this.loading = false;
               if (response.data.message) {
                 this.$swal
                   .fire({
                     icon: "success",
                     title: "Success",
-                    text: "Successfully saved."
+                    text: "Successfully saved.",
                   })
-                  .then(result => {
+                  .then((result) => {
                     if (result.isConfirmed) {
                       this.$refs.addTeacher.resetValidation();
                     }
@@ -746,23 +756,23 @@ export default {
                       response.data.section +
                       " was already assigned to " +
                       response.data.teacher +
-                      "."
+                      ".",
                   })
-                  .then(result => {
+                  .then((result) => {
                     if (result.isConfirmed) {
                       this.$refs.addTeacher.resetValidation();
                     }
                   });
               }
             })
-            .catch(error => {
+            .catch((error) => {
               if (error.response.status == 422) {
                 this.setErrors(error.response.data.errors);
               } else {
                 this.$swal.fire({
                   icon: "warning",
                   title: "Ooops!",
-                  text: "An error encountered!"
+                  text: "An error encountered!",
                 });
               }
               this.loading = false;
@@ -776,15 +786,15 @@ export default {
             teacher_name: this.Teacher,
             email: this.Email,
             contact: this.Contact,
-            section_id: this.selected_section
+            section_id: this.selected_section,
           })
-          .then(response => {
+          .then((response) => {
             this.loading = false;
             if (response.data.message) {
               this.$swal.fire({
                 icon: "success",
                 title: "Success",
-                text: response.data.message
+                text: response.data.message,
               });
               this.display();
               (this.Teacher = null),
@@ -807,9 +817,9 @@ export default {
                   showCancelButton: true,
                   confirmButtonColor: "#3085d6",
                   cancelButtonColor: "#d33",
-                  confirmButtonText: "Update"
+                  confirmButtonText: "Update",
                 })
-                .then(result => {
+                .then((result) => {
                   if (result.isConfirmed) {
                     this.loading = true;
                     this.$axios
@@ -818,18 +828,18 @@ export default {
                         teacher_name: this.Teacher,
                         email: this.Email,
                         contact: this.Contact,
-                        section_id: this.selected_section
+                        section_id: this.selected_section,
                       })
-                      .then(response => {
+                      .then((response) => {
                         this.loading = false;
                         if (response.data.newSection) {
                           this.$swal
                             .fire({
                               title: "Updated!",
                               text: response.data.newSection,
-                              icon: "success"
+                              icon: "success",
                             })
-                            .then(result => {
+                            .then((result) => {
                               if (result.isConfirmed) {
                                 this.$refs.addTeacher.resetValidation();
                               }
@@ -845,7 +855,7 @@ export default {
                           this.$swal.fire({
                             title: "NotUpdated!",
                             text: "Not successfully updated!",
-                            icon: "error"
+                            icon: "error",
                           });
                           this.statusdialog = false;
                           this.display();
@@ -856,14 +866,14 @@ export default {
                         this.$swal.fire({
                           icon: "warning",
                           title: "Ooops!",
-                          text: "An error encountered!"
+                          text: "An error encountered!",
                         });
                       });
                   }
                 });
             }
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error);
             this.loading = false;
           });
@@ -885,14 +895,14 @@ export default {
 
     getError(fieldName) {
       return this.errors[fieldName][0];
-    }
+    },
   },
 
   computed: {
     hasAnyErors() {
       return Object.keys(this.errors).length > 0;
-    }
-  }
+    },
+  },
 };
 </script>
 

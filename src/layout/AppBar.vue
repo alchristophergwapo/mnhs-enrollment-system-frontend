@@ -56,12 +56,6 @@
 <script>
 import { EventBus } from "../bus/bus";
 export default {
-  // props: {
-  //   user_details: {
-  //     type: Object,
-  //     required: true,
-  //   },
-  // },
   data() {
     return {
       user_details: null,

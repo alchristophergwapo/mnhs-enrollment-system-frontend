@@ -120,10 +120,6 @@
               </v-col>
             </v-row>
           </v-form>
-          <!-- <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" @click="add()">add</v-btn>
-          </v-card-actions> -->
         </v-container>
       </v-card-text>
       <v-divider></v-divider>
