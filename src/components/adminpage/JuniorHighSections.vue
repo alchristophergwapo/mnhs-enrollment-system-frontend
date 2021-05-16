@@ -315,7 +315,7 @@ export default {
           });
         })
         .catch(() => {
-          this.$swal.filter({
+          this.$swal({
             icon: "error",
             title: "Ooops...",
             text: "An error encountered!",

@@ -80,7 +80,7 @@
               <td>{{ row.item.address }}</td>
               <td>
                 <v-btn text @click="editDetails(row.item, row.index)"
-                  >Edit Details</v-btn
+                  >View Details</v-btn
                 >
               </td>
             </tr>
@@ -95,7 +95,6 @@
         >
           <template>
             <v-form ref="studentDetails" v-model="valid" lazy-validation>
-              
               <v-card>
                 <v-card-title class="text-center justify-center">
                   <v-spacer></v-spacer>
@@ -210,7 +209,9 @@
                           (v) =>
                             (v && v.length >= 2) ||
                             'Lastname cannot be lesser than 2 characters.',
-                          (v) =>/^[a-zA-Z\s-'Ññ]+$/.test(v) == true || 'Only letters are  allowed, except for - !',
+                          (v) =>
+                            /^[a-zA-Z\s-'Ññ]+$/.test(v) == true ||
+                            'Only letters are  allowed, except for - !',
                         ]"
                         label="Lastname"
                         outlined
@@ -514,7 +515,7 @@
                         required
                       ></v-text-field>
                     </v-col>
-<!----------------------------------THIS IS FOR SENIOR HIGH STUDENT DATA INFORMATION------------------------------------------->
+                    <!----------------------------------THIS IS FOR SENIOR HIGH STUDENT DATA INFORMATION------------------------------------------->
                     <v-col
                       cols="12"
                       xs="12"
@@ -633,11 +634,11 @@
                     >
                       <v-text-field
                         v-model="studentInfo.last_year_completed"
-                         onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+                        onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
                         :rules="[
                           (v) =>
                             !!v || 'Last School Year Completed is required',
-                          (v) =>v < new Date().getFullYear(),
+                          (v) => v < new Date().getFullYear(),
                         ]"
                         label="Last School Year Completed"
                         :readonly="readonly"
@@ -657,7 +658,7 @@
                     >
                       <v-text-field
                         v-model="studentInfo.last_school_ID"
-                          onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
+                        onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
                         :rules="[
                           (v) => !!v || 'School ID is required',
                           (v) =>
@@ -731,7 +732,14 @@
                         required
                       ></v-text-field>
                     </v-col>
-                    <v-col cols="12" sm="6" md="6">
+                    <v-col
+                      :cols="
+                        studentInfo.grade_level === 9 ||
+                        studentInfo.grade_level === 10
+                          ? '4'
+                          : '6'
+                      "
+                    >
                       <v-select
                         v-model="studentInfo.grade_level"
                         :rules="[(v) => !!v || 'Required']"
@@ -743,7 +751,14 @@
                         required
                       ></v-select>
                     </v-col>
-                    <v-col cols="12" sm="6" md="6">
+                    <v-col
+                      :cols="
+                        studentInfo.grade_level === 9 ||
+                        studentInfo.grade_level === 10
+                          ? '4'
+                          : '6'
+                      "
+                    >
                       <v-select
                         :items="sections"
                         v-model="studentInfo.section_name"
@@ -757,6 +772,25 @@
                         outlined
                         required
                       ></v-select>
+                    </v-col>
+                    <v-col
+                      cols="4"
+                      v-if="
+                        studentInfo.grade_level === 9 ||
+                        studentInfo.grade_level === 10
+                      "
+                    >
+                      <v-select
+                        v-model="studentInfo.specialization"
+                        :items="specializations"
+                        @click:clear="studentInfo.specialization = null"
+                        :rules="[(v) => !!v || 'Required']"
+                        :label="'Specialization'"
+                        :readonly="statusLevel"
+                        outlined
+                        required
+                      >
+                      </v-select>
                     </v-col>
                   </v-row>
                 </v-card-text>
@@ -792,7 +826,8 @@
 // import { EventBus } from "../bus/bus.js";
 export default {
   components: {
-    BreadCrumb: () => import("@/layout/BreadCrumb.vue"),
+    BreadCrumb: () =>
+      import(/* webpackChunkName: "BreadCrumb" */ "@/layout/BreadCrumb.vue"),
   },
   data: () => ({
     tracks: ["ACADEMIC TRACK", "TECHNICAL-VOCATIONAL LIVELIHOOD (TLV) TRACK"],
@@ -806,6 +841,7 @@ export default {
         "TECHNICAL-VOCATIONAL LIVELIHOOD (TLV) TRACK": ["AGRI-FISHERY ARTS"],
       },
     ],
+    specializations: ["Agriculture", "Electricity", "Household", "ICT"],
     year: new Date().getFullYear(),
     studentDialog: false,
     max_date: null,
@@ -842,8 +878,8 @@ export default {
       { text: "Section", value: "section_name" },
       { text: "Student Name", value: "fullname" },
       { text: "LRN", value: "LRN" },
-      { text: "Address", value: "address" },
-      { text: "Edit", value: "Edit" },
+      { text: "Address", value: "address", sortable: false },
+      { text: "Details", sortable: false },
     ],
     students: [],
     filteredStudents: [],
@@ -1227,9 +1263,8 @@ export default {
       csvContent += [
         Object.keys(arrData[0]),
         ...arrData.map((item) => Object.values(item)),
-      ]
-        .join("\n")
-      
+      ].join("\n");
+
       const data = encodeURI(csvContent);
       const link = document.createElement("a");
       link.setAttribute("href", data);

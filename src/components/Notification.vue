@@ -222,7 +222,7 @@ export default {
       this.id = id;
       this.dialog = true;
       this.sections = [];
-      this.$store.dispatch("allSections").then((res) => {
+      this.$store.dispatch("allSections",gradelevel).then((res) => {
         let sections = res;
         for (const key in sections) {
           if (sections.hasOwnProperty.call(sections, key)) {
@@ -241,6 +241,7 @@ export default {
             }
           }
         }
+      console.log(this.sections);
       });
     },
 
