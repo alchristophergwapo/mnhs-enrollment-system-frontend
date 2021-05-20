@@ -226,7 +226,12 @@ export default {
       this.id = id;
       this.dialog = true;
       this.sections = [];
-      this.$store.dispatch("allSections").then((res) => {
+      let adminLevel = null;
+      if (this.$user.user_type == "teacher_admin") {
+        let temp = this.$user.username.split("_");
+        adminLevel = temp[1];
+      }
+      this.$store.dispatch("allSections", adminLevel).then((res) => {
         let sections = res;
         for (const key in sections) {
           if (sections.hasOwnProperty.call(sections, key)) {
