@@ -991,13 +991,13 @@ export default {
     filterByGradeLevel(grade) {
       this.selectedSection = null;
       let arraySection = [];
-      if (grade == "All") {
+      if (grade === "All") {
         this.selectGrade = "Allstudent";
         this.students = this.filteredStudents;
         this.filteredSections.filter((val) => {
           arraySection.push(val.name);
         });
-        this.section = arraySection;
+        this.sections = arraySection;
         this.selectedSection = null;
       } else {
         this.selectGrade = "Grade-" + grade;
