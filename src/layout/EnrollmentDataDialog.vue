@@ -63,9 +63,16 @@
             }}</strong>
           </v-col>
           <v-container v-if="enrollment.enrollment.card_image != 'undefined'">
-            <v-img
-              :src="imageUrl+enrollment.enrollment.card_image"
-            ></v-img>
+            <v-img :src="imageUrl + enrollment.enrollment.card_image">
+              <template v-slot:placeholder>
+                <v-row class="fill-height ma-0" align="center" justify="center">
+                  <v-progress-circular
+                    indeterminate
+                    color="grey lighten-5"
+                  ></v-progress-circular>
+                </v-row>
+              </template>
+            </v-img>
           </v-container>
         </v-row>
       </v-card-text>
@@ -87,6 +94,6 @@ export default {
       //imageUrl: "http://localhost:8000/images/",
       imageUrl: "https://mnhs-enrollment-system.herokuapp.com/images/",
     };
-  }
+  },
 };
 </script>

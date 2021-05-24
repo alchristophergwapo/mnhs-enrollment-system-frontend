@@ -103,7 +103,7 @@
                         cols="6"
                         v-if="
                           row.item.grade_level === 9 ||
-                          row.item.grade_level === 10
+                            row.item.grade_level === 10
                         "
                       >
                         Specialization:&nbsp;&nbsp;<strong>{{
@@ -206,7 +206,20 @@
                           row.item.last_school_address
                         }}</strong>
                       </v-col>
-                      <v-img :src="imageUrl + row.item.card_image"></v-img>
+                      <v-img :src="imageUrl + row.item.card_image">
+                        <template v-slot:placeholder>
+                          <v-row
+                            class="fill-height ma-0"
+                            align="center"
+                            justify="center"
+                          >
+                            <v-progress-circular
+                              indeterminate
+                              color="grey lighten-5"
+                            ></v-progress-circular>
+                          </v-row>
+                        </template>
+                      </v-img>
                     </v-row>
                   </v-card-text>
                 </v-card>
