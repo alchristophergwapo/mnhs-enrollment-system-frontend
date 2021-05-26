@@ -293,6 +293,10 @@ export default {
       this.close();
     });
 
+    EventBus.$on("save", () => {
+      this.viewSubject = false;
+    });
+
     EventBus.$on("displayAllsection", (data) => {
       this.displayAllsection(data.data1.split(" ")[2]);
     });
@@ -321,7 +325,7 @@ export default {
           this.allsections = response.data.sections;
           this.junior_high.forEach((junior) => {
             if (junior.text.split(" ")[1] == gradelevel) {
-              junior.content = this.allsections.filter(function (val) {
+              junior.content = this.allsections.filter(function(val) {
                 return val.gradelevel.grade_level == gradelevel;
               });
             }
@@ -345,7 +349,7 @@ export default {
       this.viewScheds = false;
       this.junior_high.forEach((junior) => {
         if (junior.text.split(" ")[1] == item.split(" ")[1]) {
-          junior.content = this.allsections.filter(function (val) {
+          junior.content = this.allsections.filter(function(val) {
             return val.gradelevel.grade_level == item.split(" ")[1];
           });
         }

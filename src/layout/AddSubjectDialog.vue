@@ -227,6 +227,7 @@ export default {
     },
 
     openEditSub(itemData, index) {
+      console.log(itemData);
       this.editSubjectDetails.grade_level_id = itemData.grade_level_id;
       this.editSubjectDetails.subject_name = itemData.subject_name;
       this.editSubjectDetails.teacher_name = itemData.teacher_name;

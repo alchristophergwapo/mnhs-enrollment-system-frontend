@@ -1,4 +1,3 @@
-
 <template>
   <div>
     <bread-crumb :item="items" page_name="All Teachers"></bread-crumb>
@@ -777,106 +776,118 @@ export default {
               }
               this.loading = false;
             });
-        }
-      } else {
-        //For Updating The  Teachers
-        this.loading = true;
-        this.$axios
-          .post("updateTeacher/" + this.Id, {
-            teacher_name: this.Teacher,
-            email: this.Email,
-            contact: this.Contact,
-            section_id: this.selected_section,
-          })
-          .then((response) => {
-            this.loading = false;
-            if (response.data.message) {
-              this.$swal.fire({
-                icon: "success",
-                title: "Success",
-                text: response.data.message,
-              });
-              this.display();
-              (this.Teacher = null),
-                (this.Email = null),
-                (this.Contact = null),
-                (this.selected_section = null),
-                (this.Id = null);
-              this.statusdialog = false;
-              this.display();
-            } else {
-              this.$swal
-                .fire({
-                  title:
-                    response.data.section +
-                    " section was assigned to " +
-                    response.data.teacher +
-                    ".",
-                  text: "Are you sure to update this!",
-                  icon: "warning",
-                  showCancelButton: true,
-                  confirmButtonColor: "#3085d6",
-                  cancelButtonColor: "#d33",
-                  confirmButtonText: "Update",
-                })
-                .then((result) => {
-                  if (result.isConfirmed) {
-                    this.loading = true;
-                    this.$axios
-                      .post("updateTeacher/" + "update", {
-                        updateId: this.Id,
-                        teacher_name: this.Teacher,
-                        email: this.Email,
-                        contact: this.Contact,
-                        section_id: this.selected_section,
-                      })
-                      .then((response) => {
-                        this.loading = false;
-                        if (response.data.newSection) {
-                          this.$swal
-                            .fire({
-                              title: "Updated!",
-                              text: response.data.newSection,
-                              icon: "success",
-                            })
-                            .then((result) => {
-                              if (result.isConfirmed) {
-                                this.$refs.addTeacher.resetValidation();
-                              }
-                            });
-                          this.statusdialog = false;
-                          (this.Teacher = null),
-                            (this.Email = null),
-                            (this.Contact = null),
-                            (this.selected_section = null),
-                            (this.Id = null);
-                          this.display();
-                        } else {
-                          this.$swal.fire({
-                            title: "NotUpdated!",
-                            text: "Not successfully updated!",
-                            icon: "error",
-                          });
-                          this.statusdialog = false;
-                          this.display();
-                        }
-                      })
-                      .catch(() => {
-                        this.loading = false;
-                        this.$swal.fire({
-                          icon: "warning",
-                          title: "Ooops!",
-                          text: "An error encountered!",
-                        });
-                      });
-                  }
+        } else {
+          //For Updating The  Teachers
+          this.loading = true;
+          this.$axios
+            .post("updateTeacher/" + this.Id, {
+              teacher_name: this.Teacher,
+              email: this.Email,
+              contact: this.Contact,
+              section_id: this.selected_section,
+            })
+            .then((response) => {
+              this.loading = false;
+              if (response.data.message) {
+                this.$swal.fire({
+                  icon: "success",
+                  title: "Success",
+                  text: response.data.message,
                 });
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-            this.loading = false;
-          });
+                this.display();
+                (this.Teacher = null),
+                  (this.Email = null),
+                  (this.Contact = null),
+                  (this.selected_section = null),
+                  (this.Id = null);
+                this.statusdialog = false;
+                this.display();
+              } else {
+                this.$swal
+                  .fire({
+                    title:
+                      response.data.section +
+                      " section was assigned to " +
+                      response.data.teacher +
+                      ".",
+                    text: "Are you sure to update this!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "Update",
+                  })
+                  .then((result) => {
+                    if (result.isConfirmed) {
+                      this.loading = true;
+                      this.$axios
+                        .post("updateTeacher/" + "update", {
+                          updateId: this.Id,
+                          teacher_name: this.Teacher,
+                          email: this.Email,
+                          contact: this.Contact,
+                          section_id: this.selected_section,
+                        })
+                        .then((response) => {
+                          this.loading = false;
+                          if (response.data.newSection) {
+                            this.$swal
+                              .fire({
+                                title: "Updated!",
+                                text: response.data.newSection,
+                                icon: "success",
+                              })
+                              .then((result) => {
+                                if (result.isConfirmed) {
+                                  this.$refs.addTeacher.resetValidation();
+                                }
+                              });
+                            this.statusdialog = false;
+                            (this.Teacher = null),
+                              (this.Email = null),
+                              (this.Contact = null),
+                              (this.selected_section = null),
+                              (this.Id = null);
+                            this.display();
+                          } else {
+                            this.$swal.fire({
+                              title: "NotUpdated!",
+                              text: "Not successfully updated!",
+                              icon: "error",
+                            });
+                            this.statusdialog = false;
+                            this.display();
+                          }
+                        })
+                        .catch((error) => {
+                          if (error.response.status == 422) {
+                            this.setErrors(error.response.data.errors);
+                          } else {
+                            this.$swal.fire({
+                              icon: "warning",
+                              title: "Ooops!",
+                              text: "An error encountered!",
+                            });
+                          }
+                          this.loading = false;
+                        });
+                    }
+                  });
+              }
+            })
+            .catch((error) => {
+              if (error.response.status == 422) {
+                this.setErrors(error.response.data.errors);
+              } else {
+                this.$swal.fire({
+                  icon: "warning",
+                  title: "Ooops!",
+                  text: "An error encountered!",
+                });
+              }
+              this.loading = false;
+            });
+        }
       }
     },
 
@@ -905,7 +916,6 @@ export default {
   },
 };
 </script>
-
 
 <style scoped>
 .headline {
