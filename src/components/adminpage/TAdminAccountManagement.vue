@@ -1,7 +1,7 @@
 <template>
   <div app>
     <v-card-title>
-      <v-spacer></v-spacer>
+      <v-spacer />
       <v-text-field
         v-model="search"
         append-icon="mdi-magnify"
@@ -9,8 +9,12 @@
         dense
         style="width: 0px"
         outlined
-      ></v-text-field>
-      <v-btn class="add_btn" color="primary" @click="add = true">
+      />
+      <v-btn
+        class="add_btn"
+        color="primary"
+        @click="add = true"
+      >
         <v-icon>mdi-plus</v-icon>Add New
       </v-btn>
     </v-card-title>
@@ -27,45 +31,63 @@
           <td>{{ row.item.assigned_gr_level }}</td>
           <td>{{ row.item.user_fullname }}</td>
           <td>
-            <v-btn @click="openEdit(row.item)">Edit</v-btn>
+            <v-btn @click="openEdit(row.item)">
+              Edit
+            </v-btn>
             &nbsp;&nbsp;&nbsp;
-            <v-btn color="primary" @click="resetPassword(row.item.id)"
-              >Reset Password</v-btn
+            <v-btn
+              color="primary"
+              @click="resetPassword(row.item.id)"
             >
+              Reset Password
+            </v-btn>
           </td>
         </tr>
       </template>
     </v-data-table>
-    <v-dialog v-model="edit" max-width="500px">
+    <v-dialog
+      v-model="edit"
+      max-width="500px"
+    >
       <EditAdminDetails :data="tAdminToEdit" />
     </v-dialog>
-    <v-dialog v-model="add" max-width="500px">
+    <v-dialog
+      v-model="add"
+      max-width="500px"
+    >
       <AddNewAdmin>
         <template v-slot:close_btn>
-          <v-btn icon @click="add = false" class="close-icon">
+          <v-btn
+            icon
+            class="close-icon"
+            @click="add = false"
+          >
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </template>
       </AddNewAdmin>
     </v-dialog>
-    <v-overlay :value="loading" absolute>
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    <v-overlay
+      :value="loading"
+      absolute
+    >
+      <v-progress-circular
+        indeterminate
+        size="64"
+      />
     </v-overlay>
   </div>
 </template>
 
 <script>
 import { EventBus } from "../../bus/bus";
+import EditAdminDetails from /* webpackChunkName: "EditAdminDetails" */ "@/components/adminpage/EditTAdminDetails.vue";
+import AddNewAdmin from /* webpackChunkName: "AddAdmin" */ "@/components/adminpage/AddNewAdmin.vue";
+
 export default {
   components: {
-    EditAdminDetails: () =>
-      import(
-        /* webpackChunkName: "EditAdminDetails" */ "@/components/adminpage/EditTAdminDetails.vue"
-      ),
-    AddNewAdmin: () =>
-      import(
-        /* webpackChunkName: "AddAdmin" */ "@/components/adminpage/AddNewAdmin.vue"
-      ),
+    EditAdminDetails,
+    AddNewAdmin,
   },
   data() {
     return {
@@ -111,7 +133,7 @@ export default {
                 user_fullname: element.user_fullname,
                 assigned_teacher: element.user_fullname,
                 username: element.username,
-                user_email: "",
+                user_email: element.email,
                 id: element.id,
               };
               this.teacher_admins.push(tAdmin);

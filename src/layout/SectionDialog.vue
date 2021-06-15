@@ -9,7 +9,11 @@
     </v-card-title>
     <!-- </v-toolbar> -->
     <v-card-text>
-      <v-form ref="sectionForm" v-model="sectionValid" lazy-validation>
+      <v-form
+        ref="sectionForm"
+        v-model="sectionValid"
+        lazy-validation
+      >
         <v-container>
           <v-text-field
             v-model="sectionData.section"
@@ -19,54 +23,78 @@
                 (!!value && value.trim() != '') || 'This field is required',
             ]"
             required
-            @keydown="clearError"
             name="name"
             :error="hasError('name')"
             outlined
-          ><v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+            @keydown="clearError"
+          >
+            <v-icon
+              slot="prepend-inner"
+              color="red"
+              x-small
+            >
+              mdi-asterisk
+            </v-icon>
           </v-text-field>
-          <p v-if="hasError('name')" class="invalid-feedback">
+          <p
+            v-if="hasError('name')"
+            class="invalid-feedback"
+          >
             {{ getError("name") }}
           </p>
           <v-text-field
+            v-model="sectionData.capacity"
             type="number"
             name="capacity"
             label="Max Capacity"
             onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
-            @keydown="clearError"
-            v-model="sectionData.capacity"
             :rules="[(value) => !!value || 'This field is required']"
             required
             :error="hasError('capacity')"
             min="0"
             outlined
-          ><v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon></v-text-field>
-          <p v-if="hasError('capacity')" class="invalid-feedback">
+            @keydown="clearError"
+          >
+            <v-icon
+              slot="prepend-inner"
+              color="red"
+              x-small
+            >
+              mdi-asterisk
+            </v-icon>
+          </v-text-field>
+          <p
+            v-if="hasError('capacity')"
+            class="invalid-feedback"
+          >
             {{ getError("capacity") }}
           </p>
           <Autocomplete
             request="allNoneAdvisoryTeacher"
             :gradelevel="Number(type.split(' ')[2])"
             :edit="type.split(' ')[0] == 'Edit' ? true : false"
-            :teacher="Section.teacher"
-            :modelValue="Section.teacher"
-            :prepend_icon="
+            :teacher="sectionDataProps.teacher"
+            :model-value="sectionDataProps.teacher"
+            :prepend-icon="
               sectionData.teacher != null ? 'mdi-check-underline' : 'mdi-help'
             "
             property="teacher_name"
           >
             <template v-slot:label>
-              <span
-                >Adviser : <strong>{{ Section.teacher }}</strong></span
-              >
+              <span>Adviser : <strong>{{ sectionDataProps.teacher }}</strong></span>
             </template>
           </Autocomplete>
         </v-container>
       </v-form>
     </v-card-text>
     <v-card-actions>
-      <v-spacer></v-spacer>
-      <v-btn dark :disabled="loading" color="error darken-1" @click="close()">
+      <v-spacer />
+      <v-btn
+        dark
+        :disabled="loading"
+        color="error darken-1"
+        @click="close()"
+      >
         cancel
       </v-btn>
       <v-btn
@@ -74,20 +102,25 @@
         :disabled="!sectionValid"
         color="primary"
         @click="addSection(type)"
-        >Save</v-btn
       >
+        Save
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>
 <script>
 import { EventBus } from "../bus/bus.js";
+import Autocomplete from /* webpackChunkName: "Autocomplete" */ "@/layout/Autocomplete.vue";
 export default {
+  components: {
+    Autocomplete,
+  },
   props: {
     type: {
       type: String,
       required: true,
     },
-    Section: {
+    sectionDataProps: {
       type: Object,
       required: true,
     },
@@ -96,20 +129,20 @@ export default {
       required: true,
     },
   },
-  components: {
-    // AddScheduleForm: () => import("@/layout/AddScheduleForm.vue"),
-    Autocomplete: () => import("@/layout/Autocomplete.vue"),
-    // EditScheduleForm: () => import("@/layout/EditSchedule"),
-  },
   data() {
     return {
       loading: false,
       teachers: [],
       errors: {},
-      sectionData: this.Section,
+      sectionData: this.sectionDataProps,
       sectionValid: false,
       search: "",
     };
+  },
+  computed: {
+    hasAnyErors() {
+      return Object.keys(this.errors).length > 0;
+    },
   },
   watch: {},
   created() {
@@ -124,8 +157,8 @@ export default {
     });
 
     EventBus.$on("clearData", () => {
-      this.Section.teacher = null;
-      this.Section.teacher_id = null;
+      this.sectionDataProps.teacher = null;
+      this.sectionDataProps.teacher_id = null;
     });
   },
   mounted() {},
@@ -309,11 +342,6 @@ export default {
     },
     getError(fieldName) {
       return this.errors[fieldName][0];
-    },
-  },
-  computed: {
-    hasAnyErors() {
-      return Object.keys(this.errors).length > 0;
     },
   },
 };

@@ -7,9 +7,9 @@
         label="Search"
         single-line
         hide-details
-      ></v-text-field>
-      <v-spacer></v-spacer>
-      <span>Adviser: {{ teacher_name }}</span>
+      />
+      <v-spacer />
+      <span>Adviser: {{ teacherName }}</span>
     </v-card-title>
     <v-data-table
       :headers="headers"
@@ -35,7 +35,10 @@
 
 <script>
 export default {
-  props: ["teacher_name"],
+  props: {teacherName: {
+    type: String,
+    default: '',
+  }},
   data() {
     return {
       search: "",
@@ -62,7 +65,7 @@ export default {
 
       const section = user.enrollment.student_section;
       this.isDataLoaded = true;
-      this.$axios.get(`studentSectionDetails/${section}`).then((res) => {
+      this.$axios.get(`student/classmates/${section}`).then((res) => {
         this.isDataLoaded = false;
         this.students = res.data.classmates;
         this.students.sort(this.sortData("lastname"));

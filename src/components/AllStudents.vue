@@ -1,18 +1,26 @@
 <template>
   <div>
-    <bread-crumb :item="items" page_name="All Students"></bread-crumb>
-    <br /><br />
+    <bread-crumb
+      :item="items"
+      pageName="All Students"
+    />
+    <br><br>
     <div>
       <v-container>
         <!-- <v-card outlined> -->
-        <v-card class="table-header" color="#00b4cc">
+        <v-card
+          class="table-header"
+          color="#00b4cc"
+        >
           <v-card-title class="text-center justify-center">
-            <div class="display-2 font-weight-light">Enrolled Students</div>
+            <div class="display-2 font-weight-light">
+              Enrolled Students
+            </div>
           </v-card-title>
           <div class="subtitle-1 font-weight-light text-center justify-center">
             All students enrolled as of year {{ year }}
           </div>
-          <br />
+          <br>
         </v-card>
         <v-card-title>
           <v-row>
@@ -21,45 +29,48 @@
                 v-model="selectedYear"
                 :items="schoolYear"
                 prepend-inner-icon="mdi-filter-outline"
-                @change="filterByYear(($event = selectedYear))"
                 label="School Year"
                 dense
                 outlined
-              ></v-select>
+                @change="filterByYear(($event = selectedYear))"
+              />
             </v-col>
-            <v-col sm="3" v-if="isAdmin">
+            <v-col
+              v-if="isAdmin"
+              sm="3"
+            >
               <v-select
                 v-model="gradelevel"
                 :items="grade_level"
                 prepend-inner-icon="mdi-filter-outline"
-                @change="filterByGradeLevel(($event = gradelevel))"
                 menu-props="auto"
                 label="Grade Level"
                 dense
                 outlined
-              ></v-select>
+                @change="filterByGradeLevel(($event = gradelevel))"
+              />
             </v-col>
             <v-col sm="3">
               <v-select
                 v-model="selectedSection"
                 prepend-inner-icon="mdi-filter-outline"
-                @change="filterBySection(($event = selectedSection))"
                 :items="sections"
                 menu-props="auto"
                 label="Section"
                 dense
                 outlined
-              ></v-select>
+                @change="filterBySection(($event = selectedSection))"
+              />
             </v-col>
             <v-col sm="3">
               <v-text-field
-                class="search"
                 v-model="search"
+                class="search"
                 append-icon="mdi-magnify"
                 label="Search"
                 dense
                 outlined
-              ></v-text-field>
+              />
             </v-col>
           </v-row>
         </v-card-title>
@@ -79,9 +90,12 @@
               <td>{{ row.item.LRN }}</td>
               <td>{{ row.item.address }}</td>
               <td>
-                <v-btn text @click="editDetails(row.item, row.index)"
-                  >View Details</v-btn
+                <v-btn
+                  text
+                  @click="editDetails(row.item, row.index)"
                 >
+                  View Details
+                </v-btn>
               </td>
             </tr>
           </template>
@@ -94,35 +108,81 @@
           max-width="800"
         >
           <template>
-            <v-form ref="studentDetails" v-model="valid" lazy-validation>
+            <v-form
+              ref="studentDetails"
+              v-model="valid"
+              lazy-validation
+            >
               <v-card>
                 <v-card-title class="text-center justify-center">
-                  <v-spacer></v-spacer>
+                  <v-spacer />
                   <v-row>
                     <h2>Student Details</h2>
                   </v-row>
-                  <v-btn icon @click="closestudentDetails()">
+                  <v-btn
+                    icon
+                    @click="closestudentDetails()"
+                  >
                     <v-icon>mdi-close</v-icon>
                   </v-btn>
                 </v-card-title>
-                <hr />
+                <hr>
                 <v-card-title>
-                  <v-spacer></v-spacer>
+                  <v-spacer />
                   <v-row>S.Y. {{ studentInfo.school_year }}</v-row>
+                  <div class="enrollment-remarks">
+                    <span class="teal--text text--darken-4">{{
+                      studentInfo.enrollment_remarks
+                    }}</span>
+                    <v-menu
+                      offset-y
+                      rounded="0"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-icon
+                          color="primary"
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                          mdi-pencil
+                        </v-icon>
+                      </template>
+                      <v-list>
+                        <v-list-item @click="editEnrollmentRemarks('PASSED')">
+                          <v-list-item-title>MARK AS PASSED</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item @click="editEnrollmentRemarks('FAILED')">
+                          <v-list-item-title>MARK AS FAILED</v-list-item-title>
+                        </v-list-item>
+                      </v-list>
+                    </v-menu>
+                  </div>
                 </v-card-title>
-                <br />
+                <br>
                 <v-card-text>
                   <v-row>
-                    <v-col cols="12" xs="3" sm="4" md="4" lg="4">
+                    <v-col
+                      cols="12"
+                      xs="3"
+                      sm="4"
+                      md="4"
+                      lg="4"
+                    >
                       <v-text-field
                         v-model="studentInfo.PSA"
                         name="PSA"
                         label="PSA Birth Certificate No."
                         outlined
                         :readonly="readonly"
-                      ></v-text-field>
+                      />
                     </v-col>
-                    <v-col cols="12" xs="3" sm="4" md="4" lg="4">
+                    <v-col
+                      cols="12"
+                      xs="3"
+                      sm="4"
+                      md="4"
+                      lg="4"
+                    >
                       <v-text-field
                         v-model="studentInfo.LRN"
                         name="LRN"
@@ -143,9 +203,15 @@
                         outlined
                         :readonly="readonly"
                         required
-                      ></v-text-field>
+                      />
                     </v-col>
-                    <v-col cols="12" xs="3" sm="4" md="4" lg="4">
+                    <v-col
+                      cols="12"
+                      xs="3"
+                      sm="4"
+                      md="4"
+                      lg="4"
+                    >
                       <v-text-field
                         v-model="studentInfo.average"
                         onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
@@ -160,10 +226,16 @@
                         :readonly="readonly"
                         type="number"
                         required
-                      ></v-text-field>
+                      />
                     </v-col>
 
-                    <v-col cols="12" xs="3" sm="4" md="4" lg="4">
+                    <v-col
+                      cols="12"
+                      xs="3"
+                      sm="4"
+                      md="4"
+                      lg="4"
+                    >
                       <v-text-field
                         v-model="studentInfo.firstname"
                         name="firstname"
@@ -181,9 +253,15 @@
                         outlined
                         :readonly="readonly"
                         required
-                      ></v-text-field>
+                      />
                     </v-col>
-                    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="4"
+                      md="4"
+                      lg="4"
+                    >
                       <v-text-field
                         v-model="studentInfo.middlename"
                         name="middlename"
@@ -197,9 +275,15 @@
                         outlined
                         :readonly="readonly"
                         required
-                      ></v-text-field>
+                      />
                     </v-col>
-                    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="4"
+                      md="4"
+                      lg="4"
+                    >
                       <v-text-field
                         v-model="studentInfo.lastname"
                         name="lastname"
@@ -217,20 +301,26 @@
                         outlined
                         :readonly="readonly"
                         required
-                      ></v-text-field>
+                      />
                     </v-col>
 
-                    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="4"
+                      md="4"
+                      lg="4"
+                    >
                       <v-text-field
                         v-model="studentInfo.birthdate"
                         name="birthdate"
                         :rules="[(v) => !!v || 'Birthdate is required']"
-                        @click="modal = !modal"
                         label="Date of Birth"
                         prepend-inner-icon="mdi-calendar"
                         readonly
                         outlined
-                      ></v-text-field>
+                        @click="modal = !modal"
+                      />
                       <v-dialog
                         ref="dialog"
                         v-model="modal"
@@ -245,8 +335,12 @@
                           :max="max_date"
                           scrollable
                         >
-                          <v-spacer></v-spacer>
-                          <v-btn text color="primary" @click="modal = false">
+                          <v-spacer />
+                          <v-btn
+                            text
+                            color="primary"
+                            @click="modal = false"
+                          >
                             Cancel
                           </v-btn>
                           <v-btn
@@ -254,7 +348,7 @@
                             color="primary"
                             @click="
                               $refs.dialog.save(studentInfo.birthdate),
-                                getAge(studentInfo.birthdate)
+                              getAge(studentInfo.birthdate)
                             "
                           >
                             OK
@@ -263,7 +357,13 @@
                       </v-dialog>
                     </v-col>
 
-                    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="4"
+                      md="4"
+                      lg="4"
+                    >
                       <v-text-field
                         v-model="studentInfo.age"
                         name="age"
@@ -279,10 +379,16 @@
                         outlined
                         type="number"
                         required
-                      ></v-text-field>
+                      />
                     </v-col>
 
-                    <v-col cols="12" xs="6" sm="2" md="2" lg="2">
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="2"
+                      md="2"
+                      lg="2"
+                    >
                       <v-checkbox
                         v-model="studentInfo.gender"
                         name="gender"
@@ -292,11 +398,17 @@
                         type="checkbox"
                         :readonly="readonly"
                         :required="!studentInfo.gender ? true : false"
-                      ></v-checkbox>
-                      <v-spacer></v-spacer>
+                      />
+                      <v-spacer />
                     </v-col>
 
-                    <v-col cols="12" xs="6" sm="2" md="2" lg="2">
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="2"
+                      md="2"
+                      lg="2"
+                    >
                       <v-checkbox
                         v-model="studentInfo.gender"
                         name="gender"
@@ -306,16 +418,28 @@
                         type="checkbox"
                         :readonly="readonly"
                         required
-                      ></v-checkbox>
+                      />
                     </v-col>
-                    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="4"
+                      md="4"
+                      lg="4"
+                    >
                       <p>
                         Belonging to any Indegenous People (IP)
                         Community/Indegenous Cultural Community?
                       </p>
                     </v-col>
 
-                    <v-col cols="12" xs="6" sm="2" md="2" lg="2">
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="2"
+                      md="2"
+                      lg="2"
+                    >
                       <v-checkbox
                         v-model="studentInfo.IP"
                         name="IP"
@@ -324,9 +448,15 @@
                         label="Yes"
                         :readonly="readonly"
                         type="checkbox"
-                      ></v-checkbox>
+                      />
                     </v-col>
-                    <v-col cols="12" xs="6" sm="2" md="2" lg="2">
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="2"
+                      md="2"
+                      lg="2"
+                    >
                       <v-checkbox
                         v-model="studentInfo.IP"
                         name="IP"
@@ -335,9 +465,15 @@
                         label="No"
                         type="checkbox"
                         :readonly="readonly"
-                      ></v-checkbox>
+                      />
                     </v-col>
-                    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="4"
+                      md="4"
+                      lg="4"
+                    >
                       <v-text-field
                         v-if="studentInfo.IP === 'Yes'"
                         v-model="studentInfo.IP_community"
@@ -351,10 +487,16 @@
                         outlined
                         :readonly="readonly"
                         required
-                      ></v-text-field>
+                      />
                     </v-col>
 
-                    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="6"
+                      md="6"
+                      lg="3"
+                    >
                       <v-text-field
                         v-model="studentInfo.mother_tongue"
                         name="mother_tongue"
@@ -371,10 +513,16 @@
                         outlined
                         :readonly="readonly"
                         required
-                      ></v-text-field>
+                      />
                     </v-col>
 
-                    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="6"
+                      md="6"
+                      lg="3"
+                    >
                       <v-text-field
                         v-model="studentInfo.contact"
                         name="contact"
@@ -396,10 +544,16 @@
                         :readonly="readonly"
                         outlined
                         required
-                      ></v-text-field>
+                      />
                     </v-col>
 
-                    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="6"
+                      md="6"
+                      lg="3"
+                    >
                       <v-text-field
                         v-model="studentInfo.address"
                         name="address"
@@ -418,9 +572,15 @@
                         :readonly="readonly"
                         outlined
                         required
-                      ></v-text-field>
+                      />
                     </v-col>
-                    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="6"
+                      md="6"
+                      lg="3"
+                    >
                       <v-text-field
                         v-model="studentInfo.zipcode"
                         name="zipcode"
@@ -441,10 +601,16 @@
                         :readonly="readonly"
                         outlined
                         required
-                      ></v-text-field>
+                      />
                     </v-col>
 
-                    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="6"
+                      md="6"
+                      lg="3"
+                    >
                       <v-text-field
                         v-model="studentInfo.father"
                         label="Father's Name"
@@ -457,9 +623,15 @@
                         :readonly="readonly"
                         outlined
                         required
-                      ></v-text-field>
+                      />
                     </v-col>
-                    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="6"
+                      md="6"
+                      lg="3"
+                    >
                       <v-text-field
                         v-model="studentInfo.mother"
                         label="Mother's Maiden Name"
@@ -472,9 +644,15 @@
                         outlined
                         :readonly="readonly"
                         required
-                      ></v-text-field>
+                      />
                     </v-col>
-                    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
+                    <v-col
+                      cols="12"
+                      xs="6"
+                      sm="6"
+                      md="6"
+                      lg="3"
+                    >
                       <v-text-field
                         v-model="studentInfo.guardian"
                         :rules="[
@@ -489,9 +667,14 @@
                         outlined
                         :readonly="readonly"
                         required
-                      ></v-text-field>
+                      />
                     </v-col>
-                    <v-col cols="12" sm="6" md="6" lg="3">
+                    <v-col
+                      cols="12"
+                      sm="6"
+                      md="6"
+                      lg="3"
+                    >
                       <v-text-field
                         v-model="studentInfo.parent_number"
                         :rules="[
@@ -513,28 +696,28 @@
                         outlined
                         :readonly="readonly"
                         required
-                      ></v-text-field>
+                      />
                     </v-col>
                     <!----------------------------------THIS IS FOR SENIOR HIGH STUDENT DATA INFORMATION------------------------------------------->
                     <v-col
+                      v-if="studentInfo.semester != null"
                       cols="12"
                       xs="12"
                       sm="12"
                       md="12"
                       lg="12"
-                      v-if="studentInfo.semester != null"
                     >
                       <p style="text-align: center; font-size: 20px">
                         <b>SENIOR HIGH LEARNER</b>
                       </p>
                     </v-col>
                     <v-col
+                      v-if="studentInfo.semester != null"
                       cols="12"
                       xs="6"
                       sm="4"
                       md="4"
                       lg="4"
-                      v-if="studentInfo.semester != null"
                     >
                       <v-select
                         v-model="studentInfo.semester"
@@ -545,15 +728,15 @@
                         label="Select semester"
                         outlined
                         :readonly="readonly"
-                      ></v-select>
+                      />
                     </v-col>
                     <v-col
+                      v-if="studentInfo.track != null"
                       cols="12"
                       xs="6"
                       sm="6"
                       md="6"
                       lg="4"
-                      v-if="studentInfo.track != null"
                     >
                       <v-select
                         v-model="studentInfo.track"
@@ -563,15 +746,15 @@
                         :readonly="readonly"
                         outlined
                         required
-                      ></v-select>
+                      />
                     </v-col>
                     <v-col
+                      v-if="studentInfo.strand != null"
                       cols="12"
                       xs="6"
                       sm="6"
                       md="6"
                       lg="4"
-                      v-if="studentInfo.strand != null"
                     >
                       <v-select
                         v-model="studentInfo.strand"
@@ -581,39 +764,33 @@
                         outlined
                         :readonly="readonly"
                         required
-                      ></v-select>
+                      />
                     </v-col>
 
                     <!-------------------------------THIS------------IS---------FOR------BALIK----ARAL--- STUDENT----SIDE --------------- -->
                     <v-col
+                      v-if="studentInfo.last_school_ID != null"
                       cols="12"
                       xs="12"
                       sm="12"
                       md="12"
                       lg="12"
-                      v-if="studentInfo.last_school_ID != null"
                     >
                       <p style="text-align: center; font-size: 20px">
                         <b>Balik Aral/Transferee</b>
                       </p>
                     </v-col>
                     <v-col
+                      v-if="studentInfo.last_grade_completed != null"
                       cols="12"
                       xs="6"
                       sm="6"
                       md="6"
                       lg="6"
-                      v-if="studentInfo.last_grade_completed != null"
                     >
                       <v-select
                         v-model="studentInfo.last_grade_completed"
                         :items="selectLevel"
-                        @change="
-                          lastGradeLevel(
-                            ($event = studentInfo),
-                            ($event = studentInfo.index)
-                          )
-                        "
                         :rules="[
                           (v) =>
                             !!v || 'Last Grade Level Completed is required',
@@ -622,15 +799,21 @@
                         :readonly="readonly"
                         outlined
                         required
-                      ></v-select>
+                        @change="
+                          lastGradeLevel(
+                            ($event = studentInfo),
+                            ($event = studentInfo.index)
+                          )
+                        "
+                      />
                     </v-col>
                     <v-col
+                      v-if="studentInfo.last_year_completed != null"
                       cols="12"
                       xs="6"
                       sm="6"
                       md="6"
                       lg="6"
-                      v-if="studentInfo.last_year_completed != null"
                     >
                       <v-text-field
                         v-model="studentInfo.last_year_completed"
@@ -646,15 +829,15 @@
                         min="0"
                         outlined
                         required
-                      ></v-text-field>
+                      />
                     </v-col>
                     <v-col
+                      v-if="studentInfo.last_school_ID != null"
                       cols="12"
                       xs="6"
                       sm="6"
                       md="6"
                       lg="6"
-                      v-if="studentInfo.last_school_ID != null"
                     >
                       <v-text-field
                         v-model="studentInfo.last_school_ID"
@@ -678,14 +861,14 @@
                         :readonly="readonly"
                         outlined
                         required
-                      ></v-text-field>
+                      />
                     </v-col>
                     <v-col
+                      v-if="studentInfo.last_school_attended != null"
                       cols="12"
                       xs="6"
                       sm="6"
                       md="6"
-                      v-if="studentInfo.last_school_attended != null"
                     >
                       <v-text-field
                         v-model="studentInfo.last_school_attended"
@@ -704,14 +887,14 @@
                         :readonly="readonly"
                         outlined
                         required
-                      ></v-text-field>
+                      />
                     </v-col>
                     <v-col
+                      v-if="studentInfo.last_school_address != null"
                       cols="12"
                       xs="6"
                       sm="6"
                       md="6"
-                      v-if="studentInfo.last_school_address != null"
                     >
                       <v-text-field
                         v-model="studentInfo.last_school_address"
@@ -730,12 +913,12 @@
                         :readonly="readonly"
                         outlined
                         required
-                      ></v-text-field>
+                      />
                     </v-col>
                     <v-col
                       :cols="
                         studentInfo.grade_level === 9 ||
-                        studentInfo.grade_level === 10
+                          studentInfo.grade_level === 10
                           ? '4'
                           : '6'
                       "
@@ -744,90 +927,94 @@
                         v-model="studentInfo.grade_level"
                         :rules="[(v) => !!v || 'Required']"
                         :items="GradeLevel"
-                        @change="filterSections(studentInfo.grade_level)"
                         label="Grade Level"
                         :readonly="statusLevel"
                         outlined
                         required
-                      ></v-select>
+                        @change="filterSections(studentInfo.grade_level)"
+                      />
                     </v-col>
                     <v-col
                       :cols="
                         studentInfo.grade_level === 9 ||
-                        studentInfo.grade_level === 10
+                          studentInfo.grade_level === 10
                           ? '4'
                           : '6'
                       "
                     >
                       <v-select
-                        :items="sections"
                         v-model="studentInfo.section_name"
+                        :items="sections"
                         name="section"
-                        @change="
-                          theSection(($event = studentInfo.section_name))
-                        "
                         :rules="[(v) => !!v || 'Section name is required!']"
                         label="Section"
                         :readonly="statusLevel"
                         outlined
                         required
-                      ></v-select>
+                        @change="
+                          theSection(($event = studentInfo.section_name))
+                        "
+                      />
                     </v-col>
                     <v-col
-                      cols="4"
                       v-if="
                         studentInfo.grade_level === 9 ||
-                        studentInfo.grade_level === 10
+                          studentInfo.grade_level === 10
                       "
+                      cols="4"
                     >
                       <v-select
                         v-model="studentInfo.specialization"
                         :items="specializations"
-                        @click:clear="studentInfo.specialization = null"
                         :rules="[(v) => !!v || 'Required']"
                         :label="'Specialization'"
                         :readonly="statusLevel"
                         outlined
                         required
-                      >
-                      </v-select>
+                        @click:clear="studentInfo.specialization = null"
+                      />
                     </v-col>
                   </v-row>
                 </v-card-text>
                 <v-card-actions>
                   <v-container>
-                    <v-spacer></v-spacer>
+                    <v-spacer />
                     <v-btn
                       elevation="5"
                       block
                       color="blue darken-1"
+                      :disabled="readonly === false ? !valid : false"
                       @click="
                         readonly
                           ? ((readonly = false), (statusLevel = false))
                           : updateStudentDetails(studentInfo)
                       "
-                      :disabled="readonly === false ? !valid : false"
                     >
                       {{ btnText }}
                     </v-btn>
                   </v-container>
                 </v-card-actions>
-                <br />
+                <br>
               </v-card>
             </v-form>
           </template>
         </v-dialog>
       </v-container>
-      <v-btn @click="csvExport(csvData)" dark color="teal">Download File</v-btn>
+      <v-btn
+        dark
+        color="teal"
+        @click="csvExport(csvData)"
+      >
+        Download File
+      </v-btn>
     </div>
   </div>
 </template>
 <script>
-// import { EventBus } from "../bus/bus.js";
+import BreadCrumb from /* webpackChunkName: "BreadCrumb" */ "@/layout/BreadCrumb.vue";
 export default {
   components: {
-    BreadCrumb: () =>
-      import(/* webpackChunkName: "BreadCrumb" */ "@/layout/BreadCrumb.vue"),
+    BreadCrumb,
   },
   data: () => ({
     tracks: ["ACADEMIC TRACK", "TECHNICAL-VOCATIONAL LIVELIHOOD (TLV) TRACK"],
@@ -893,6 +1080,29 @@ export default {
     backupGrade: null,
     isAdmin: true,
   }),
+  computed: {
+    csvData() {
+      console.log(this.students);
+      return this.students.map((item) => ({
+        SchoolYear: `${item.start_school_year} - ${item.end_school_year}`,
+        GradeLevel: item.grade_level,
+        Section: item.section_name,
+        StudentName: `${item.firstname} ${item.lastname}`,
+        Age: item.age,
+        Address: item.address.replace(/[^a-zA-Z ]/g, " "),
+      }));
+    },
+
+    btnText() {
+      let text = "update";
+      if (this.readonly) {
+        text = "update";
+      } else {
+        text = "save";
+      }
+      return text;
+    },
+  },
   created() {
     let todayDate = new Date();
     this.max_date = this.$moment(
@@ -987,6 +1197,23 @@ export default {
       }
     },
 
+    editEnrollmentRemarks(enrollmentRemarks) {
+      this.$axios.post(`editEnrollmentRemarks/${this.studentInfo.id}`, {enrollment_remarks: enrollmentRemarks}).then(res => {
+      this.studentInfo.enrollment_remarks = enrollmentRemarks;
+        this.$swal.fire({
+          icon: 'success',
+          text: res.data.success
+        })
+      }).catch(err=>{
+        console.log(err);
+        this.$swal.fire({
+          icon: 'warning',
+          title: 'Oops...',
+          text: 'Something went wrong! Please try again.'
+        })
+      })
+    },
+
     //Method For Filtering By Grade Level
     filterByGradeLevel(grade) {
       this.selectedSection = null;
@@ -1046,49 +1273,43 @@ export default {
     },
     //Open Or View Student Details
     editDetails(student, index) {
+      let studentInfo = student;
+      this.studentDialog = true;
       this.backupSection = student.section_name;
       this.backupGrade = student.grade_level;
       if (student.track != null && student.last_school_attended == null) {
-        let studentInfo = student;
         this.selectLevel = ["10", "11"];
         this.GradeLevel = [11, 12];
         studentInfo["school_year"] =
           student.start_school_year + " - " + student.end_school_year;
         studentInfo["index"] = index;
         this.studentInfo = studentInfo;
-        this.studentDialog = true;
       } else if (
         student.track != null &&
         student.last_school_attended != null
       ) {
-        let studentInfo = student;
         this.selectLevel = ["10", "11"];
         this.GradeLevel = [11, 12];
         studentInfo["school_year"] =
           student.start_school_year + " - " + student.end_school_year;
         studentInfo["index"] = index;
         this.studentInfo = studentInfo;
-        this.studentDialog = true;
       } else if (
         student.track == null &&
         student.last_school_attended != null
       ) {
-        let studentInfo = student;
         this.selectLevel = ["6", "7", "8", "9"];
         this.GradeLevel = [7, 8, 9, 10];
         studentInfo["school_year"] =
           student.start_school_year + " - " + student.end_school_year;
         studentInfo["index"] = index;
         this.studentInfo = studentInfo;
-        this.studentDialog = true;
       } else {
-        let studentInfo = student;
         this.GradeLevel = [7, 8, 9, 10];
         studentInfo["school_year"] =
           student.start_school_year + " - " + student.end_school_year;
         studentInfo["index"] = index;
         this.studentInfo = studentInfo;
-        this.studentDialog = true;
       }
     },
 
@@ -1270,29 +1491,6 @@ export default {
       link.setAttribute("href", data);
       link.setAttribute("download", this.selectGrade + ".csv");
       link.click();
-    },
-  },
-  computed: {
-    csvData() {
-      console.log(this.students);
-      return this.students.map((item) => ({
-        SchoolYear: `${item.start_school_year} - ${item.end_school_year}`,
-        GradeLevel: item.grade_level,
-        Section: item.section_name,
-        StudentName: `${item.firstname} ${item.lastname}`,
-        Age: item.age,
-        Address: item.address.replace(/[^a-zA-Z ]/g, " "),
-      }));
-    },
-
-    btnText() {
-      let text = "update";
-      if (this.readonly) {
-        text = "update";
-      } else {
-        text = "save";
-      }
-      return text;
     },
   },
 };

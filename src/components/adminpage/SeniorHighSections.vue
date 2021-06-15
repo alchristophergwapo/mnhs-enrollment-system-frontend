@@ -1,7 +1,10 @@
 <template>
   <div>
-    <bread-crumb :item="items" page_name="Senior High Sections"></bread-crumb>
-    <br /><br />
+    <bread-crumb
+      :item="items"
+      page-name="Senior High Sections"
+    />
+    <br><br>
 
     <v-container>
       <v-tabs
@@ -15,30 +18,39 @@
           v-for="(item, index) in senior_high"
           :key="index"
           @click="selected(item.text)"
-          >{{ item.text }}</v-tab
         >
+          {{ item.text }}
+        </v-tab>
       </v-tabs>
       <v-tabs-items v-model="tab">
-        <v-tab-item v-for="(item, index) in senior_high" :key="index">
+        <v-tab-item
+          v-for="(item, sIndex) in senior_high"
+          :key="sIndex"
+        >
           <v-card-title>
-            <v-spacer></v-spacer>
-            <v-btn color="secondary" small dark @click="retrieveSubjects()"
-              >subject(s)</v-btn
+            <v-spacer />
+            <v-btn
+              color="secondary"
+              small
+              dark
+              @click="retrieveSubjects()"
             >
+              subject(s)
+            </v-btn>
             <v-btn
               color="primary"
               small
               dark
-              @click="open(item.text)"
               class="add-btn"
+              @click="open(item.text)"
             >
               <v-icon>mdi-plus</v-icon>Add Section
             </v-btn>
           </v-card-title>
           <v-row dense>
             <v-col
-              v-for="(i, index) in item.content"
-              :key="index"
+              v-for="(i, cIndex) in item.content"
+              :key="cIndex"
               cols="12"
               sm="6"
               md="6"
@@ -52,10 +64,19 @@
                 class="section_card"
               >
                 <template v-slot:btns>
-                  <v-btn @click="viewSchedules(i.id)" color="primary" small
-                    >schedules</v-btn
+                  <v-btn
+                    color="primary"
+                    small
+                    @click="viewSchedules(i.id)"
                   >
-                  <v-btn @click="editSection(i)" outlined color="primary" small>
+                    schedules
+                  </v-btn>
+                  <v-btn
+                    outlined
+                    color="primary"
+                    small
+                    @click="editSection(i)"
+                  >
                     edit section
                     <v-icon>mdi-pencil</v-icon>
                   </v-btn>
@@ -64,8 +85,8 @@
             </v-col>
             <v-col>
               <v-card-title
-                class="text-center justify-center py-6"
                 v-if="item.content.length == 0"
+                class="text-center justify-center py-6"
               >
                 <h1 class="font-weight-bold display-1 basil--text">
                   No {{ item.text }} Sections created yet.
@@ -77,9 +98,15 @@
       </v-tabs-items>
     </v-container>
     <v-container>
-      <v-row justify="center" class="add_btn">
+      <v-row
+        justify="center"
+        class="add_btn"
+      >
         <v-overlay :value="overlay">
-          <v-progress-circular indeterminate size="64"></v-progress-circular>
+          <v-progress-circular
+            indeterminate
+            size="64"
+          />
         </v-overlay>
         <v-dialog
           v-model="actionDialog"
@@ -89,17 +116,20 @@
         >
           <section-dialog
             :type="addOrEdit.name"
-            :Section="Section"
+            :sectionDataProps="sectionData"
             :edit="edit"
-          >
-          </section-dialog>
+          />
         </v-dialog>
         <div v-if="viewSubject == 'true'">
-          <v-dialog v-model="addSubject" persistent max-width="800px">
+          <v-dialog
+            v-model="addSubject"
+            persistent
+            max-width="800px"
+          >
             <add-subject-dialog
-              :gradeLevel="addOrEdit.name.split(' ')[2]"
-              :subjectsInGradeLevel="subjects"
-            ></add-subject-dialog>
+              :grade-level="addOrEdit.name.split(' ')[2]"
+              :subjects-in-grade-level="subjects"
+            />
           </v-dialog>
         </div>
         <div v-if="viewScheds">
@@ -112,7 +142,7 @@
             <section-schedules
               :gradelevel="Number(addOrEdit.name.split(' ')[2])"
               :section_id="sectionId"
-            ></section-schedules>
+            />
           </v-dialog>
         </div>
       </v-row>
@@ -122,24 +152,18 @@
 
 <script>
 import { EventBus } from "../../bus/bus";
+import BreadCrumb from /* webpackChunkName: "BreadCrumb" */ "@/layout/BreadCrumb.vue";
+import SectionsCard from /* webpackChunkName: "SectionsCard" */ "@/layout/SectionsCard.vue";
+import SectionDialog from /* webpackChunkName: "SectionDialog" */ "@/layout/SectionDialog.vue";
+import AddSubjectDialog from /* webpackChunkName: "AddSubjectDialog" */ "@/layout/AddSubjectDialog.vue";
+import SectionSchedules from /* webpackChunkName: "SectionSchedules" */ "@/layout/SectionSchedules.vue";
 export default {
   components: {
-    BreadCrumb: () =>
-      import(/* webpackChunkName: "BreadCrumb" */ "@/layout/BreadCrumb.vue"),
-    SectionsCard: () =>
-      import(/* webpackChunkName: "SectionsCard"*/ "@/layout/SectionsCard.vue"),
-    SectionDialog: () =>
-      import(
-        /* webpackChunkName: "SectionDialog" */ "@/layout/SectionDialog.vue"
-      ),
-    AddSubjectDialog: () =>
-      import(
-        /* webpackChunkName: "AddSubjectDialog" */ "@/layout/AddSubjectDialog.vue"
-      ),
-    SectionSchedules: () =>
-      import(
-        /* webpackChunkName: "SectionSchedules" */ "@/layout/SectionSchedules.vue"
-      ),
+    BreadCrumb,
+    SectionsCard,
+    SectionDialog,
+    AddSubjectDialog,
+    SectionSchedules,
   },
   data() {
     return {
@@ -161,7 +185,7 @@ export default {
         { text: "Grade 11", content: [] },
         { text: "Grade 12", content: [] },
       ],
-      Section: {
+      sectionData: {
         id: null,
         section: null,
         capacity: null,
@@ -266,9 +290,9 @@ export default {
     },
     //Close The Modal IN Junior High School When Cancel is click
     close() {
-      this.Section.section = null;
-      this.Section.capacity = null;
-      this.Section.teacher = null;
+      this.sectionData.section = null;
+      this.sectionData.capacity = null;
+      this.sectionData.teacher = null;
       for (let key in this.errors) {
         this.$delete(this.errors, key);
       }
@@ -281,12 +305,12 @@ export default {
       this.edit = true;
       this.actionDialog = true;
       if (data.adviser != null) {
-        this.Section.teacher = data.adviser.teacher_name;
+        this.sectionData.teacher = data.adviser.teacher_name;
       }
-      this.Section.teacher_id = data.teacher_id;
-      this.Section.section = data.name;
-      this.Section.capacity = data.capacity;
-      this.Section.id = data.id;
+      this.sectionData.teacher_id = data.teacher_id;
+      this.sectionData.section = data.name;
+      this.sectionData.capacity = data.capacity;
+      this.sectionData.id = data.id;
     },
   },
 };

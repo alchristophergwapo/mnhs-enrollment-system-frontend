@@ -1,7 +1,7 @@
 <template>
   <div app>
     <v-card-title>
-      <v-spacer></v-spacer>
+      <v-spacer />
       <!-- @keyup="filterByName(($event = search))" -->
       <v-text-field
         v-model="search"
@@ -10,7 +10,7 @@
         dense
         style="width: 0px"
         outlined
-      ></v-text-field>
+      />
     </v-card-title>
     <v-data-table
       :items="students"
@@ -26,15 +26,24 @@
           <td>{{ row.item.fullname }}</td>
           <td>{{ row.item.LRN }}</td>
           <td>
-            <v-btn color="primary" @click="resetPassword(row.item)"
-              >Reset Password</v-btn
+            <v-btn
+              color="primary"
+              @click="resetPassword(row.item)"
             >
+              Reset Password
+            </v-btn>
           </td>
         </tr>
       </template>
     </v-data-table>
-    <v-overlay :value="loading" absolute>
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    <v-overlay
+      :value="loading"
+      absolute
+    >
+      <v-progress-circular
+        indeterminate
+        size="64"
+      />
     </v-overlay>
   </div>
 </template>

@@ -1,14 +1,14 @@
 <template>
   <div app>
     <v-card-title>
-      <v-spacer></v-spacer>
+      <v-spacer />
       <v-text-field
         v-model="search"
         append-icon="mdi-magnify"
         label="Search"
         dense
         outlined
-      ></v-text-field>
+      />
     </v-card-title>
     <v-data-table
       :headers="headers"
@@ -25,219 +25,25 @@
           <td>{{ row.item.firstname }} {{ row.item.lastname }}</td>
           <td>{{ row.item.average }}</td>
           <td>
-            <v-dialog transition="dialog-top-transition" max-width="715">
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn text v-bind="attrs" v-on="on">View Details</v-btn>
-              </template>
-              <template v-slot:default="dialog">
-                <v-card>
-                  <v-card-title>
-                    <v-spacer></v-spacer>
-                    <v-btn icon @click="dialog.value = false">
-                      <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                  </v-card-title>
-                  <v-card-text>
-                    <v-row>
-                      <v-col cols="4">
-                        Full Name:&nbsp;&nbsp;<strong
-                          >{{ row.item.firstname }}
-                          {{ row.item.lastname }}</strong
-                        >
-                      </v-col>
-                      <v-col cols="4">
-                        PSA No.:&nbsp;&nbsp;<strong>
-                          {{ row.item.PSA ? row.item.PSA : "N/A" }}
-                        </strong>
-                      </v-col>
-                      <v-col cols="4">
-                        LRN:&nbsp;&nbsp;<strong>{{ row.item.LRN }}</strong>
-                      </v-col>
-                      <v-col cols="3">
-                        Average:&nbsp;&nbsp;<strong>{{
-                          row.item.average
-                        }}</strong>
-                      </v-col>
-                      <v-col cols="3">
-                        Birth Date:&nbsp;&nbsp;<strong>{{
-                          row.item.birthdate
-                        }}</strong>
-                      </v-col>
-                      <v-col cols="3">
-                        Age:&nbsp;&nbsp;<strong>{{ row.item.age }}</strong>
-                      </v-col>
-                      <v-col cols="3">
-                        Gender:&nbsp;&nbsp;<strong>{{
-                          row.item.gender
-                        }}</strong>
-                      </v-col>
-                      <v-col cols="12">
-                        Belonging to any Indigenous Peoples (IP) Community
-                        /Indigenous Cultural Community ?
-                        <strong>&nbsp;&nbsp;{{ row.item.IP }}</strong>
-                        <strong v-if="row.item.IP == 'Yes'"
-                          >&nbsp;&nbsp;({{ row.item.IP_community }})</strong
-                        >
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        Mother Tongue:&nbsp;&nbsp;<strong>{{
-                          row.item.mother_tongue
-                        }}</strong>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        Contact Number:&nbsp;&nbsp;<strong>{{
-                          row.item.contact
-                        }}</strong>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        Adress:&nbsp;&nbsp;<strong>{{
-                          row.item.address
-                        }}</strong>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        Zip Code:&nbsp;&nbsp;<strong>{{
-                          row.item.zipcode
-                        }}</strong>
-                      </v-col>
-                      <v-col
-                        cols="6"
-                        v-if="
-                          row.item.grade_level === 9 ||
-                            row.item.grade_level === 10
-                        "
-                      >
-                        Specialization:&nbsp;&nbsp;<strong>{{
-                          row.item.specialization
-                            ? row.item.specialization
-                            : "N/A"
-                        }}</strong>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        Father's Name:&nbsp;&nbsp;<strong>{{
-                          row.item.father ? row.item.father : "N/A"
-                        }}</strong>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        Mother's Name:&nbsp;&nbsp;<strong>{{
-                          row.item.mother ? row.item.mother : "N/A"
-                        }}</strong>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        Guardian's Name:&nbsp;&nbsp;<strong>{{
-                          row.item.guardian
-                        }}</strong>
-                      </v-col>
-                      <v-col cols="12" sm="6" md="6">
-                        Parents/Guardian Contact Number:&nbsp;&nbsp;<strong>{{
-                          row.item.parent_number
-                        }}</strong>
-                      </v-col>
-                      <!-- Senior High -->
-
-                      <v-col
-                        cols="12"
-                        sm="6"
-                        md="6"
-                        v-if="row.item.semester != null"
-                      >
-                        Semester:&nbsp;&nbsp;<strong>{{
-                          row.item.semester
-                        }}</strong>
-                      </v-col>
-                      <v-col
-                        cols="12"
-                        sm="6"
-                        md="6"
-                        v-if="row.item.track != null"
-                      >
-                        Track:&nbsp;&nbsp;<strong>{{ row.item.track }}</strong>
-                      </v-col>
-                      <v-col cols="12" v-if="row.item.strand != null">
-                        Strand:&nbsp;&nbsp;<strong>{{
-                          row.item.strand
-                        }}</strong>
-                      </v-col>
-                      <!-- Transferees or Balik Aral-->
-                      <v-col
-                        cols="12"
-                        sm="6"
-                        md="6"
-                        v-if="row.item.last_grade_completed"
-                      >
-                        Last_grade_completed:&nbsp;&nbsp;<strong>{{
-                          row.item.last_grade_completed
-                        }}</strong>
-                      </v-col>
-                      <v-col
-                        cols="12"
-                        sm="6"
-                        md="6"
-                        v-if="row.item.last_year_completed != null"
-                      >
-                        Last_year_completed:&nbsp;&nbsp;<strong>{{
-                          row.item.last_year_completed
-                        }}</strong>
-                      </v-col>
-                      <v-col
-                        cols="12"
-                        sm="6"
-                        md="6"
-                        v-if="row.item.Last_school_attended != null"
-                      >
-                        Last_school_attended:&nbsp;&nbsp;<strong>{{
-                          row.item.last_school_attended
-                        }}</strong>
-                      </v-col>
-                      <v-col
-                        cols="12"
-                        sm="6"
-                        md="6"
-                        v-if="row.item.last_school_ID != null"
-                      >
-                        Last_school_ID :&nbsp;&nbsp;<strong>{{
-                          row.item.last_school_ID
-                        }}</strong>
-                      </v-col>
-                      <v-col
-                        cols="12"
-                        v-if="row.item.last_school_address != null"
-                      >
-                        Last_school_address:&nbsp;&nbsp;<strong>{{
-                          row.item.last_school_address
-                        }}</strong>
-                      </v-col>
-                      <v-img :src="imageUrl + row.item.card_image">
-                        <template v-slot:placeholder>
-                          <v-row
-                            class="fill-height ma-0"
-                            align="center"
-                            justify="center"
-                          >
-                            <v-progress-circular
-                              indeterminate
-                              color="grey lighten-5"
-                            ></v-progress-circular>
-                          </v-row>
-                        </template>
-                      </v-img>
-                    </v-row>
-                  </v-card-text>
-                </v-card>
-              </template>
-            </v-dialog>
+            <v-btn
+              text
+              @click="viewStudentDetails(row.item)"
+            >
+              View Details
+            </v-btn>
           </td>
           <td>
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   v-bind="attrs"
-                  v-on="on"
                   color="primary"
+                  icon
+                  x-large
+                  v-on="on"
                   @click="
                     filterSections(row.item.grade_level, row.item.id, row.index)
                   "
-                  icon
-                  x-large
                 >
                   <v-icon>mdi-account-plus</v-icon>
                 </v-btn>
@@ -248,11 +54,11 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-btn
                   v-bind="attrs"
-                  v-on="on"
                   color="error"
-                  @click="opendeclineModal(row.item.id, row.index)"
                   icon
                   x-large
+                  v-on="on"
+                  @click="opendeclineModal(row.item.id, row.index)"
                 >
                   <v-icon>mdi-account-minus</v-icon>
                 </v-btn>
@@ -264,42 +70,264 @@
       </template>
     </v-data-table>
     <v-row justify="center">
-      <v-dialog v-model="dialog" max-width="500px">
+      <v-dialog
+        v-model="dialog"
+        max-width="500px"
+      >
         <v-card>
           <v-card-title>
             <span class="headline">Select Student Sections</span>
-            <v-spacer></v-spacer>
-            <v-btn icon @click="dialog = false">
+            <v-spacer />
+            <v-btn
+              icon
+              @click="dialog = false"
+            >
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
           <v-card-text>
             <v-select
-              :items="sections"
               v-model="section"
+              :items="sections"
               label="Section"
               outlined
               required
-            ></v-select>
+            />
           </v-card-text>
           <v-card-actions>
-            <v-spacer></v-spacer>
+            <v-spacer />
             <v-btn
               color="blue darken-1"
-              @click="approveEnrollment(id)"
               :loading="loading"
+              @click="approveEnrollment(id)"
             >
               Done
             </v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
+
+      <v-dialog
+        v-model="studentDetailsDialog"
+        transition="dialog-top-transition"
+        max-width="715"
+      >
+        <v-card>
+          <v-card-title>
+            <v-spacer />
+            <v-btn
+              icon
+              @click="studentDetailsDialog = false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-title>
+          <v-card-text>
+            <v-row>
+              <v-col cols="4">
+                Full Name:&nbsp;&nbsp;<strong>{{ studentToView.firstname }} {{ studentToView.lastname }}</strong>
+              </v-col>
+              <v-col cols="4">
+                PSA No.:&nbsp;&nbsp;<strong>
+                  {{ studentToView.PSA ? studentToView.PSA : "N/A" }}
+                </strong>
+              </v-col>
+              <v-col cols="4">
+                LRN:&nbsp;&nbsp;<strong>{{ studentToView.LRN }}</strong>
+              </v-col>
+              <v-col cols="3">
+                Average:&nbsp;&nbsp;<strong>{{ studentToView.average }}</strong>
+              </v-col>
+              <v-col cols="3">
+                Birth Date:&nbsp;&nbsp;<strong>{{ studentToView.birthdate }}</strong>
+              </v-col>
+              <v-col cols="3">
+                Age:&nbsp;&nbsp;<strong>{{ studentToView.age }}</strong>
+              </v-col>
+              <v-col cols="3">
+                Gender:&nbsp;&nbsp;<strong>{{ studentToView.gender }}</strong>
+              </v-col>
+              <v-col cols="12">
+                Belonging to any Indigenous Peoples (IP) Community /Indigenous
+                Cultural Community ?
+                <strong>&nbsp;&nbsp;{{ studentToView.IP }}</strong>
+                <strong
+                  v-if="studentToView.IP == 'Yes'"
+                >&nbsp;&nbsp;({{ studentToView.IP_community }})</strong>
+              </v-col>
+              <v-col
+                cols="12"
+                sm="6"
+                md="6"
+              >
+                Mother Tongue:&nbsp;&nbsp;<strong>{{
+                  studentToView.mother_tongue
+                }}</strong>
+              </v-col>
+              <v-col
+                cols="12"
+                sm="6"
+                md="6"
+              >
+                Contact Number:&nbsp;&nbsp;<strong>{{
+                  studentToView.contact
+                }}</strong>
+              </v-col>
+              <v-col
+                cols="12"
+                sm="6"
+                md="6"
+              >
+                Adress:&nbsp;&nbsp;<strong>{{ studentToView.address }}</strong>
+              </v-col>
+              <v-col
+                cols="12"
+                sm="6"
+                md="6"
+              >
+                Zip Code:&nbsp;&nbsp;<strong>{{ studentToView.zipcode }}</strong>
+              </v-col>
+              <v-col
+                v-if="studentToView.grade_level === 9 || studentToView.grade_level === 10"
+                cols="6"
+              >
+                Specialization:&nbsp;&nbsp;<strong>{{
+                  studentToView.specialization ? studentToView.specialization : "N/A"
+                }}</strong>
+              </v-col>
+              <v-col
+                cols="12"
+                sm="6"
+                md="6"
+              >
+                Father's Name:&nbsp;&nbsp;<strong>{{
+                  studentToView.father ? studentToView.father : "N/A"
+                }}</strong>
+              </v-col>
+              <v-col
+                cols="12"
+                sm="6"
+                md="6"
+              >
+                Mother's Name:&nbsp;&nbsp;<strong>{{
+                  studentToView.mother ? studentToView.mother : "N/A"
+                }}</strong>
+              </v-col>
+              <v-col
+                cols="12"
+                sm="6"
+                md="6"
+              >
+                Guardian's Name:&nbsp;&nbsp;<strong>{{
+                  studentToView.guardian
+                }}</strong>
+              </v-col>
+              <v-col
+                cols="12"
+                sm="6"
+                md="6"
+              >
+                Parents/Guardian Contact Number:&nbsp;&nbsp;<strong>{{
+                  studentToView.parent_number
+                }}</strong>
+              </v-col>
+              <!-- Senior High -->
+
+              <v-col
+                v-if="studentToView.semester != null"
+                cols="12"
+                sm="6"
+                md="6"
+              >
+                Semester:&nbsp;&nbsp;<strong>{{ studentToView.semester }}</strong>
+              </v-col>
+              <v-col
+                v-if="studentToView.track != null"
+                cols="12"
+                sm="6"
+                md="6"
+              >
+                Track:&nbsp;&nbsp;<strong>{{ studentToView.track }}</strong>
+              </v-col>
+              <v-col
+                v-if="studentToView.strand != null"
+                cols="12"
+              >
+                Strand:&nbsp;&nbsp;<strong>{{ studentToView.strand }}</strong>
+              </v-col>
+              <!-- Transferees or Balik Aral-->
+              <v-col
+                v-if="studentToView.last_grade_completed"
+                cols="12"
+                sm="6"
+                md="6"
+              >
+                Last_grade_completed:&nbsp;&nbsp;<strong>{{
+                  studentToView.last_grade_completed
+                }}</strong>
+              </v-col>
+              <v-col
+                v-if="studentToView.last_year_completed != null"
+                cols="12"
+                sm="6"
+                md="6"
+              >
+                Last_year_completed:&nbsp;&nbsp;<strong>{{
+                  studentToView.last_year_completed
+                }}</strong>
+              </v-col>
+              <v-col
+                v-if="studentToView.Last_school_attended != null"
+                cols="12"
+                sm="6"
+                md="6"
+              >
+                Last_school_attended:&nbsp;&nbsp;<strong>{{
+                  studentToView.last_school_attended
+                }}</strong>
+              </v-col>
+              <v-col
+                v-if="studentToView.last_school_ID != null"
+                cols="12"
+                sm="6"
+                md="6"
+              >
+                Last_school_ID :&nbsp;&nbsp;<strong>{{
+                  studentToView.last_school_ID
+                }}</strong>
+              </v-col>
+              <v-col
+                v-if="studentToView.last_school_address != null"
+                cols="12"
+              >
+                Last_school_address:&nbsp;&nbsp;<strong>{{
+                  studentToView.last_school_address
+                }}</strong>
+              </v-col>
+              <v-img :src="imageUrl + studentToView.card_image">
+                <template v-slot:placeholder>
+                  <v-row
+                    class="fill-height ma-0"
+                    align="center"
+                    justify="center"
+                  >
+                    <v-progress-circular
+                      indeterminate
+                      color="teal darken-4"
+                    />
+                  </v-row>
+                </template>
+              </v-img>
+            </v-row>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
     </v-row>
     <!-- REASON FOR DECLINING THE ENROLLMENT -->
     <v-dialog
+      v-model="declineModal"
       transition="dialog-bottom-transition"
       max-width="600"
-      v-model="declineModal"
     >
       <template>
         <v-card>
@@ -307,12 +335,19 @@
             <v-row>
               <h3>Reason For Declining</h3>
             </v-row>
-            <v-btn icon @click="closeDeclineModal()">
+            <v-btn
+              icon
+              @click="closeDeclineModal()"
+            >
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
-          <v-divider></v-divider>
-          <v-form ref="form" v-model="valid" lazy-validation>
+          <v-divider />
+          <v-form
+            ref="form"
+            v-model="valid"
+            lazy-validation
+          >
             <v-container>
               <v-textarea
                 v-model="remarks"
@@ -329,15 +364,19 @@
                     (remarks != null && remarks.length >= 10) ||
                     'Remarks cannot be lesser than 10 characters.',
                 ]"
-              ></v-textarea>
+              />
               <!-- <v-divider></v-divider> -->
-              <v-card-actions class="justify-end" id="textarea">
+              <v-card-actions
+                id="textarea"
+                class="justify-end"
+              >
                 <v-btn
                   :disabled="!valid"
                   color="blue"
                   @click="declineEnrollment"
-                  >done</v-btn
                 >
+                  done
+                </v-btn>
               </v-card-actions>
             </v-container>
           </v-form>
@@ -356,9 +395,11 @@ export default {
       declineModal: false,
       declineId: null,
       declineIndex: null,
+      studentToView: {},
       valid: true,
       remarks: null,
       dialog: false,
+      studentDetailsDialog: false,
       loading: false,
       imageUrl: "https://mnhs-enrollment-system.herokuapp.com/images/",
       item: null,
@@ -409,6 +450,11 @@ export default {
     openDialog(data) {
       this.item = data;
       this.dialog = true;
+    },
+
+    viewStudentDetails(data) {
+      this.studentDetailsDialog = true;
+       this.studentToView = data
     },
 
     filterSections(gradelevel, id, index) {

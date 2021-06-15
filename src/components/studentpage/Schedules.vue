@@ -11,45 +11,40 @@
       <template v-slot:item="row">
         <tr>
           <td>
-            {{ row.item.Monday.subject_name }}<br />
-            <strong
-              >{{ row.item.Monday.teacher_name }} <br />
+            {{ row.item.Monday.subject_name }}<br>
+            <strong>{{ row.item.Monday.teacher_name }} <br>
               <span v-if="row.item.Monday.teacher_name">{{
                 row.item.Monday.time
               }}</span>
             </strong>
           </td>
           <td>
-            {{ row.item.Tuesday.subject_name }}<br />
-            <strong
-              >{{ row.item.Tuesday.teacher_name }} <br />
+            {{ row.item.Tuesday.subject_name }}<br>
+            <strong>{{ row.item.Tuesday.teacher_name }} <br>
               <span v-if="row.item.Tuesday.teacher_name">{{
                 row.item.Tuesday.time
               }}</span>
             </strong>
           </td>
           <td>
-            {{ row.item.Wednesday.subject_name }}<br />
-            <strong
-              >{{ row.item.Wednesday.teacher_name }} <br />
+            {{ row.item.Wednesday.subject_name }}<br>
+            <strong>{{ row.item.Wednesday.teacher_name }} <br>
               <span v-if="row.item.Wednesday.teacher_name">{{
                 row.item.Wednesday.time
               }}</span>
             </strong>
           </td>
           <td>
-            {{ row.item.Thursday.subject_name }}<br />
-            <strong
-              >{{ row.item.Thursday.teacher_name }} <br />
+            {{ row.item.Thursday.subject_name }}<br>
+            <strong>{{ row.item.Thursday.teacher_name }} <br>
               <span v-if="row.item.Thursday.teacher_name">{{
                 row.item.Thursday.time
               }}</span>
             </strong>
           </td>
           <td>
-            {{ row.item.Friday.subject_name }}<br />
-            <strong
-              >{{ row.item.Friday.teacher_name }} <br />
+            {{ row.item.Friday.subject_name }}<br>
+            <strong>{{ row.item.Friday.teacher_name }} <br>
               <span v-if="row.item.Friday.teacher_name">{{
                 row.item.Friday.time
               }}</span>
@@ -59,9 +54,13 @@
       </template>
     </v-data-table>
     <v-container>
-      <v-btn @click="csvExport(csvData)" dark color="teal"
-        >Download Schedules</v-btn
+      <v-btn
+        dark
+        color="teal"
+        @click="csvExport(csvData)"
       >
+        Download Schedules
+      </v-btn>
     </v-container>
   </div>
 </template>
@@ -87,10 +86,34 @@ export default {
       isDataNotLoaded: false,
     };
   },
+  computed: {
+    csvData() {
+      return this.schedules.map((item) => ({
+        Monday: item.Monday.subject_name
+          ? item.Monday.subject_name + " (" + item.Monday.teacher_name + ")"
+          : "",
+        Tuesday: item.Tuesday.subject_name
+          ? item.Tuesday.subject_name + " (" + item.Tuesday.teacher_name + ")"
+          : "",
+        Wednesday: item.Wednesday.subject_name
+          ? item.Wednesday.subject_name +
+            " (" +
+            item.Wednesday.teacher_name +
+            ")"
+          : "",
+        Thursday: item.Thursday.subject_name
+          ? item.Thursday.subject_name + " (" + item.Thursday.teacher_name + ")"
+          : "",
+        Friday: item.Friday.subject_name
+          ? item.Friday.subject_name + " (" + item.Friday.teacher_name + ")"
+          : "",
+      }));
+    },
+  },
   created() {
     this.isDataNotLoaded = false;
     this.$axios
-      .get(`classSchedules/` + this.sectionId)
+      .get(`student/classSchedules/` + this.sectionId)
       .then((res) => {
         const schedules = res.data.sectionSchedules;
 
@@ -187,30 +210,6 @@ export default {
       link.setAttribute("href", data);
       link.setAttribute("download", "mySchedules" + ".csv");
       link.click();
-    },
-  },
-  computed: {
-    csvData() {
-      return this.schedules.map((item) => ({
-        Monday: item.Monday.subject_name
-          ? item.Monday.subject_name + " (" + item.Monday.teacher_name + ")"
-          : "",
-        Tuesday: item.Tuesday.subject_name
-          ? item.Tuesday.subject_name + " (" + item.Tuesday.teacher_name + ")"
-          : "",
-        Wednesday: item.Wednesday.subject_name
-          ? item.Wednesday.subject_name +
-            " (" +
-            item.Wednesday.teacher_name +
-            ")"
-          : "",
-        Thursday: item.Thursday.subject_name
-          ? item.Thursday.subject_name + " (" + item.Thursday.teacher_name + ")"
-          : "",
-        Friday: item.Friday.subject_name
-          ? item.Friday.subject_name + " (" + item.Friday.teacher_name + ")"
-          : "",
-      }));
     },
   },
 };

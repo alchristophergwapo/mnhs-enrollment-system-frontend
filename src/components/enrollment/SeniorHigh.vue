@@ -1,13 +1,36 @@
 <template>
   <v-row>
-    <div class="form-head">For Senior High Learners</div>
-    <v-col cols="12" xs="6" sm="4" md="4" lg="2">
-      <p class="checkbox-label" style="padding-top: 28px">
-        <v-icon slot="start" color="red" x-small>mdi-asterisk</v-icon>
+    <div class="form-head">
+      For Senior High Learners
+    </div>
+    <v-col
+      cols="12"
+      xs="6"
+      sm="4"
+      md="4"
+      lg="2"
+    >
+      <p
+        class="checkbox-label"
+        style="padding-top: 28px"
+      >
+        <v-icon
+          slot="start"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
         Semester
       </p>
     </v-col>
-    <v-col cols="12" xs="6" sm="4" md="4" lg="2">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="4"
+      md="4"
+      lg="2"
+    >
       <v-checkbox
         v-model="senior_high.semester"
         :rules="[(semester) => !!semester || 'Semester is required.']"
@@ -15,9 +38,15 @@
         value="First Semester"
         type="checkbox"
         :required="senior_high.semester ? false : true"
-      ></v-checkbox>
+      />
     </v-col>
-    <v-col cols="12" xs="6" sm="4" md="4" lg="2">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="4"
+      md="4"
+      lg="2"
+    >
       <v-checkbox
         v-model="senior_high.semester"
         :rules="[(semester) => !!semester || 'Semester is required.']"
@@ -25,9 +54,15 @@
         value="Second Semester"
         type="checkbox"
         :required="senior_high.semester ? false : true"
-      ></v-checkbox>
+      />
     </v-col>
-    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="6"
+      md="6"
+      lg="3"
+    >
       <v-select
         v-model="senior_high.track"
         :rules="[(track) => !!track || 'Track is required.']"
@@ -36,10 +71,22 @@
         outlined
         required
       >
-        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+        <v-icon
+          slot="prepend-inner"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
       </v-select>
     </v-col>
-    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="6"
+      md="6"
+      lg="3"
+    >
       <v-select
         v-model="senior_high.strand"
         :items="strands[0][senior_high.track]"
@@ -48,7 +95,13 @@
         outlined
         required
       >
-        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+        <v-icon
+          slot="prepend-inner"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
       </v-select>
     </v-col>
   </v-row>
@@ -57,7 +110,20 @@
 <script>
 export default {
   name: "SeniorHigh",
-  props: ["track", "strand"],
+  props: {
+    track: {
+      type: Array,
+      default: () => {
+        return [];
+      }
+  }, 
+  strand: {
+    type: Array,
+    default: () => {
+      return [];
+    }
+  }
+  },
   data() {
     return {
       tracks: this.track,

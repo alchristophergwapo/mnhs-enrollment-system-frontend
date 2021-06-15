@@ -1,6 +1,6 @@
 <template>
   <div>
-    <slot name="label"></slot>
+    <slot name="label" />
     <v-autocomplete
       v-model="model"
       :rules="rules"
@@ -10,12 +10,12 @@
       :item-text="[property]"
       :item-value="[...property]"
       :placeholder="'Search/Select ' + property.split('_')[0] + '...'"
-      :prepend-inner-icon="model ? prepend_icon : 'mdi-help'"
-      @change="selectItem"
-      @click:clear="clearData"
+      :prepend-inner-icon="model ? prependIcon : 'mdi-help'"
       dense
       clearable
       outlined
+      @change="selectItem"
+      @click:clear="clearData"
     >
       <template v-slot:no-data>
         <v-list-item>
@@ -25,7 +25,10 @@
           </v-list-item-title>
         </v-list-item>
       </template>
-      <template v-slot:item="{ item }" click>
+      <template
+        v-slot:item="{ item }"
+        click
+      >
         <v-list-item-avatar
           color="indigo"
           class="headline font-weight-light white--text"
@@ -33,7 +36,7 @@
           {{ item[property].charAt(0) }}
         </v-list-item-avatar>
         <v-list-item-content>
-          <v-list-item-title v-text="item[property]"></v-list-item-title>
+          <v-list-item-title v-text="item[property]" />
         </v-list-item-content>
       </template>
     </v-autocomplete>
@@ -54,6 +57,7 @@ export default {
     },
     day: {
       type: String,
+      default: 'Monday'
     },
     property: {
       type: String,
@@ -61,16 +65,21 @@ export default {
     },
     modelValue: {
       type: String,
+      default: '',
     },
     rules: {
       type: Array,
+      default: () => {
+        return [];
+      }
     },
     edit: {
       type: Boolean,
       default: false,
     },
-    prepend_icon: {
+    prependIcon: {
       type: String,
+      default: 'mdi-help',
     },
   },
   data() {

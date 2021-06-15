@@ -1,7 +1,10 @@
 <template>
   <div>
-    <bread-crumb :item="items" :page_name="page_name"></bread-crumb>
-    <br /><br />
+    <bread-crumb
+      :item="items"
+      :page-name="pageName"
+    />
+    <br><br>
     <div v-if="admin">
       <v-tabs
         v-model="tab"
@@ -14,32 +17,41 @@
           v-for="(item, index) in junior_high"
           :key="index"
           @click="selected(item.text)"
-          >{{ item.text }}</v-tab
         >
+          {{ item.text }}
+        </v-tab>
       </v-tabs>
       <v-container>
         <v-tabs-items v-model="tab">
-          <v-tab-item v-for="(item, index) in junior_high" :key="index">
+          <v-tab-item
+            v-for="(item, jIndex) in junior_high"
+            :key="jIndex"
+          >
             <v-card-title>
-              <v-spacer></v-spacer>
-              <v-btn color="secondary" small dark @click="retrieveSubjects()"
-                >subject(s)</v-btn
+              <v-spacer />
+              <v-btn
+                color="secondary"
+                small
+                dark
+                @click="retrieveSubjects()"
               >
+                subject(s)
+              </v-btn>
               <v-btn
                 color="primary"
                 small
                 dark
-                @click="open(item.text)"
                 style="margin-left: 10px"
                 class="add-btn"
+                @click="open(item.text)"
               >
                 <v-icon>mdi-plus</v-icon>Add Section
               </v-btn>
             </v-card-title>
             <v-row dense>
               <v-col
-                v-for="(dta, index) in item.content"
-                :key="index"
+                v-for="(dta, cIndex) in item.content"
+                :key="cIndex"
                 cols="12"
                 sm="6"
                 md="6"
@@ -61,21 +73,25 @@
                         color="green"
                         @click="viewSchedules(dta.id)"
                       >
-                        <span v-if="$vuetify.breakpoint.mdAndUp"
-                          >schedules</span
-                        >
-                        <v-icon v-else>mdi-table-clock</v-icon>
+                        <span
+                          v-if="$vuetify.breakpoint.mdAndUp"
+                        >schedules</span>
+                        <v-icon v-else>
+                          mdi-table-clock
+                        </v-icon>
                       </v-btn>
                       <v-btn
                         dark
                         small
-                        @click="editSection(dta)"
                         color="#006a4e"
+                        @click="editSection(dta)"
                       >
-                        <span v-if="$vuetify.breakpoint.mdAndUp"
-                          >edit section</span
-                        >
-                        <v-icon v-else>mdi-pencil</v-icon>
+                        <span
+                          v-if="$vuetify.breakpoint.mdAndUp"
+                        >edit section</span>
+                        <v-icon v-else>
+                          mdi-pencil
+                        </v-icon>
                       </v-btn>
                     </div>
                   </template>
@@ -83,8 +99,8 @@
               </v-col>
               <v-card-title class="text-center justify-center py-6">
                 <h1
-                  class="font-weight-bold display-1 basil--text"
                   v-if="item.content.length == 0"
+                  class="font-weight-bold display-1 basil--text"
                 >
                   No {{ item.text }} Sections created yet.
                 </h1>
@@ -95,27 +111,35 @@
       </v-container>
     </div>
     <div v-else>
-      <div v-for="(item, index) in junior_high" :key="index">
+      <div
+        v-for="(item, j2index) in junior_high"
+        :key="j2index"
+      >
         <v-card-title>
-          <v-spacer></v-spacer>
-          <v-btn color="secondary" small dark @click="retrieveSubjects()"
-            >subject(s)</v-btn
+          <v-spacer />
+          <v-btn
+            color="secondary"
+            small
+            dark
+            @click="retrieveSubjects()"
           >
+            subject(s)
+          </v-btn>
           <v-btn
             color="primary"
             small
             dark
-            @click="open(item.text)"
             style="margin-left: 10px"
             class="add-btn"
+            @click="open(item.text)"
           >
             <v-icon>mdi-plus</v-icon>Add Section
           </v-btn>
         </v-card-title>
         <v-row dense>
           <v-col
-            v-for="(dta, index) in item.content"
-            :key="index"
+            v-for="(dta, c2index) in item.content"
+            :key="c2index"
             cols="12"
             sm="6"
             md="6"
@@ -130,10 +154,20 @@
               class="section_card"
             >
               <template v-slot:btns>
-                <v-btn dark small color="green" @click="viewSchedules(dta.id)">
+                <v-btn
+                  dark
+                  small
+                  color="green"
+                  @click="viewSchedules(dta.id)"
+                >
                   schedules
                 </v-btn>
-                <v-btn dark small @click="editSection(dta)" color="#006a4e">
+                <v-btn
+                  dark
+                  small
+                  color="#006a4e"
+                  @click="editSection(dta)"
+                >
                   edit section
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
@@ -142,8 +176,8 @@
           </v-col>
           <v-card-title class="text-center justify-center py-6">
             <h1
-              class="font-weight-bold display-1 basil--text"
               v-if="item.content.length == 0"
+              class="font-weight-bold display-1 basil--text"
             >
               No {{ item.text }} Sections created yet.
             </h1>
@@ -152,7 +186,10 @@
       </div>
     </div>
     <v-container>
-      <v-row justify="center" class="add_btn">
+      <v-row
+        justify="center"
+        class="add_btn"
+      >
         <v-dialog
           v-model="actionDialog"
           persistent
@@ -161,30 +198,33 @@
         >
           <section-dialog
             :type="addOrEdit.name"
-            :Section="Section"
+            :sectionDataProps="sectionData"
             :edit="edit"
-          >
-          </section-dialog>
+          />
         </v-dialog>
         <div v-if="viewSubject == 'true'">
-          <v-dialog v-model="addSubject" persistent max-width="800px">
+          <v-dialog
+            v-model="addSubject"
+            persistent
+            max-width="800px"
+          >
             <add-subject-dialog
-              :gradeLevel="addOrEdit.name.split(' ')[2]"
-              :subjectsInGradeLevel="gradelevelSubjects"
-            ></add-subject-dialog>
+              :grade-level="addOrEdit.name.split(' ')[2]"
+              :subjects-in-grade-level="gradelevelSubjects"
+            />
           </v-dialog>
         </div>
         <div v-if="viewScheds">
           <v-dialog
-            fullscreen
             v-model="openSched"
+            fullscreen
             hide-overlay
             transition="dialog-bottom-transition"
           >
             <SectionSchedules
               :gradelevel="Number(addOrEdit.name.split(' ')[2])"
               :section_id="sectionId"
-            ></SectionSchedules>
+            />
           </v-dialog>
         </div>
       </v-row>
@@ -194,26 +234,18 @@
 
 <script>
 import { EventBus } from "../../bus/bus";
+import BreadCrumb from /* webpackChunkName: "BreadCrumb" */ "@/layout/BreadCrumb.vue";
+import SectionsCard from /* webpackChunkName: "SectionsCard" */ "@/layout/SectionsCard.vue";
+import SectionDialog from /* webpackChunkName: "SectionDialog" */ "@/layout/SectionDialog.vue";
+import AddSubjectDialog from /* webpackChunkName: "AddSubjectDialog" */ "@/layout/AddSubjectDialog.vue";
+import SectionSchedules from /* webpackChunkName: "SectionSchedules" */ "@/layout/SectionSchedules.vue";
 export default {
   components: {
-    BreadCrumb: () =>
-      import(/* webpackChunkName: "BreadCrumb" */ "@/layout/BreadCrumb.vue"),
-    SectionsCard: () =>
-      import(
-        /* webpackChunkName: "SectionsCard" */ "@/layout/SectionsCard.vue"
-      ),
-    SectionDialog: () =>
-      import(
-        /* webpackChunkName: "SectionDialog" */ "@/layout/SectionDialog.vue"
-      ),
-    AddSubjectDialog: () =>
-      import(
-        /* webpackChunkName: "AddSubjectDialog" */ "@/layout/AddSubjectDialog.vue"
-      ),
-    SectionSchedules: () =>
-      import(
-        /* webpackChunkName: "SectionSchedule" */ "@/layout/SectionSchedules.vue"
-      ),
+    BreadCrumb,
+    SectionsCard,
+    SectionDialog,
+    AddSubjectDialog,
+    SectionSchedules,
   },
   data() {
     return {
@@ -227,14 +259,14 @@ export default {
       admin: false,
       tab: null,
       sectionId: null,
-      page_name: null,
+      pageName: null,
       items: [
         { text: "Home", disabled: false, href: "/admin" },
         { text: "Sections", disabled: true },
         { text: "Junior High Sections", disabled: true },
       ],
       junior_high: [],
-      Section: {
+      sectionData: {
         id: null,
         section: null,
         capacity: null,
@@ -258,7 +290,7 @@ export default {
 
   created() {
     if (this.$user.user_type == "admin") {
-      this.page_name = "Junior High Sections";
+      this.pageName = "Junior High Sections";
       this.gradelevel = "7";
       this.admin = true;
       this.junior_high = [
@@ -276,8 +308,8 @@ export default {
       let temp = this.$user.username.split("_");
       adminLevel = temp[1];
       this.gradelevel = adminLevel;
-      this.page_name = "Grade " + adminLevel + " Sections";
-      this.items[2].text = this.page_name;
+      this.pageName = "Grade " + adminLevel + " Sections";
+      this.items[2].text = this.pageName;
 
       this.junior_high = [
         {
@@ -374,10 +406,10 @@ export default {
     },
     //Close The Modal IN Junior High School When Cancel is click
     close() {
-      this.Section.id = null;
-      this.Section.section = null;
-      this.Section.capacity = null;
-      this.Section.teacher = null;
+      this.sectionData.id = null;
+      this.sectionData.section = null;
+      this.sectionData.capacity = null;
+      this.sectionData.teacher = null;
       for (let key in this.errors) {
         this.$delete(this.errors, key);
       }
@@ -390,12 +422,12 @@ export default {
       this.edit = true;
       this.actionDialog = true;
       if (data.adviser) {
-        this.Section.teacher = data.adviser.teacher_name;
+        this.sectionData.teacher = data.adviser.teacher_name;
       }
-      this.Section.teacher_id = data.teacher_id;
-      this.Section.section = data.name;
-      this.Section.capacity = data.capacity;
-      this.Section.id = data.id;
+      this.sectionData.teacher_id = data.teacher_id;
+      this.sectionData.section = data.name;
+      this.sectionData.capacity = data.capacity;
+      this.sectionData.id = data.id;
     },
   },
 };

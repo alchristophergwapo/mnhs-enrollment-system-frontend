@@ -1,18 +1,34 @@
 <template>
   <div>
-    <bread-crumb :item="items" page_name="Enrollment"></bread-crumb>
-    <br /><br />
+    <bread-crumb
+      :item="items"
+      pageName="Enrollment"
+    />
+    <br><br>
     <v-container>
-      <v-row align="center" justify="end">
-        <v-btn color="primary" rounded link to="/enroll">
+      <v-row
+        align="center"
+        justify="end"
+      >
+        <v-btn
+          color="primary"
+          rounded
+          link
+          to="/enroll"
+        >
           <v-icon>mdi-plus</v-icon>
         </v-btn>
       </v-row>
     </v-container>
     <div class="table">
-      <v-card class="table-header" color="#2e856e">
+      <v-card
+        class="table-header"
+        color="#2e856e"
+      >
         <v-card-title class="text-center justify-center">
-          <div class="display-2 font-weight-light">Enrollments</div>
+          <div class="display-2 font-weight-light">
+            Enrollments
+          </div>
         </v-card-title>
 
         <div class="subtitle-1 font-weight-light text-center justify-center">
@@ -28,43 +44,52 @@
         >
           <v-tab href="#tab-1">
             Pending
-            <v-icon color="info" large>mdi-account-alert</v-icon>
+            <v-icon
+              color="info"
+              large
+            >
+              mdi-account-alert
+            </v-icon>
           </v-tab>
 
-          <v-tab href="#tab-2" @click="triggerRefreshDeclinedData()">
+          <v-tab
+            href="#tab-2"
+            @click="triggerRefreshDeclinedData()"
+          >
             Declined
-            <v-icon color="error" large>mdi-account-minus</v-icon>
+            <v-icon
+              color="error"
+              large
+            >
+              mdi-account-minus
+            </v-icon>
           </v-tab>
         </v-tabs>
         <!-- </v-container> -->
       </v-card>
       <v-tabs-items v-model="enrollmentTab">
         <v-tab-item :value="'tab-1'">
-          <pending-enrollment :isDataLoaded="dataLoaded"> </pending-enrollment>
+          <pending-enrollment :is-data-loaded="dataLoaded" />
         </v-tab-item>
         <v-tab-item :value="'tab-2'">
-          <declined-enrollments :isDataLoaded="pDataLoaded">
-          </declined-enrollments>
+          <declined-enrollments :is-data-loaded="pDataLoaded" />
         </v-tab-item>
       </v-tabs-items>
-      <br />
+      <br>
     </div>
   </div>
 </template>
 <script>
 import { EventBus } from "../bus/bus";
+import BreadCrumb from /* webpackChunkName: "BreadCrumb" */ "@/layout/BreadCrumb.vue";
+import PendingEnrollment from /* webpackChunkName: "PendingEnrollment" */ "@/components/enrollment-data/PendingEnrollment.vue";
+import DeclinedEnrollments from /* webpackChunkName: "DeclinedEnrollments" */ "@/components/enrollment-data/DeclinedEnrollments.vue";
+
 export default {
   components: {
-    BreadCrumb: () =>
-      import(/* webpackChunkName: "BreadCrumb" */ "@/layout/BreadCrumb.vue"),
-    PendingEnrollment: () =>
-      import(
-        /* webpackChunkName: "PendingEnrollment" */ "@/components/enrollment-data/PendingEnrollment.vue"
-      ),
-    DeclinedEnrollments: () =>
-      import(
-        /* webpackChunkName: "DeclinedEnrollment" */ "@/components/enrollment-data/DeclinedEnrollments.vue"
-      ),
+    BreadCrumb,
+    PendingEnrollment,
+    DeclinedEnrollments,
   },
   data: () => ({
     gradelevel: null,

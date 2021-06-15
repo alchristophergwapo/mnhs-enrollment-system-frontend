@@ -8,87 +8,57 @@
         outlined
         elevation="24"
       >
-        <div
-          class="icon-container"
-          :style="'background: #006a4e'"
-        >
-          <v-icon
-            style="color: white"
-            large
-          >
-            mdi-account
+        <div class="icon-container" :style="'background: #006a4e'">
+          <v-icon style="color: white" large>
+            mdi-key-variant
           </v-icon>
         </div>
         <template>
           <div class="ml-auto text-right">
             <div class="body-3 grey--text font-weight-light" />
             <h3 id="card-header-title">
-              ADMIN PROFILE
+              RESET PASSWORD
             </h3>
-            <v-btn
-              icon
-              link
-              to="/admin"
-              class="close-icon"
-            >
+            <v-btn icon link to="/forgot-password" class="close-icon">
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </div>
         </template>
         <v-divider />
-        <v-card-title>
-          <v-spacer />
-          <v-row>
-            <h2>Mantalongon National High School</h2>
-          </v-row>
-        </v-card-title>
-        <div class="subtitle">
-          <span>Mantalongon, Dalaguete, Cebu</span>
-        </div>
-        <br>
-        <v-divider />
-        <br>
         <v-container>
+          <center>
+            <img
+              id="icons"
+              :src="require('@/assets/images/enroll.png')"
+              alt=""
+            />
+          </center>
+          <h3>MNHS Enrollment</h3>
+          <br />
+          <div class="text-center message-txt">
+            To avoid forgetting your password, please note your password on your
+            notebook or on your phone.
+          </div>
+          <br />
           <v-form>
-            <div class="field-label">
-              <label for="username">Username</label>
+            <div class="font-weight-bold field-label">
+              <h4>Email</h4>
             </div>
             <v-text-field
-              v-model="username"
-              name="username"
-              placeholder="Username"
-              :readonly="true"
-              dense
+              v-model="email"
+              :rules="[(value) => !!value || 'Email is required!']"
+              type="email"
               outlined
-            />
-            <div class="field-label">
-              <label for="currentpassword">Current Password</label>
-            </div>
-            <v-text-field
-              v-model="currentPass"
-              :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
-              :type="showPass ? 'text' : 'password'"
-              name="currentpassword"
-              placeholder="Enter current password"
-              :error="hasError('currentpassword')"
+              required
               dense
-              outlined
-              @click:append="showPass = !showPass"
-              @keydown="clearErrors"
+              @keyup="enterKeyTriggered"
             />
-            <div class="error-message">
-              <p
-                v-if="hasError('currentpassword')"
-                class="invalid-feedback"
-              >
-                {{ getError("currentpassword") }}
-              </p>
-            </div>
-            <div class="field-label">
+            <div class="font-weight-bold field-label">
               <label for="new_password">New Password</label>
             </div>
             <v-text-field
               v-model="newpassword"
+              prepend-inner-icon="mdi-key-variant"
               :append-icon="showNPass ? 'mdi-eye' : 'mdi-eye-off'"
               :type="showNPass ? 'text' : 'password'"
               placeholder="Enter new password"
@@ -100,18 +70,16 @@
               @keydown="clearErrors"
             />
             <div class="error-message">
-              <p
-                v-if="hasError('new_password')"
-                class="invalid-feedback"
-              >
+              <p v-if="hasError('new_password')" class="invalid-feedback">
                 {{ getError("new_password") }}
               </p>
             </div>
-            <div class="field-label">
+            <div class="font-weight-bold field-label">
               <label for="confirm_password">Confirm Password</label>
             </div>
             <v-text-field
               v-model="confirmPass"
+              prepend-inner-icon="mdi-key-variant"
               :append-icon="showCPass ? 'mdi-eye' : 'mdi-eye-off'"
               :type="showCPass ? 'text' : 'password'"
               placeholder="Enter confirmation password"
@@ -123,10 +91,7 @@
               @keydown="clearErrors"
             />
             <div class="error-message">
-              <p
-                v-if="hasError('confirm_password')"
-                class="invalid-feedback"
-              >
+              <p v-if="hasError('confirm_password')" class="invalid-feedback">
                 {{ getError("confirm_password") }}
               </p>
             </div>
@@ -137,9 +102,8 @@
           <v-spacer />
           <v-btn
             class="submit-btn"
-            color="green"
+            color="primary"
             :loading="loading"
-            :disabled="hasAnyErors"
             @click="submit"
           >
             submit
@@ -156,10 +120,10 @@ export default {
   props: {},
   data() {
     return {
-      username: null,
-      currentPass: null,
-      newpassword: null,
-      confirmPass: null,
+      token: "",
+      email: "",
+      newpassword: "",
+      confirmPass: "",
       loading: false,
       showPass: "",
       showNPass: "",
@@ -174,24 +138,22 @@ export default {
       return Object.keys(this.errors).length > 0;
     },
   },
-  mounted: function () {
-    //Get Admin Profile
-    const userInfo = localStorage.getItem("user");
-    this.userData = JSON.parse(userInfo);
-    if (this.userData.user.user_type != "student") {
-      this.username = this.userData.user.username;
-    }
+  mounted() {
+    this.token = this.$route.params.token;
   },
-
   methods: {
+    
+    enterKeyTriggered(e) {
+      if (e.keyCode === 13) this.submit();
+    },
     async submit() {
       this.loading = true;
       this.$axios
-        .post(`change`, {
-          username: this.username,
-          currentpassword: this.currentPass,
-          new_password: this.newpassword,
-          confirm_password: this.confirmPass,
+        .post(`password/reset`, {
+          email: this.email,
+          token: this.token.toString(),
+          password: this.newpassword,
+          password_confirmation: this.confirmPass,
         })
         .then((response) => {
           if (response.data.message) {

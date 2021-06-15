@@ -1,16 +1,30 @@
 <template>
   <v-row>
-    <div class="form-head">Student information</div>
-    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+    <div class="form-head">
+      Student information
+    </div>
+    <v-col
+      cols="12"
+      xs="6"
+      sm="4"
+      md="4"
+      lg="4"
+    >
       <v-text-field
         v-model="studentInfo.PSA"
         name="PSA"
         label="PSA Birth Certificate No."
         outlined
-      ></v-text-field>
+      />
     </v-col>
 
-    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="4"
+      md="4"
+      lg="4"
+    >
       <v-text-field
         v-model="studentInfo.LRN"
         name="LRN"
@@ -27,11 +41,23 @@
         outlined
         required
       >
-        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+        <v-icon
+          slot="prepend-inner"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
       </v-text-field>
     </v-col>
 
-    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="4"
+      md="4"
+      lg="4"
+    >
       <v-text-field
         v-model="studentInfo.average"
         onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
@@ -46,10 +72,22 @@
         outlined
         required
       >
-        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+        <v-icon
+          slot="prepend-inner"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
       </v-text-field>
     </v-col>
-    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="4"
+      md="4"
+      lg="4"
+    >
       <v-text-field
         v-model="studentInfo.firstname"
         name="firstname"
@@ -65,10 +103,22 @@
         outlined
         required
       >
-        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+        <v-icon
+          slot="prepend-inner"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
       </v-text-field>
     </v-col>
-    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="4"
+      md="4"
+      lg="4"
+    >
       <v-text-field
         v-model="studentInfo.middlename"
         :rules="[
@@ -80,9 +130,15 @@
         name="middlename"
         label="Middlename"
         outlined
-      ></v-text-field>
+      />
     </v-col>
-    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="4"
+      md="4"
+      lg="4"
+    >
       <v-text-field
         v-model="studentInfo.lastname"
         name="lastname"
@@ -99,22 +155,40 @@
         outlined
         required
       >
-        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+        <v-icon
+          slot="prepend-inner"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
       </v-text-field>
     </v-col>
-    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="4"
+      md="4"
+      lg="4"
+    >
       <v-text-field
         v-model="studentInfo.birthdate"
         name="birthdate"
         :rules="[(v) => !!v || 'Birthdate is required']"
-        @click="modal = !modal"
         label="Date of Birth"
         prepend-inner-icon="mdi-calendar"
         required
         readonly
         outlined
+        @click="modal = !modal"
       >
-        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+        <v-icon
+          slot="prepend-inner"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
       </v-text-field>
       <v-dialog
         ref="dialog"
@@ -130,14 +204,20 @@
           :max="max_date"
           scrollable
         >
-          <v-spacer></v-spacer>
-          <v-btn text color="primary" @click="modal = false"> Cancel </v-btn>
+          <v-spacer />
+          <v-btn
+            text
+            color="primary"
+            @click="modal = false"
+          >
+            Cancel
+          </v-btn>
           <v-btn
             text
             color="primary"
             @click="
               $refs.dialog.save(studentInfo.birthdate),
-                getAge(studentInfo.birthdate)
+              getAge(studentInfo.birthdate)
             "
           >
             OK
@@ -145,7 +225,13 @@
         </v-date-picker>
       </v-dialog>
     </v-col>
-    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="4"
+      md="4"
+      lg="4"
+    >
       <v-text-field
         v-model="studentInfo.age"
         name="age"
@@ -159,10 +245,22 @@
         outlined
         required
       >
-        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+        <v-icon
+          slot="prepend-inner"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
       </v-text-field>
     </v-col>
-    <v-col cols="12" xs="6" sm="2" md="2" lg="2">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="2"
+      md="2"
+      lg="2"
+    >
       <v-checkbox
         v-model="studentInfo.gender"
         name="gender"
@@ -171,11 +269,16 @@
         label="Male"
         type="checkbox"
         :required="!studentInfo.gender ? true : false"
-      >
-      </v-checkbox>
-      <v-spacer></v-spacer>
+      />
+      <v-spacer />
     </v-col>
-    <v-col cols="12" xs="6" sm="2" md="2" lg="2">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="2"
+      md="2"
+      lg="2"
+    >
       <v-checkbox
         v-model="studentInfo.gender"
         name="gender"
@@ -184,16 +287,34 @@
         label="Female"
         type="checkbox"
         required
-      ></v-checkbox>
+      />
     </v-col>
-    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="4"
+      md="4"
+      lg="4"
+    >
       <p>
-        <v-icon slot="prepend" color="red" x-small>mdi-asterisk</v-icon>
+        <v-icon
+          slot="prepend"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
         Belonging to any Indigenous People (IP) Community/Indigenous Cultural
         Community?
       </p>
     </v-col>
-    <v-col cols="12" xs="6" sm="2" md="2" lg="2">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="2"
+      md="2"
+      lg="2"
+    >
       <v-checkbox
         v-model="studentInfo.IP"
         name="IP"
@@ -201,9 +322,15 @@
         value="Yes"
         label="Yes"
         type="checkbox"
-      ></v-checkbox>
+      />
     </v-col>
-    <v-col cols="12" xs="6" sm="2" md="2" lg="2">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="2"
+      md="2"
+      lg="2"
+    >
       <v-checkbox
         v-model="studentInfo.IP"
         name="IP"
@@ -211,9 +338,15 @@
         value="No"
         label="No"
         type="checkbox"
-      ></v-checkbox>
+      />
     </v-col>
-    <v-col cols="12" xs="6" sm="4" md="4" lg="4">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="4"
+      md="4"
+      lg="4"
+    >
       <v-text-field
         v-if="studentInfo.IP === 'Yes'"
         v-model="studentInfo.IP_community"
@@ -227,11 +360,23 @@
         outlined
         required
       >
-        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+        <v-icon
+          slot="prepend-inner"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
       </v-text-field>
     </v-col>
 
-    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="6"
+      md="6"
+      lg="3"
+    >
       <v-text-field
         v-model="studentInfo.mother_tongue"
         name="mother_tongue"
@@ -248,11 +393,23 @@
         outlined
         required
       >
-        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+        <v-icon
+          slot="prepend-inner"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
       </v-text-field>
     </v-col>
 
-    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="6"
+      md="6"
+      lg="3"
+    >
       <v-text-field
         v-model="studentInfo.contact"
         name="contact"
@@ -277,11 +434,23 @@
         outlined
         required
       >
-        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+        <v-icon
+          slot="prepend-inner"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
       </v-text-field>
     </v-col>
 
-    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="6"
+      md="6"
+      lg="3"
+    >
       <v-text-field
         v-model="studentInfo.address"
         name="address"
@@ -299,10 +468,22 @@
         outlined
         required
       >
-        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+        <v-icon
+          slot="prepend-inner"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
       </v-text-field>
     </v-col>
-    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="6"
+      md="6"
+      lg="3"
+    >
       <v-text-field
         v-model="studentInfo.zipcode"
         min="0"
@@ -324,7 +505,13 @@
         outlined
         required
       >
-        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+        <v-icon
+          slot="prepend-inner"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
       </v-text-field>
     </v-col>
   </v-row>
@@ -355,6 +542,11 @@ export default {
       zipcode: null,
     },
   }),
+  computed: {
+    getData() {
+      return this.studentInfo;
+    },
+  },
   created() {
     let todayDate = new Date();
     this.max_date = this.$moment(
@@ -363,11 +555,6 @@ export default {
     this.min_date = this.$moment(
       new Date(`${todayDate.getFullYear() - 50}-12-31`)
     ).format("YYYY-MM-DD");
-  },
-  computed: {
-    getData() {
-      return this.studentInfo;
-    },
   },
   methods: {
     getAge(bday) {

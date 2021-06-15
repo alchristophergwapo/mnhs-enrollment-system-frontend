@@ -1,21 +1,42 @@
 <template>
-  <div class="body" app>
-    <v-card tile style="background-color: #006a4e">
+  <div
+    class="body"
+    app
+  >
+    <v-card
+      tile
+      style="background-color: #006a4e"
+    >
       <div class="header">
-        <div class="col" id="col1">
-          <img id="logo" src="../assets/images/mnhs-logo.png" />
+        <div
+          id="col1"
+          class="col"
+        >
+          <img
+            id="logo"
+            src="../assets/images/mnhs-logo.png"
+          >
         </div>
-        <div class="col" id="col2">
+        <div
+          id="col2"
+          class="col"
+        >
           <h2>Online Enrollment System</h2>
           <h6>Mantalongon National High School</h6>
           <h6>Mantalongon, Dalaguete Cebu</h6>
         </div>
-        <div class="col" id="col3">
-          <img id="logo2" src="../assets/images/deped-logo.png" />
+        <div
+          id="col3"
+          class="col"
+        >
+          <img
+            id="logo2"
+            src="../assets/images/deped-logo.png"
+          >
         </div>
       </div>
       <v-card-actions>
-        <v-spacer></v-spacer>
+        <v-spacer />
         <v-btn
           outlined
           style="
@@ -25,19 +46,33 @@
           "
           link
           to="/sign-in"
-          ><b>login</b></v-btn
         >
+          <b>login</b>
+        </v-btn>
       </v-card-actions>
     </v-card>
-    <v-carousel cycle height="500" :show-arrows="false">
+    <v-carousel
+      cycle
+      height="500"
+      :show-arrows="false"
+    >
       <v-carousel-item
         :src="require('../assets/images/mnhs.jpg')"
         reverse-transition="fade-transition"
         transition="fade-transition"
       >
-        <v-btn rounded color="success" class="btn" x-large link to="/enroll">
-          <v-icon left> mdi-pencil </v-icon>
-          enroll now
+        <v-btn
+          rounded
+          color="success"
+          class="btn"
+          x-large
+          link
+          to="/enroll"
+        >
+          <v-icon left>
+            mdi-pencil
+          </v-icon>
+          apply for admission
         </v-btn>
       </v-carousel-item>
 
@@ -46,11 +81,20 @@
         reverse-transition="fade-transition"
         transition="fade-transition"
       >
-        <v-btn rounded color="success" class="btn" x-large link to="/enroll">
-          <v-icon left> mdi-pencil </v-icon>
-          enroll now
-        </v-btn></v-carousel-item
-      >
+        <v-btn
+          rounded
+          color="success"
+          class="btn"
+          x-large
+          link
+          to="/enroll"
+        >
+          <v-icon left>
+            mdi-pencil
+          </v-icon>
+          apply for admission
+        </v-btn>
+      </v-carousel-item>
       <v-carousel-item
         :src="require('../assets/images/mnhs2.jpg')"
         reverse-transition="fade-transition"
@@ -65,15 +109,22 @@
           x-large
           elevation="9"
         >
-          <v-icon left> mdi-pencil </v-icon>
-          enroll now
+          <v-icon left>
+            mdi-pencil
+          </v-icon>
+          apply for admission
         </v-btn>
       </v-carousel-item>
     </v-carousel>
 
     <v-container class="l-container">
       <v-row>
-        <v-col cols="12" sm="6" md="4" class="l-col">
+        <v-col
+          cols="12"
+          sm="6"
+          md="4"
+          class="l-col"
+        >
           <v-card
             elevation="10"
             height="100%"
@@ -81,9 +132,14 @@
             light
             class="l-card"
           >
-            <v-card class="table-header" color="#006a4e">
+            <v-card
+              class="table-header"
+              color="#006a4e"
+            >
               <v-card-title class="text-center justify-center">
-                <div class="display-2 font-weight-light">MISSION</div>
+                <div class="display-2 font-weight-light">
+                  MISSION
+                </div>
               </v-card-title>
             </v-card>
             <v-card-text>
@@ -102,7 +158,12 @@
           </v-card>
         </v-col>
 
-        <v-col cols="12" sm="6" md="4" class="l-col">
+        <v-col
+          cols="12"
+          sm="6"
+          md="4"
+          class="l-col"
+        >
           <v-card
             elevation="10"
             height="100%"
@@ -110,9 +171,14 @@
             max-width="100%"
             class="l-card"
           >
-            <v-card class="table-header" color="#006a4e">
+            <v-card
+              class="table-header"
+              color="#006a4e"
+            >
               <v-card-title class="text-center justify-center">
-                <div class="display-2 font-weight-light">VISION</div>
+                <div class="display-2 font-weight-light">
+                  VISION
+                </div>
               </v-card-title>
             </v-card>
             <v-card-text>
@@ -127,11 +193,26 @@
           </v-card>
         </v-col>
 
-        <v-col cols="12" sm="6" md="4" class="l-col">
-          <v-card height="100%" light max-width="1000" class="l-card">
-            <v-card class="table-header" color="#006a4e">
+        <v-col
+          cols="12"
+          sm="6"
+          md="4"
+          class="l-col"
+        >
+          <v-card
+            height="100%"
+            light
+            max-width="1000"
+            class="l-card"
+          >
+            <v-card
+              class="table-header"
+              color="#006a4e"
+            >
               <v-card-title class="text-center justify-center">
-                <div class="display-2 font-weight-light">CORE VALUES</div>
+                <div class="display-2 font-weight-light">
+                  CORE VALUES
+                </div>
               </v-card-title>
             </v-card>
             <v-card-text>
@@ -149,8 +230,12 @@
       </v-row>
     </v-container>
     <v-footer padless>
-      <v-card flat tile width="100%">
-        <v-divider></v-divider>
+      <v-card
+        flat
+        tile
+        width="100%"
+      >
+        <v-divider />
         <v-card-text class="footer-copyright">
           {{ new Date().getFullYear() }} —
           <strong>Mantalongon, Dalaguete NHS</strong>

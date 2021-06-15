@@ -1,55 +1,92 @@
 <template>
-  <v-app-bar app color="primary" dark elevation="0" class="toolbar-content">
+  <v-app-bar
+    app
+    color="primary"
+    dark
+    elevation="0"
+    class="toolbar-content"
+  >
     <v-avatar @click="$router.push({ path: '/' })">
-      <v-img :src="require('../assets/images/logo.jpg')"></v-img>
+      <v-img :src="require('../assets/images/logo.jpg')" />
     </v-avatar>
     <v-toolbar-title class="toolbar-title">
       <h4>Mantalongon National High School</h4>
       <span>Mantalongon, Dalaguete Cebu</span>
     </v-toolbar-title>
 
-    <v-spacer></v-spacer>
+    <v-spacer />
 
-    <div class="notif" v-if="user_details.user_type == 'admin'">
-      <v-btn @click="markAsRead()" icon text link to="/admin/notifications">
+    <div
+      v-if="user_details.user_type == 'admin'"
+      class="notif"
+    >
+      <v-btn
+        icon
+        text
+        link
+        to="/admin/notifications"
+        @click="markAsRead()"
+      >
         <v-badge
           :content="notifications"
           :value="unreadNotification.length"
           color="red"
           overlap
         >
-          <v-icon medium color="white">mdi-bell</v-icon>
+          <v-icon
+            medium
+            color="white"
+          >
+            mdi-bell
+          </v-icon>
         </v-badge>
       </v-btn>
     </div>
     <div v-if="$route.name != 'AdminProfile'">
       <v-card-title>
-        <span style="color: white" v-if="user_details.user_type == 'admin'">{{
+        <span
+          v-if="user_details.user_type == 'admin'"
+          style="color: white"
+        >{{
           user_details.username
         }}</span>
-        <span style="color: white" v-else
-          >Hello, {{ user_details.firstname }}</span
+        <span
+          v-else
+          style="color: white"
+        >Hello, {{ user_details.firstname }}</span>
+        <v-spacer />
+        <v-menu
+          left
+          bottom
         >
-        <v-spacer></v-spacer>
-        <v-menu left bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-icon
               v-if="user_details.user_type == 'admin'"
               v-bind="attrs"
               v-on="on"
-              >mdi-chevron-down</v-icon
             >
+              mdi-chevron-down
+            </v-icon>
           </template>
 
           <v-list>
-            <v-list-item link to="/admin/profile">
+            <v-list-item
+              link
+              to="/admin/profile"
+            >
               <v-list-item-title>Profile Settings</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
       </v-card-title>
     </div>
-    <v-btn text @click="logout" color="white">Logout</v-btn>
+    <v-btn
+      text
+      color="white"
+      @click="logout"
+    >
+      Logout
+    </v-btn>
   </v-app-bar>
 </template>
 
@@ -62,6 +99,50 @@ export default {
       notifications: 0,
       allNotifications: [],
     };
+  },
+  computed: {
+    unreadNotification() {
+      if (this.allNotifications) {
+        return this.allNotifications.filter((notification) => {
+          return notification.read_at == null;
+        });
+      } else {
+        return null;
+      }
+    },
+  },
+  created() {
+    let storedInfo = localStorage.getItem("user");
+    let userData = JSON.parse(storedInfo);
+    if (userData.user.user_type == "admin") {
+      this.user_details = userData.user;
+    } else {
+      this.user_details = userData.userInfo;
+    }
+    let notificationsFromStorage = userData.user.notifications;
+    if (notificationsFromStorage) {
+      this.allNotifications = notificationsFromStorage;
+      this.notifications = this.unreadNotification.length;
+    }
+  },
+  mounted() {
+    if (this.user_details.user_type == "admin") {
+      window.Echo.private(
+        "App.Models.User." + this.user_details.id
+      ).notification((eventData) => {
+        this.allNotifications.push(eventData.notification);
+        this.notifications = this.unreadNotification.length;
+        this.setUserData(eventData);
+        let enrollmentData = eventData.student_enrolled;
+        this.$notification.show(
+          "New Enrollment",
+          {
+            body: `${enrollmentData.firstname} ${enrollmentData.lastname} submitted an enrollment.`,
+          },
+          {}
+        );
+      });
+    }
   },
 
   methods: {
@@ -88,50 +169,6 @@ export default {
     toggleSideBar() {
       EventBus.$emit("toggleSidebar", "click");
     },
-  },
-  created() {
-    let storedInfo = localStorage.getItem("user");
-    let userData = JSON.parse(storedInfo);
-    if (userData.user.user_type == "admin") {
-      this.user_details = userData.user;
-    } else {
-      this.user_details = userData.userInfo;
-    }
-    let notificationsFromStorage = userData.user.notifications;
-    if (notificationsFromStorage) {
-      this.allNotifications = notificationsFromStorage;
-      this.notifications = this.unreadNotification.length;
-    }
-  },
-  computed: {
-    unreadNotification() {
-      if (this.allNotifications) {
-        return this.allNotifications.filter((notification) => {
-          return notification.read_at == null;
-        });
-      } else {
-        return null;
-      }
-    },
-  },
-  mounted() {
-    if (this.user_details.user_type == "admin") {
-      window.Echo.private(
-        "App.Models.User." + this.user_details.id
-      ).notification((eventData) => {
-        this.allNotifications.push(eventData.notification);
-        this.notifications = this.unreadNotification.length;
-        this.setUserData(eventData);
-        let enrollmentData = eventData.student_enrolled;
-        this.$notification.show(
-          "New Enrollment",
-          {
-            body: `${enrollmentData.firstname} ${enrollmentData.lastname} submitted an enrollment.`,
-          },
-          {}
-        );
-      });
-    }
   },
 };
 </script>

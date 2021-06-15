@@ -1,28 +1,43 @@
 <template>
-  <v-card outlined class="sections-base-card" elevation="8">
+  <v-card
+    outlined
+    class="sections-base-card"
+    elevation="8"
+  >
     <!-- <v-card class="icon-container" outlined elevation="4"> -->
-    <div class="text-center justify-center" style="width: 100%">
-      <v-icon large color="primary">mdi-home-group</v-icon>
+    <div
+      class="text-center justify-center"
+      style="width: 100%"
+    >
+      <v-icon
+        large
+        color="primary"
+      >
+        mdi-home-group
+      </v-icon>
       <h3 class="display-1 font-weight-light">
         {{ section }}
       </h3>
     </div>
 
-    <template> </template>
+    <template />
     <v-card-text>
       <div>
-        <v-icon color="primary">mdi-home-account</v-icon>
+        <v-icon color="primary">
+          mdi-home-account
+        </v-icon>
         Capacity: {{ capacity }}
       </div>
     </v-card-text>
     <v-card-text>
-      <v-icon color="primary">mdi-account-box</v-icon>
-      Adviser: <span v-if="teacher">{{ teacher }}</span
-      ><span v-else>None</span>
+      <v-icon color="primary">
+        mdi-account-box
+      </v-icon>
+      Adviser: <span v-if="teacher">{{ teacher }}</span><span v-else>None</span>
     </v-card-text>
     <v-card-actions class="card-actions-container">
       <!-- <div class="ml-auto text-right"> -->
-      <slot name="btns"></slot>
+      <slot name="btns" />
       <!-- </div> -->
     </v-card-actions>
     <v-progress-linear
@@ -32,8 +47,8 @@
     >
       <strong>
         {{ total_students }} Student(s) Enrolled
-      </strong> </v-progress-linear
-    ><br />
+      </strong>
+    </v-progress-linear><br>
   </v-card>
 </template>
 

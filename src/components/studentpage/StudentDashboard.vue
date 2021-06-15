@@ -1,124 +1,172 @@
 <template>
   <v-app>
-    <app-bar :user_details="user.firstname"></app-bar>
-    <v-container class="stdnt-dash-container">
-      <v-card-title class="justify-center header-title">
-        Congrats, you are officially enrolled to MNHS!
-      </v-card-title>
-      <br />
-      <v-row>
-        <v-col
-          sm="3
+    <div
+      v-if="isLoading === false"
+      class="data-container"
+    >
+      <app-bar :user_details="user.firstname" />
+      <div class="stdnt-dash-container">
+        <br>
+        <v-row>
+          <v-col
+            sm="3
         "
-        >
-          <student-detail :student_details="user"></student-detail>
-        </v-col>
-        <v-col sm="9">
-          <v-card>
-            <v-card class="table-header" color="#2e856e">
-              <v-tabs
-                v-model="tab"
-                fixed-tabs
-                background-color="#2e856e"
-                color="white"
-                show-arrows
-                dark
-                icons-and-text
+          >
+            <student-detail :student-details="user" />
+          </v-col>
+          <v-col sm="9">
+            <v-card>
+              <v-card
+                class="table-header"
+                color="#2e856e"
               >
-                <v-tabs-slider color="white"></v-tabs-slider>
+                <v-tabs
+                  v-model="tab"
+                  fixed-tabs
+                  background-color="#2e856e"
+                  color="white"
+                  show-arrows
+                  dark
+                  icons-and-text
+                >
+                  <v-tabs-slider color="white" />
 
-                <v-tab href="#tab-1">
-                  My Schedule
-                  <v-icon large>mdi-clock</v-icon>
-                </v-tab>
+                  <v-tab href="#tab-1">
+                    My Schedule
+                    <v-icon large>
+                      mdi-clock
+                    </v-icon>
+                  </v-tab>
 
-                <v-tab href="#tab-2">
-                  My Section
-                  <v-icon large>mdi-google-classroom</v-icon>
-                </v-tab>
-              </v-tabs>
+                  <v-tab href="#tab-2">
+                    My Section
+                    <v-icon large>
+                      mdi-google-classroom
+                    </v-icon>
+                  </v-tab>
+                </v-tabs>
+              </v-card>
+              <v-tabs-items v-model="tab">
+                <v-tab-item :value="'tab-1'">
+                  <schedules :section-id="user.section.id" />
+                </v-tab-item>
+                <v-tab-item :value="'tab-2'">
+                  <student-class-details
+                    :teacher_name="
+                      user.section.adviser
+                        ? user.section.adviser.teacher_name
+                        : 'No Adviser'
+                    "
+                  />
+                </v-tab-item>
+              </v-tabs-items>
             </v-card>
-            <v-tabs-items v-model="tab">
-              <v-tab-item :value="'tab-1'">
-                <schedules :sectionId="user.section.id"></schedules>
-              </v-tab-item>
-              <v-tab-item :value="'tab-2'">
-                <student-class-details
-                  :teacher_name="
-                    user.section.adviser
-                      ? user.section.adviser.teacher_name
-                      : 'No Adviser'
-                  "
-                ></student-class-details>
-              </v-tab-item>
-            </v-tabs-items>
-          </v-card>
-        </v-col>
+          </v-col>
+        </v-row>
+      </div>
+
+      <v-footer
+        dark
+        padless
+      >
+        <v-card
+          flat
+          tile
+          width="100%"
+          class="primary white--text text-center"
+        >
+          <v-card-text>
+            <h1 class="pb-2 white--text">
+              You can contact us at
+            </h1>
+            <v-btn
+              class="ma-2"
+              text
+              icon
+              color="white lighten-2"
+              href="https://www.facebook.com/MantalongonNHSOfficial.Dalaguete/"
+            >
+              <v-icon>mdi-facebook</v-icon>
+            </v-btn>
+
+            <v-btn
+              class="ma-2"
+              text
+              icon
+              color="white lighten-2"
+              href="http://mantalongonnhs.weebly.com/contact-us.html"
+            >
+              <v-icon>mdi-google</v-icon>
+            </v-btn>
+
+            <v-btn
+              class="ma-2"
+              text
+              icon
+              color="white lighten-2"
+              href="http://mantalongonnhs.weebly.com/"
+            >
+              <v-icon>mdi-web</v-icon>
+            </v-btn>
+          </v-card-text>
+
+          <v-divider />
+
+          <v-card-text class="white--text">
+            Copyright 2021 - {{ new Date().getFullYear() }}
+            <a
+              class="white--text"
+              href="https://google.com"
+            >Online Enrollment System for Mantalongon National High School</a>
+          </v-card-text>
+        </v-card>
+      </v-footer>
+    </div>
+    <div
+      v-else
+      class="preloading-container"
+      style="height: 100vh; margin: 3%"
+    >
+      <v-row
+        class="fill-height"
+        align-content="center"
+        justify="center"
+      >
+        <div class="text-center">
+          <v-progress-circular
+            :rotate="-90"
+            :size="100"
+            :value="loaded"
+            color="teal darken-4"
+            :width="15"
+          >
+            {{ loaded }}
+          </v-progress-circular>
+        </div>
       </v-row>
-    </v-container>
-
-    <v-footer dark padless>
-      <v-card flat tile width="100%" class="primary white--text text-center">
-        <v-card-text>
-          <h1 class="pb-2 white--text">You can contact us at</h1>
-          <v-btn
-            class="ma-2"
-            text
-            icon
-            color="white lighten-2"
-            href="https://www.facebook.com/MantalongonNHSOfficial.Dalaguete/"
-          >
-            <v-icon>mdi-facebook</v-icon>
-          </v-btn>
-
-          <v-btn
-            class="ma-2"
-            text
-            icon
-            color="white lighten-2"
-            href="http://mantalongonnhs.weebly.com/contact-us.html"
-          >
-            <v-icon>mdi-google</v-icon>
-          </v-btn>
-
-          <v-btn
-            class="ma-2"
-            text
-            icon
-            color="white lighten-2"
-            href="http://mantalongonnhs.weebly.com/"
-          >
-            <v-icon>mdi-web</v-icon>
-          </v-btn>
-        </v-card-text>
-
-        <v-divider></v-divider>
-
-        <v-card-text class="white--text">
-          Copyright 2021 - {{ new Date().getFullYear() }}
-          <a class="white--text" href="https://google.com"
-            >Online Enrollment System for Mantalongon National High School</a
-          >
-        </v-card-text>
-      </v-card>
-    </v-footer>
+    </div>
   </v-app>
 </template>
 
 <script>
+  import AppBar from /* webpackChunkName: "AppBar" */ "@/layout/AppBar.vue"
+  import StudentDetail from /* webpackChunkName: "StudentDetails" */ "@/components/studentpage/StudentDetails.vue"
+import StudentClassDetails from /* webpackChunkName: "StudentClassDetails" */ "@/components/studentpage/StudentClassDetails.vue"
+import Schedules from /* webpackChunkName: "Schedules" */ "@/components/studentpage/Schedules.vue"
 export default {
   components: {
-    AppBar: () => import("@/layout/AppBar.vue"),
-    StudentDetail: () => import("@/components/studentpage/StudentDetails.vue"),
-    StudentClassDetails: () =>
-      import("@/components/studentpage/StudentClassDetails.vue"),
-    Schedules: () => import("@/components/studentpage/Schedules.vue"),
+    AppBar ,
+    StudentDetail ,
+    StudentClassDetails ,
+    Schedules ,
   },
   data() {
     return {
       user: [],
       panel: [],
       tab: null,
+      loaded: 1,
+      isLoading: true,
     };
   },
   beforeDestroy() {
@@ -126,27 +174,30 @@ export default {
       window.removeEventListener("resize", this.onResize, { passive: true });
     }
   },
-
+  created() {
+    this.initialize();
+  },
   methods: {
     initialize() {
+      this.isLoading = true;
       let storedInfo = localStorage.getItem("user");
       let userData = JSON.parse(storedInfo);
-      this.user = userData.userInfo;
-      let classmates = userData.classmates;
-      for (const key in classmates) {
-        if (classmates.hasOwnProperty.call(classmates, key)) {
-          const element = classmates[key];
-          this.students.push(element["students"]);
-        }
-      }
-
-      const section = this.user.enrollment.student_section;
-      this.isDataLoaded = false;
-      this.$axios.get(`studentSectionDetails/${section}`).then((res) => {
-        this.isDataLoaded = true;
-        this.students = res.data.classmates;
-        this.students.sort(this.sortData("lastname"));
-      });
+      let interval = setInterval(() => {
+        if (this.loaded === 100) this.loaded = 1;
+        if (this.loaded <= 10) this.loaded += this.loaded;
+        else this.loaded += 10;
+      }, 500);
+      this.$axios
+        .get(`student/details/${userData.user.username}`)
+        .then((res) => {
+          this.loaded = 100;
+          this.user = res.data.myInfo;
+          this.isLoading = false;
+          clearInterval(interval);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
 
     onResize() {
@@ -157,17 +208,12 @@ export default {
       }
     },
   },
-
-  created() {
-    this.initialize();
-  },
 };
 </script>
 
 <style>
 .stdnt-dash-container {
-  margin-top: 100px;
-  margin-bottom: 5%;
+  margin: 150px 3% 5% 3%;
 }
 
 .header-title {

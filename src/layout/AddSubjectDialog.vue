@@ -1,23 +1,26 @@
 <template>
   <v-card>
     <v-container>
-      <v-dialog v-model="edit" persistent max-width="500px">
+      <v-dialog
+        v-model="edit"
+        persistent
+        max-width="500px"
+      >
         <v-card>
           <v-container>
             <v-card-text>
               <v-text-field
-                label="Subject name"
                 v-model="editSubjectDetails.subject_name"
+                label="Subject name"
                 :rules="[(name) => !!name || 'Subject name is required']"
                 outlined
-              >
-              </v-text-field>
+              />
               <autocomplete
                 request="allTeacher"
                 :gradelevel="Number(gradeLevel)"
-                :modelValue="editSubjectDetails.teacher_name"
+                :model-value="editSubjectDetails.teacher_name"
                 :edit="true"
-                :prepend_icon="
+                :prepend-icon="
                   editSubjectDetails.teacher_name
                     ? 'mdi-check-underline'
                     : 'mdi-help'
@@ -25,25 +28,29 @@
                 property="teacher_name"
                 :rules="[(value) => !!value || 'This field is required']"
               >
-                <template v-slot:label>Teacher</template>
+                <template v-slot:label>
+                  Teacher
+                </template>
               </autocomplete>
             </v-card-text>
-            <v-divider></v-divider>
+            <v-divider />
             <v-card-actions>
-              <v-spacer></v-spacer>
+              <v-spacer />
               <v-btn
                 :disabled="loading"
                 color="error darken-1"
                 @click="closeEdit()"
-                >Cancel</v-btn
               >
+                Cancel
+              </v-btn>
               <v-btn
                 :loading="loading"
                 :disabled="hasAnyErors"
                 color="blue darken-1"
                 @click="editSubject(editSubjectDetails)"
-                >Save</v-btn
               >
+                Save
+              </v-btn>
             </v-card-actions>
           </v-container>
         </v-card>
@@ -51,7 +58,7 @@
       <div class="subtitle-1 font-weight-light text-center justify-center">
         <h1>Grade {{ gradeLevel }} Subject(s)</h1>
       </div>
-      <br />
+      <br>
       <v-data-table
         :headers="headers"
         :items="subjects"
@@ -72,46 +79,66 @@
             </td>
             <td>{{ row.item.teacher_name }}</td>
             <td>
-              <v-icon color="primary" @click="openEditSub(row.item, row.index)"
-                >mdi-pencil</v-icon
+              <v-icon
+                color="primary"
+                @click="openEditSub(row.item, row.index)"
               >
-              <v-icon color="error" @click="deleteData(row.item.id, row.index)"
-                >mdi-delete</v-icon
+                mdi-pencil
+              </v-icon>
+              <v-icon
+                color="error"
+                @click="deleteData(row.item.id, row.index)"
               >
+                mdi-delete
+              </v-icon>
             </td>
           </tr>
         </template>
       </v-data-table>
       <v-card-text>
         <v-container>
-          <v-form ref="subject" v-model="subjectValid" lazy-validation>
+          <v-form
+            ref="subject"
+            v-model="subjectValid"
+            lazy-validation
+          >
             <v-row>
-              <v-col cols="12" sm="6">
+              <v-col
+                cols="12"
+                sm="6"
+              >
                 <v-text-field
-                  label="Subject name"
                   v-model="name"
+                  label="Subject name"
                   :rules="[
                     (name) =>
                       (!!name && name.trim() != '') ||
                       'Subject name is required',
                   ]"
-                  @keydown="clearError"
                   name="name"
                   :error="hasError('name')"
                   outlined
                   dense
+                  @keydown="clearError"
                 >
-                  <v-icon slot="prepend-inner" color="red" x-small
-                    >mdi-asterisk</v-icon
-                  ></v-text-field
-                >
+                  <v-icon
+                    slot="prepend-inner"
+                    color="red"
+                    x-small
+                  >
+                    mdi-asterisk
+                  </v-icon>
+                </v-text-field>
               </v-col>
-              <v-col cols="12" sm="6">
+              <v-col
+                cols="12"
+                sm="6"
+              >
                 <Autocomplete
                   request="allTeacher"
                   :gradelevel="Number(gradeLevel)"
                   :edit="false"
-                  :prepend_icon="
+                  :prepend-icon="
                     teacher != null ? 'mdi-check-underline' : 'mdi-help'
                   "
                   property="teacher_name"
@@ -122,13 +149,22 @@
           </v-form>
         </v-container>
       </v-card-text>
-      <v-divider></v-divider>
+      <v-divider />
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn :disabled="loading" color="error darken-1" @click="close">
+        <v-spacer />
+        <v-btn
+          :disabled="loading"
+          color="error darken-1"
+          @click="close"
+        >
           Cancel
         </v-btn>
-        <v-btn color="primary" @click="addSubjectToDB()">add</v-btn>
+        <v-btn
+          color="primary"
+          @click="addSubjectToDB()"
+        >
+          add
+        </v-btn>
       </v-card-actions>
     </v-container>
   </v-card>
@@ -136,7 +172,11 @@
 
 <script>
 import { EventBus } from "../bus/bus";
+import Autocomplete from /* webpackChunkName: "Autocomplete" */ "@/layout/Autocomplete.vue";
 export default {
+  components: {
+    Autocomplete,
+  },
   props: {
     gradeLevel: {
       type: String,
@@ -146,9 +186,6 @@ export default {
       type: Array,
       required: true,
     },
-  },
-  components: {
-    Autocomplete: () => import("@/layout/Autocomplete.vue"),
   },
   data() {
     return {
@@ -178,6 +215,11 @@ export default {
         icon: null,
       },
     };
+  },
+  computed: {
+    hasAnyErors() {
+      return Object.keys(this.errors).length > 0;
+    },
   },
   watch: {},
   created() {
@@ -318,11 +360,6 @@ export default {
     },
     getError(fieldName) {
       return this.errors[fieldName][0];
-    },
-  },
-  computed: {
-    hasAnyErors() {
-      return Object.keys(this.errors).length > 0;
     },
   },
 };

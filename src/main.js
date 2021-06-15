@@ -60,15 +60,15 @@ new Vue({
         this.$store.commit("setUserData", userData);
         if (userData.user.user_type != "student") {
           if (userData.user.updated == 1) {
-            this.$router.push({ path: "/admin" });
+            this.$router.push({ path: "/admin" }).catch(()=>{});
           } else {
-            this.$router.push({ path: "/admin/profile" });
+            this.$router.push({ path: "/admin/profile" }).catch(()=>{});
           }
         } else {
           if (userData.user.updated == 1) {
-            this.$router.push({ path: "/student/dashboard" });
+            this.$router.push('/student/dashboard').catch(()=>{});
           } else {
-            this.$router.push({ path: "/student/update-password" });
+            this.$router.push({ path: "/student/update-password" }).catch(()=>{});
           }
         }
       }

@@ -1,5 +1,8 @@
 <template>
-  <v-card class="v-card--material-chart" color="#e6e6e6">
+  <v-card
+    class="v-card--material-chart"
+    color="#e6e6e6"
+  >
     <chartist
       :data="data"
       :event-handlers="eventHandlers"
@@ -10,11 +13,17 @@
       style="max-height: 300px"
     />
 
-    <slot slot="reveal-actions" name="reveal-actions" />
+    <slot
+      slot="reveal-actions"
+      name="reveal-actions"
+    />
 
     <slot />
 
-    <slot slot="actions" name="actions" />
+    <slot
+      slot="actions"
+      name="actions"
+    />
   </v-card>
 </template>
 

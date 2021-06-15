@@ -9,33 +9,43 @@
       class="my-12 update-card"
     >
       <v-card-title class="text-center justify-center">
-        <img src="../../assets/images/update.png" alt="" width="150px" />
+        <img
+          src="../../assets/images/update.png"
+          alt=""
+          width="150px"
+        >
         <h3>Update Account Information</h3>
       </v-card-title>
       <v-container>
-        <v-form ref="update" v-model="valid" lazy-validation>
+        <v-form
+          ref="update"
+          v-model="valid"
+          lazy-validation
+        >
           <v-text-field
             v-model="username"
             name="username"
             label="Username"
             readonly
             outlined
-          ></v-text-field>
+          />
           <v-text-field
             v-model="currentPass"
             :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
             :type="showPass ? 'text' : 'password'"
             name="currentpassword"
             label="Current Password"
+            :error="hasError('currentpassword')"
+            outlined
             @click:append="showPass = !showPass"
             @keydown="clearErrors"
             @keyup="enterKeyTriggered"
-            :error="hasError('currentpassword')"
-            outlined
-          >
-          </v-text-field>
+          />
           <div>
-            <p v-if="hasError('currentpassword')" class="invalid-feedback">
+            <p
+              v-if="hasError('currentpassword')"
+              class="invalid-feedback"
+            >
               {{ getError("currentpassword") }}
             </p>
           </div>
@@ -45,14 +55,17 @@
             :type="showNPass ? 'text' : 'password'"
             label="New Password"
             name="new_password"
+            :error="hasError('new_password')"
+            outlined
             @click:append="showNPass = !showNPass"
             @keydown="clearErrors"
             @keyup="enterKeyTriggered"
-            :error="hasError('new_password')"
-            outlined
-          ></v-text-field>
+          />
           <div>
-            <p v-if="hasError('new_password')" class="invalid-feedback">
+            <p
+              v-if="hasError('new_password')"
+              class="invalid-feedback"
+            >
               {{ getError("new_password") }}
             </p>
           </div>
@@ -62,28 +75,38 @@
             :type="showCPass ? 'text' : 'password'"
             label="Confirm Password"
             name="confirm_password"
+            :error="hasError('confirm_password')"
+            outlined
             @click:append="showCPass = !showCPass"
             @keydown="clearErrors"
             @keyup="enterKeyTriggered"
-            :error="hasError('confirm_password')"
-            outlined
-          ></v-text-field>
+          />
           <div>
-            <p v-if="hasError('confirm_password')" class="invalid-feedback">
+            <p
+              v-if="hasError('confirm_password')"
+              class="invalid-feedback"
+            >
               {{ getError("confirm_password") }}
             </p>
           </div>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn class="mr-4" color="error" @click="clear">clear</v-btn>
+            <v-spacer />
+            <v-btn
+              class="mr-4"
+              color="error"
+              @click="clear"
+            >
+              clear
+            </v-btn>
             <v-btn
               class="mr-4"
               color="primary"
-              @click="submit"
               :loading="loading"
               :disabled="loading || !valid"
-              >submit</v-btn
+              @click="submit"
             >
+              submit
+            </v-btn>
           </v-card-actions>
         </v-form>
       </v-container>
@@ -147,7 +170,7 @@ export default {
               });
               this.userDetails.user.updated = 1;
               this.$store.commit("setUserData", this.userDetails);
-              this.$router.push({ path: "/student/dashboard" });
+              this.$router.push({ path: "/student/sign-in" }).catch(()=>{});
             } else {
               this.$swal.fire({
                 icon: "warning",

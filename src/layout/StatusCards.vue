@@ -1,21 +1,32 @@
 <template>
-  <v-card class="v-card--material-stats" outlined>
+  <v-card
+    class="v-card--material-stats"
+    outlined
+  >
     <div
       class="icon_container"
       :style="'background:' + icon_background_color + ';'"
     >
-      <v-icon color="white" large>{{ icon }}</v-icon>
+      <v-icon
+        color="white"
+        large
+      >
+        {{ icon }}
+      </v-icon>
     </div>
     <template>
       <div class="ml-auto text-right">
-        <div class="body-3 grey--text font-weight-light" v-text="title" />
+        <div
+          class="body-3 grey--text font-weight-light"
+          v-text="title"
+        />
 
         <h3 class="display-2 font-weight-light text--primary">
           {{ value }} <small>{{ smallValue }}</small>
         </h3>
       </div>
     </template>
-    <slot name="actions"></slot>
+    <slot name="actions" />
   </v-card>
 </template>
 

@@ -10,34 +10,43 @@
       <v-row>
         <v-icon>mdi-account</v-icon>
         <h3>ADD NEW ADMIN</h3>
-        <slot name="close_btn"></slot>
+        <slot name="close_btn" />
       </v-row>
     </v-card-title>
 
-    <v-divider></v-divider>
-    <br />
+    <v-divider />
+    <br>
     <v-container>
-      <v-form v-model="newAdminValid" ref="newAdmin" lazy-validation>
+      <v-form
+        ref="newAdmin"
+        v-model="newAdminValid"
+        lazy-validation
+      >
         <label for="assigned_gr_level">Grade Level</label>
         <v-select
-          name="assigned_gr_level"
           v-model="assigned_gr_level"
+          name="assigned_gr_level"
           :items="[7, 8, 9, 10, 11, 12]"
           :rules="[(value) => !!value || 'This field is required.']"
-          @change="setUsername()"
           hide-selected
           dense
           outlined
           required
-          ><v-icon slot="prepend-inner" color="red" x-small
-            >mdi-asterisk</v-icon
-          ></v-select
+          @change="setUsername()"
         >
+          <v-icon
+            slot="prepend-inner"
+            color="red"
+            x-small
+          >
+            mdi-asterisk
+          </v-icon>
+        </v-select>
         <Autocomplete
           request="allTeacher"
           :gradelevel="Number(assigned_gr_level)"
           :edit="false"
-          :prepend_icon="assigned_teacher ? 'mdi-check-underline' : 'mdi-help'"
+          :prepend-icon="assigned_teacher ? 'mdi-check-underline' : 'mdi-help'"
           property="teacher_name"
           :rules="[(value) => !!value || 'This field is required']"
         >
@@ -45,31 +54,34 @@
             <span> Assigned Teacher </span>
           </template>
         </Autocomplete>
-        <br />
+        <br>
         <label for="email">Teacher Email</label>
         <v-text-field
           v-model="teacher_email"
           placeholder="Email"
           name="email"
-          @keydown="clearErrors"
           :error="hasError('user_email')"
           :readonly="true"
           dense
           outlined
-        ></v-text-field>
+          @keydown="clearErrors"
+        />
         <label for="username">Default Username</label>
         <v-text-field
           v-model="username"
           placeholder="Username"
           name="username"
-          @keydown="clearErrors"
           :error="hasError('username')"
           :readonly="true"
           dense
           outlined
-        ></v-text-field>
+          @keydown="clearErrors"
+        />
         <div>
-          <p v-if="hasError('username')" class="invalid-feedback">
+          <p
+            v-if="hasError('username')"
+            class="invalid-feedback"
+          >
             {{ getError("username") }}
           </p>
         </div>
@@ -85,47 +97,54 @@
           ]"
           placeholder="Enter password"
           name="password"
-          @click:append="showPass = !showPass"
-          @keydown="clearErrors"
           :error="hasError('password')"
           required
           dense
           outlined
-          ><v-icon slot="prepend-inner" color="red" x-small
-            >mdi-asterisk</v-icon
-          ></v-text-field
+          @click:append="showPass = !showPass"
+          @keydown="clearErrors"
         >
+          <v-icon
+            slot="prepend-inner"
+            color="red"
+            x-small
+          >
+            mdi-asterisk
+          </v-icon>
+        </v-text-field>
         <div>
-          <p v-if="hasError('password')" class="invalid-feedback">
+          <p
+            v-if="hasError('password')"
+            class="invalid-feedback"
+          >
             {{ getError("password") }}
           </p>
         </div>
       </v-form>
     </v-container>
-    <v-divider></v-divider>
+    <v-divider />
     <v-card-actions>
-      <v-spacer></v-spacer>
+      <v-spacer />
       <v-btn
         class="mr-4"
         color="green"
         :loading="loading"
         :disabled="hasAnyErors"
         @click="submit"
-        >submit</v-btn
       >
+        submit
+      </v-btn>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
 import { EventBus } from "../../bus/bus";
+import Autocomplete from /* webpackChunkName: "Autocomplete" */ "@/layout/Autocomplete.vue";
 export default {
   name: "AdminProfile",
   components: {
-    Autocomplete: () =>
-      import(
-        /* webpackChunkName: "Autocomplete" */ "@/layout/Autocomplete.vue"
-      ),
+    Autocomplete,
   },
   props: {},
   data() {
@@ -140,6 +159,12 @@ export default {
       newAdminValid: false,
       errors: {},
     };
+  },
+
+  computed: {
+    hasAnyErors() {
+      return Object.keys(this.errors).length > 0;
+    },
   },
   created: function () {
     EventBus.$on("allTeacher", (data) => {
@@ -241,12 +266,6 @@ export default {
       for (let key in this.errors) {
         this.$delete(this.errors, key);
       }
-    },
-  },
-
-  computed: {
-    hasAnyErors() {
-      return Object.keys(this.errors).length > 0;
     },
   },
 };

@@ -1,6 +1,9 @@
 <template>
   <v-card>
-    <v-toolbar dark color="primary">
+    <v-toolbar
+      dark
+      color="primary"
+    >
       <v-toolbar-title>
         <v-card-title class="text-center justify-center py-6">
           <h1 class="font-weight-bold display-1 basil--text">
@@ -8,7 +11,7 @@
           </h1>
         </v-card-title>
       </v-toolbar-title>
-      <v-spacer></v-spacer>
+      <v-spacer />
       <v-toolbar-items>
         <v-btn
           icon
@@ -21,7 +24,7 @@
         </v-btn>
       </v-toolbar-items>
     </v-toolbar>
-    <br /><br />
+    <br><br>
     <v-container>
       <!-- schedule table -->
       <div>
@@ -36,8 +39,8 @@
             <tr class="table-row">
               <td>
                 <span v-if="row.item.Monday">
-                  {{ row.item.Monday.subject_name }} <br />
-                  <strong>{{ row.item.Monday.teacher_name }}</strong> <br />
+                  {{ row.item.Monday.subject_name }} <br>
+                  <strong>{{ row.item.Monday.teacher_name }}</strong> <br>
                   <p v-if="row.item.Monday.subject_name">
                     {{ row.item.Monday.start_time }} -
                     {{ row.item.Monday.end_time }}
@@ -46,8 +49,8 @@
               </td>
               <td>
                 <span v-if="row.item.Tuesday">
-                  {{ row.item.Tuesday.subject_name }} <br />
-                  <strong>{{ row.item.Tuesday.teacher_name }}</strong> <br />
+                  {{ row.item.Tuesday.subject_name }} <br>
+                  <strong>{{ row.item.Tuesday.teacher_name }}</strong> <br>
                   <p v-if="row.item.Tuesday.subject_name">
                     {{ row.item.Tuesday.start_time }} -
                     {{ row.item.Tuesday.end_time }}
@@ -56,9 +59,9 @@
               </td>
               <td>
                 <span v-if="row.item.Wednesday">
-                  {{ row.item.Wednesday.subject_name }} <br />
+                  {{ row.item.Wednesday.subject_name }} <br>
                   <strong>{{ row.item.Wednesday.teacher_name }}</strong>
-                  <br />
+                  <br>
                   <p v-if="row.item.Wednesday.subject_name">
                     {{ row.item.Wednesday.start_time }} -
                     {{ row.item.Wednesday.end_time }}
@@ -67,8 +70,8 @@
               </td>
               <td>
                 <span v-if="row.item.Thursday">
-                  {{ row.item.Thursday.subject_name }} <br />
-                  <strong>{{ row.item.Thursday.teacher_name }}</strong> <br />
+                  {{ row.item.Thursday.subject_name }} <br>
+                  <strong>{{ row.item.Thursday.teacher_name }}</strong> <br>
                   <p v-if="row.item.Thursday.subject_name">
                     {{ row.item.Thursday.start_time }} -
                     {{ row.item.Thursday.end_time }}
@@ -77,8 +80,8 @@
               </td>
               <td>
                 <span v-if="row.item.Friday">
-                  {{ row.item.Friday.subject_name }} <br />
-                  <strong>{{ row.item.Friday.teacher_name }}</strong> <br />
+                  {{ row.item.Friday.subject_name }} <br>
+                  <strong>{{ row.item.Friday.teacher_name }}</strong> <br>
                   <p v-if="row.item.Friday.subject_name">
                     {{ row.item.Friday.start_time }} -
                     {{ row.item.Friday.end_time }}
@@ -86,28 +89,40 @@
                 </span>
               </td>
               <td>
-                <v-icon color="red" @click="deleteSched(row.item)"
-                  >mdi-delete</v-icon
+                <v-icon
+                  color="red"
+                  @click="deleteSched(row.item)"
                 >
-                <v-icon color="primary" @click="editSched(row.item, row.index)">
+                  mdi-delete
+                </v-icon>
+                <v-icon
+                  color="primary"
+                  @click="editSched(row.item, row.index)"
+                >
                   mdi-pencil
                 </v-icon>
               </td>
             </tr>
           </template>
         </v-data-table>
-        <v-dialog v-model="scheduleDialog" width="800px">
+        <v-dialog
+          v-model="scheduleDialog"
+          width="800px"
+        >
           <v-card>
             <v-card-title>
               <v-row>
                 <v-icon>mdi-pencil</v-icon>
                 <h3>{{ mode }} SCHEDULE</h3>
               </v-row>
-              <v-btn icon @click="closeDialog()">
+              <v-btn
+                icon
+                @click="closeDialog()"
+              >
                 <v-icon>mdi-close</v-icon>
               </v-btn>
             </v-card-title>
-            <hr />
+            <hr>
             <v-container>
               <v-form
                 ref="scheduleInputForm"
@@ -129,10 +144,10 @@
                       ]"
                       label="Hour(s)"
                       type="number"
-                      @keyup="changeSpanOfClassess($event, (isMinute = false))"
                       dense
                       outlined
-                    ></v-text-field>
+                      @keyup="changeSpanOfClassess($event, (isMinute = false))"
+                    />
                   </v-col>
                   <v-col cols="3">
                     <v-text-field
@@ -146,10 +161,10 @@
                       ]"
                       label="Minutes"
                       type="number"
-                      @keyup="changeSpanOfClassess($event, (isMinute = true))"
                       dense
                       outlined
-                    ></v-text-field>
+                      @keyup="changeSpanOfClassess($event, (isMinute = true))"
+                    />
                   </v-col>
                   <v-col sm="3">
                     <label for="startTime">Start Time</label>
@@ -167,22 +182,26 @@
                           prepend-inner-icon="mdi-clock-time-four-outline"
                           readonly
                           v-bind="attrs"
-                          v-on="on"
                           dense
                           outlined
-                        ></v-text-field>
+                          v-on="on"
+                        />
                       </template>
                       <v-time-picker
                         v-if="modal"
                         v-model="scheduleInputs.startTime"
                         :min="minOnMax"
                         max="17:00"
+                        full-width
                         @click:hour="inputStartTime($event)"
                         @click:minute="inputStartTime($event)"
-                        full-width
                       >
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="modal = false">
+                        <v-spacer />
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="modal = false"
+                        >
                           Cancel
                         </v-btn>
                         <v-btn
@@ -215,7 +234,7 @@
                           readonly
                           v-bind="attrs"
                           v-on="on"
-                        ></v-text-field>
+                        />
                       </template>
                       <v-time-picker
                         v-if="modal2"
@@ -224,8 +243,12 @@
                         max="18:00"
                         full-width
                       >
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="modal2 = false">
+                        <v-spacer />
+                        <v-btn
+                          text
+                          color="primary"
+                          @click="modal2 = false"
+                        >
                           Cancel
                         </v-btn>
                         <v-btn
@@ -240,9 +263,9 @@
                   </v-col>
                   <v-col sm="6">
                     <autocomplete
-                      :prepend_icon="
+                      :prepend-icon="
                         scheduleInputs.Monday != null &&
-                        scheduleInputs.Monday.subject_id
+                          scheduleInputs.Monday.subject_id
                           ? 'mdi-check-underline'
                           : 'mdi-help'
                       "
@@ -252,23 +275,24 @@
                       day="Monday"
                       property="subject_name"
                     >
-                      <template v-slot:label
-                        >Monday<strong
+                      <template
+                        v-slot:label
+                      >
+                        Monday<strong
                           v-if="
                             scheduleInputs.Monday &&
-                            scheduleInputs.Monday.subject_name
+                              scheduleInputs.Monday.subject_name
                           "
                         >
-                          ({{ scheduleInputs.Monday.subject_name }})</strong
-                        ></template
-                      >
+                          ({{ scheduleInputs.Monday.subject_name }})</strong>
+                      </template>
                     </autocomplete>
                   </v-col>
                   <v-col sm="6">
                     <autocomplete
-                      :prepend_icon="
+                      :prepend-icon="
                         scheduleInputs.Tuesday != null &&
-                        scheduleInputs.Tuesday.subject_id
+                          scheduleInputs.Tuesday.subject_id
                           ? 'mdi-check-underline'
                           : 'mdi-help'
                       "
@@ -278,23 +302,24 @@
                       day="Tuesday"
                       property="subject_name"
                     >
-                      <template v-slot:label
-                        >Tuesday<strong
+                      <template
+                        v-slot:label
+                      >
+                        Tuesday<strong
                           v-if="
                             scheduleInputs.Tuesday &&
-                            scheduleInputs.Tuesday.subject_name
+                              scheduleInputs.Tuesday.subject_name
                           "
                         >
-                          ({{ scheduleInputs.Tuesday.subject_name }})</strong
-                        ></template
-                      >
+                          ({{ scheduleInputs.Tuesday.subject_name }})</strong>
+                      </template>
                     </autocomplete>
                   </v-col>
                   <v-col sm="6">
                     <autocomplete
-                      :prepend_icon="
+                      :prepend-icon="
                         scheduleInputs.Wednesday != null &&
-                        scheduleInputs.Wednesday.subject_id
+                          scheduleInputs.Wednesday.subject_id
                           ? 'mdi-check-underline'
                           : 'mdi-help'
                       "
@@ -304,20 +329,21 @@
                       day="Wednesday"
                       property="subject_name"
                     >
-                      <template v-slot:label
-                        >Wednesday<strong
+                      <template
+                        v-slot:label
+                      >
+                        Wednesday<strong
                           v-if="scheduleInputs.Wednesday.subject_name"
                         >
-                          ({{ scheduleInputs.Wednesday.subject_name }})</strong
-                        ></template
-                      >
+                          ({{ scheduleInputs.Wednesday.subject_name }})</strong>
+                      </template>
                     </autocomplete>
                   </v-col>
                   <v-col sm="6">
                     <autocomplete
-                      :prepend_icon="
+                      :prepend-icon="
                         scheduleInputs.Thursday != null &&
-                        scheduleInputs.Thursday.subject_id
+                          scheduleInputs.Thursday.subject_id
                           ? 'mdi-check-underline'
                           : 'mdi-help'
                       "
@@ -327,23 +353,24 @@
                       day="Thursday"
                       property="subject_name"
                     >
-                      <template v-slot:label
-                        >Thursday<strong
+                      <template
+                        v-slot:label
+                      >
+                        Thursday<strong
                           v-if="
                             scheduleInputs.Thursday &&
-                            scheduleInputs.Thursday.subject_name
+                              scheduleInputs.Thursday.subject_name
                           "
                         >
-                          ({{ scheduleInputs.Thursday.subject_name }})</strong
-                        ></template
-                      >
+                          ({{ scheduleInputs.Thursday.subject_name }})</strong>
+                      </template>
                     </autocomplete>
                   </v-col>
                   <v-col sm="6">
                     <autocomplete
-                      :prepend_icon="
+                      :prepend-icon="
                         scheduleInputs.Friday != null &&
-                        scheduleInputs.Friday.subject_id
+                          scheduleInputs.Friday.subject_id
                           ? 'mdi-check-underline'
                           : 'mdi-help'
                       "
@@ -353,48 +380,62 @@
                       day="Friday"
                       property="subject_name"
                     >
-                      <template v-slot:label
-                        >Friday<strong
+                      <template
+                        v-slot:label
+                      >
+                        Friday<strong
                           v-if="scheduleInputs.Friday.subject_name"
                         >
-                          ({{ scheduleInputs.Friday.subject_name }})</strong
-                        ></template
-                      >
+                          ({{ scheduleInputs.Friday.subject_name }})</strong>
+                      </template>
                     </autocomplete>
                   </v-col>
-                  <br />
+                  <br>
                 </v-row>
               </v-form>
             </v-container>
-            <hr />
+            <hr>
             <v-card-actions>
-              <v-spacer></v-spacer>
+              <v-spacer />
               <v-btn
                 color="success"
-                @click="saveSchedule(scheduleInputs.index)"
                 :loading="loading"
-                >save</v-btn
+                @click="saveSchedule(scheduleInputs.index)"
               >
+                save
+              </v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
       </div>
 
       <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn @click="openDialog()" color="primary">add</v-btn>
+        <v-spacer />
+        <v-btn
+          color="primary"
+          @click="openDialog()"
+        >
+          add
+        </v-btn>
       </v-card-actions>
     </v-container>
 
     <v-overlay :value="overlay">
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
+      <v-progress-circular
+        indeterminate
+        size="64"
+      />
     </v-overlay>
   </v-card>
 </template>
 
 <script>
 import { EventBus } from "../bus/bus";
+import Autocomplete from /* webpackChunkName: "Autocomplete" */ "@/layout/Autocomplete.vue";
 export default {
+  components: {
+    Autocomplete,
+  },
   props: {
     gradelevel: {
       type: Number,
@@ -404,12 +445,6 @@ export default {
       type: Number,
       required: true,
     },
-  },
-  components: {
-    Autocomplete: () =>
-      import(
-        /* webpackChunkName: "Autocomplete" */ "@/layout/Autocomplete.vue"
-      ),
   },
   data() {
     return {

@@ -1,7 +1,10 @@
 <template>
   <div id="app">
-    <bread-crumb :item="items" page_name="Notification Settings"></bread-crumb>
-    <br /><br />
+    <bread-crumb
+      :item="items"
+      pageName="Notification Settings"
+    />
+    <br><br>
 
     <!-- notification details dialog -->
     <v-dialog
@@ -12,70 +15,81 @@
       <enrollment-data-dialog :enrollment="notification">
         <template v-slot:header_action>
           <v-card-title>
-            <v-spacer></v-spacer>
-            <v-btn icon @click="closeDialog()">
+            <v-spacer />
+            <v-btn
+              icon
+              @click="closeDialog()"
+            >
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
         </template>
         <template v-slot:actions>
           <v-card-actions>
-            <v-spacer></v-spacer>
+            <v-spacer />
             <v-btn
               color="error"
-              @click="opendeclineModal(notification.enrollment.id)"
               :loading="declining"
               :disabled="
                 notification.enrollment.enrollment_status === 'Approved'
                   ? true
                   : false
               "
-              >decline</v-btn
+              @click="opendeclineModal(notification.enrollment.id)"
             >
+              decline
+            </v-btn>
             <v-btn
               color="primary"
+              :disabled="
+                notification.enrollment.enrollment_status === 'Approved'
+                  ? true
+                  : false
+              "
               @click="
                 filterSections(
                   notification.enrollment.grade_level,
                   notification.enrollment.id
                 )
               "
-              :disabled="
-                notification.enrollment.enrollment_status === 'Approved'
-                  ? true
-                  : false
-              "
-              >{{ text }}</v-btn
             >
+              {{ text }}
+            </v-btn>
           </v-card-actions>
         </template>
       </enrollment-data-dialog>
     </v-dialog>
 
     <!-- select section dialog -->
-    <v-dialog v-model="dialog" max-width="500px">
+    <v-dialog
+      v-model="dialog"
+      max-width="500px"
+    >
       <v-card>
         <v-card-title>
           <span class="headline">Select Student Sections</span>
-          <v-spacer></v-spacer>
-          <v-btn icon @click="dialog = false">
+          <v-spacer />
+          <v-btn
+            icon
+            @click="dialog = false"
+          >
             <v-icon>mdi-close</v-icon>
           </v-btn>
         </v-card-title>
         <v-card-text>
           <v-select
-            :items="sections"
             v-model="section"
+            :items="sections"
             label="Section*"
             required
-          ></v-select>
+          />
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn
             color="blue darken-1"
-            @click="approveEnrollment(id)"
             :loading="loading"
+            @click="approveEnrollment(id)"
           >
             Done
           </v-btn>
@@ -83,8 +97,17 @@
       </v-card>
     </v-dialog>
     <!-- notifications card list -->
-    <v-card elevation="2" outlined tile v-if="notifications.length > 0">
-      <v-virtual-scroll :items="notifications" :item-height="70" height="700">
+    <v-card
+      v-if="notifications.length > 0"
+      elevation="2"
+      outlined
+      tile
+    >
+      <v-virtual-scroll
+        :items="notifications"
+        :item-height="70"
+        height="700"
+      >
         <template v-slot:default="{ item }">
           <v-list class="transparent">
             <v-list-item
@@ -94,14 +117,14 @@
 
               <v-list-item-content>
                 <v-list-item-title>
-                  <v-card-text
-                    >{{ item.data.enrollment.firstname }}
+                  <v-card-text>
+                    {{ item.data.enrollment.firstname }}
                     {{ item.data.enrollment.lastname }} submitted a new
                     enrollment application for grade &nbsp;
                     {{
                       item.data.enrollment.enrollment.grade_level
-                    }}.</v-card-text
-                  >
+                    }}.
+                  </v-card-text>
                 </v-list-item-title>
               </v-list-item-content>
             </v-list-item>
@@ -109,19 +132,27 @@
         </template>
       </v-virtual-scroll>
     </v-card>
-    <v-card v-else elevation="2" outlined tile>
+    <v-card
+      v-else
+      elevation="2"
+      outlined
+      tile
+    >
       <v-card-text>
         <h1>No notifications</h1>
       </v-card-text>
     </v-card>
     <v-overlay :value="overlay">
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
+      <v-progress-circular
+        indeterminate
+        size="64"
+      />
     </v-overlay>
     <!-- REASON FOR DECLINING THE ENROLLMENT -->
     <v-dialog
+      v-model="declineModal"
       transition="dialog-bottom-transition"
       max-width="600"
-      v-model="declineModal"
     >
       <template>
         <v-card>
@@ -129,12 +160,19 @@
             <v-row>
               <h3>Reason For Declining</h3>
             </v-row>
-            <v-btn icon @click="closeDeclineModal()">
+            <v-btn
+              icon
+              @click="closeDeclineModal()"
+            >
               <v-icon>mdi-close</v-icon>
             </v-btn>
           </v-card-title>
-          <v-divider></v-divider>
-          <v-form ref="form" v-model="valid" lazy-validation>
+          <v-divider />
+          <v-form
+            ref="form"
+            v-model="valid"
+            lazy-validation
+          >
             <v-container>
               <v-textarea
                 v-model="remarks"
@@ -146,15 +184,19 @@
                 :rules="[
                   (remarks) => !!remarks || 'Reason for declining is required',
                 ]"
-              ></v-textarea>
+              />
               <!-- <v-divider></v-divider> -->
-              <v-card-actions class="justify-end" id="textarea">
+              <v-card-actions
+                id="textarea"
+                class="justify-end"
+              >
                 <v-btn
                   :disabled="!valid"
                   color="blue"
                   @click="declineEnrollment(declineId)"
-                  >done</v-btn
                 >
+                  done
+                </v-btn>
               </v-card-actions>
             </v-container>
           </v-form>
@@ -166,14 +208,14 @@
 
 <script>
 // import { EventBus } from "../bus/bus.js";
+import BreadCrumb from /* webpackChunkName: "BreadCrumb" */ "@/layout/BreadCrumb.vue"
+import EnrollmentDataDialog from
+        /* webpackChunkName: "EnrollmentDataDialog" */ "@/layout/EnrollmentDataDialog.vue"
+      
 export default {
   components: {
-    BreadCrumb: () =>
-      import(/* webpackChunkName: "BreadCrumb" */ "@/layout/BreadCrumb.vue"),
-    EnrollmentDataDialog: () =>
-      import(
-        /* webpackChunkName: "EnrollmentDataDialog" */ "@/layout/EnrollmentDataDialog.vue"
-      ),
+    BreadCrumb ,
+    EnrollmentDataDialog ,
   },
   data() {
     return {

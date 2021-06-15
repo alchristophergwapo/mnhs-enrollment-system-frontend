@@ -1,13 +1,15 @@
 <template>
   <div>
-    <bread-crumb :item="items" page_name="All Teachers"></bread-crumb>
+    <bread-crumb :item="items" pageName="All Teachers" />
     <br />
     <br />
     <div>
       <v-container>
         <v-card class="table-header" color="orange">
           <v-card-title class="text-center justify-center">
-            <div class="display-2 font-weight-light">All Teachers</div>
+            <div class="display-2 font-weight-light">
+              All Teachers
+            </div>
           </v-card-title>
 
           <div class="subtitle-1 font-weight-light text-center justify-center">
@@ -22,18 +24,18 @@
             label="Search"
             class="search-input-field"
             outlined
-          ></v-text-field>
+          />
           <v-card-title>
-            <v-spacer></v-spacer>
+            <v-spacer />
             <div class="add_btn">
               <v-dialog v-model="statusdialog" persistent max-width="500px">
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     color="primary"
                     v-bind="attrs"
+                    :disabled="notAdmin"
                     v-on="on"
                     @click="showTeacher"
-                    :disabled="notAdmin"
                   >
                     <v-icon>mdi-plus</v-icon>Add Teacher
                   </v-btn>
@@ -41,13 +43,15 @@
                 <br />
                 <v-card>
                   <v-card-title class="text-center justify-center headline">
-                    <div class="font-weight-light">{{ status }}</div>
+                    <div class="font-weight-light">
+                      {{ status }}
+                    </div>
                   </v-card-title>
                   <v-card-text>
                     <v-form ref="addTeacher" v-model="valid" lazy-validation>
                       <v-container>
                         <v-text-field
-                          @keydown="clearError"
+                          v-model="Teacher"
                           label="Teacher's Fullname"
                           :rules="[
                             (value) =>
@@ -62,14 +66,14 @@
                           ]"
                           type="text"
                           class="form-control"
-                          v-model="Teacher"
                           :error="hasError('teacher_name')"
                           name="teacher_name"
                           outlined
+                          @keydown="clearError"
                         >
-                          <v-icon slot="prepend-inner" color="red" x-small
-                            >mdi-asterisk</v-icon
-                          >
+                          <v-icon slot="prepend-inner" color="red" x-small>
+                            mdi-asterisk
+                          </v-icon>
                         </v-text-field>
                         <p
                           v-if="hasError('teacher_name')"
@@ -78,7 +82,7 @@
                           {{ getError("teacher_name") }}
                         </p>
                         <v-text-field
-                          @keydown="clearError"
+                          v-model="Email"
                           label="Email"
                           type="email"
                           :rules="[
@@ -94,23 +98,22 @@
                               'The email may not be greater than 100 characters!',
                           ]"
                           :error="hasError('email')"
-                          v-model="Email"
                           name="email"
                           outlined
+                          @keydown="clearError"
                         >
-                          <v-icon slot="prepend-inner" color="red" x-small
-                            >mdi-asterisk</v-icon
-                          >
+                          <v-icon slot="prepend-inner" color="red" x-small>
+                            mdi-asterisk
+                          </v-icon>
                         </v-text-field>
                         <p v-if="hasError('email')" class="invalid-feedback">
                           {{ getError("email") }}
                         </p>
                         <v-text-field
-                          @keydown="clearError"
+                          v-model="Contact"
                           label="Phone Number"
                           type="number"
                           min="0"
-                          v-model="Contact"
                           onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
                           name="contact"
                           :rules="[
@@ -131,10 +134,11 @@
                           ]"
                           :error="hasError('contact')"
                           outlined
+                          @keydown="clearError"
                         >
-                          <v-icon slot="prepend-inner" color="red" x-small
-                            >mdi-asterisk</v-icon
-                          >
+                          <v-icon slot="prepend-inner" color="red" x-small>
+                            mdi-asterisk
+                          </v-icon>
                         </v-text-field>
                         <p v-if="hasError('contact')" class="invalid-feedback">
                           {{ getError("contact") }}
@@ -148,22 +152,23 @@
                           label="Assigned Section Area"
                           outlined
                           clearable
-                        ></v-select>
+                        />
                       </v-container>
                     </v-form>
                   </v-card-text>
                   <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn color="error darken-1" @click="dialogs"
-                      >Cancel</v-btn
-                    >
+                    <v-spacer />
+                    <v-btn color="error darken-1" @click="dialogs">
+                      Cancel
+                    </v-btn>
                     <v-btn
                       color="blue darken-1"
                       :loading="loading"
                       :disabled="!valid == false ? hasAnyErors : true"
                       @click="addTeacher()"
-                      >Save</v-btn
                     >
+                      Save
+                    </v-btn>
                   </v-card-actions>
                 </v-card>
               </v-dialog>
@@ -182,112 +187,110 @@
             <tr>
               <td>{{ row.item.teacher_name }}</td>
               <td>
-                <v-dialog transition="dialog-top-transition" max-width="400">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn text small v-bind="attrs" v-on="on"
-                      >View Details</v-btn
-                    >
-                  </template>
-                  <template v-slot:default="dialog">
-                    <v-card>
-                      <v-card-title>
-                        <v-spacer></v-spacer>
-                        <v-btn icon @click="dialog.value = false">
-                          <v-icon>mdi-close</v-icon>
-                        </v-btn>
-                      </v-card-title>
-                      <v-card-text>
-                        <v-row>
-                          <v-col cols="12">
-                            Name:&nbsp;&nbsp;
-                            <br />
-                            <strong>
-                              {{ row.item.teacher_name }}
-                            </strong>
-                          </v-col>
-                          <v-col cols="12">
-                            Email:&nbsp;&nbsp;
-                            <br />
-                            <strong>
-                              {{ row.item.email }}
-                            </strong>
-                          </v-col>
-                          <v-col cols="12">
-                            Contact:&nbsp;&nbsp;
-                            <br />
-                            <strong>
-                              {{ row.item.contact }}
-                            </strong>
-                          </v-col>
-                          <v-col cols="12">
-                            AssignedSection:&nbsp;&nbsp;
-                            <br />
-                            <strong>
-                              {{
-                                row.item.section_id
-                                  ? row.item.section_id
-                                  : "No Section"
-                              }}
-                            </strong>
-                          </v-col>
-                          <v-col cols="12">
-                            School Year:&nbsp;&nbsp;
-                            <br />
-                            <strong>
-                              {{
-                                row.item.created_at
-                                  .substring(
-                                    0,
-                                    row.item.created_at.indexOf("-")
-                                  )
-                                  .concat(
-                                    "-",
-                                    parseInt(
-                                      row.item.created_at.substring(
-                                        0,
-                                        row.item.created_at.indexOf("-")
-                                      )
-                                    ) + 1
-                                  )
-                              }}
-                            </strong>
-                          </v-col>
-                        </v-row>
-                      </v-card-text>
-                    </v-card>
-                  </template>
-                </v-dialog>
+                <v-btn text small @click="viewTeacherDetails(row.item)">
+                  View Details
+                </v-btn>
               </td>
               <td>
-                <v-btn small text @click="getTeacherSchedule(row.item.id)"
-                  >View Schedules</v-btn
-                >
+                <v-btn small text @click="getTeacherSchedule(row.item.id)">
+                  View Schedules
+                </v-btn>
               </td>
 
               <td>{{ row.item.section_id }}</td>
               <td>
                 <v-icon
-                  @click="editTeacher(row.item)"
                   color="primary"
                   :disabled="notAdmin"
-                  >mdi-pencil</v-icon
+                  @click="editTeacher(row.item)"
                 >
+                  mdi-pencil
+                </v-icon>
                 <v-icon
-                  @click="removeTeacher(row.item.id)"
                   color="error"
                   :disabled="notAdmin"
-                  >mdi-delete</v-icon
+                  @click="removeTeacher(row.item.id)"
                 >
+                  mdi-delete
+                </v-icon>
               </td>
             </tr>
           </template>
         </v-data-table>
 
-        <!-- Schedule dialog -->
-        <v-dialog max-width="1000px" v-model="teacherSchedDialog">
+        <v-dialog
+          transition="dialog-top-transition"
+          max-width="400"
+          v-model="tDetailsDialog"
+          v-if="loading === false"
+        >
           <v-card>
             <v-card-title>
-              <v-spacer></v-spacer>
+              <v-spacer />
+              <v-btn icon @click="tDetailsDialog = false">
+                <v-icon>mdi-close</v-icon>
+              </v-btn>
+            </v-card-title>
+            <v-card-text>
+              <v-row>
+                <v-col cols="12">
+                  Name:&nbsp;&nbsp;
+                  <br />
+                  <strong>
+                    {{ teacherToView.teacher_name }}
+                  </strong>
+                </v-col>
+                <v-col cols="12">
+                  Email:&nbsp;&nbsp;
+                  <br />
+                  <strong>
+                    {{ teacherToView.email }}
+                  </strong>
+                </v-col>
+                <v-col cols="12">
+                  Contact:&nbsp;&nbsp;
+                  <br />
+                  <strong>
+                    {{ teacherToView.contact }}
+                  </strong>
+                </v-col>
+                <v-col cols="12">
+                  AssignedSection:&nbsp;&nbsp;
+                  <br />
+                  <strong>
+                    {{
+                      teacherToView.section_id
+                        ? teacherToView.section_id
+                        : "No Section"
+                    }}
+                  </strong>
+                </v-col>
+                <v-col cols="12">
+                  School Year:&nbsp;&nbsp;
+                  <br />
+                  <strong>
+                    {{
+                      teacherToView.created_at
+                        ? teacherToView.created_at.split("-")[0]
+                        : null
+                    }}
+                    -
+                    {{
+                      teacherToView.created_at
+                        ? parseInt(teacherToView.created_at.split("-")[0]) + 1
+                        : null
+                    }}
+                  </strong>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
+        <!-- Schedule dialog -->
+        <v-dialog v-model="teacherSchedDialog" max-width="1000px">
+          <v-card>
+            <v-card-title>
+              <v-spacer />
               <v-btn icon @click="teacherSchedDialog = false">
                 <v-icon>mdi-close</v-icon>
               </v-btn>
@@ -433,10 +436,10 @@
 </template>
 
 <script>
+import BreadCrumb from /* webpackChunkName: "BreadCrumb" */ "@/layout/BreadCrumb.vue";
 export default {
   components: {
-    BreadCrumb: () =>
-      import(/* webpackChunkName: "BreadCrumb" */ "@/layout/BreadCrumb.vue"),
+    BreadCrumb,
   },
 
   data() {
@@ -458,6 +461,7 @@ export default {
       selected_section: null,
       sections: [],
       dialog: false,
+      tDetailsDialog: false,
       teacherSchedDialog: false,
       teachersIsNotLoaded: false,
       tab: null,
@@ -494,6 +498,7 @@ export default {
       teachers: [],
       filterTeachers: [],
       errors: {},
+      teacherToView: {},
       schedules: [],
       spanOfClasses: {
         hour: 1,
@@ -507,6 +512,12 @@ export default {
         Friday: null,
       },
     };
+  },
+
+  computed: {
+    hasAnyErors() {
+      return Object.keys(this.errors).length > 0;
+    },
   },
   created() {
     this.allNoAdviserSections();
@@ -683,6 +694,11 @@ export default {
       this.statusdialog = true;
       this.booleanStatus = false;
       this.disableSection = false;
+    },
+
+    viewTeacherDetails(data) {
+      this.tDetailsDialog = true;
+      this.teacherToView = data;
     },
 
     //Resetting the validation in cancel button
@@ -906,12 +922,6 @@ export default {
 
     getError(fieldName) {
       return this.errors[fieldName][0];
-    },
-  },
-
-  computed: {
-    hasAnyErors() {
-      return Object.keys(this.errors).length > 0;
     },
   },
 };

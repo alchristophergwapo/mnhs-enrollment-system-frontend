@@ -1,7 +1,15 @@
 <template>
   <v-row>
-    <div class="form-head">Parent/guardian information</div>
-    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
+    <div class="form-head">
+      Parent/guardian information
+    </div>
+    <v-col
+      cols="12"
+      xs="6"
+      sm="6"
+      md="6"
+      lg="3"
+    >
       <v-text-field
         v-model="parentGuardianInfo.father"
         label="Father's Name"
@@ -13,9 +21,15 @@
         ]"
         outlined
         required
-      ></v-text-field>
+      />
     </v-col>
-    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="6"
+      md="6"
+      lg="3"
+    >
       <v-text-field
         v-model="parentGuardianInfo.mother"
         label="Mother's Maiden Name"
@@ -26,9 +40,15 @@
             'Mother name is invalid!',
         ]"
         outlined
-      ></v-text-field>
+      />
     </v-col>
-    <v-col cols="12" xs="6" sm="6" md="6" lg="3">
+    <v-col
+      cols="12"
+      xs="6"
+      sm="6"
+      md="6"
+      lg="3"
+    >
       <v-text-field
         v-model="parentGuardianInfo.guardian"
         :rules="[
@@ -41,10 +61,21 @@
         outlined
         required
       >
-        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+        <v-icon
+          slot="prepend-inner"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
       </v-text-field>
     </v-col>
-    <v-col cols="12" sm="6" md="6" lg="3">
+    <v-col
+      cols="12"
+      sm="6"
+      md="6"
+      lg="3"
+    >
       <v-text-field
         v-model="parentGuardianInfo.parent_number"
         :rules="[
@@ -71,7 +102,13 @@
         outlined
         required
       >
-        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+        <v-icon
+          slot="prepend-inner"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
       </v-text-field>
     </v-col>
   </v-row>

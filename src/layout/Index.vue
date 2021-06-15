@@ -1,10 +1,15 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark elevation="0">
+    <v-app-bar
+      app
+      color="primary"
+      dark
+      elevation="0"
+    >
       <v-app-bar-nav-icon
-        @click="sidebarMenu = !sidebarMenu"
         color="white"
-      ></v-app-bar-nav-icon>
+        @click="sidebarMenu = !sidebarMenu"
+      />
       <!-- <v-toolbar-title class="header-title" v-if="!mini"
         >Welcome to Mantalongon, Dalaguete NHS</v-toolbar-title
       > -->
@@ -19,15 +24,18 @@
         <h4>Mantalongon National High School</h4>
       </v-toolbar-title>
 
-      <v-spacer></v-spacer>
+      <v-spacer />
 
-      <div class="notif" v-if="user_details.user_type != 'student'">
+      <div
+        v-if="user_details.user_type != 'student'"
+        class="notif"
+      >
         <v-btn
-          @click="markAsRead()"
           color="accent"
           link
           to="/admin/notifications"
           class="app-bar-btns"
+          @click="markAsRead()"
         >
           <v-badge
             :content="notifications"
@@ -35,31 +43,56 @@
             color="red"
             overlap
           >
-            <v-icon medium color="white">mdi-bell</v-icon>
+            <v-icon
+              medium
+              color="white"
+            >
+              mdi-bell
+            </v-icon>
           </v-badge>
         </v-btn>
       </div>
-      <!-- <div v-if="$route.name != 'AdminProfile'"> -->
       <v-card-title>
-        <v-menu offset-y open-on-hover bottom>
+        <v-menu
+          offset-y
+          open-on-hover
+          bottom
+        >
           <template v-slot:activator="{ on, attrs }">
-            <v-btn v-bind="attrs" v-on="on" color="info" class="app-bar-btns">
-              <v-icon dark color="white"> mdi-account-circle </v-icon>
+            <v-btn
+              v-bind="attrs"
+              color="info"
+              class="app-bar-btns"
+              v-on="on"
+            >
+              <v-icon
+                dark
+                color="white"
+              >
+                mdi-account-circle
+              </v-icon>
             </v-btn>
           </template>
 
           <v-list>
-            <v-list-item link to="/admin/profile" class="nav-link">
+            <v-list-item
+              link
+              to="/admin/profile"
+              class="nav-link"
+            >
               <v-list-item-title>Profile Settings</v-list-item-title>
               <v-list-item-icon>
-                <v-icon>mdi-account-cog</v-icon></v-list-item-icon
-              >
+                <v-icon>mdi-account-cog</v-icon>
+              </v-list-item-icon>
             </v-list-item>
-            <v-list-item @click="logout" class="nav-link">
+            <v-list-item
+              class="nav-link"
+              @click="logout"
+            >
               <v-list-item-title>Logout </v-list-item-title>
-              <v-list-item-icon
-                ><v-icon>mdi-logout-variant</v-icon></v-list-item-icon
-              >
+              <v-list-item-icon>
+                <v-icon>mdi-logout-variant</v-icon>
+              </v-list-item-icon>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -73,25 +106,29 @@
       :expand-on-hover="mini"
       width="280"
     >
-      <v-list-item class="px-2" style="background: #006a4e">
+      <v-list-item
+        class="px-2"
+        style="background: #006a4e"
+      >
         <v-list-item-avatar size="auto">
-          <v-img src="../assets/images/mnhs-logo.png"></v-img>
+          <v-img src="../assets/images/mnhs-logo.png" />
         </v-list-item-avatar>
         <v-list-item-title
           style="font-weight: bold; font-size: 20px; color: white"
-          >ADMINISTRATOR</v-list-item-title
         >
+          ADMINISTRATOR
+        </v-list-item-title>
       </v-list-item>
-      <v-divider></v-divider>
+      <v-divider />
       <v-list>
         <template v-for="item in items">
           <v-list-item
             v-if="!item.admin"
             :key="item.text"
-            @click="currentSelection = item.text"
             class="nav-link"
             :to="item.to"
             exact
+            @click="currentSelection = item.text"
           >
             <v-list-item-action class="nav-icon">
               <v-icon>{{ item.icon }}</v-icon>
@@ -116,32 +153,43 @@
                 <v-list-item-title>
                   {{ item.text }}
                 </v-list-item-title>
-              </v-list-item> </template
-            ><br />
+              </v-list-item>
+            </template><br>
 
-            <div v-for="(child, i) in item.children" :key="i">
+            <div
+              v-for="(child, index) in item.children"
+              :key="index"
+            >
               <v-list-item
                 v-if="!child.subChildren"
-                @click="
-                  item.model = false;
-                  currentSelection = child.text;
-                "
                 :class="[
                   currentSelection == child.text ? 'grey' : '',
                   'nav-link',
                 ]"
                 :to="child.to"
+                @click="
+                  item.model = false;
+                  currentSelection = child.text;
+                "
               >
                 <!-- <v-list-item-content> -->
                 <v-list-item-title>
                   {{ child.text }}
                 </v-list-item-title>
-                <v-list-item-icon v-if="child.icon" class="child-icon">
+                <v-list-item-icon
+                  v-if="child.icon"
+                  class="child-icon"
+                >
                   <v-icon>{{ child.icon }}</v-icon>
                 </v-list-item-icon>
                 <!-- </v-list-item-content> -->
               </v-list-item>
-              <v-list-group v-else v-model="child.model" no-action sub-group>
+              <v-list-group
+                v-else
+                v-model="child.model"
+                no-action
+                sub-group
+              >
                 <template v-slot:activator>
                   <v-list-item-title>{{ child.text }}</v-list-item-title>
                   <v-list-item-icon>
@@ -150,21 +198,21 @@
                 </template>
 
                 <v-list-item
-                  v-for="(subChild, i) in child.subChildren"
-                  :key="i"
-                  @click="
-                    item.model = false;
-                    currentSelection = subChild.text;
-                  "
+                  v-for="(subChild, ind) in child.subChildren"
+                  :key="ind"
                   :class="[
                     currentSelection == subChild.text ? 'grey' : '',
                     'sub-child-link',
                   ]"
                   :to="subChild.to"
+                  @click="
+                    item.model = false;
+                    currentSelection = subChild.text;
+                  "
                 >
-                  <v-list-item-title v-text="subChild.text"></v-list-item-title>
+                  <v-list-item-title v-text="subChild.text" />
                   <v-list-item-icon>
-                    <v-icon v-text="subChild.icon"></v-icon>
+                    <v-icon v-text="subChild.icon" />
                   </v-list-item-icon>
                 </v-list-item>
               </v-list-group>
@@ -175,7 +223,7 @@
     </v-navigation-drawer>
     <v-main>
       <div class="main-view">
-        <router-view></router-view>
+        <router-view />
       </div>
     </v-main>
   </v-app>
@@ -266,25 +314,18 @@ export default {
       ],
     };
   },
-  methods: {
-    logout() {
-      this.$router.push({ path: "/" });
-      this.$store.dispatch("logout");
-    },
-    markAsRead() {
-      this.$axios
-        .get(`mark-all-read/${this.user_details.id}`)
-        .then((response) => {
-          this.notifications = 0;
-          this.setUserData(response.data);
+  computed: {
+    unreadNotification() {
+      if (this.allNotifications) {
+        return this.allNotifications.filter((notification) => {
+          return notification.read_at == null;
         });
+      } else {
+        return null;
+      }
     },
-
-    setUserData(data) {
-      let storedInfo = localStorage.getItem("user");
-      let userData = JSON.parse(storedInfo);
-      userData.user = data.user;
-      this.$store.commit("setUserData", userData);
+    mini() {
+      return this.$vuetify.breakpoint.smAndDown || this.toggleMini;
     },
   },
   created() {
@@ -339,18 +380,25 @@ export default {
       });
     }
   },
-  computed: {
-    unreadNotification() {
-      if (this.allNotifications) {
-        return this.allNotifications.filter((notification) => {
-          return notification.read_at == null;
-        });
-      } else {
-        return null;
-      }
+  methods: {
+    logout() {
+      this.$router.push({ path: "/" });
+      this.$store.dispatch("logout");
     },
-    mini() {
-      return this.$vuetify.breakpoint.smAndDown || this.toggleMini;
+    markAsRead() {
+      this.$axios
+        .get(`mark-all-read/${this.user_details.id}`)
+        .then((response) => {
+          this.notifications = 0;
+          this.setUserData(response.data);
+        });
+    },
+
+    setUserData(data) {
+      let storedInfo = localStorage.getItem("user");
+      let userData = JSON.parse(storedInfo);
+      userData.user = data.user;
+      this.$store.commit("setUserData", userData);
     },
   },
 };

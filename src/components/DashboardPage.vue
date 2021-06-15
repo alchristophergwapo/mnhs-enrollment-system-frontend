@@ -1,8 +1,14 @@
 <template>
   <div>
-    <bread-crumb :item="items" page_name="Dashboard"></bread-crumb>
-    <br /><br />
-    <v-container id="dashboard" tag="section">
+    <bread-crumb
+      :item="items"
+      pageName="Dashboard"
+    />
+    <br><br>
+    <v-container
+      id="dashboard"
+      tag="section"
+    >
       <chart
         :data="enrollmentChart.data"
         :options="enrollmentChart.options"
@@ -17,10 +23,14 @@
         <p class="d-inline-flex font-weight-light ml-2 mt-1">
           All yearly enrolled students data.
         </p>
-        <hr />
+        <hr>
         <div class="legends">
           <v-row>
-            <v-col cols="12" sm="6" md="4">
+            <v-col
+              cols="12"
+              sm="6"
+              md="4"
+            >
               <v-card-title class="text-center justify-center">
                 <v-sheet
                   class="d-flex"
@@ -28,12 +38,17 @@
                   elevation="1"
                   height="10"
                   width="10"
-                >
-                </v-sheet>
-                <div class="label">Male</div>
+                />
+                <div class="label">
+                  Male
+                </div>
               </v-card-title>
             </v-col>
-            <v-col cols="12" sm="6" md="4">
+            <v-col
+              cols="12"
+              sm="6"
+              md="4"
+            >
               <v-card-title class="text-center justify-center">
                 <v-sheet
                   class="d-flex"
@@ -41,16 +56,20 @@
                   elevation="1"
                   height="10"
                   width="10"
-                >
-                </v-sheet>
-                <div class="label">Female</div>
+                />
+                <div class="label">
+                  Female
+                </div>
               </v-card-title>
             </v-col>
           </v-row>
         </div>
       </chart>
       <v-row class="row-item">
-        <v-col cols="12" md="6">
+        <v-col
+          cols="12"
+          md="6"
+        >
           <status-cards
             color="info"
             icon_background_color="#00b4cc"
@@ -67,12 +86,20 @@
                 elevation="24"
               >
                 see all
-                <v-icon dark right>mdi-arrow-right</v-icon>
+                <v-icon
+                  dark
+                  right
+                >
+                  mdi-arrow-right
+                </v-icon>
               </v-btn>
             </template>
           </status-cards>
         </v-col>
-        <v-col cols="12" md="6">
+        <v-col
+          cols="12"
+          md="6"
+        >
           <status-cards
             color="info"
             icon_background_color="#2e856e"
@@ -81,14 +108,28 @@
             :value="totalPending"
           >
             <template v-slot:actions>
-              <v-btn id="btn" block link to="/admin/enrollment" elevation="24">
+              <v-btn
+                id="btn"
+                block
+                link
+                to="/admin/enrollment"
+                elevation="24"
+              >
                 see all
-                <v-icon dark right>mdi-arrow-right</v-icon>
+                <v-icon
+                  dark
+                  right
+                >
+                  mdi-arrow-right
+                </v-icon>
               </v-btn>
             </template>
           </status-cards>
         </v-col>
-        <v-col cols="12" md="6">
+        <v-col
+          cols="12"
+          md="6"
+        >
           <status-cards
             icon_background_color="#ff4d4d"
             icon="mdi-account-multiple-minus"
@@ -99,16 +140,24 @@
               <v-btn
                 id="btn"
                 block
-                @click="redirectToDeclinedPage()"
                 elevation="24"
+                @click="redirectToDeclinedPage()"
               >
                 see all
-                <v-icon dark right>mdi-arrow-right</v-icon>
+                <v-icon
+                  dark
+                  right
+                >
+                  mdi-arrow-right
+                </v-icon>
               </v-btn>
             </template>
           </status-cards>
         </v-col>
-        <v-col cols="12" md="6">
+        <v-col
+          cols="12"
+          md="6"
+        >
           <status-cards
             color="info"
             icon_background_color="orange"
@@ -125,7 +174,12 @@
                 elevation="24"
               >
                 see all
-                <v-icon dark right>mdi-arrow-right</v-icon>
+                <v-icon
+                  dark
+                  right
+                >
+                  mdi-arrow-right
+                </v-icon>
               </v-btn>
             </template>
           </status-cards>
@@ -136,17 +190,14 @@
 </template>
 <script>
 import { EventBus } from "../bus/bus";
-// import Vue from "vue";
-// const lineSmooth = Vue.chartist.Interpolation.cardinal({
-//   tension: 0,
-// });
+import BreadCrumb from /* webpackChunkName: "BreadCrumb" */ "@/layout/BreadCrumb.vue";
+import Chart from /* webpackChunkName: "Chart" */ "@/layout/Chart.vue"
+import StatusCards from /* webpackChunkName: "StatusCard" */ "@/layout/StatusCards.vue"
 export default {
   components: {
-    BreadCrumb: () =>
-      import(/* webpackChunkName: "BreadCrumb" */ "@/layout/BreadCrumb.vue"),
-    Chart: () => import(/* webpackChunkName: "Chart" */ "@/layout/Chart.vue"),
-    StatusCards: () =>
-      import(/* webpackChunkName: "StatusCard" */ "@/layout/StatusCards.vue"),
+    BreadCrumb,
+    Chart,
+    StatusCards ,
   },
   data: () => ({
     totalEnrolled: 0,

@@ -1,25 +1,35 @@
 <template>
   <v-app id="sign-in">
     <v-container class="signin-container">
-      <v-card class="card1" elevation="10" max-width="500px">
-        <v-btn icon link to="/">
-          <v-icon x-large>mdi-arrow-left</v-icon>
+      <v-card
+        class="card1"
+        elevation="10"
+        max-width="500px"
+      >
+        <v-btn
+          icon
+          link
+          to="/"
+        >
+          <v-icon x-large>
+            mdi-arrow-left
+          </v-icon>
         </v-btn>
         <center>
           <img
+            id="icons"
             :src="require('../assets/images/enroll.png')"
             alt=""
-            id="icons"
-          />
+          >
         </center>
         <h3>MNHS Enrollment System</h3>
-        <br />
+        <br>
         <v-card-text>
           <v-form
-            v-on:submit.prevent=""
             ref="regAdminForm"
             v-model="valid"
             lazy-validation
+            @submit.prevent=""
           >
             <v-row>
               <v-col cols="12">
@@ -29,13 +39,13 @@
                 <v-text-field
                   v-model="username"
                   :rules="[(value) => !!value || 'Username is required!']"
-                  @keyup="enterKeyTriggered"
                   maxlength="20"
                   outlined
                   required
-                ></v-text-field>
+                  @keyup="enterKeyTriggered"
+                />
               </v-col>
-              <v-spacer></v-spacer>
+              <v-spacer />
 
               <v-col cols="12">
                 <div class="font-weight-bold">
@@ -51,9 +61,9 @@
                   outlined
                   @keyup="enterKeyTriggered"
                   @click:append="show = !show"
-                ></v-text-field>
+                />
               </v-col>
-              <v-spacer></v-spacer>
+              <v-spacer />
               <v-col class="d-flex ml-auto">
                 <v-btn
                   x-large
@@ -65,6 +75,13 @@
                 >
                   <h4>Sign In</h4>
                 </v-btn>
+              </v-col>
+              <v-col
+                cols="12"
+                class="d-flex ml-auto"
+                style="align-items: center"
+              >
+                <router-link to="/forgot-password">Forgot Password?</router-link>
               </v-col>
             </v-row>
           </v-form>
@@ -113,7 +130,6 @@ export default {
         this.$store
           .dispatch("login", data)
           .then((response) => {
-            console.log(response);
             this.loading = false;
             const user = response.data.user;
             this.$user = user;

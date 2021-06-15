@@ -3,11 +3,13 @@
     <div class="form-head">
       For Returning Learners (Balik Aral) and Those Who Shall Transfer/ Move In
     </div>
-    <v-col cols="12" sm="4">
+    <v-col
+      cols="12"
+      sm="4"
+    >
       <v-select
         v-model="balikOrTransferInfo.last_grade_completed"
-        :items="grade_level_options"
-        @change="balikAral(($event = balikOrTransferInfo.last_grade_completed))"
+        :items="gradeLevelOptions"
         :rules="[
           (last_grade_completed) =>
             !!last_grade_completed || 'Last Grade Level Completed is required',
@@ -16,11 +18,21 @@
         type="number"
         outlined
         required
+        @change="balikAral(($event = balikOrTransferInfo.last_grade_completed))"
       >
-        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+        <v-icon
+          slot="prepend-inner"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
       </v-select>
     </v-col>
-    <v-col cols="12" sm="4">
+    <v-col
+      cols="12"
+      sm="4"
+    >
       <v-text-field
         v-model="balikOrTransferInfo.last_year_completed"
         onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
@@ -36,10 +48,19 @@
         outlined
         required
       >
-        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+        <v-icon
+          slot="prepend-inner"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
       </v-text-field>
     </v-col>
-    <v-col cols="12" sm="4">
+    <v-col
+      cols="12"
+      sm="4"
+    >
       <v-text-field
         v-model="balikOrTransferInfo.last_school_ID"
         onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57"
@@ -64,10 +85,19 @@
         outlined
         required
       >
-        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+        <v-icon
+          slot="prepend-inner"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
       </v-text-field>
     </v-col>
-    <v-col cols="12" sm="6">
+    <v-col
+      cols="12"
+      sm="6"
+    >
       <v-text-field
         v-model="balikOrTransferInfo.last_school_attended"
         :rules="[
@@ -83,10 +113,19 @@
         outlined
         required
       >
-        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+        <v-icon
+          slot="prepend-inner"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
       </v-text-field>
     </v-col>
-    <v-col cols="12" sm="6">
+    <v-col
+      cols="12"
+      sm="6"
+    >
       <v-text-field
         v-model="balikOrTransferInfo.last_school_address"
         :rules="[
@@ -104,7 +143,13 @@
         outlined
         required
       >
-        <v-icon slot="prepend-inner" color="red" x-small>mdi-asterisk</v-icon>
+        <v-icon
+          slot="prepend-inner"
+          color="red"
+          x-small
+        >
+          mdi-asterisk
+        </v-icon>
       </v-text-field>
     </v-col>
   </v-row>
@@ -116,9 +161,13 @@ export default {
   props: {
     gLevel: {
       type: Number,
+      default: null
     },
-    grade_level_options: {
+    gradeLevelOptions: {
       type: Array,
+      default: function(){
+        return [];
+      },
     },
   },
   data() {
@@ -133,6 +182,11 @@ export default {
       year: null,
     };
   },
+  computed: {
+    getData() {
+      return JSON.stringify(this.balikOrTransferInfo);
+    },
+  },
   created() {
     let date = new Date();
     this.year = date.getFullYear();
@@ -140,11 +194,6 @@ export default {
   methods: {
     balikAral(grade) {
       EventBus.$emit("previousGradeLevel", grade);
-    },
-  },
-  computed: {
-    getData() {
-      return JSON.stringify(this.balikOrTransferInfo);
     },
   },
 };

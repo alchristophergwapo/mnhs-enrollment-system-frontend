@@ -1,7 +1,11 @@
 <template>
   <v-app>
     <div class="enrollment">
-      <v-toolbar dark color="primary" class="toolbar-content">
+      <v-toolbar
+        dark
+        color="primary"
+        class="toolbar-content"
+      >
         <v-avatar
           @click="
             !user
@@ -9,14 +13,21 @@
               : $router.push({ path: '/admin' })
           "
         >
-          <v-img :src="require('../assets/images/logo.jpg')"></v-img>
+          <v-img :src="require('../assets/images/logo.jpg')" />
         </v-avatar>
         <v-toolbar-title class="toolbar-title">
           <h4>Mantalongon National High School</h4>
           <span>Mantalongon, Dalaguete Cebu</span>
         </v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-btn text link to="/sign-in" v-if="!user">Login</v-btn>
+        <v-spacer />
+        <v-btn
+          v-if="!user"
+          text
+          link
+          to="/sign-in"
+        >
+          Login
+        </v-btn>
         <v-btn
           icon
           @click="
@@ -25,63 +36,70 @@
               : $router.push({ path: '/admin' })
           "
         >
-          <v-icon color="red">mdi-close</v-icon>
+          <v-icon color="red">
+            mdi-close
+          </v-icon>
         </v-btn>
       </v-toolbar>
       <div class="form-container">
-        <v-card-title
-          ><span style="width: 100%; text-align: center"
-            >Please fill out the information below and SUBMIT. <br />
-            Fields with * indicates required fields.</span
-          >
+        <v-card-title>
+          <span
+            style="width: 100%; text-align: center"
+          >Please fill out the information below and SUBMIT. <br>
+            Fields with * indicates required fields.</span>
         </v-card-title>
         <v-form
-          v-on:submit.prevent=""
           ref="basicInfo"
           v-model="basicInfoValid"
           lazy-validation
+          @submit.prevent=""
         >
           <v-container>
-            <student-info-form ref="studentInfoData"></student-info-form>
+            <student-info-form ref="studentInfoData" />
             <parent-guardian-info
               ref="parentGuardianInfoData"
-            ></parent-guardian-info>
+            />
             <v-row>
-              <v-col cols="12" sm="6">
+              <v-col
+                cols="12"
+                sm="6"
+              >
                 <v-container>
                   <v-checkbox
-                    class="checkbox-input"
                     v-model="isSeniorHigh"
-                    @click="applyForSeniorHigh()"
+                    class="checkbox-input"
                     label="Applying for Senior High?"
                     type="checkbox"
-                  >
-                  </v-checkbox>
+                    @click="applyForSeniorHigh()"
+                  />
                 </v-container>
               </v-col>
-              <v-col cols="12" sm="6">
+              <v-col
+                cols="12"
+                sm="6"
+              >
                 <v-container>
                   <v-checkbox
-                    class="checkbox-input"
                     v-model="isTransfereeOrBalikAral"
-                    @click="isNew = false"
+                    class="checkbox-input"
                     label="Applying as Transferee or Balik Aral? (If you are a continuing student, please disregard.)"
-                  ></v-checkbox>
+                    @click="isNew = false"
+                  />
                 </v-container>
               </v-col>
               <v-container v-if="isTransfereeOrBalikAral">
                 <balik-or-transfer
                   ref="balikAralorTransferInfoData"
-                  :gLevel="grade_level"
+                  :g-level="grade_level"
                   :grade_level_options="options"
-                ></balik-or-transfer>
+                />
               </v-container>
               <v-container v-if="isSeniorHigh">
                 <senior-high
                   ref="seniorHighData"
-                  v-bind:track="tracks"
-                  v-bind:strand="strands"
-                ></senior-high>
+                  :track="tracks"
+                  :strand="strands"
+                />
               </v-container>
               <v-col
                 cols="12"
@@ -92,13 +110,17 @@
                   label="Card Picture"
                   :rules="[(value) => !!value || 'Required.']"
                   accept="image/*"
-                  v-on:keyup="enterKeyTriggered()"
                   outlined
                   prepend-icon="mdi-camera"
+                  @keyup="enterKeyTriggered()"
                 >
-                  <v-icon slot="prepend-inner" color="red" x-small
-                    >mdi-asterisk</v-icon
+                  <v-icon
+                    slot="prepend-inner"
+                    color="red"
+                    x-small
                   >
+                    mdi-asterisk
+                  </v-icon>
                 </v-file-input>
               </v-col>
               <v-col
@@ -110,30 +132,33 @@
                   :items="
                     isSeniorHigh == true ? grade_levels[1] : grade_levels[0]
                   "
-                  @change="selectGradeLevel($event)"
-                  @click:clear="clearSelected()"
                   :rules="[(v) => !!v || 'Required']"
                   :readonly="passEnrolled || isNew"
                   label="Select Grade Level"
                   :clearable="clearable"
-                  v-on:keyup="enterKeyTriggered()"
                   outlined
                   required
+                  @change="selectGradeLevel($event)"
+                  @click:clear="clearSelected()"
+                  @keyup="enterKeyTriggered()"
                 >
-                  <v-icon slot="prepend-inner" color="red" x-small
-                    >mdi-asterisk</v-icon
+                  <v-icon
+                    slot="prepend-inner"
+                    color="red"
+                    x-small
                   >
+                    mdi-asterisk
+                  </v-icon>
                 </v-select>
               </v-col>
               <v-col
+                v-if="grade_level === 9 || grade_level === 10"
                 cols="12"
                 sm="4"
-                v-if="grade_level === 9 || grade_level === 10"
               >
                 <v-select
                   v-model="specialization"
                   :items="specializations"
-                  @click:clear="specialization = null"
                   :rules="[(v) => !!v || 'Required']"
                   :label="
                     grade_level === 9
@@ -143,23 +168,28 @@
                   :clearable="clearable"
                   outlined
                   required
+                  @click:clear="specialization = null"
                 >
-                  <v-icon slot="prepend-inner" color="red" x-small
-                    >mdi-asterisk</v-icon
+                  <v-icon
+                    slot="prepend-inner"
+                    color="red"
+                    x-small
                   >
+                    mdi-asterisk
+                  </v-icon>
                 </v-select>
               </v-col>
             </v-row>
 
             <v-card-actions>
-              <v-spacer></v-spacer>
+              <v-spacer />
               <v-btn
                 large
                 dark
                 color="primary"
-                @click="submitEnrollment"
                 :disabled="submitDisable"
                 :loading="submitting"
+                @click="submitEnrollment"
               >
                 Submit
               </v-btn>
@@ -173,24 +203,21 @@
 
 <script>
 import { EventBus } from "../bus/bus";
+import StudentInfoForm from
+        /* webpackChunkName: "StudentInfoForm" */ "@/components/enrollment/StudentInfoForm.vue"      
+import ParentGuardianInfo from
+        /* webpackChunkName: "ParentGuardianInfo" */ "@/components/enrollment/ParentGuardianInfo.vue"     
+import BalikOrTransfer from
+        /* webpackChunkName: "BalikOrTransfer" */ "@/components/enrollment/BalikOrTransfer.vue"    
+import SeniorHigh from
+        /* webpackChunkName: "SeniorHigh" */ "@/components/enrollment/SeniorHigh.vue"
+      
 export default {
   components: {
-    StudentInfoForm: () =>
-      import(
-        /* webpackChunkName: "StudentInfoForm" */ "@/components/enrollment/StudentInfoForm.vue"
-      ),
-    ParentGuardianInfo: () =>
-      import(
-        /* webpackChunkName: "ParentGuardianInfo" */ "@/components/enrollment/ParentGuardianInfo.vue"
-      ),
-    BalikOrTransfer: () =>
-      import(
-        /* webpackChunkName: "BalikOrTransfer" */ "@/components/enrollment/BalikOrTransfer.vue"
-      ),
-    SeniorHigh: () =>
-      import(
-        /* webpackChunkName: "SeniorHigh" */ "@/components/enrollment/SeniorHigh.vue"
-      ),
+    StudentInfoForm ,
+    ParentGuardianInfo ,
+    BalikOrTransfer ,
+    SeniorHigh ,
   },
   data() {
     return {
@@ -355,18 +382,8 @@ export default {
             })
             .catch((error) => {
               this.submitting = false;
-              if (error.response.data.currentEnrollment) {
-                this.$swal.fire({
-                  icon: "info",
-                  title: "Ooops....",
-                  text: error.response.data.error,
-                });
-              }
               if (error.response.data.passEnrollment)
                 (this.passEnrolled = true),
-                  (this.grade_level =
-                    error.response.data.passEnrollment.enrollment.grade_level +
-                    1),
                   this.$swal.fire({
                     icon: "info",
                     title: "Ooops....",
