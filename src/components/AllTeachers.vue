@@ -1,11 +1,17 @@
 <template>
   <div>
-    <bread-crumb :item="items" pageName="All Teachers" />
-    <br />
-    <br />
+    <bread-crumb
+      :item="items"
+      page-name="All Teachers"
+    />
+    <br>
+    <br>
     <div>
       <v-container>
-        <v-card class="table-header" color="orange">
+        <v-card
+          class="table-header"
+          color="orange"
+        >
           <v-card-title class="text-center justify-center">
             <div class="display-2 font-weight-light">
               All Teachers
@@ -28,7 +34,11 @@
           <v-card-title>
             <v-spacer />
             <div class="add_btn">
-              <v-dialog v-model="statusdialog" persistent max-width="500px">
+              <v-dialog
+                v-model="statusdialog"
+                persistent
+                max-width="500px"
+              >
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
                     color="primary"
@@ -40,7 +50,7 @@
                     <v-icon>mdi-plus</v-icon>Add Teacher
                   </v-btn>
                 </template>
-                <br />
+                <br>
                 <v-card>
                   <v-card-title class="text-center justify-center headline">
                     <div class="font-weight-light">
@@ -48,7 +58,11 @@
                     </div>
                   </v-card-title>
                   <v-card-text>
-                    <v-form ref="addTeacher" v-model="valid" lazy-validation>
+                    <v-form
+                      ref="addTeacher"
+                      v-model="valid"
+                      lazy-validation
+                    >
                       <v-container>
                         <v-text-field
                           v-model="Teacher"
@@ -71,7 +85,11 @@
                           outlined
                           @keydown="clearError"
                         >
-                          <v-icon slot="prepend-inner" color="red" x-small>
+                          <v-icon
+                            slot="prepend-inner"
+                            color="red"
+                            x-small
+                          >
                             mdi-asterisk
                           </v-icon>
                         </v-text-field>
@@ -102,11 +120,18 @@
                           outlined
                           @keydown="clearError"
                         >
-                          <v-icon slot="prepend-inner" color="red" x-small>
+                          <v-icon
+                            slot="prepend-inner"
+                            color="red"
+                            x-small
+                          >
                             mdi-asterisk
                           </v-icon>
                         </v-text-field>
-                        <p v-if="hasError('email')" class="invalid-feedback">
+                        <p
+                          v-if="hasError('email')"
+                          class="invalid-feedback"
+                        >
                           {{ getError("email") }}
                         </p>
                         <v-text-field
@@ -136,11 +161,18 @@
                           outlined
                           @keydown="clearError"
                         >
-                          <v-icon slot="prepend-inner" color="red" x-small>
+                          <v-icon
+                            slot="prepend-inner"
+                            color="red"
+                            x-small
+                          >
                             mdi-asterisk
                           </v-icon>
                         </v-text-field>
-                        <p v-if="hasError('contact')" class="invalid-feedback">
+                        <p
+                          v-if="hasError('contact')"
+                          class="invalid-feedback"
+                        >
                           {{ getError("contact") }}
                         </p>
                         <v-select
@@ -158,7 +190,10 @@
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer />
-                    <v-btn color="error darken-1" @click="dialogs">
+                    <v-btn
+                      color="error darken-1"
+                      @click="dialogs"
+                    >
                       Cancel
                     </v-btn>
                     <v-btn
@@ -187,12 +222,20 @@
             <tr>
               <td>{{ row.item.teacher_name }}</td>
               <td>
-                <v-btn text small @click="viewTeacherDetails(row.item)">
+                <v-btn
+                  text
+                  small
+                  @click="viewTeacherDetails(row.item)"
+                >
                   View Details
                 </v-btn>
               </td>
               <td>
-                <v-btn small text @click="getTeacherSchedule(row.item.id)">
+                <v-btn
+                  small
+                  text
+                  @click="getTeacherSchedule(row.item.id)"
+                >
                   View Schedules
                 </v-btn>
               </td>
@@ -219,15 +262,18 @@
         </v-data-table>
 
         <v-dialog
+          v-if="loading === false"
+          v-model="tDetailsDialog"
           transition="dialog-top-transition"
           max-width="400"
-          v-model="tDetailsDialog"
-          v-if="loading === false"
         >
           <v-card>
             <v-card-title>
               <v-spacer />
-              <v-btn icon @click="tDetailsDialog = false">
+              <v-btn
+                icon
+                @click="tDetailsDialog = false"
+              >
                 <v-icon>mdi-close</v-icon>
               </v-btn>
             </v-card-title>
@@ -235,28 +281,28 @@
               <v-row>
                 <v-col cols="12">
                   Name:&nbsp;&nbsp;
-                  <br />
+                  <br>
                   <strong>
                     {{ teacherToView.teacher_name }}
                   </strong>
                 </v-col>
                 <v-col cols="12">
                   Email:&nbsp;&nbsp;
-                  <br />
+                  <br>
                   <strong>
                     {{ teacherToView.email }}
                   </strong>
                 </v-col>
                 <v-col cols="12">
                   Contact:&nbsp;&nbsp;
-                  <br />
+                  <br>
                   <strong>
                     {{ teacherToView.contact }}
                   </strong>
                 </v-col>
                 <v-col cols="12">
                   AssignedSection:&nbsp;&nbsp;
-                  <br />
+                  <br>
                   <strong>
                     {{
                       teacherToView.section_id
@@ -267,7 +313,7 @@
                 </v-col>
                 <v-col cols="12">
                   School Year:&nbsp;&nbsp;
-                  <br />
+                  <br>
                   <strong>
                     {{
                       teacherToView.created_at
@@ -287,15 +333,21 @@
           </v-card>
         </v-dialog>
         <!-- Schedule dialog -->
-        <v-dialog v-model="teacherSchedDialog" max-width="1000px">
+        <v-dialog
+          v-model="teacherSchedDialog"
+          max-width="1000px"
+        >
           <v-card>
             <v-card-title>
               <v-spacer />
-              <v-btn icon @click="teacherSchedDialog = false">
+              <v-btn
+                icon
+                @click="teacherSchedDialog = false"
+              >
                 <v-icon>mdi-close</v-icon>
               </v-btn>
             </v-card-title>
-            <br />
+            <br>
             <v-data-table
               :headers="schedules_headers"
               :items="schedules"
@@ -314,14 +366,14 @@
                           }}
                         </strong>
                       </span>
-                      <br />
+                      <br>
                       <span>
                         Subject:
                         <strong>
                           {{ row.item.Monday.subject_name }}
                         </strong>
                       </span>
-                      <br />
+                      <br>
                       <span>
                         Section:
                         <strong>{{ row.item.Monday.name }}</strong>
@@ -338,14 +390,14 @@
                           }}
                         </strong>
                       </span>
-                      <br />
+                      <br>
                       <span>
                         Subject:
                         <strong>
                           {{ row.item.Tuesday.subject_name }}
                         </strong>
                       </span>
-                      <br />
+                      <br>
                       <span>
                         Section:
                         <strong>{{ row.item.Tuesday.name }}</strong>
@@ -362,14 +414,14 @@
                           }}
                         </strong>
                       </span>
-                      <br />
+                      <br>
                       <span>
                         Subject:
                         <strong>
                           {{ row.item.Wednesday.subject_name }}
                         </strong>
                       </span>
-                      <br />
+                      <br>
                       <span>
                         Section:
                         <strong>{{ row.item.Wednesday.name }}</strong>
@@ -386,14 +438,14 @@
                           }}
                         </strong>
                       </span>
-                      <br />
+                      <br>
                       <span>
                         Subject:
                         <strong>
                           {{ row.item.Thursday.subject_name }}
                         </strong>
                       </span>
-                      <br />
+                      <br>
                       <span>
                         Section:
                         <strong>{{ row.item.Thursday.name }}</strong>
@@ -410,14 +462,14 @@
                           }}
                         </strong>
                       </span>
-                      <br />
+                      <br>
                       <span>
                         Subject:
                         <strong>
                           {{ row.item.Friday.subject_name }}
                         </strong>
                       </span>
-                      <br />
+                      <br>
                       <span>
                         Section:
                         <strong>{{ row.item.Friday.name }}</strong>
@@ -427,7 +479,7 @@
                 </tr>
               </template>
             </v-data-table>
-            <br />
+            <br>
           </v-card>
         </v-dialog>
       </v-container>

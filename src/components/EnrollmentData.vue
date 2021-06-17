@@ -2,7 +2,7 @@
   <div>
     <bread-crumb
       :item="items"
-      pageName="Enrollment"
+      page-name="Admissions"
     />
     <br><br>
     <v-container>
@@ -27,12 +27,12 @@
       >
         <v-card-title class="text-center justify-center">
           <div class="display-2 font-weight-light">
-            Enrollments
+            Admissions
           </div>
         </v-card-title>
 
         <div class="subtitle-1 font-weight-light text-center justify-center">
-          All enrollments as of year {{ year }}
+          All admissions as of year {{ year }}
         </div>
         <v-tabs
           v-model="enrollmentTab"
@@ -111,9 +111,8 @@ export default {
         href: "/admin",
       },
       {
-        text: "Enrollment",
+        text: "Admissions",
         disabled: true,
-        href: "admin/enrollment",
       },
     ],
     id: null,

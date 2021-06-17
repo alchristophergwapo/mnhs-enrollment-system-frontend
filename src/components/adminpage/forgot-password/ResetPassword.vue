@@ -19,9 +19,6 @@
             <h3 id="card-header-title">
               RESET PASSWORD
             </h3>
-            <v-btn icon link to="/forgot-password" class="close-icon">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
           </div>
         </template>
         <v-divider />
@@ -47,6 +44,7 @@
             <v-text-field
               v-model="email"
               :rules="[(value) => !!value || 'Email is required!']"
+              prepend-inner-icon="mdi-email"
               type="email"
               outlined
               required
@@ -142,7 +140,6 @@ export default {
     this.token = this.$route.params.token;
   },
   methods: {
-    
     enterKeyTriggered(e) {
       if (e.keyCode === 13) this.submit();
     },
@@ -156,37 +153,38 @@ export default {
           password_confirmation: this.confirmPass,
         })
         .then((response) => {
-          if (response.data.message) {
-            this.loading = false;
-            this.currentPass = null;
-            this.newpassword = null;
-            this.confirmPass = null;
-            this.$swal.fire({
-              icon: "success",
-              title: "Success",
-              text: "Password is successfully changed.",
-            });
-            this.userData.user.updated = 1;
-            this.$store.commit("setUserData", this.userData);
-            this.$router.push({ path: "/admin" });
-          } else {
-            this.$swal.fire({
-              icon: "warning",
-              title: "Oops!",
-              text: "Your current password is wrong!",
-            });
-          }
+          this.$swal.fire({
+            icon: "success",
+            text: response.data.message,
+          });
+          this.$router.push({ path: "/sign-in" });
         })
-        .catch((error) => {
+        .catch((err) => {
           this.loading = false;
-          if (error.response.status == 422) {
-            this.setErrors(error.response.data.errors);
-          } else {
-            this.$swal.fire({
-              icon: "error",
-              title: "Oooops....",
-              text: error.response.data.message,
-            });
+          switch (err.response.status) {
+            case 500:
+              this.showResponse(
+                "warning",
+                "Oops!",
+                "An error on the server encountered!"
+              );
+              break;
+
+            case 422:
+              this.showResponse("warning", "Oops!", err.response.data.message);
+              break;
+
+            case 400:
+              this.showResponse(
+                "warning",
+                "Oops!",
+                err.response.data.message +
+                  " Please make sure that this link is not expired. Thank you."
+              );
+              break;
+
+            default:
+              break;
           }
         });
     },

@@ -55,6 +55,7 @@
             </div>
             <v-text-field
               v-model="username"
+              prepend-inner-icon="mdi-pencil"
               name="username"
               placeholder="Username"
               :readonly="true"
@@ -62,10 +63,44 @@
               outlined
             />
             <div class="field-label">
+              <label for="currentpassword">Email</label>
+            </div>
+            <v-text-field
+              v-model="email"
+              :rules="[
+                (value) =>
+                  (!!value && value.trim() != '') ||
+                  'The email field is required!',
+                (value) =>
+                  /^\w+([\.-]?\w+)*@\w+([a-z\.-]?\w+)*(\.\w[a-z]{1,3})+$/.test(
+                    value
+                  ) === true || 'Please enter a valid email!',
+                (value) =>
+                  String(value).length <= 100 ||
+                  'The email may not be greater than 100 characters!',
+              ]"
+              prepend-inner-icon="mdi-email"
+              name="email"
+              placeholder="Enter gmail account"
+              :error="hasError('email')"
+              dense
+              outlined
+              @keydown="clearErrors"
+            />
+            <div class="error-message">
+              <p
+                v-if="hasError('email')"
+                class="invalid-feedback"
+              >
+                {{ getError("email") }}
+              </p>
+            </div>
+            <div class="field-label">
               <label for="currentpassword">Current Password</label>
             </div>
             <v-text-field
               v-model="currentPass"
+              prepend-inner-icon="mdi-key-variant"
               :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
               :type="showPass ? 'text' : 'password'"
               name="currentpassword"
@@ -89,6 +124,7 @@
             </div>
             <v-text-field
               v-model="newpassword"
+              prepend-inner-icon="mdi-key-variant"
               :append-icon="showNPass ? 'mdi-eye' : 'mdi-eye-off'"
               :type="showNPass ? 'text' : 'password'"
               placeholder="Enter new password"
@@ -112,6 +148,7 @@
             </div>
             <v-text-field
               v-model="confirmPass"
+              prepend-inner-icon="mdi-key-variant"
               :append-icon="showCPass ? 'mdi-eye' : 'mdi-eye-off'"
               :type="showCPass ? 'text' : 'password'"
               placeholder="Enter confirmation password"
@@ -157,6 +194,7 @@ export default {
   data() {
     return {
       username: null,
+      email: null,
       currentPass: null,
       newpassword: null,
       confirmPass: null,
@@ -174,12 +212,13 @@ export default {
       return Object.keys(this.errors).length > 0;
     },
   },
-  mounted: function () {
+  mounted: function() {
     //Get Admin Profile
     const userInfo = localStorage.getItem("user");
     this.userData = JSON.parse(userInfo);
     if (this.userData.user.user_type != "student") {
       this.username = this.userData.user.username;
+      this.email = this.userData.user.email;
     }
   },
 
@@ -189,16 +228,16 @@ export default {
       this.$axios
         .post(`change`, {
           username: this.username,
+          email: this.email,
           currentpassword: this.currentPass,
           new_password: this.newpassword,
           confirm_password: this.confirmPass,
         })
         .then((response) => {
+          this.userData.user.email = this.email;
           if (response.data.message) {
             this.loading = false;
-            this.currentPass = null;
-            this.newpassword = null;
-            this.confirmPass = null;
+            this.clear();
             this.$swal.fire({
               icon: "success",
               title: "Success",
@@ -247,6 +286,7 @@ export default {
     },
 
     clear() {
+      this.email = null;
       this.currentPass = null;
       this.newpassword = null;
       this.confirmPass = null;

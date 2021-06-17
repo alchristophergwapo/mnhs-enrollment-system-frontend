@@ -4,7 +4,7 @@
       v-if="isLoading === false"
       class="data-container"
     >
-      <app-bar :user_details="user.firstname" />
+      <app-bar :user_details="user" />
       <div class="stdnt-dash-container">
         <br>
         <v-row>
@@ -12,7 +12,7 @@
             sm="3
         "
           >
-            <student-detail :student-details="user" />
+            <student-detail :student-details="userInfo" />
           </v-col>
           <v-col sm="9">
             <v-card>
@@ -48,13 +48,13 @@
               </v-card>
               <v-tabs-items v-model="tab">
                 <v-tab-item :value="'tab-1'">
-                  <schedules :section-id="user.section.id" />
+                  <schedules :section-id="userInfo.section ? userInfo.section.id : 0" />
                 </v-tab-item>
                 <v-tab-item :value="'tab-2'">
                   <student-class-details
                     :teacher_name="
-                      user.section.adviser
-                        ? user.section.adviser.teacher_name
+                      userInfo.section && userInfo.section.adviser
+                        ? userInfo.section.adviser.teacher_name
                         : 'No Adviser'
                     "
                   />
@@ -149,23 +149,25 @@
 </template>
 
 <script>
-  import AppBar from /* webpackChunkName: "AppBar" */ "@/layout/AppBar.vue"
-  import StudentDetail from /* webpackChunkName: "StudentDetails" */ "@/components/studentpage/StudentDetails.vue"
-import StudentClassDetails from /* webpackChunkName: "StudentClassDetails" */ "@/components/studentpage/StudentClassDetails.vue"
-import Schedules from /* webpackChunkName: "Schedules" */ "@/components/studentpage/Schedules.vue"
+import AppBar from /* webpackChunkName: "AppBar" */ "@/layout/AppBar.vue";
+import StudentDetail from /* webpackChunkName: "StudentDetails" */ "@/components/studentpage/StudentDetails.vue";
+import StudentClassDetails from /* webpackChunkName: "StudentClassDetails" */ "@/components/studentpage/StudentClassDetails.vue";
+import Schedules from /* webpackChunkName: "Schedules" */ "@/components/studentpage/Schedules.vue";
+import { EventBus } from "../../bus/bus";
 export default {
   components: {
-    AppBar ,
-    StudentDetail ,
-    StudentClassDetails ,
-    Schedules ,
+    AppBar,
+    StudentDetail,
+    StudentClassDetails,
+    Schedules,
   },
   data() {
     return {
       user: [],
+      userInfo: null,
       panel: [],
       tab: null,
-      loaded: 1,
+      loaded: 0,
       isLoading: true,
     };
   },
@@ -176,22 +178,28 @@ export default {
   },
   created() {
     this.initialize();
+    EventBus.$on("enrolled", () => {
+      this.initialize();
+    });
   },
   methods: {
     initialize() {
       this.isLoading = true;
       let storedInfo = localStorage.getItem("user");
       let userData = JSON.parse(storedInfo);
+      this.user = userData.user;
       let interval = setInterval(() => {
-        if (this.loaded === 100) this.loaded = 1;
-        if (this.loaded <= 10) this.loaded += this.loaded;
-        else this.loaded += 10;
+        if (this.loaded >= 100) {
+          this.loaded = 0;
+        }
+        this.loaded += 10;
       }, 500);
       this.$axios
         .get(`student/details/${userData.user.username}`)
         .then((res) => {
           this.loaded = 100;
-          this.user = res.data.myInfo;
+          this.userInfo = res.data.myInfo;
+          console.log(this.user);
           this.isLoading = false;
           clearInterval(interval);
         })

@@ -1,8 +1,16 @@
 <template>
   <v-app>
     <v-container class="signin-container">
-      <v-card class="card1" elevation="10" max-width="500px">
-        <v-btn icon link to="/sign-in">
+      <v-card
+        class="card1"
+        elevation="10"
+        max-width="500px"
+      >
+        <v-btn
+          icon
+          link
+          to="/sign-in"
+        >
           <v-icon x-large>
             mdi-arrow-left
           </v-icon>
@@ -12,16 +20,16 @@
             id="icons"
             :src="require('@/assets/images/enroll.png')"
             alt=""
-          />
+          >
         </center>
         <h3>MNHS Enrollment System</h3>
-        <br />
+        <br>
         <div class="text-center message-txt">
           Enter your account email address to verify that this account really
           belongs to you. We will send a link to your email for you to update
           your account recovery.
         </div>
-        <br />
+        <br>
         <v-card-text>
           <v-form
             ref="forgotPassForm"
@@ -88,7 +96,6 @@ export default {
           })
           .catch((err) => {
             this.sendingPasswordResetReq = false;
-            console.log(err);
             switch (err.response.status) {
               case 500:
                 this.showResponse(

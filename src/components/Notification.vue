@@ -2,7 +2,7 @@
   <div id="app">
     <bread-crumb
       :item="items"
-      pageName="Notification Settings"
+      page-name="Notification Settings"
     />
     <br><br>
 

@@ -1,5 +1,8 @@
 <template>
-  <v-toolbar color="#E5E5E5" flat>
+  <v-toolbar
+    color="#E5E5E5"
+    flat
+  >
     <v-toolbar-title>
       <h4>{{ pageName }}</h4>
     </v-toolbar-title>

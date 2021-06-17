@@ -32,8 +32,8 @@
       </v-card-title>
       <v-card-subtitle>
         <div class="text-center">
-          S.Y. {{ student.enrollment.start_school_year }} -
-          {{ student.enrollment.end_school_year }}
+          S.Y. {{ enrollment.start_school_year }} -
+          {{ enrollment.end_school_year }}
         </div>
       </v-card-subtitle>
       <v-card-text>
@@ -50,7 +50,7 @@
             Grade:
           </div>
           <strong class="student_details">
-            {{ student.enrollment.grade_level }}
+            {{ enrollment.grade_level }}
           </strong>
         </div>
         <div class="info-data">
@@ -58,7 +58,7 @@
             Section:
           </div>
           <strong class="student_details">
-            {{ student.section.name }}
+            {{ student.section ? student.section.name : 'NA' }}
           </strong>
         </div>
         <div class="info-data">
@@ -67,7 +67,7 @@
           </div>
           <strong class="student_details">
             <span class="teal--text text--darken-4 text">{{
-              student.enrollment.enrollment_remarks
+              enrollment.enrollment_remarks
             }}</span>
           </strong>
         </div>
@@ -76,10 +76,10 @@
         <v-btn
           color="primary"
           block
-          :disabled="student.enrollment.enrollment_remarks != 'PASSED'"
+          :disabled="enrollment.enrollment_remarks != 'PASSED'"
           @click="enrollNow()"
         >
-          Enroll for Grade {{ student.enrollment.grade_level + 1 }}
+          Enroll for Grade {{ enrollment.grade_level + 1 }}
         </v-btn>
       </div>
     </v-container>
@@ -87,6 +87,7 @@
 </template>
 
 <script>
+import { EventBus } from '../../bus/bus';
 export default {
   props: {studentDetails: {
     type: Object,
@@ -97,27 +98,37 @@ export default {
   data() {
     return {
       student: this.studentDetails,
+      enrollment: this.studentDetails.enrollment[this.studentDetails.enrollment.length - 1]
     };
   },
   methods: {
     enrollNow() {
       console.log(this.student);
       const data = {
-        start_school_year: this.student.enrollment.end_school_year,
-        end_school_year: this.student.enrollment.end_school_year + 1,
-        grade_level: this.student.enrollment.grade_level + 1,
-        specialization: this.student.enrollment.specialization,
+        start_school_year: this.enrollment.end_school_year,
+        end_school_year: this.enrollment.end_school_year + 1,
+        grade_level: this.enrollment.grade_level + 1,
+        specialization: this.enrollment.specialization,
         student_id: this.student.id,
       };
       this.$axios
         .post("enroll", data)
         .then((res) => {
-          console.log(res);
+          this.showResponse('success', '', res.data.success);
+          EventBus.$emit('enrolled');
         })
         .catch((err) => {
           console.log(err);
         });
     },
+
+    showResponse(icon, title, message) {
+      this.$swal.fire({
+        icon: icon,
+        title: title,
+        text: message
+      });
+    }
   },
 };
 </script>

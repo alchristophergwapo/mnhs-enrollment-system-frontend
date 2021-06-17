@@ -499,7 +499,7 @@ export default {
             this.$swal.fire({
               icon: "success",
               title: "Success",
-              text: "Enrollment approved.",
+              text: "Application for admission approved.",
             });
             this.retrieveData();
             this.dialog = false;
@@ -561,7 +561,7 @@ export default {
             this.$swal.fire({
               icon: "info",
               title: "Success",
-              text: "Enrollment declined.",
+              text: "Application for admission declined.",
             });
             this.retrieveData();
             this.$refs.form.reset();

@@ -81,7 +81,9 @@
                 class="d-flex ml-auto"
                 style="align-items: center"
               >
-                <router-link to="/forgot-password">Forgot Password?</router-link>
+                <router-link to="/forgot-password">
+                  Forgot Password?
+                </router-link>
               </v-col>
             </v-row>
           </v-form>

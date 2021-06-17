@@ -14,8 +14,11 @@
           alt=""
           width="150px"
         >
-        <h3>Update Account Information</h3>
       </v-card-title>
+      <div class="text-center">
+        <h3>Update Account Information</h3>
+      </div>
+      <br>
       <v-container>
         <v-form
           ref="update"
@@ -26,15 +29,48 @@
             v-model="username"
             name="username"
             label="Username"
+            prepend-inner-icon="mdi-pencil"
             readonly
             outlined
           />
+          <v-text-field
+            v-model="email"
+            :rules="[
+              (value) =>
+                (!!value && value.trim() != '') ||
+                'The email field is required!',
+              (value) =>
+                /^\w+([\.-]?\w+)*@\w+([a-z\.-]?\w+)*(\.\w[a-z]{1,3})+$/.test(
+                  value
+                ) === true || 'Please enter a valid email!',
+              (value) =>
+                String(value).length <= 100 ||
+                'The email may not be greater than 100 characters!',
+            ]"
+            prepend-inner-icon="mdi-email"
+            name="email"
+            label="Email"
+            placeholder="Enter gmail account"
+            :error="hasError('email')"
+            dense
+            outlined
+            @keydown="clearErrors"
+          />
+          <div class="error-message">
+            <p
+              v-if="hasError('email')"
+              class="invalid-feedback"
+            >
+              {{ getError("email") }}
+            </p>
+          </div>
           <v-text-field
             v-model="currentPass"
             :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
             :type="showPass ? 'text' : 'password'"
             name="currentpassword"
             label="Current Password"
+            prepend-inner-icon="mdi-key-variant"
             :error="hasError('currentpassword')"
             outlined
             @click:append="showPass = !showPass"
@@ -54,6 +90,7 @@
             :append-icon="showNPass ? 'mdi-eye' : 'mdi-eye-off'"
             :type="showNPass ? 'text' : 'password'"
             label="New Password"
+            prepend-inner-icon="mdi-key-variant"
             name="new_password"
             :error="hasError('new_password')"
             outlined
@@ -74,6 +111,7 @@
             :append-icon="showCPass ? 'mdi-eye' : 'mdi-eye-off'"
             :type="showCPass ? 'text' : 'password'"
             label="Confirm Password"
+            prepend-inner-icon="mdi-key-variant"
             name="confirm_password"
             :error="hasError('confirm_password')"
             outlined
@@ -125,6 +163,7 @@ export default {
     return {
       valid: false,
       username: null,
+      email: "",
       currentPass: "",
       newpassword: "",
       confirmPass: "",
@@ -153,6 +192,7 @@ export default {
         this.$axios
           .post(`change`, {
             username: this.username,
+            email: this.email,
             currentpassword: this.currentPass,
             new_password: this.newpassword,
             confirm_password: this.confirmPass,
@@ -160,9 +200,7 @@ export default {
           .then((response) => {
             this.loading = false;
             if (response.data.message) {
-              this.currentPass = null;
-              this.newpassword = null;
-              this.confirmPass = null;
+              this.clear();
               this.$swal.fire({
                 icon: "success",
                 title: "Success",
@@ -170,7 +208,7 @@ export default {
               });
               this.userDetails.user.updated = 1;
               this.$store.commit("setUserData", this.userDetails);
-              this.$router.push({ path: "/student/sign-in" }).catch(()=>{});
+              this.$router.push({ path: "/sign-in" }).catch(() => {});
             } else {
               this.$swal.fire({
                 icon: "warning",
@@ -214,6 +252,7 @@ export default {
     },
 
     clear() {
+      this.email = null;
       this.currentPass = null;
       this.newpassword = null;
       this.confirmPass = null;

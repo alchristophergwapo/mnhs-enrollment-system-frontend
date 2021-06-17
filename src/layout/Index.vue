@@ -246,8 +246,8 @@ export default {
         { icon: "mdi-view-dashboard", text: "Dashboard", to: "/admin" },
         {
           icon: "mdi-account-multiple-plus",
-          text: "Enrollment",
-          to: "/admin/enrollment",
+          text: "Admissions",
+          to: "/admin/admissions",
         },
         {
           icon: "mdi-account-group",

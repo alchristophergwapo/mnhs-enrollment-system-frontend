@@ -2,7 +2,7 @@
   <div>
     <bread-crumb
       :item="items"
-      pageName="Dashboard"
+      page-name="Dashboard"
     />
     <br><br>
     <v-container

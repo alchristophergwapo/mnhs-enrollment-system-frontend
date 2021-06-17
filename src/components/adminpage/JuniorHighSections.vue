@@ -198,7 +198,7 @@
         >
           <section-dialog
             :type="addOrEdit.name"
-            :sectionDataProps="sectionData"
+            :section-data-props="sectionData"
             :edit="edit"
           />
         </v-dialog>

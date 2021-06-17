@@ -1079,6 +1079,7 @@ export default {
     backupSection: null,
     backupGrade: null,
     isAdmin: true,
+    buttonTxt: 'update'
   }),
   computed: {
     csvData() {
@@ -1100,7 +1101,7 @@ export default {
       } else {
         text = "save";
       }
-      return text;
+      return text || this.buttonTxt;
     },
   },
   created() {

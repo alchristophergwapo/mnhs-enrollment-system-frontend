@@ -65,10 +65,10 @@ const routes = [
         },
       },
       {
-        path: "enrollment",
+        path: "admissions",
         component: EnrollmentData,
         meta: {
-          title: "Enrollments",
+          title: "Admissions",
         },
       },
       {

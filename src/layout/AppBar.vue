@@ -114,9 +114,11 @@ export default {
   created() {
     let storedInfo = localStorage.getItem("user");
     let userData = JSON.parse(storedInfo);
+    console.log(userData);
     if (userData.user.user_type == "admin") {
       this.user_details = userData.user;
     } else {
+      console.log('here');
       this.user_details = userData.userInfo;
     }
     let notificationsFromStorage = userData.user.notifications;
