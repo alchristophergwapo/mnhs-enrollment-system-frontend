@@ -37,13 +37,6 @@
             v-model="email"
             :rules="[
               (value) =>
-                (!!value && value.trim() != '') ||
-                'The email field is required!',
-              (value) =>
-                /^\w+([\.-]?\w+)*@\w+([a-z\.-]?\w+)*(\.\w[a-z]{1,3})+$/.test(
-                  value
-                ) === true || 'Please enter a valid email!',
-              (value) =>
                 String(value).length <= 100 ||
                 'The email may not be greater than 100 characters!',
             ]"
@@ -153,17 +146,11 @@
 </template>
 <script>
 export default {
-  //   props: {
-  //     username: {
-  //       type: String,
-  //       required: true,
-  //     },
-  //   },
   data() {
     return {
       valid: false,
       username: null,
-      email: "",
+      email: null,
       currentPass: "",
       newpassword: "",
       confirmPass: "",

@@ -1,12 +1,9 @@
 <template>
   <v-app>
-    <div
-      v-if="isLoading === false"
-      class="data-container"
-    >
+    <div v-if="isLoading === false" class="data-container">
       <app-bar :user_details="user" />
       <div class="stdnt-dash-container">
-        <br>
+        <br />
         <v-row>
           <v-col
             sm="3
@@ -16,10 +13,7 @@
           </v-col>
           <v-col sm="9">
             <v-card>
-              <v-card
-                class="table-header"
-                color="#2e856e"
-              >
+              <v-card class="table-header" color="#2e856e">
                 <v-tabs
                   v-model="tab"
                   fixed-tabs
@@ -48,7 +42,9 @@
               </v-card>
               <v-tabs-items v-model="tab">
                 <v-tab-item :value="'tab-1'">
-                  <schedules :section-id="userInfo.section ? userInfo.section.id : 0" />
+                  <schedules
+                    :section-id="userInfo.section ? userInfo.section.id : 0"
+                  />
                 </v-tab-item>
                 <v-tab-item :value="'tab-2'">
                   <student-class-details
@@ -65,16 +61,8 @@
         </v-row>
       </div>
 
-      <v-footer
-        dark
-        padless
-      >
-        <v-card
-          flat
-          tile
-          width="100%"
-          class="primary white--text text-center"
-        >
+      <v-footer dark padless>
+        <v-card flat tile width="100%" class="primary white--text text-center">
           <v-card-text>
             <h1 class="pb-2 white--text">
               You can contact us at
@@ -114,24 +102,15 @@
 
           <v-card-text class="white--text">
             Copyright 2021 - {{ new Date().getFullYear() }}
-            <a
-              class="white--text"
-              href="https://google.com"
-            >Online Enrollment System for Mantalongon National High School</a>
+            <a class="white--text" href="https://google.com"
+              >Online Enrollment System for Mantalongon National High School</a
+            >
           </v-card-text>
         </v-card>
       </v-footer>
     </div>
-    <div
-      v-else
-      class="preloading-container"
-      style="height: 100vh; margin: 3%"
-    >
-      <v-row
-        class="fill-height"
-        align-content="center"
-        justify="center"
-      >
+    <div v-else class="preloading-container" style="height: 100vh; margin: 3%">
+      <v-row class="fill-height" align-content="center" justify="center">
         <div class="text-center">
           <v-progress-circular
             :rotate="-90"
@@ -201,10 +180,12 @@ export default {
           this.userInfo = res.data.myInfo;
           console.log(this.user);
           this.isLoading = false;
-          clearInterval(interval);
         })
         .catch((err) => {
           console.log(err);
+        })
+        .finally(() => {
+          clearInterval(interval);
         });
     },
 
