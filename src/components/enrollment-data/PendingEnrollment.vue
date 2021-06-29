@@ -48,7 +48,7 @@
                   <v-icon>mdi-account-plus</v-icon>
                 </v-btn>
               </template>
-              <span>Approve Enrollment</span>
+              <span>Approve Admission</span>
             </v-tooltip>
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">

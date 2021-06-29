@@ -1,11 +1,43 @@
 <template>
   <v-app>
+    <v-dialog
+      v-model="emailDialog"
+      persistent
+      max-width="500px"
+      transition="dialog-bottom-transition"
+    >
+      <v-card>
+        <br />
+        <v-container>
+          <center>
+            <img
+              id="icons"
+              :src="require('@/assets/images/enroll.png')"
+              alt=""
+            />
+          </center>
+          <h3>MNHS Enrollment System</h3>
+          <br />
+          <div class="text-center">
+            We're gonna need your email for us to send notifications regarding
+            your application for admission. For now we only accept gmail
+            account. If you don't have an active gmail account, please leave it
+            blank. We advise you to have one for you to use not only in this
+            matter but for other purposes as well. Thank you.
+          </div>
+          <v-card-text>
+            <v-text-field v-model="email" dense outlined/>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer />
+            <v-btn class="white--text" color="danger" @click="emailDialog = false">Cancel</v-btn>
+            <v-btn color="primary" @click="submitAdmission()">Save</v-btn>
+          </v-card-actions>
+        </v-container>
+      </v-card>
+    </v-dialog>
     <div class="enrollment">
-      <v-toolbar
-        dark
-        color="primary"
-        class="toolbar-content"
-      >
+      <v-toolbar dark color="primary" class="toolbar-content">
         <v-avatar
           @click="
             !user
@@ -20,12 +52,7 @@
           <span>Mantalongon, Dalaguete Cebu</span>
         </v-toolbar-title>
         <v-spacer />
-        <v-btn
-          v-if="!user"
-          text
-          link
-          to="/sign-in"
-        >
+        <v-btn v-if="!user" text link to="/sign-in">
           Login
         </v-btn>
         <v-btn
@@ -43,10 +70,10 @@
       </v-toolbar>
       <div class="form-container">
         <v-card-title>
-          <span
-            style="width: 100%; text-align: center"
-          >Please fill out the information below and SUBMIT. <br>
-            Fields with * indicates required fields.</span>
+          <span style="width: 100%; text-align: center"
+            >Please fill out the information below and SUBMIT. <br />
+            Fields with * indicates required fields.</span
+          >
         </v-card-title>
         <v-form
           ref="basicInfo"
@@ -56,14 +83,9 @@
         >
           <v-container>
             <student-info-form ref="studentInfoData" />
-            <parent-guardian-info
-              ref="parentGuardianInfoData"
-            />
+            <parent-guardian-info ref="parentGuardianInfoData" />
             <v-row>
-              <v-col
-                cols="12"
-                sm="6"
-              >
+              <v-col cols="12" sm="6">
                 <v-container>
                   <v-checkbox
                     v-model="isSeniorHigh"
@@ -74,10 +96,7 @@
                   />
                 </v-container>
               </v-col>
-              <v-col
-                cols="12"
-                sm="6"
-              >
+              <v-col cols="12" sm="6">
                 <v-container>
                   <v-checkbox
                     v-model="isTransfereeOrBalikAral"
@@ -114,11 +133,7 @@
                   prepend-icon="mdi-camera"
                   @keyup="enterKeyTriggered()"
                 >
-                  <v-icon
-                    slot="prepend-inner"
-                    color="red"
-                    x-small
-                  >
+                  <v-icon slot="prepend-inner" color="red" x-small>
                     mdi-asterisk
                   </v-icon>
                 </v-file-input>
@@ -142,11 +157,7 @@
                   @click:clear="clearSelected()"
                   @keyup="enterKeyTriggered()"
                 >
-                  <v-icon
-                    slot="prepend-inner"
-                    color="red"
-                    x-small
-                  >
+                  <v-icon slot="prepend-inner" color="red" x-small>
                     mdi-asterisk
                   </v-icon>
                 </v-select>
@@ -170,11 +181,7 @@
                   required
                   @click:clear="specialization = null"
                 >
-                  <v-icon
-                    slot="prepend-inner"
-                    color="red"
-                    x-small
-                  >
+                  <v-icon slot="prepend-inner" color="red" x-small>
                     mdi-asterisk
                   </v-icon>
                 </v-select>
@@ -183,14 +190,7 @@
 
             <v-card-actions>
               <v-spacer />
-              <v-btn
-                large
-                dark
-                color="primary"
-                :disabled="submitDisable"
-                :loading="submitting"
-                @click="submitEnrollment"
-              >
+              <v-btn large dark color="primary" @click="applyNow()">
                 Submit
               </v-btn>
             </v-card-actions>
@@ -203,25 +203,22 @@
 
 <script>
 import { EventBus } from "../bus/bus";
-import StudentInfoForm from
-        /* webpackChunkName: "StudentInfoForm" */ "@/components/enrollment/StudentInfoForm.vue"      
-import ParentGuardianInfo from
-        /* webpackChunkName: "ParentGuardianInfo" */ "@/components/enrollment/ParentGuardianInfo.vue"     
-import BalikOrTransfer from
-        /* webpackChunkName: "BalikOrTransfer" */ "@/components/enrollment/BalikOrTransfer.vue"    
-import SeniorHigh from
-        /* webpackChunkName: "SeniorHigh" */ "@/components/enrollment/SeniorHigh.vue"
-      
+import StudentInfoForm from /* webpackChunkName: "StudentInfoForm" */ "@/components/enrollment/StudentInfoForm.vue";
+import ParentGuardianInfo from /* webpackChunkName: "ParentGuardianInfo" */ "@/components/enrollment/ParentGuardianInfo.vue";
+import BalikOrTransfer from /* webpackChunkName: "BalikOrTransfer" */ "@/components/enrollment/BalikOrTransfer.vue";
+import SeniorHigh from /* webpackChunkName: "SeniorHigh" */ "@/components/enrollment/SeniorHigh.vue";
+
 export default {
   components: {
-    StudentInfoForm ,
-    ParentGuardianInfo ,
-    BalikOrTransfer ,
-    SeniorHigh ,
+    StudentInfoForm,
+    ParentGuardianInfo,
+    BalikOrTransfer,
+    SeniorHigh,
   },
   data() {
     return {
       dialog: false,
+      emailDialog: false,
       submitting: false,
       basicInfoValid: false,
       parentGuardianValid: false,
@@ -252,6 +249,7 @@ export default {
         [11, 12],
       ],
       options: [6, 7, 8, 9, 10, 11],
+      email: "",
       grade_level: null,
       card_image: null,
       specialization: null,
@@ -264,7 +262,7 @@ export default {
       enrollmentDate: Date.now(),
     };
   },
-  created: function () {
+  created: function() {
     this.user = localStorage.getItem("user");
     if (this.isTransfereeOrBalikAral) this.isNew = true;
 
@@ -284,7 +282,7 @@ export default {
     },
     enterKeyTriggered(e) {
       e.preventDefault();
-      if (e.keyCode === 13) this.submitEnrollment();
+      if (e.keyCode === 13) this.submitAdmission();
       else this.options;
     },
     selectGradeLevel(event) {
@@ -299,7 +297,14 @@ export default {
       if (this.isNew)
         (this.isNew = false), (this.isTransfereeOrBalikAral = false);
     },
-    submitEnrollment() {
+
+    applyNow() {
+      if (this.$refs.basicInfo.validate()) {
+        this.emailDialog = true;
+      }
+    },
+
+    submitAdmission() {
       const userData = JSON.parse(this.user);
       const isAdmin = userData ? userData.user.user_type != "student" : false;
       if (this.$refs.basicInfo.validate()) {
@@ -348,6 +353,7 @@ export default {
           }
         }
 
+        formdata.append("email", this.email);
         formdata.append("grade_level", this.grade_level);
         if (this.grade_level === 9 || this.grade_level === 10)
           formdata.append("specialization", this.specialization);
@@ -393,7 +399,8 @@ export default {
                 this.$swal.fire({
                   icon: "info",
                   title: "Ooops....",
-                  text: "An error encountered! Please check your input datas.",
+                  text:
+                    "An error encountered on the server! Please try again and if error persist, please reload the page.",
                 });
             });
         }
