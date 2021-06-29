@@ -26,7 +26,7 @@
             matter but for other purposes as well. Thank you.
           </div>
           <v-card-text>
-            <v-text-field v-model="email" dense outlined/>
+            <v-text-field v-model="email" label="Email" dense outlined/>
           </v-card-text>
           <v-card-actions>
             <v-spacer />
