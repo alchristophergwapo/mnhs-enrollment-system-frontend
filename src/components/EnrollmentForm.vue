@@ -31,7 +31,7 @@
           <v-card-actions>
             <v-spacer />
             <v-btn class="white--text" color="danger" @click="emailDialog = false">Cancel</v-btn>
-            <v-btn color="primary" @click="submitAdmission()">Save</v-btn>
+            <v-btn :loading="submitting" color="primary" @click="submitAdmission()">Save</v-btn>
           </v-card-actions>
         </v-container>
       </v-card>
@@ -305,10 +305,10 @@ export default {
     },
 
     submitAdmission() {
-      this.emailDialog = false;
       const userData = JSON.parse(this.user);
       const isAdmin = userData ? userData.user.user_type != "student" : false;
       if (this.$refs.basicInfo.validate()) {
+        this.loading = true;
         let error = false;
         this.student = this.$refs.studentInfoData.getData;
         let formdata = new FormData();
@@ -380,6 +380,7 @@ export default {
                 icon: "success",
               });
               this.submitting = false;
+              this.emailDialog = false;
               const userInfo = localStorage.getItem("user");
               if (userInfo) {
                 this.$router.push({ path: "/admin" });

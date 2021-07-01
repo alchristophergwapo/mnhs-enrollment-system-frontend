@@ -167,7 +167,7 @@
           <v-spacer />
           <v-btn
             class="submit-btn"
-            color="green"
+            color="primary"
             :loading="loading"
             :disabled="hasAnyErors"
             @click="submit"
