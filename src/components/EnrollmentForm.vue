@@ -305,6 +305,7 @@ export default {
     },
 
     submitAdmission() {
+      this.emailDialog = false;
       const userData = JSON.parse(this.user);
       const isAdmin = userData ? userData.user.user_type != "student" : false;
       if (this.$refs.basicInfo.validate()) {
